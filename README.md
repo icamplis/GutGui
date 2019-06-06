@@ -5,4 +5,4 @@ TBD
 <!--  TODO-->
 
 ## Development Notes
-![Mockup Image](http://url/to/img.png)
+![Mockup Image](./Mockup.png)
