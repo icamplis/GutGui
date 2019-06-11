@@ -13,6 +13,7 @@ def init_histogram(window):
     histogram_frame.grid(row=1, column=3, columnspan=2, sticky=W + E + N + S)
     # histogram_label = Label(histogram_frame, text="Histogram                                                                                                                    ", borderwidth=2, relief="solid")
     # histogram_label.grid(row=0, column=0)
+    return histogram_frame
 
 
 def init_diagram(window):
@@ -21,6 +22,7 @@ def init_diagram(window):
     diagram_frame.grid(row=0, column=3, columnspan=2, sticky=W + E + N + S)
     # diagram_label = Label(diagram_frame, text="Diagram Image                                                                                                             ", borderwidth=2, relief="solid")
     # diagram_label.grid(row=0, column=0)
+    return diagram_frame
 
 
 def init_og_color(window):
@@ -31,6 +33,7 @@ def init_og_color(window):
                       text="Original Colour-Coded Image                                                                             ",
                       borderwidth=2, relief="solid")
     ogc_label.grid(row=0, column=0)
+    return og_color_frame
 
 
 def init_save(window):
@@ -40,6 +43,7 @@ def init_save(window):
     s_label = Label(save_frame, text="Save                                                 ",
                     borderwidth=2, relief="solid")
     s_label.grid(row=0, column=0)
+    return save_frame
 
 
 def init_analysis_and_form(window):
@@ -49,6 +53,7 @@ def init_analysis_and_form(window):
     anf_label = Label(analysis_and_form_frame, text="Analysis & Form                                ",
                       borderwidth=2, relief="solid")
     anf_label.grid(row=0, column=0)
+    return analysis_and_form_frame
 
 
 def init_source_and_output(window):
@@ -58,6 +63,7 @@ def init_source_and_output(window):
     sno_label = Label(source_and_output_frame, text="Source & Output                              ",
                       borderwidth=2, relief="solid")
     sno_label.grid(row=0, column=0)
+    return source_and_output_frame
 
 def init_recreated_color(window):
     recreated_color_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
@@ -66,6 +72,7 @@ def init_recreated_color(window):
     recreated_color_label = Label(recreated_color_frame, text="Recreated Color-Coded Image            ",
                                   borderwidth=2, relief="solid")
     recreated_color_label.grid(row=0, column=0)
+    return recreated_color_frame
 
 
 def init_new_color(window):
@@ -75,6 +82,7 @@ def init_new_color(window):
     new_color_label = Label(new_color_frame, text="New Color-Coded Image                  ",
                             borderwidth=2, relief="solid")
     new_color_label.grid(row=0, column=0)
+    return new_color_frame
 
 
 def init_absorption_spec(window):
@@ -85,3 +93,4 @@ def init_absorption_spec(window):
     #                                                           "                                                           ",
     #                               borderwidth=2, relief="solid")
     # absorption_spec_label.grid(row=0, column=0)
+    return absorption_spec_frame
