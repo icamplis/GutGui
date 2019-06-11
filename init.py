@@ -7,23 +7,32 @@ def init_window(window):
     window.geometry(WINDOW_SIZE)  # set window size
     window.resizable(width=False, height=False)
 
-def init_histogram(window):
-    histogram_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
-                            width=WINDOW_WIDTH / 5 * 2, height=WINDOW_HEIGHT / 4)
-    histogram_frame.grid(row=1, column=3, columnspan=2, sticky=W + E + N + S)
-    # histogram_label = Label(histogram_frame, text="Histogram                                                                                                                    ", borderwidth=2, relief="solid")
-    # histogram_label.grid(row=0, column=0)
-    return histogram_frame
+def init_source_and_output(window):
+    source_and_output_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
+                                    width=WINDOW_WIDTH / 5, height=WINDOW_HEIGHT / 4)
+    source_and_output_frame.grid(row=0, column=0, sticky=W + E + N + S)
+    sno_label = Label(source_and_output_frame, text="Source & Output                              ",
+                      borderwidth=2, relief="solid")
+    sno_label.grid(row=0, column=0)
+    return source_and_output_frame
 
+def init_analysis_and_form(window):
+    analysis_and_form_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB),
+                                    width=WINDOW_WIDTH / 5, height=WINDOW_HEIGHT / 4 * 2)
+    analysis_and_form_frame.grid(row=1, rowspan=2, column=0, sticky=W + E + N + S)
+    anf_label = Label(analysis_and_form_frame, text="Analysis & Form                                ",
+                      borderwidth=2, relief="solid")
+    anf_label.grid(row=0, column=0)
+    return analysis_and_form_frame
 
-def init_diagram(window):
-    diagram_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB),
-                          width=WINDOW_WIDTH / 5 * 2, height=WINDOW_HEIGHT / 4)
-    diagram_frame.grid(row=0, column=3, columnspan=2, sticky=W + E + N + S)
-    # diagram_label = Label(diagram_frame, text="Diagram Image                                                                                                             ", borderwidth=2, relief="solid")
-    # diagram_label.grid(row=0, column=0)
-    return diagram_frame
-
+def init_save(window):
+    save_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_PINK_RGB),
+                       width=WINDOW_WIDTH / 5, height=WINDOW_HEIGHT / 4)
+    save_frame.grid(row=3, column=0, sticky=W + E + N + S)
+    s_label = Label(save_frame, text="Save                                                 ",
+                    borderwidth=2, relief="solid")
+    s_label.grid(row=0, column=0)
+    return save_frame
 
 def init_og_color(window):
     og_color_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_PINK_RGB),
@@ -35,35 +44,22 @@ def init_og_color(window):
     ogc_label.grid(row=0, column=0)
     return og_color_frame
 
-
-def init_save(window):
-    save_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_PINK_RGB),
-                       width=WINDOW_WIDTH / 5, height=WINDOW_HEIGHT / 4)
-    save_frame.grid(row=3, column=0, sticky=W + E + N + S)
-    s_label = Label(save_frame, text="Save                                                 ",
-                    borderwidth=2, relief="solid")
-    s_label.grid(row=0, column=0)
-    return save_frame
+def init_diagram(window):
+    diagram_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB),
+                          width=WINDOW_WIDTH / 5 * 2, height=WINDOW_HEIGHT / 4)
+    diagram_frame.grid(row=0, column=3, columnspan=2, sticky=W + E + N + S)
+    # diagram_label = Label(diagram_frame, text="Diagram Image                                                                                                             ", borderwidth=2, relief="solid")
+    # diagram_label.grid(row=0, column=0)
+    return diagram_frame
 
 
-def init_analysis_and_form(window):
-    analysis_and_form_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB),
-                                    width=WINDOW_WIDTH / 5, height=WINDOW_HEIGHT / 4 * 2)
-    analysis_and_form_frame.grid(row=1, rowspan=2, column=0, sticky=W + E + N + S)
-    anf_label = Label(analysis_and_form_frame, text="Analysis & Form                                ",
-                      borderwidth=2, relief="solid")
-    anf_label.grid(row=0, column=0)
-    return analysis_and_form_frame
-
-
-def init_source_and_output(window):
-    source_and_output_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
-                                    width=WINDOW_WIDTH / 5, height=WINDOW_HEIGHT / 4)
-    source_and_output_frame.grid(row=0, column=0, sticky=W + E + N + S)
-    sno_label = Label(source_and_output_frame, text="Source & Output                              ",
-                      borderwidth=2, relief="solid")
-    sno_label.grid(row=0, column=0)
-    return source_and_output_frame
+def init_histogram(window):
+    histogram_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
+                            width=WINDOW_WIDTH / 5 * 2, height=WINDOW_HEIGHT / 4)
+    histogram_frame.grid(row=1, column=3, columnspan=2, sticky=W + E + N + S)
+    # histogram_label = Label(histogram_frame, text="Histogram                                                                                                                    ", borderwidth=2, relief="solid")
+    # histogram_label.grid(row=0, column=0)
+    return histogram_frame
 
 def init_recreated_color(window):
     recreated_color_frame = Frame(window, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),

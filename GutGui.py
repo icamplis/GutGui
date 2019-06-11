@@ -8,23 +8,23 @@ def main():
 
     init_window(window)
 
-    init_source_and_output(window)
+    source_and_output_frame = init_source_and_output(window)
 
-    init_analysis_and_form(window)
+    analysis_and_form_frame = init_analysis_and_form(window)
 
-    init_save(window)
+    save_frame = init_save(window)
 
-    init_og_color(window)
+    og_color_frame = init_og_color(window)
 
-    init_diagram(window)
+    diagram_frame = init_diagram(window)
 
-    init_histogram(window)
+    histogram_frame = init_histogram(window)
 
-    init_recreated_color(window)
+    recreated_color_frame = init_recreated_color(window)
 
-    init_new_color(window)
+    new_color_frame = init_new_color(window)
 
-    init_absorption_spec(window)
+    absorption_spec_frame = init_absorption_spec(window)
 
     window.mainloop()
 
