@@ -33,14 +33,16 @@ class SourceAndOutput:
 
     def _build_select_dc_button(self):
         self.select_data_cube_button = make_button(self.root, text="Select Data Cube",
-                                                   command=self._set_data_cube, padx=10, pady=10, row=1, column=0)
+                                                   command=self._set_data_cube, inner_padx=10, inner_pady=10,
+                                                   outer_padx=10, outer_pady=5, row=1, column=0)
 
     def _build_select_od_button(self):
         self.select_output_dir_button = make_button(self.root, text="Select Output Folder",
-                                                   command=self._set_output_dir, padx=10, pady=10, row=2, column=0)
+                                                    command=self._set_output_dir, inner_padx=10, inner_pady=10,
+                                                    outer_padx=10, outer_pady=5, row=2, column=0)
 
     def _set_data_cube(self):
-        self.data_cube = self.__process_data_cube()
+        (self.data_cube, dc_path) = self.__process_data_cube()
 
     def _set_output_dir(self):
         self.path = self.__get_path("Select a folder for the output to be stored.")
@@ -49,12 +51,12 @@ class SourceAndOutput:
         path = self.__get_path("Select a data cube (ending in .dat)")
         if path[-4:] != ".dat":
             # TODO: MAKE POP UP ERROR MESSAGE
-            print("Not a dat file!")
+            print("Not a .dat file!")
             return None
         else:
             data = np.fromfile(path, dtype='>f')  # returns 1D array and reads file in big-endian binary format
             data_cube = data[3:].reshape(640, 480, 100)  # reshape to data cube and ignore first 3 values which are wrong
-            return data_cube
+            return data_cube, path
 
     def __get_path(self, title):
         path = filedialog.askopenfilename(parent=self.root, title=title)

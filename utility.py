@@ -19,11 +19,15 @@ def frame_and_label(window, name, colour, width, height, row, column, rowspan, c
     frame = Frame(window, bg=tkcolour_from_rgb(colour))
     frame.grid(row=row, rowspan=rowspan, column=column, columnspan=columnspan, sticky=W+E+N+S,
               ipadx=width, ipady=height)
-    label = Label(frame, text=name, borderwidth=2, relief="solid")
-    label.grid(row=0, column=0)
-    return (frame, label)
+    label = make_label(frame, text=name, borderwidth=2, row=0, column=0)
+    return frame, label
 
-def make_button(window, text, command, padx, pady, row, column):
-    button = Button(window, text=text, command=command, padx=padx, pady=pady)
-    button.grid(row=row, column=column)
+def make_button(window, text, command, inner_padx, inner_pady, outer_padx, outer_pady, row, column):
+    button = Button(window, text=text, command=command, padx=inner_padx, pady=inner_pady)
+    button.grid(row=row, column=column, padx=outer_padx, pady=outer_pady)
     return button
+
+def make_label(window, text, borderwidth, row, column, inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0, relief="solid"):
+    label = Label(window, text=text, borderwidth=borderwidth, relief=relief, padx=inner_padx, pady=inner_pady)
+    label.grid(row=row, column=column, padx=outer_padx, pady=outer_pady)
+    return label
