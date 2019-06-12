@@ -1,5 +1,7 @@
 from tkinter import *
-from constants import *
+
+from GutGuiModules.constants import *
+
 
 def init():
     root = Tk()

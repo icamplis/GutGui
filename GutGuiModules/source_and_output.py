@@ -1,4 +1,4 @@
-from utility import *
+from GutGuiModules.utility import *
 import numpy as np
 from copy import deepcopy
 from tkinter import filedialog

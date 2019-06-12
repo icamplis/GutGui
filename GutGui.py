@@ -1,8 +1,13 @@
-from tkinter import *
-from constants import *
-from utility import *
-from source_and_output import SourceAndOutput
-from init import *
+from GutGuiModules.constants import *
+from GutGuiModules.utility import *
+from GutGuiModules.absorption_spec import AbsorptionSpec
+from GutGuiModules.analysis_and_form import AnalysisAndForm
+from GutGuiModules.diagram import Diagram
+from GutGuiModules.histogram import Histogram
+from GutGuiModules.new_colour import NewColour
+from GutGuiModules.original_colour import OGColour
+from GutGuiModules.source_and_output import SourceAndOutput
+from GutGuiModules.save import Save
 
 def main():
     window = init()
@@ -15,10 +20,12 @@ def main():
     # analysis and form
     (analysis_and_form_frame, anf_label) = frame_and_label(window, "Analysis & Form",
                                                            PASTEL_ORANGE_RGB, SMALL_W, BIG_H, 1, 0, 2, 1)
-    
+    analysis_and_form_module = AnalysisAndForm(analysis_and_form_frame)
+
     # save
     (save_frame, s_label) = frame_and_label(window, "Save",
                                             PASTEL_PINK_RGB, SMALL_W, SMALL_H, 3, 0, 1, 1)
+    save_module = Save(save_frame)
     
     # original colour
     (og_color_frame, ogc_label) = frame_and_label(window, "Original Colour-Coded Image",
