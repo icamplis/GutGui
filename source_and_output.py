@@ -12,6 +12,8 @@ class SourceAndOutput:
         # GUI
         self.select_data_cube_button = None
         self.select_output_dir_button = None
+        self.data_cube_path_label = ""
+        self.output_dir_label = ""
 
         # Data
         self.data_cube = None
@@ -39,10 +41,12 @@ class SourceAndOutput:
     def _build_select_od_button(self):
         self.select_output_dir_button = make_button(self.root, text="Select Output Folder",
                                                     command=self._set_output_dir, inner_padx=10, inner_pady=10,
-                                                    outer_padx=10, outer_pady=5, row=2, column=0)
+                                                    outer_padx=10, outer_pady=5, row=3, column=0)
 
     def _set_data_cube(self):
         (self.data_cube, dc_path) = self.__process_data_cube()
+        # TODO: FIGURE OUT HOW TO SET LABEL SIZE
+        self.data_cube_path_label = make_label(self.root, "Using Data Cube at " + str(dc_path), row=2, column=0)
 
     def _set_output_dir(self):
         self.path = self.__get_path("Select a folder for the output to be stored.")
@@ -52,7 +56,7 @@ class SourceAndOutput:
         if path[-4:] != ".dat":
             # TODO: MAKE POP UP ERROR MESSAGE
             print("Not a .dat file!")
-            return None
+            return None, None
         else:
             data = np.fromfile(path, dtype='>f')  # returns 1D array and reads file in big-endian binary format
             data_cube = data[3:].reshape(640, 480, 100)  # reshape to data cube and ignore first 3 values which are wrong
