@@ -1,5 +1,3 @@
-from constants import *
-from tkinter import *
 from utility import *
 import numpy as np
 from copy import deepcopy
@@ -34,21 +32,30 @@ class SourceAndOutput:
         self._build_select_od_button()
 
     def _build_select_dc_button(self):
-        self.select_data_cube_button = make_button(self.source_and_output_frame, text="Select Data Cube",
-                                                   command=self._select_data_cube, padx=10, pady=10, row=1, column=0)
+        self.select_data_cube_button = make_button(self.root, text="Select Data Cube",
+                                                   command=self._set_data_cube, padx=10, pady=10, row=1, column=0)
 
     def _build_select_od_button(self):
-        self.select_output_dir_button = make_button(self.source_and_output_frame, text="Select Output Folder",
-                                                   command=self._select_output_dir, padx=10, pady=10, row=2, column=0)
+        self.select_output_dir_button = make_button(self.root, text="Select Output Folder",
+                                                   command=self._set_output_dir, padx=10, pady=10, row=2, column=0)
 
-    def _select_data_cube(self):
-        print("select data cube placeholder")
+    def _set_data_cube(self):
+        self.data_cube = self.__process_data_cube()
 
-    def _select_output_dir(self):
-        print("select output dir placeholder")
+    def _set_output_dir(self):
+        self.path = self.__get_path("Select a folder for the output to be stored.")
 
-    def __get_file_upload(self):
-        print("getting file uploaded placeholder")
+    def __process_data_cube(self):
+        path = self.__get_path("Select a data cube (ending in .dat)")
+        if path[-4:] != ".dat":
+            # TODO: MAKE POP UP ERROR MESSAGE
+            print("Not a dat file!")
+            return None
+        else:
+            data = np.fromfile(path, dtype='>f')  # returns 1D array and reads file in big-endian binary format
+            data_cube = data[3:].reshape(640, 480, 100)  # reshape to data cube and ignore first 3 values which are wrong
+            return data_cube
 
-    def __get_path(self):
-        print("getting specified path placeholder")
+    def __get_path(self, title):
+        path = filedialog.askopenfilename(parent=self.root, title=title)
+        return path
