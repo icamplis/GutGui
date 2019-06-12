@@ -1,6 +1,8 @@
 from tkinter import *
 from constants import *
 from utility import *
+from source_and_output import SourceAndOutput
+from init import *
 
 def main():
     window = init()
@@ -8,7 +10,8 @@ def main():
     # source and output
     (source_and_output_frame, sno_label) = frame_and_label(window, "Source & Output",
                                                            PASTEL_BLUE_RGB, SMALL_W, SMALL_H, 0, 0, 1, 1)
-    
+    source_and_output_module = SourceAndOutput(source_and_output_frame)
+
     # analysis and form
     (analysis_and_form_frame, anf_label) = frame_and_label(window, "Analysis & Form",
                                                            PASTEL_ORANGE_RGB, SMALL_W, BIG_H, 1, 0, 2, 1)

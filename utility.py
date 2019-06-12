@@ -1,4 +1,4 @@
-from tkinter import Frame, W, E, N, S, Label, Tk
+from tkinter import *
 from constants import *
 
 def init():
@@ -22,3 +22,8 @@ def frame_and_label(window, name, colour, width, height, row, column, rowspan, c
     label = Label(frame, text=name, borderwidth=2, relief="solid")
     label.grid(row=0, column=0)
     return (frame, label)
+
+def make_button(window, text, command, padx, pady, row, column):
+    button = Button(window, text=text, command=command, padx=padx, pady=pady)
+    button.grid(row=row, column=column)
+    return button
