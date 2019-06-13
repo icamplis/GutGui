@@ -54,6 +54,8 @@ class SourceAndOutput:
 
     def __process_data_cube(self):
         path = self.__get_path("Select a data cube (ending in .dat)")
+        if path == '':
+            return
         if path[-4:] != ".dat":
             make_pop_up("That's not a .dat file!")
             return None, None

@@ -1,14 +1,22 @@
-class NewColour:
-    def __init__(self, new_color_frame):
-        self.root = new_color_frame
+class RecColour:
+    def __init__(self, recreated_color_frame):
+        self.root = recreated_color_frame
 
-        self.wl_label = None
-        self.wl_checkbox = None
-        self.wl_checkbox_value = None
+        self.sto2_label = None
+        self.sto2_checkbox = None
+        self.sto2_checkbox_value = None
 
-        self.idx_label = None
-        self.idx_checkbox = None
-        self.idx_checkbox_value = None
+        self.nir_label = None
+        self.nir_checkbox = None
+        self.nir_checkbox_value = None
+
+        self.thi_label = None
+        self.thi_checkbox = None
+        self.thi_checkbox_value = None
+
+        self.twi_label = None
+        self.twi_checkbox = None
+        self.twi_checkbox_value = None
 
         self.save_label = None
         self.save_checkbox = None
@@ -25,16 +33,22 @@ class NewColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
-        self.new_image = None
+        self.recreated_image = None
 
     # Helper
     def _init_widget(self):
         pass
 
-    def _build_wl(self):
+    def _build_sto2(self):
         pass
 
-    def _build_idx(self):
+    def _build_nir(self):
+        pass
+
+    def _build_twi(self):
+        pass
+
+    def _build_thi(self):
         pass
 
     def _build_save(self):
@@ -49,14 +63,20 @@ class NewColour:
     def _build_lower_scale(self):
         pass
 
-    def _build_new_image(self):
+    def _build_recreated_image(self):
         pass
 
     # Commands (Callbacks)
-    def __update_wl_checked(self):
+    def __update_sto2_checked(self):
         pass
 
-    def __update_idx_checked(self):
+    def __update_nir_checked(self):
+        pass
+
+    def __update_thi_checked(self):
+        pass
+
+    def __update_twi_checked(self):
         pass
 
     def __update_save_wo_scale_checked(self):
@@ -74,5 +94,6 @@ class NewColour:
     def __update_scale_lower(self):
         pass
 
-    def __update_new_image(self):
+    def __update_recreated_image(self):
         pass
+
