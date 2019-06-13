@@ -29,25 +29,27 @@ class SourceAndOutput:
     def get_path(self):
         return self.path
 
+    # Helpers
     def _init_widgets(self):
         self._build_select_dc_button()
         self._build_select_od_button()
 
     def _build_select_dc_button(self):
         self.select_data_cube_button = make_button(self.root, text="Select Data Cube",
-                                                   command=self._set_data_cube, inner_padx=10, inner_pady=10,
+                                                   command=self.__set_data_cube, inner_padx=10, inner_pady=10,
                                                    outer_padx=10, outer_pady=5, row=1, column=0)
 
     def _build_select_od_button(self):
         self.select_output_dir_button = make_button(self.root, text="Select Output Folder",
-                                                    command=self._set_output_dir, inner_padx=10, inner_pady=10,
+                                                    command=self.__set_output_dir, inner_padx=10, inner_pady=10,
                                                     outer_padx=10, outer_pady=5, row=3, column=0)
 
-    def _set_data_cube(self):
+    # Commands (Callbacks)
+    def __set_data_cube(self):
         (self.data_cube, dc_path) = self.__process_data_cube()
         self.data_cube_path_label = make_label(self.root, "Using Data Cube at " + str(dc_path), row=2, column=0)
 
-    def _set_output_dir(self):
+    def __set_output_dir(self):
         self.path = self.__get_path("Select a folder for the output to be stored.")
 
     def __process_data_cube(self):
