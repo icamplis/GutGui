@@ -45,7 +45,6 @@ class SourceAndOutput:
 
     def _set_data_cube(self):
         (self.data_cube, dc_path) = self.__process_data_cube()
-        # TODO: FIGURE OUT HOW TO SET LABEL SIZE
         self.data_cube_path_label = make_label(self.root, "Using Data Cube at " + str(dc_path), row=2, column=0)
 
     def _set_output_dir(self):
@@ -54,8 +53,7 @@ class SourceAndOutput:
     def __process_data_cube(self):
         path = self.__get_path("Select a data cube (ending in .dat)")
         if path[-4:] != ".dat":
-            # TODO: MAKE POP UP ERROR MESSAGE
-            print("Not a .dat file!")
+            make_pop_up("That's not a .dat file!")
             return None, None
         else:
             data = np.fromfile(path, dtype='>f')  # returns 1D array and reads file in big-endian binary format
