@@ -5,12 +5,12 @@ def main():
 
     # source and output
     (source_and_output_frame, sno_label) = frame_and_label(window, "Source & Output",
-                                                           PASTEL_BLUE_RGB, SMALL_W, SMALL_H, 0, 0, 1, 1)
+                                                           PASTEL_BLUE_RGB, SMALL_W, SMALL_H, 0, 0, 1, 1, 2)
     source_and_output_module = SourceAndOutput(source_and_output_frame)
 
     # analysis and form
     (analysis_and_form_frame, anf_label) = frame_and_label(window, "Analysis & Form",
-                                                           PASTEL_ORANGE_RGB, SMALL_W, BIG_H, 1, 0, 2, 1)
+                                                           PASTEL_ORANGE_RGB, SMALL_W, BIG_H, 1, 0, 2, 1, 8)
     analysis_and_form_module = AnalysisAndForm(analysis_and_form_frame)
 
     # save
@@ -32,7 +32,7 @@ def main():
 
     # diagram
     (diagram_frame, diagram_label) = frame_and_label(window, "Diagram",
-                                                     PASTEL_ORANGE_RGB, BIG_W, SMALL_H, 0, 3, 1, 2)
+                                                     PASTEL_ORANGE_RGB, BIG_W, SMALL_H, 0, 3, 1, 2, 2)
     diagram_module = Diagram(diagram_frame)
 
     # histogram
