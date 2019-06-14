@@ -3,6 +3,7 @@ from GutGuiModules.utility import *
 class AnalysisAndForm:
     def __init__(self, analysis_and_form_frame):
         self.root = analysis_and_form_frame
+        self.root.grid_columnconfigure(7, weight=1)
 
         self.normalisation_button = None
         self.original_button = None
@@ -33,16 +34,16 @@ class AnalysisAndForm:
 
     # Helpers
     def _init_widget(self):
+        self._build_idx_title()
+        self._build_idxs()
         self._build_normalisation_button() 
-        self._build_OR_text(height=1, width=2, row=1, column=3, columnspan=2)
+        self._build_OR_text(height=1, width=2, row=1, column=3, columnspan=1)
         self._build_original_button()
         self._build_reflection_button()
-        self._build_OR_text(height=1, width=2, row=2, column=3, columnspan=2)
+        self._build_OR_text(height=1, width=2, row=2, column=3, columnspan=1)
         self._build_absorbance_button()
         self._build_wavelength_text()
         self._build_wavelength()
-        self._build_idx_title()
-        self._build_idxs()
         self._build_stO2_text()
         self._build_stO2()
         self._build_perf_text()
@@ -85,14 +86,14 @@ class AnalysisAndForm:
         self.idx = make_text(self.root, content="Individual Index", 
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=16, columnspan=8, pady=(10, 0))
     def _build_idxs(self):
-        self.idx1 = make_button(self.root, text='1', command=self.__idxn(1), row=5, column=0, outer_pady=5, outer_padx=5, width=1)
-        self.idx2 = make_button(self.root, text='2', command=self.__idxn(2), row=5, column=1, outer_pady=5, outer_padx=5, width=1)
-        self.idx3 = make_button(self.root, text='3', command=self.__idxn(3), row=5, column=2, outer_pady=5, outer_padx=5, width=1)
-        self.idx4 = make_button(self.root, text='4', command=self.__idxn(4), row=5, column=3, outer_pady=5, outer_padx=5, width=1)
-        self.idx5 = make_button(self.root, text='5', command=self.__idxn(5), row=5, column=4, outer_pady=5, outer_padx=5, width=1)
-        self.idx6 = make_button(self.root, text='6', command=self.__idxn(6), row=5, column=5, outer_pady=5, outer_padx=5, width=1)
-        self.idx7 = make_button(self.root, text='7', command=self.__idxn(7), row=5, column=6, outer_pady=5, outer_padx=5, width=1)
-        self.idx8 = make_button(self.root, text='8', command=self.__idxn(8), row=5, column=7, outer_pady=5, outer_padx=5, width=1)
+        self.idx1 = make_button(self.root, text='1', command=lambda:self.__idxn(1), row=5, column=0, outer_pady=5, outer_padx=5, width=1)
+        self.idx2 = make_button(self.root, text='2', command=lambda:self.__idxn(2), row=5, column=1, outer_pady=5, outer_padx=5, width=1)
+        self.idx3 = make_button(self.root, text='3', command=lambda:self.__idxn(3), row=5, column=2, outer_pady=5, outer_padx=5, width=1)
+        self.idx4 = make_button(self.root, text='4', command=lambda:self.__idxn(4), row=5, column=3, outer_pady=5, outer_padx=5, width=1)
+        self.idx5 = make_button(self.root, text='5', command=lambda:self.__idxn(5), row=5, column=4, outer_pady=5, outer_padx=5, width=1)
+        self.idx6 = make_button(self.root, text='6', command=lambda:self.__idxn(6), row=5, column=5, outer_pady=5, outer_padx=5, width=1)
+        self.idx7 = make_button(self.root, text='7', command=lambda:self.__idxn(7), row=5, column=6, outer_pady=5, outer_padx=5, width=1)
+        self.idx8 = make_button(self.root, text='8', command=lambda:self.__idxn(8), row=5, column=7, outer_pady=5, outer_padx=5, width=1)
 
     def _build_stO2_text(self):
         self.stO2_text = make_text(self.root, content="Saturation index: ", 

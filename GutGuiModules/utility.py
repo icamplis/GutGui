@@ -34,7 +34,7 @@ def make_label(window, text, row, column,
     label.grid(row=row, column=column, padx=outer_padx, pady=outer_pady)
     return label
 
-def make_text(window, content, row, column, padx=10, pady=5, height=1, width=2, highlightthickness=0, bg="white", columnspan=1):
+def make_text(window, content, row, column, padx=10, pady=10, height=1, width=2, highlightthickness=0, bg="white", columnspan=1):
     text = Text(window, bg=bg, height=height, width=width, highlightthickness=highlightthickness)
     text.insert(END, content)
     text.grid(row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
