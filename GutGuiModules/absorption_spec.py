@@ -48,6 +48,9 @@ class AbsorptionSpec:
     def _build_save_as_excel(self):
         pass
 
+    def _build_interactive_histogram(self):
+        pass
+
     # Commands (Callbacks)
     def __update_scale_x_upper(self):
         pass
@@ -68,4 +71,7 @@ class AbsorptionSpec:
         pass
 
     def __update_save_as_excel_checked(self):
+        pass
+
+    def __update_interactive_histogram(self):
         pass

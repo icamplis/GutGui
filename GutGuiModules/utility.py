@@ -51,12 +51,8 @@ def make_entry(window, row, column, width, columnspan, pady=10,
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)
     return entry
 
-
-# def make_pop_up(message, title="Warning"):
-#     popup = Tk()
-#     popup.wm_title(title)
-#     label = Label(popup, text=message)
-#     label.pack(side="top", fill="x", pady=10)
-#     B1 = Button(popup, text="Ok", command = popup.destroy)
-#     B1.pack()
-#     popup.mainloop()
+def make_checkbox(window, text, row, column, var,
+                  inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0, bg="yellow", sticky=W+N+S+E):
+    checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg)
+    checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
+    return checkbox
