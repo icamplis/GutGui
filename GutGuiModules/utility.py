@@ -24,21 +24,23 @@ def frame_and_label(window, name, colour, width, height, row, column, rowspan, c
     label = make_label(frame, text=name, row=0, column=0, borderwidth=2)
     return frame, label
 
-def make_button(window, text, command, row, column, inner_padx=10, inner_pady=10, outer_padx=0, outer_pady=0):
+def make_button(window, text, command, row, column, inner_padx=10, inner_pady=10, outer_padx=0, outer_pady=0, sticky=W):
     button = Button(window, text=text, command=command, padx=inner_padx, pady=inner_pady)
-    button.grid(row=row, column=column, padx=outer_padx, pady=outer_pady)
+    button.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
     return button
 
 def make_label(window, text, row, column,
-               borderwidth=2, inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0, relief="solid"):
-    label = Label(window, text=text, borderwidth=borderwidth, relief=relief, padx=inner_padx, pady=inner_pady)
-    label.grid(row=row, column=column, padx=outer_padx, pady=outer_pady)
+               borderwidth=2, inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0,
+               relief="solid", sticky=W+S+E+N, wraplength=0):
+    label = Label(window, text=text, borderwidth=borderwidth, relief=relief,
+                  padx=inner_padx, pady=inner_pady, wraplength=wraplength)
+    label.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
     return label
 
-def make_text(window, content, row, column, padx=10, pady=10, height=1, width=2, highlightthickness=0, bg="white"):
+def make_text(window, content, row, column, padx=10, pady=10, height=1, width=2, highlightthickness=0, bg="white", sticky=W+S+E+N):
     text = Text(window, bg=bg, height=height, width=width, highlightthickness=highlightthickness)
     text.insert(END, content)
-    text.grid(row=row, column=column, padx=padx, pady=pady)
+    text.grid(row=row, column=column, padx=padx, pady=pady, sticky=sticky)
     return text
 
 def make_pop_up(message, title="Warning"):
