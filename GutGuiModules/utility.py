@@ -52,8 +52,8 @@ def make_pop_up(message, title="Warning"):
     B1.pack()
     popup.mainloop()
 
-def make_checkbox(window, text, row, column, var,
+def make_checkbox(window, text, row, column, var, width=2,
                   inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0, bg="yellow", sticky=W+N+S+E):
-    checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg)
+    checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg, width=2)
     checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
     return checkbox
