@@ -14,11 +14,10 @@ class Save:
         self._build_save_all_button()
 
     def _build_save_specific_button(self):
-        self.save_specific_button = make_button(self.root, text="Save for specifically selected data cube", command=self._save_specific, 
-            row=1, column=0, outer_pady=0, outer_padx=20, width=30)
+        self.save_specific_button = make_button(self.root, text="Save for specifically selected data cube", command=self._save_specific, row=1, column=0, outer_pady=0, outer_padx=15, width=30)
 
     def _build_save_all_button(self):
-        self.save_all_button = make_button(self.root, text='Save for all selected data cubes', command=self._save_all, row=2, column=0, outer_pady=(5, 15), outer_padx=10, width=30)
+        self.save_all_button = make_button(self.root, text='Save for all selected data cubes', command=self._save_all, row=2, column=0, outer_pady=(10, 15), outer_padx=15, width=30)
 
     def _save_specific(self):
         print('save for specific placeholder')

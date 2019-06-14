@@ -40,8 +40,8 @@ def make_text(window, content, row, column, padx=10, pady=10, height=1, width=2,
     text.grid(row=row, column=column, padx=padx, pady=pady, columnspan=columnspan, rowspan=rowspan)
     return text
 
-def make_listbox(window, input, row, column, padx=(0, 10), pady=(0, 15), highlightthickness=0, width=18):
-    listbox = Listbox(window, width=width)
+def make_listbox(window, input, row, column, padx=15, pady=(0, 15), highlightthickness=0):
+    listbox = Listbox(window, width=15)
     listbox.grid(row=row, column=column, rowspan=2, padx=padx, pady=pady)
     return listbox
 
@@ -51,7 +51,7 @@ def make_entry(window, row, column, width, columnspan, pady=10,
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)
     return entry
 
-def make_checkbox(window, text, row, column, var,
+def make_checkbox(window, text, row, column, var, width=2,
                   inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0, bg="yellow", sticky=W+N+S+E):
     checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg, width=2)
     checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
