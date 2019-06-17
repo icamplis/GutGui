@@ -8,3 +8,4 @@ from GutGuiModules.new_colour import NewColour
 from GutGuiModules.original_colour import OGColour
 from GutGuiModules.source_and_output import SourceAndOutput
 from GutGuiModules.save import Save
+from GutGuiModules.recreated_colour import RecColour

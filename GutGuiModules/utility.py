@@ -50,7 +50,7 @@ def make_listbox(window, input, row, column, padx=15, pady=(0, 15),
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 
-def make_entry(window, row, column, width, columnspan, pady=10, 
+def make_entry(window, row, column, width, columnspan=1, pady=10,
     padx=10, highlightthickness=0):
     entry = Entry(window, width=width, highlightthickness=highlightthickness)
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)
