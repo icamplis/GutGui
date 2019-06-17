@@ -1,6 +1,11 @@
 from tkinter import *
-
 from GutGuiModules.constants import *
+
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+from matplotlib import pyplot as plt
 
 
 def init():
@@ -58,3 +63,24 @@ def make_checkbox(window, text, row, column, var, width=2,
     checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg, width=2)
     checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
     return checkbox
+
+def make_graph(master, x_vals, y_vals, row, column, x_size, y_size, colour, inner_pady=0, inner_padx=0, rowspan=1, columnspan=1):
+    figure = Figure(figsize=(x_size, y_size))
+    a = figure.add_subplot(111)
+    a.plot(x_vals, y_vals)
+    figure.patch.set_facecolor(rgb_to_rgba(colour))
+    figure.set_tight_layout(True)
+    canvas = FigureCanvasTkAgg(figure, master=master)
+    canvas.draw()
+    canvas.get_tk_widget().grid(column=column, row=row, columnspan=columnspan, rowspan=rowspan, ipady=inner_pady, ipadx=inner_padx)
+    return canvas
+
+def rgb_to_rgba(rgb):
+    r = rgb[0]/255
+    g = rgb[1]/255
+    b = rgb[2]/255
+    return (r, g, b)
+
+
+
+
