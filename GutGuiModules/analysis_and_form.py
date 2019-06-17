@@ -3,7 +3,6 @@ from GutGuiModules.utility import *
 class AnalysisAndForm:
     def __init__(self, analysis_and_form_frame):
         self.root = analysis_and_form_frame
-        self.root.grid_columnconfigure(7, weight=1)
 
         self.normalisation_button = None
         self.original_button = None
