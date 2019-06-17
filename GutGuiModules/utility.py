@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from matplotlib.axes import Axes
 from matplotlib import pyplot as plt
 
 
@@ -55,8 +56,8 @@ def make_listbox(window, input, row, column, padx=15, pady=(0, 15),
     return listbox
 
 def make_entry(window, row, column, width, columnspan, pady=10, 
-    padx=10, highlightthickness=0):
-    entry = Entry(window, width=width, highlightthickness=highlightthickness)
+    padx=10, highlightthickness=0, command=None):
+    entry = Entry(window, width=width, highlightthickness=highlightthickness, textvariable=StringVar())
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)
     return entry
 
@@ -66,12 +67,14 @@ def make_checkbox(window, text, row, column, var,
     checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
     return checkbox
 
-def make_graph(master, x_vals, y_vals, row, column, x_size, y_size, colour, inner_pady=0, inner_padx=0, rowspan=1, columnspan=1):
+def make_graph(master, x_vals, y_vals, row, column, x_size, y_size, colour, x_upper=None, x_lower=None, y_upper=None, y_lower=None, inner_pady=0, inner_padx=0, rowspan=1, columnspan=1):
     figure = Figure(figsize=(x_size, y_size))
-    a = figure.add_subplot(111)
-    a.plot(x_vals, y_vals)
+    axes = figure.add_subplot(111)
+    axes.plot(x_vals, y_vals)
     figure.patch.set_facecolor(rgb_to_rgba(colour))
     figure.set_tight_layout(True)
+    axes.set_xlim(left=x_lower, right=x_upper)
+    axes.set_ylim(bottom=y_lower, top=y_upper)
     canvas = FigureCanvasTkAgg(figure, master=master)
     canvas.draw()
     canvas.get_tk_widget().grid(column=column, row=row, columnspan=columnspan, rowspan=rowspan, ipady=inner_pady, ipadx=inner_padx)

@@ -79,7 +79,7 @@ class AnalysisAndForm:
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=4, pady=(10, 0))
 
     def _build_wavelength(self):
-        self.wavelength = make_entry(self.root, row=3, column=4, width=15, pady=(10,0), padx=(0, 20), columnspan=4)
+        self.wavelength = make_entry(self.root, row=3, column=4, width=15, pady=(10,0), padx=(0, 20), columnspan=4, command=self.__update_wavelength)
 
     def _build_idx_title(self):
         self.idx = make_text(self.root, content="Individual Index:", 
@@ -101,28 +101,28 @@ class AnalysisAndForm:
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=6, width=18, columnspan=4, pady=(5,0))
 
     def _build_stO2(self):
-        self.stO2 = make_entry(self.root, row=6, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4)
+        self.stO2 = make_entry(self.root, row=6, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4, command=self.__update_st02)
 
     def _build_perf_text(self):
         self.perf_text = make_text(self.root, content="Perfusion index: ", 
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=7, width=17, columnspan=4, pady=(5,0))
 
     def _build_perf(self):
-        self.perf = make_entry(self.root, row=7, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4)
+        self.perf = make_entry(self.root, row=7, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4, command=self.__update_perf)
 
     def _build_hemo_text(self):
         self.hemo_text = make_text(self.root, content="Hemoglobin index: ", 
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=8, width=18, columnspan=4, pady=(5,0))
 
     def _build_hemo(self):
-        self.hemo = make_entry(self.root, row=8, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4)
+        self.hemo = make_entry(self.root, row=8, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4, command=self.__update_hemo)
 
     def _build_tissue_text(self):
         self.stO2_text = make_text(self.root, content="Tissue water index: ", 
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=9, width=20, columnspan=4, pady=(5, 15))
 
     def _build_tissue(self):
-        self.stO2 = make_entry(self.root, row=9, column=4, width=15, pady=(5, 15), padx=(0, 20), columnspan=4)
+        self.stO2 = make_entry(self.root, row=9, column=4, width=15, pady=(5, 15), padx=(0, 20), columnspan=4, command=self.__update_tissue)
         
     # Commands (Callbacks)
     def __normal(self):
@@ -143,4 +143,24 @@ class AnalysisAndForm:
 
     def __idxn(self, n):
         print('idxn placeholder')
+        #     TODO
+
+    def __update_wavelength(self):
+        print('wavey')
+        #     TODO
+
+    def __update_st02(self):
+        print('oxy')
+        #     TODO
+
+    def __update_perf(self):
+        print('perf')
+        #     TODO
+
+    def __update_hemo(self):
+        print('hëhë')
+        #     TODO
+
+    def __update_tissue(self, n):
+        print('tisu')
         #     TODO
