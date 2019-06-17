@@ -66,7 +66,7 @@ class SourceAndOutput:
         self.delete_button = make_button(self.root, text="Remove Selected Data Cube",
                                          command=self.__delete_selected_data_cube,
                                          row=3, column=1,
-                                         inner_padx=2, inner_pady=2, outer_padx=(25, 5), outer_pady=5, width=22)
+                                         inner_padx=2, inner_pady=2, outer_padx=(10, 5), outer_pady=5, width=22)
 
     # Commands (Callbacks)
     def __set_data_cube(self):
