@@ -1,4 +1,11 @@
 from GutGuiModules import *
+from GutGuiModules.source_and_output import *
+from GutGuiModules.save import *
+from GutGuiModules.analysis_and_form import *
+from GutGuiModules.diagram import *
+from GutGuiModules.histogram import *
+from GutGuiModules.absorption_spec import *
+from GutGuiModules.original_colour import *
 
 def main():
     window = init()
@@ -27,7 +34,7 @@ def main():
     (new_color_frame, new_color_label) = frame_and_label(window, "New Color-Coded Image", PASTEL_ORANGE_RGB, 7, 2, 7, 1)
 
     # diagram
-    (diagram_frame, diagram_label) = frame_and_label(window, "Diagram",PASTEL_ORANGE_RGB, 0, 3, 2, 2, 5)
+    (diagram_frame, diagram_label) = frame_and_label(window, "Diagram",PASTEL_ORANGE_RGB, 0, 3, 2, 2, 4)
     diagram_module = Diagram(diagram_frame)
 
     # histogram

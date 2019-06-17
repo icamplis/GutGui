@@ -3,8 +3,8 @@ from GutGuiModules.utility import *
 class AbsorptionSpec:
     def __init__(self, absorption_spec_frame):
         self.root = absorption_spec_frame
-        # self.x_vals = x_vals
-        # self.y_vals = y_vals
+        self.x_vals = [1, 3, 3, 4, 5, 7, 7, 9] # x_vals
+        self.y_vals = [43, 6, 34, 6, 9, 31, 3, 21] # y_vals
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -80,23 +80,23 @@ class AbsorptionSpec:
         self.selection_input = make_entry(self.root, row=3, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
 
         # x upper
-        self.x_upper_scale_text = make_text(self.root, content="x upper scale end: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=4, width=19, columnspan=1, pady=(0, 10))
+        self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=4, width=11, columnspan=1, pady=(0, 10))
         self.x_upper_scale_input = make_entry(self.root, row=4, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
 
         # x lower
-        self.x_lower_scale_text = make_text(self.root, content="x lower scale end: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=5, width=19, columnspan=1, pady=(0, 10))
+        self.x_lower_scale_text = make_text(self.root, content="Min x val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=5, width=11, columnspan=1, pady=(0, 10))
         self.x_lower_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
 
         # y upper
-        self.y_upper_scale_text = make_text(self.root, content="y upper scale end: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=6, width=19, columnspan=1, pady=(0, 10))
+        self.y_upper_scale_text = make_text(self.root, content="Max y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=6, width=11, columnspan=1, pady=(0, 10))
         self.y_upper_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
 
         # y lower
-        self.y_lower_scale_text = make_text(self.root, content="y lower scale end: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=7, width=19, columnspan=1, pady=(0, 15))
+        self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=7, width=11, columnspan=1, pady=(0, 15))
         self.y_lower_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 15), padx=(0, 15), columnspan=1)
 
     def _build_interactive_absorption_spec(self):
-        self.interactive_absorption_spec = make_text(self.root, content="Interactive Boi", column=0, row=1, width=15, columnspan=3, rowspan=6, pady=(0, 10))
+        self.interactive_absorption_spec = make_graph(master=self.root, x_vals=self.x_vals, y_vals=self.y_vals, row=1, column=0, x_size=3.5, y_size=2.5, colour=PASTEL_PINK_RGB, inner_pady=5, rowspan=6, columnspan=3)
 
     # Commands (Callbacks)
     def __update_scale_x_upper(self):
