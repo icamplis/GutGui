@@ -14,8 +14,9 @@ class SourceAndOutput:
         self.select_data_cube_button = None
         self.select_output_dir_button = None
         self.selection_listbox = None
-        self.data_cube_path_label = ""
-        self.output_dir_label = ""
+        self.data_cube_path_label = None
+        self.output_dir_label = None
+        self.delete_button = None
 
         # Data
         self.data_cubes = []
@@ -46,22 +47,26 @@ class SourceAndOutput:
         self._build_select_dc_button()
         self._build_select_od_button()
         self._build_selection_box()
+        self._build_delete_button()
 
     def _build_select_dc_button(self):
         self.select_data_cube_button = make_button(self.root, text="Select Data Cube", command=self.__set_data_cube,
-                                                   inner_padx=10, inner_pady=10, outer_padx=(15, 0), outer_pady=5,
+                                                   inner_padx=10, inner_pady=10, outer_padx=(15, 0), outer_pady=0,
                                                    row=1, column=0, width=15)
 
     def _build_select_od_button(self):
         self.select_output_dir_button = make_button(self.root, text="Select Output Folder", command=self.__set_output_dir,
-                                                    inner_padx=10, inner_pady=10, outer_padx=(15, 0), outer_pady=5,
+                                                    inner_padx=10, inner_pady=10, outer_padx=(15, 0), outer_pady=0,
                                                     row=2, column=0, width=15)
 
     def _build_selection_box(self):
         self.selection_listbox = make_listbox(self.root, input=None, row=1, column=1, rowspan=2)
 
     def _build_delete_button(self):
-        pass
+        self.delete_button = make_button(self.root, text="Remove Selected Data Cube",
+                                         command=self.__delete_selected_data_cube,
+                                         row=3, column=1,
+                                         inner_padx=2, inner_pady=2, outer_padx=(25, 5), outer_pady=5, width=22)
 
     # Commands (Callbacks)
     def __set_data_cube(self):
@@ -78,7 +83,7 @@ class SourceAndOutput:
     def __set_output_dir(self):
         self.path = self.__get_path_to_dir("Select a folder for the output to be stored.")
         self.path_label = make_label(self.root, "Using Output Folder at: " + str(self.path),
-                                               row=3, column=0, wraplength=160, outer_pady=(2, 5))
+                                               row=3, column=0, wraplength=160, outer_pady=(2, 5), outer_padx=(15, 0))
 
     def __process_data_cube(self):
         path = self.__get_path_to_file("Select a data cube (ending in .dat)")
@@ -101,4 +106,4 @@ class SourceAndOutput:
         return path
 
     def __delete_selected_data_cube(self):
-        pass
+        self.selection_listbox.delete(self.selection_listbox.curselection())
