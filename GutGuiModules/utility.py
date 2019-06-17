@@ -16,7 +16,7 @@ def tkcolour_from_rgb(rgb):
     '''translates an rgb tuple of int to a tkinter friendly color code'''
     return "#%02x%02x%02x" % rgb
 
-def frame_and_label(window, name, colour, width, height, row, column, rowspan, columnspan, labelspan=1):
+def frame_and_label(window, name, colour, row, column, rowspan, columnspan, labelspan=1):
     frame = Frame(window, bg=tkcolour_from_rgb(colour))
     frame.grid(row=row, rowspan=rowspan, column=column, columnspan=columnspan, sticky=W+E+N+S)
     label = make_label(frame, text=name, row=0, column=0, borderwidth=2, columnspan=labelspan)
