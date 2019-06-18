@@ -1,4 +1,3 @@
-from tkinter import *
 from GutGuiModules.utility import *
 
 class Diagram:
@@ -27,11 +26,17 @@ class Diagram:
         self._build_masked_region()
 
     def _build_whole_image(self):
-        self.whole_image_label = make_label(self.root, "Whole Image", row=1, column=0, inner_padx=10, inner_pady=5, outer_padx=(15, 5), outer_pady=(0, 15))
-        self.whole_image_checkbox = make_checkbox(self.root, "", row=1, column=0, var=self.whole_image_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
+        self.whole_image_label = make_label(self.root, "Whole Image", row=1, column=0,
+                                            inner_padx=10, inner_pady=5, outer_padx=(15, 5), outer_pady=(0, 15))
+        self.whole_image_checkbox = make_checkbox(self.root, "", row=1, column=0,
+                                                  var=self.whole_image_checkbox_value,
+                                                  sticky=NE, inner_padx=0, inner_pady=0)
         self.whole_image_checkbox.deselect()
 
     def _build_masked_region(self):
-        self.masked_region_label = make_label(self.root, "Masked Region", row=1, column=1,inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
-        self.masked_region_checkbox = make_checkbox(self.root, "", row=1, column=1, var=self.masked_region_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 10))
+        self.masked_region_label = make_label(self.root, "Masked Region", row=1, column=1,
+                                              inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
+        self.masked_region_checkbox = make_checkbox(self.root, "", row=1, column=1,
+                                                    var=self.masked_region_checkbox_value,
+                                                    sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 10))
         self.masked_region_checkbox.deselect()
