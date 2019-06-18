@@ -26,12 +26,14 @@ def main():
     (og_color_frame, ogc_label) = frame_and_label(window, "Original Colour-Coded Image", PASTEL_PINK_RGB, 0, 1, 7, 2)
 
     # recreated colour
-    (recreated_color_frame, recreated_color_label) = frame_and_label(window, "Recreated Color-Coded Image",
-                                                                     PASTEL_BLUE_RGB, 7, 1, 7, 1, labelspan=4)
+    (recreated_color_frame, recreated_color_label) = frame_and_label(window, "Recreated Color Image",
+                                                                     PASTEL_BLUE_RGB, 7, 1, 7, 1, labelspan=5)
     recreated_color_module = RecColour(recreated_color_frame)
 
     # new colour
-    (new_color_frame, new_color_label) = frame_and_label(window, "New Color-Coded Image", PASTEL_ORANGE_RGB, 7, 2, 7, 1)
+    (new_color_frame, new_color_label) = frame_and_label(window, "New Color-Coded Image", PASTEL_ORANGE_RGB,
+                                                         7, 2, 7, 1, labelspan=5)
+    new_color_module = NewColour(new_color_frame)
 
     # diagram
     (diagram_frame, diagram_label) = frame_and_label(window, "Diagram",PASTEL_ORANGE_RGB, 0, 3, 2, 2, 4)
