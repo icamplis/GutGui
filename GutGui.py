@@ -1,11 +1,4 @@
 from GutGuiModules import *
-from GutGuiModules.source_and_output import *
-from GutGuiModules.save import *
-from GutGuiModules.analysis_and_form import *
-from GutGuiModules.diagram import *
-from GutGuiModules.histogram import *
-from GutGuiModules.absorption_spec import *
-from GutGuiModules.original_colour import *
 
 def main():
     window = init()
