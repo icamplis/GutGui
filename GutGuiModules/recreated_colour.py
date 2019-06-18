@@ -6,27 +6,27 @@ class RecColour:
 
         self.sto2_button = None
         self.sto2_checkbox = None
-        self.sto2_checkbox_value = None
+        self.sto2_checkbox_value = IntVar()
 
         self.nir_button = None
         self.nir_checkbox = None
-        self.nir_checkbox_value = None
+        self.nir_checkbox_value = IntVar()
 
         self.thi_button = None
         self.thi_checkbox = None
-        self.thi_checkbox_value = None
+        self.thi_checkbox_value = IntVar()
 
         self.twi_button = None
         self.twi_checkbox = None
-        self.twi_checkbox_value = None
+        self.twi_checkbox_value = IntVar()
 
         self.save_label = None
         self.save_checkbox = None
-        self.save_checkbox_value = None
+        self.save_checkbox_value = IntVar()
 
         self.save_wo_scale_label = None
         self.save_wo_scale_checkbox = None
-        self.save_wo_scale_checkbox_value = None
+        self.save_wo_scale_checkbox_value = IntVar()
 
         self.upper_scale_text = None
         self.lower_scale_text = None

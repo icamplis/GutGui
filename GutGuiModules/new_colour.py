@@ -6,19 +6,19 @@ class NewColour:
 
         self.wl_button = None
         self.wl_checkbox = None
-        self.wl_checkbox_value = None
+        self.wl_checkbox_value = IntVar()
 
         self.idx_button = None
         self.idx_checkbox = None
-        self.idx_checkbox_value = None
+        self.idx_checkbox_value = IntVar()
 
         self.save_label = None
         self.save_checkbox = None
-        self.save_checkbox_value = None
+        self.save_checkbox_value = IntVar()
 
         self.save_wo_scale_label = None
         self.save_wo_scale_checkbox = None
-        self.save_wo_scale_checkbox_value = None
+        self.save_wo_scale_checkbox_value = IntVar()
 
         self.upper_scale_text = None
         self.lower_scale_text = None
