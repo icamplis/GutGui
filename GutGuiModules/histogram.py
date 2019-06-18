@@ -15,10 +15,10 @@ class Histogram:
         self.y_upper_scale_input = None
         self.x_lower_scale_input = None
         self.y_lower_scale_input = None
-        self.x_upper_scale_value = max(self.x_vals)
-        self.y_upper_scale_value = max(self.y_vals)
-        self.x_lower_scale_value = min(self.x_vals)
-        self.y_lower_scale_value = min(self.y_vals)
+        self.x_upper_scale_value = 10
+        self.y_upper_scale_value = 10
+        self.x_lower_scale_value = 0
+        self.y_lower_scale_value = 0
 
         self.step_size_text = None
         self.step_size_input = None
@@ -60,19 +60,29 @@ class Histogram:
         self._build_interactive_histogram()
 
     def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=8, column=0, inner_padx=10, inner_pady=5, outer_padx=(15, 10), 
-            outer_pady=(0, 20))
-        self.save_checkbox = make_checkbox(self.root, "", row=8, column=0, var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
+        self.save_label = make_label(self.root, "Save", row=8, column=0,
+                                     inner_padx=10, inner_pady=5, outer_padx=(15, 10), outer_pady=(0, 20))
+        self.save_checkbox = make_checkbox(self.root, "", row=8, column=0,
+                                           var=self.save_checkbox_value, sticky=NE,
+                                           inner_padx=0, inner_pady=0, outer_padx=(0, 5))
         self.save_checkbox.deselect()
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, inner_padx=10, inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 20))
-        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=8, column=1, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0,12))
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1,
+                                              inner_padx=10, inner_pady=5,
+                                              outer_padx=(10, 16), outer_pady=(0, 20))
+        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=8, column=1,
+                                                    var=self.save_wo_scale_checkbox_value, sticky=NE,
+                                                    inner_padx=0, inner_pady=0, outer_padx=(0,12))
         self.save_wo_scale_checkbox.deselect()
 
     def _build_save_as_excel(self):
-        self.save_as_excel_label = make_label(self.root, "Save as Excel", row=8, column=2, inner_padx=10, inner_pady=5, outer_padx=(5, 10), outer_pady=(0, 20))
-        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=8, column=2, var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 4))
+        self.save_as_excel_label = make_label(self.root, "Save as Excel", row=8, column=2,
+                                              inner_padx=10, inner_pady=5,
+                                              outer_padx=(5, 10), outer_pady=(0, 20))
+        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=8, column=2,
+                                                    var=self.save_as_excel_checkbox_value, sticky=NE,
+                                                    inner_padx=0, inner_pady=0, outer_padx=(0, 4))
         self.save_as_excel_checkbox.deselect()
 
     def _build_scale(self):
@@ -95,23 +105,31 @@ class Histogram:
         self.selection_input.bind('<Return>', self.__update_selected)
 
         # x upper
-        self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=5, width=11, columnspan=1, pady=(0, 10))
-        self.x_upper_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
+                                            column=3, row=5, width=11, columnspan=1, pady=(0, 10))
+        self.x_upper_scale_input = make_entry(self.root, row=5, column=4, width=5,
+                                              pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_upper_scale_input.bind('<Return>', self.__update_scale_x_upper)
 
         # x lower
-        self.x_lower_scale_text = make_text(self.root, content="Min x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=6, width=11, columnspan=1, pady=(0, 10))
-        self.x_lower_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.x_lower_scale_input.bind('<Return>', self.__update_scale_y_upper)
+        self.x_lower_scale_text = make_text(self.root, content="Min x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
+                                            column=3, row=6, width=11, columnspan=1, pady=(0, 10))
+        self.x_lower_scale_input = make_entry(self.root, row=6, column=4, width=5,
+                                              pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_lower_scale_input.bind('<Return>', self.__update_scale_x_lower)
 
         # y upper
-        self.y_upper_scale_text = make_text(self.root, content="Max y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=7, width=11, columnspan=1, pady=(0, 10))
-        self.y_upper_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.y_upper_scale_input.bind('<Return>', self.__update_scale_x_lower)
+        self.y_upper_scale_text = make_text(self.root, content="Max y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
+                                            column=3, row=7, width=11, columnspan=1, pady=(0, 10))
+        self.y_upper_scale_input = make_entry(self.root, row=7, column=4, width=5,
+                                              pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.y_upper_scale_input.bind('<Return>', self.__update_scale_y_upper)
 
         # y lower
-        self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=8, width=11, columnspan=1, pady=(0, 20))
-        self.y_lower_scale_input = make_entry(self.root, row=8, column=4, width=5, pady=(0, 20), padx=(0, 15), columnspan=1, command=self.__update_scale_y_lower)
+        self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
+                                            column=3, row=8, width=11, columnspan=1, pady=(0, 20))
+        self.y_lower_scale_input = make_entry(self.root, row=8, column=4, width=5, pady=(0, 20), padx=(0, 15),
+                                              columnspan=1, command=self.__update_scale_y_lower)
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
 
     def _build_step_size(self):
@@ -126,38 +144,38 @@ class Histogram:
         self.axes.plot(self.x_vals, self.y_vals)
         self.interactive_histogram.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
         self.interactive_histogram.set_tight_layout(True)
-        self.axes.set_xlim(left=self.x_lower_scale_value, 
-            right=self.x_upper_scale_value)
-        self.axes.set_ylim(bottom=self.y_lower_scale_value, 
-            top=self.y_upper_scale_value)
+        self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
+        self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
         self.histogram_canvas = FigureCanvasTkAgg(self.interactive_histogram, master=self.root)
         self.histogram_canvas.draw()
-        self.histogram_canvas.get_tk_widget().grid(column=0, row=1, 
-            columnspan=3, rowspan=7, ipady=5, ipadx=0)
+        self.histogram_canvas.get_tk_widget().grid(column=0, row=1, columnspan=3, rowspan=7, ipady=5, ipadx=0)
 
     # Commands (Callbacks)
     def __update_maximum(self, event):
-        self.maximum_value = self.maximum_input.get()
+        self.maximum_value = float(self.maximum_input.get())
 
     def __update_minimum(self, event):
-        self.minimum_value = self.minimum_input.get()
+        self.minimum_value = float(self.minimum_input.get())
 
     def __update_selected(self, event):
-        self.selected_value = self.selected_input.get()
+        self.selected_value = float(self.selected_input.get())
+        self._build_interactive_histogram()
 
     def __update_scale_x_upper(self, event):
-        self.x_upper_scale_value = self.x_upper_scale_input.get()
-        print(self.x_upper_scale_value)
+        self.x_upper_scale_value = float(self.x_upper_scale_input.get())
         self._build_interactive_histogram()
 
     def __update_scale_y_upper(self, event):
-        self.y_upper_scale_value = self.y_upper_scale_input.get()
+        self.y_upper_scale_value = float(self.y_upper_scale_input.get())
+        self._build_interactive_histogram()
 
     def __update_scale_x_lower(self, event):
-        self.x_lower_scale_value = self.x_lower_scale_input.get()
+        self.x_lower_scale_value = float(self.x_lower_scale_input.get())
+        self._build_interactive_histogram()
 
     def __update_scale_y_lower(self, event):
-        self.y_lower_scale_value = self.y_lower_scale_input.get()
+        self.y_lower_scale_value = float(self.y_lower_scale_input.get())
+        self._build_interactive_histogram()
 
     def __update_save_checked(self, event):
         pass
