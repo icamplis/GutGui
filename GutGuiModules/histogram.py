@@ -15,14 +15,14 @@ class Histogram:
         self.y_upper_scale_input = None
         self.x_lower_scale_input = None
         self.y_lower_scale_input = None
-        self.x_upper_scale_value = None
-        self.y_upper_scale_value = None
-        self.x_lower_scale_value = None
-        self.y_lower_scale_value = None
+        self.x_upper_scale_value = max(self.x_vals)
+        self.y_upper_scale_value = max(self.y_vals)
+        self.x_lower_scale_value = min(self.x_vals)
+        self.y_lower_scale_value = min(self.y_vals)
 
         self.step_size_text = None
         self.step_size_input = None
-        self.step_size_value = None
+        self.step_size_value = StringVar()
 
         self.save_label = None
         self.save_checkbox = None
@@ -35,6 +35,8 @@ class Histogram:
         self.save_as_excel_checkbox_value = None
 
         self.interactive_histogram = None
+        self.axes = None
+        self.histogram_canvas = None
 
         self.maximum_text = None
         self.maximum_input = None
@@ -119,7 +121,19 @@ class Histogram:
         self.step_size_input.bind('<Return>', self.__update_step_size)
 
     def _build_interactive_histogram(self):
-        histogram = make_graph(master=self.root, x_vals=self.x_vals, y_vals=self.y_vals, row=1, column=0, x_size=3.5, y_size=2.5, colour=PASTEL_BLUE_RGB, inner_pady=5, rowspan=7, columnspan=3, x_upper=self.x_upper_scale_value, x_lower=self.x_lower_scale_value, y_upper=self.y_upper_scale_value, y_lower=self.y_lower_scale_value)
+        self.interactive_histogram = Figure(figsize=(3.5, 2.5))
+        self.axes = self.interactive_histogram.add_subplot(111)
+        self.axes.plot(self.x_vals, self.y_vals)
+        self.interactive_histogram.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
+        self.interactive_histogram.set_tight_layout(True)
+        self.axes.set_xlim(left=self.x_lower_scale_value, 
+            right=self.x_upper_scale_value)
+        self.axes.set_ylim(bottom=self.y_lower_scale_value, 
+            top=self.y_upper_scale_value)
+        self.histogram_canvas = FigureCanvasTkAgg(self.interactive_histogram, master=self.root)
+        self.histogram_canvas.draw()
+        self.histogram_canvas.get_tk_widget().grid(column=0, row=1, 
+            columnspan=3, rowspan=7, ipady=5, ipadx=0)
 
     # Commands (Callbacks)
     def __update_maximum(self, event):
@@ -133,6 +147,8 @@ class Histogram:
 
     def __update_scale_x_upper(self, event):
         self.x_upper_scale_value = self.x_upper_scale_input.get()
+        print(self.x_upper_scale_value)
+        self._build_interactive_histogram()
 
     def __update_scale_y_upper(self, event):
         self.y_upper_scale_value = self.y_upper_scale_input.get()

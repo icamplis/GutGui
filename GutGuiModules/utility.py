@@ -29,23 +29,24 @@ def frame_and_label(window, name, colour, row, column, rowspan, columnspan, labe
     return frame, label
 
 def make_button(window, text, command, row, column, height=1, width=10, 
-    inner_padx=10, inner_pady=10, outer_padx=0, outer_pady=0, columnspan=1):
+    inner_padx=10, inner_pady=10, outer_padx=0, outer_pady=0, columnspan=1, rowspan=1):
     button = Button(window, text=text, command=command, padx=inner_padx, pady=inner_pady, height=height, width=width)
-    button.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, columnspan=columnspan)
+    button.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, columnspan=columnspan, rowspan=rowspan)
     return button
 
 def make_label(window, text, row, column,
                borderwidth=2, inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=15,
-               relief="solid", columnspan=1, wraplength=160):
+               relief="solid", rowspan=1, columnspan=1, wraplength=160):
     label = Label(window, text=text, borderwidth=borderwidth, relief=relief,
                   padx=inner_padx, pady=inner_pady, wraplength=wraplength)
-    label.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, columnspan=columnspan)
+    label.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, columnspan=columnspan, rowspan=rowspan)
     return label
 
 def make_text(window, content, row, column, padx=10, pady=10, height=1, width=2,
               highlightthickness=0, bg="white", columnspan=1,  rowspan=1):
     text = Text(window, bg=bg, height=height, width=width, highlightthickness=highlightthickness)
     text.insert(END, content)
+    text.config(state=DISABLED)
     text.grid(row=row, column=column, padx=padx, pady=pady, columnspan=columnspan, rowspan=rowspan)
     return text
 
@@ -55,7 +56,7 @@ def make_listbox(window, input, row, column, padx=15, pady=(0, 15),
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 
-def make_entry(window, row, column, width, columnspan, pady=10, 
+def make_entry(window, row, column, width, columnspan=1, pady=10, 
     padx=10, highlightthickness=0, command=None):
     entry = Entry(window, width=width, highlightthickness=highlightthickness, textvariable=StringVar())
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)

@@ -67,38 +67,47 @@ class AbsorptionSpec:
         # maximum
         self.maximum_text = make_text(self.root, content="Maximum: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=1, width=9, columnspan=1, pady=(0, 10))
-        self.maximum_input = make_entry(self.root, row=1, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.maximum_input = make_entry(self.root, row=1, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1, command=self.__update_maximum)
 
         # minimum
         self.minimum_text = make_text(self.root, content="Minimum: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=2, width=9, columnspan=1, pady=(0, 10))
-        self.minimum_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.minimum_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1, command=self.__update_minimum)
 
         # selection
         self.selection_text = make_text(self.root, content="Selection: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=3, width=11, columnspan=1, pady=(0, 10))
-        self.selection_input = make_entry(self.root, row=3, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.selection_input = make_entry(self.root, row=3, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1, command=self.__update_selected)
 
         # x upper
         self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=4, width=11, columnspan=1, pady=(0, 10))
-        self.x_upper_scale_input = make_entry(self.root, row=4, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_upper_scale_input = make_entry(self.root, row=4, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1, command=self.__update_scale_x_upper)
 
         # x lower
         self.x_lower_scale_text = make_text(self.root, content="Min x val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=5, width=11, columnspan=1, pady=(0, 10))
-        self.x_lower_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_lower_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1, command=self.__update_scale_x_lower)
 
         # y upper
         self.y_upper_scale_text = make_text(self.root, content="Max y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=6, width=11, columnspan=1, pady=(0, 10))
-        self.y_upper_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.y_upper_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1, command=self.__update_scale_y_upper)
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=7, width=11, columnspan=1, pady=(0, 15))
-        self.y_lower_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 15), padx=(0, 15), columnspan=1)
+        self.y_lower_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 15), padx=(0, 15), columnspan=1, command=self.__update_scale_y_lower)
 
     def _build_interactive_absorption_spec(self):
         self.interactive_absorption_spec = make_graph(master=self.root, x_vals=self.x_vals, y_vals=self.y_vals, row=1, column=0, x_size=3.5, y_size=2.5, colour=PASTEL_PINK_RGB, inner_pady=5, rowspan=6, columnspan=3)
 
     # Commands (Callbacks)
+    def __update_maximum(self):
+        pass
+
+    def __update_minimum(self):
+        pass
+
+    def __update_selected(self):
+        pass
+
     def __update_scale_x_upper(self):
         pass
 

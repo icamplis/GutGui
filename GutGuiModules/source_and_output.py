@@ -100,4 +100,5 @@ class SourceAndOutput:
         return path
 
     def __delete_selected_data_cube(self):
-        self.selection_listbox.delete(self.selection_listbox.curselection())
+        if self.selection_listbox.size() > 0 and self.selection_listbox.curselection:
+            self.selection_listbox.delete(self.selection_listbox.curselection())
