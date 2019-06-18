@@ -151,7 +151,7 @@ class Histogram:
         self.histogram_canvas.get_tk_widget().grid(column=0, row=1, columnspan=3, rowspan=7, ipady=5, ipadx=0)
 
     # Commands (Callbacks)
-    def __update_maximum(self, event):
+    def __update_maximum(self):
         self.maximum_value = float(self.maximum_input.get())
 
     def __update_minimum(self, event):
@@ -159,7 +159,6 @@ class Histogram:
 
     def __update_selected(self, event):
         self.selected_value = float(self.selected_input.get())
-        self._build_interactive_histogram()
 
     def __update_scale_x_upper(self, event):
         self.x_upper_scale_value = float(self.x_upper_scale_input.get())
