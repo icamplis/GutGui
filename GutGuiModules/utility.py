@@ -62,10 +62,10 @@ def make_entry(window, row, column, width, columnspan=1, pady=10,
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)
     return entry
 
-def make_checkbox(window, text, row, column, var,
+def make_checkbox(window, text, row, column, var, columnspan=1,
                   inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0, bg="yellow", sticky=W+N+S+E):
     checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg, width=2)
-    checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky)
+    checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky, columnspan=columnspan)
     return checkbox
 
 def make_graph(master, x_vals, y_vals, row, column, x_size, y_size, colour, x_upper=None, x_lower=None, y_upper=None, y_lower=None, inner_pady=0, inner_padx=0, rowspan=1, columnspan=1):

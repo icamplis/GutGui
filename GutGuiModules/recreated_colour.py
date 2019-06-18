@@ -4,29 +4,29 @@ class RecColour:
     def __init__(self, recreated_color_frame):
         self.root = recreated_color_frame
 
-        self.sto2_label = None
+        self.sto2_button = None
         self.sto2_checkbox = None
-        self.sto2_checkbox_value = None
+        self.sto2_checkbox_value = IntVar()
 
-        self.nir_label = None
+        self.nir_button = None
         self.nir_checkbox = None
-        self.nir_checkbox_value = None
+        self.nir_checkbox_value = IntVar()
 
-        self.thi_label = None
+        self.thi_button = None
         self.thi_checkbox = None
-        self.thi_checkbox_value = None
+        self.thi_checkbox_value = IntVar()
 
-        self.twi_label = None
+        self.twi_button = None
         self.twi_checkbox = None
-        self.twi_checkbox_value = None
+        self.twi_checkbox_value = IntVar()
 
         self.save_label = None
         self.save_checkbox = None
-        self.save_checkbox_value = None
+        self.save_checkbox_value = IntVar()
 
         self.save_wo_scale_label = None
         self.save_wo_scale_checkbox = None
-        self.save_wo_scale_checkbox_value = None
+        self.save_wo_scale_checkbox_value = IntVar()
 
         self.upper_scale_text = None
         self.lower_scale_text = None
@@ -75,29 +75,29 @@ class RecColour:
         self._build_recreated_image()
 
     def _build_sto2(self):
-        self.sto2_label = make_button(self.root, text="STO2", row=1, column=0, command=self.__update_to_sto2,
-                                      inner_padx=0, inner_pady=2, width=8)
+        self.sto2_button = make_button(self.root, text="STO2", row=1, column=0, command=self.__update_to_sto2,
+                                       inner_padx=0, inner_pady=2, width=8)
         self.sto2_checkbox = make_checkbox(self.root, "", row=1, column=0,
                                            var=self.sto2_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         self.sto2_checkbox.deselect()
 
     def _build_nir(self):
-        self.nir_label = make_button(self.root, text="NIR", row=1, column=1, command=self.__update_to_nir,
-                                     inner_padx=0, inner_pady=2, width=8)
+        self.nir_button = make_button(self.root, text="NIR", row=1, column=1, command=self.__update_to_nir,
+                                      inner_padx=0, inner_pady=2, width=8)
         self.nir_checkbox = make_checkbox(self.root, "", row=1, column=1,
                                            var=self.nir_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         self.nir_checkbox.deselect()
 
     def _build_twi(self):
-        self.twi_label = make_button(self.root, text="TWI", row=1, column=2, command=self.__update_to_twi,
-                                     inner_padx=0, inner_pady=2, width=8)
+        self.twi_button = make_button(self.root, text="TWI", row=1, column=2, command=self.__update_to_twi,
+                                      inner_padx=0, inner_pady=2, width=8)
         self.twi_checkbox = make_checkbox(self.root, "", row=1, column=2,
                                            var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         self.twi_checkbox.deselect()
 
     def _build_thi(self):
-        self.thi_label = make_button(self.root, text="THI", row=1, column=3, command=self.__update_to_thi,
-                                     inner_padx=0, inner_pady=2, width=8)
+        self.thi_button = make_button(self.root, text="THI", row=1, column=3, command=self.__update_to_thi,
+                                      inner_padx=0, inner_pady=2, width=8)
         self.thi_checkbox = make_checkbox(self.root, "", row=1, column=3,
                                            var=self.thi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         self.thi_checkbox.deselect()

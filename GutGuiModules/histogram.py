@@ -26,13 +26,13 @@ class Histogram:
 
         self.save_label = None
         self.save_checkbox = None
-        self.save_checkbox_value = None
+        self.save_checkbox_value = IntVar()
         self.save_wo_scale_label = None
         self.save_wo_scale_checkbox = None
-        self.save_wo_scale_checkbox_value = None
+        self.save_wo_scale_checkbox_value = IntVar()
         self.save_as_excel_label = None
         self.save_as_excel_checkbox = None
-        self.save_as_excel_checkbox_value = None
+        self.save_as_excel_checkbox_value = IntVar()
 
         self.interactive_histogram = None
         self.axes = None
