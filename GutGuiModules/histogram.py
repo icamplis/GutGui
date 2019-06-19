@@ -139,6 +139,7 @@ class Histogram:
         self.step_size_input.bind('<Return>', self.__update_step_size)
 
     def _build_interactive_histogram(self):
+        # todo - use make graph instead
         self.interactive_histogram = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_histogram.add_subplot(111)
         self.axes.plot(self.x_vals, self.y_vals)
@@ -175,15 +176,6 @@ class Histogram:
     def __update_scale_y_lower(self, event):
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_histogram()
-
-    def __update_save_checked(self, event):
-        pass
-
-    def __update_save_wo_scale_checked(self, event):
-        pass
-
-    def __update_save_as_excel_checked(self, event):
-        pass
 
     def __update_interactive_histogram(self, event):
         pass
