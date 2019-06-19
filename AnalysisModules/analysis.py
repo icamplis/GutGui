@@ -49,6 +49,60 @@ class Analysis:
         self._calc_thi()
         self._calc_twi()
 
+    def update_mask(self, new_mask):
+        self.mask = new_mask
+        self.analysis()
+
+    def update_wavelength(self, new_wavelength):
+        self.wavelength = new_wavelength
+        self.analysis()
+
+    def update_normal(self, new_normal):
+        self.normal = new_normal
+        self.analysis()
+
+    def get_x_absorbance(self):
+        return self.x_absorbance
+
+    def get_x_reflectance(self):
+        return self.x_reflectance
+
+    def get_x_absorbance_w(self):
+        return self.x_absorbance_w
+
+    def get_x_reflectance_w(self):
+        return self.x_reflectance_w
+
+    def get_x_absorbance_masked(self):
+        return self.x_absorbance_masked
+
+    def get_x_absorbance_masked_w(self):
+        return self.x_absorbance_masked_w
+
+    def get_sto2(self):
+        return self.sto2
+
+    def get_sto2_masked(self):
+        return self.sto2_masked
+
+    def get_nir(self):
+        return self.nir
+
+    def get_nir_masked(self):
+        return self.nir_masked
+
+    def get_thi(self):
+        return self.thi
+
+    def get_thi_masked(self):
+        return self.thi_masked
+
+    def get_twi(self):
+        return self.twi
+
+    def get_twi_masked(self):
+        return self.twi_masked
+
     def _calc_general(self):
         self.__calc_x1()
         self.__calc_x_reflectance()
