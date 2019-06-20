@@ -28,7 +28,6 @@ class Analysis:
         self.twi = None
         self.twi_masked = None
 
-        # TODO: Make reflectance version as well
         self._x_absorbance_gradient = None
         self._x_absorbance_gradient_min_1 = None
         self._x_absorbance_gradient_min_2 = None
@@ -40,6 +39,19 @@ class Analysis:
         self._x_absorbance_mean_785_825 = None
         self._x_absorbance_mean_880_900 = None
         self._x_absorbance_mean_955_980 = None
+
+        # TODO: Make reflectance version as well
+        self._x_reflectance_gradient = None
+        self._x_reflectance_gradient_min_1 = None
+        self._x_reflectance_gradient_min_2 = None
+        self._x_reflectance_min_570_590 = None
+        self._x_reflectance_min_740_780 = None
+        self._x_reflectance_mean_825_925 = None
+        self._x_reflectance_mean_655_735 = None
+        self._x_reflectance_mean_530_590 = None
+        self._x_reflectance_mean_785_825 = None
+        self._x_reflectance_mean_880_900 = None
+        self._x_reflectance_mean_955_980 = None
 
         self.analysis()
 
@@ -115,34 +127,58 @@ class Analysis:
         self.__calc_x_absorbance()
 
     def _calc_sto2(self):
-        self._x_absorbance_gradient = np.gradient(self.x_absorbance, axis=2)
-        self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
-        self._x_absorbance_gradient_min_2 = self._x_absorbance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
-        self._x_absorbance_min_570_590 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
-        self._x_absorbance_min_740_780 = self._x_absorbance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
-        temp1 = self._x_absorbance_min_570_590 / R1
-        temp2 = self._x_absorbance_min_740_780 / R2
+        if self.absorbance:
+            self._x_absorbance_gradient = np.gradient(self.x_absorbance, axis=2)
+            self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
+            self._x_absorbance_gradient_min_2 = self._x_absorbance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
+            self._x_absorbance_min_570_590 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
+            self._x_absorbance_min_740_780 = self._x_absorbance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
+            temp1 = self._x_absorbance_min_570_590 / R1
+            temp2 = self._x_absorbance_min_740_780 / R2
+        else:
+            self._x_reflectance_gradient = np.gradient(self.x_reflectance, axis=2)
+            self._x_reflectance_gradient_min_1 = self._x_reflectance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
+            self._x_reflectance_gradient_min_2 = self._x_reflectance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
+            self._x_reflectance_min_570_590 = self._x_reflectance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
+            self._x_reflectance_min_740_780 = self._x_reflectance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
+            temp1 = self._x_reflectance_min_570_590 / R1
+            temp2 = self._x_reflectance_min_740_780 / R2
         self.sto2 = temp1 / (temp1 + temp2)
         self.sto2_masked = np.ma.array(self.sto2[:, :], mask=[self.mask])
 
     def _calc_nir(self):
-        self._x_absorbance_mean_825_925 = self.x_absorbance[:, :, 65:85].mean(axis=2)  # between (825nm : 925nm)
-        self._x_absorbance_mean_655_735 = self.x_absorbance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
-        temp1 = self._x_absorbance_mean_825_925 / self._x_absorbance_mean_655_735
+        if self.absorbance:
+            self._x_absorbance_mean_825_925 = self.x_absorbance[:, :, 65:85].mean(axis=2)  # between (825nm : 925nm)
+            self._x_absorbance_mean_655_735 = self.x_absorbance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
+            temp1 = self._x_absorbance_mean_825_925 / self._x_absorbance_mean_655_735
+        else:
+            self._x_reflectance_mean_825_925 = self.x_reflectance[:, :, 65:85].mean(axis=2)  # between (825nm : 925nm)
+            self._x_reflectance_mean_655_735 = self.x_reflectance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
+            temp1 = self._x_reflectance_mean_825_925 / self._x_reflectance_mean_655_735
         self.nir = (temp1 - S1) / (S2 - S1)
         self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
 
     def _calc_thi(self):
-        self._x_absorbance_mean_530_590 = self.x_absorbance[:, :, 6:18].mean(axis=2)  # between (530nm : 590nm)
-        self._x_absorbance_mean_785_825 = self.x_absorbance[:, :, 57:65].mean(axis=2)  # between (785nm : 825nm)
-        temp1 = self._x_absorbance_mean_530_590 / self._x_absorbance_mean_785_825
+        if self.absorbance:
+            self._x_absorbance_mean_530_590 = self.x_absorbance[:, :, 6:18].mean(axis=2)  # between (530nm : 590nm)
+            self._x_absorbance_mean_785_825 = self.x_absorbance[:, :, 57:65].mean(axis=2)  # between (785nm : 825nm)
+            temp1 = self._x_absorbance_mean_530_590 / self._x_absorbance_mean_785_825
+        else:
+            self._x_reflectance_mean_530_590 = self.x_reflectance[:, :, 6:18].mean(axis=2)  # between (530nm : 590nm)
+            self._x_reflectance_mean_785_825 = self.x_reflectance[:, :, 57:65].mean(axis=2)  # between (785nm : 825nm)
+            temp1 = self._x_reflectance_mean_530_590 / self._x_reflectance_mean_785_825
         self.thi = (temp1 - T1) / (T2 - T1)
         self.thi_masked = np.ma.array(self.thi[:, :], mask=[self.mask])
 
     def _calc_twi(self):
-        self._x_absorbance_mean_880_900 = self.x_absorbance[:, :, 76:80].mean(axis=2)  # between (880nm : 900nm)
-        self._x_absorbance_mean_955_980 = self.x_absorbance[:, :, 91:96].mean(axis=2)  # between (955nm : 980nm)
-        temp1 = self._x_absorbance_mean_880_900 / self._x_absorbance_mean_955_980
+        if self.absorbance:
+            self._x_absorbance_mean_880_900 = self.x_absorbance[:, :, 76:80].mean(axis=2)  # between (880nm : 900nm)
+            self._x_absorbance_mean_955_980 = self.x_absorbance[:, :, 91:96].mean(axis=2)  # between (955nm : 980nm)
+            temp1 = self._x_absorbance_mean_880_900 / self._x_absorbance_mean_955_980
+        else:
+            self._x_reflectance_mean_880_900 = self.x_reflectance[:, :, 76:80].mean(axis=2)  # between (880nm : 900nm)
+            self._x_reflectance_mean_955_980 = self.x_reflectance[:, :, 91:96].mean(axis=2)  # between (955nm : 980nm)
+            temp1 = self._x_reflectance_mean_880_900 / self._x_reflectance_mean_955_980
         self.twi = (temp1 - U1) / (U2 - U1)
         self.twi_masked = np.ma.array(self.twi[:, :], mask=[self.mask])
 
