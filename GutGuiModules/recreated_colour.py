@@ -34,6 +34,7 @@ class RecColour:
         self.lower_scale_input = None
 
         self.displayed_image_mode = STO2  # STO2 by default
+
         self.recreated_image = None
 
         self._init_widget()
@@ -131,20 +132,32 @@ class RecColour:
 
     # Commands (Callbacks)
     def __update_to_sto2(self):
+        self.sto2_button.config(foreground="red")
+        self.nir_button.config(foreground="black")
+        self.thi_button.config(foreground="black")
+        self.twi_button.config(foreground="black")
         self.displayed_image_mode = STO2
-        pass
 
     def __update_to_nir(self):
+        self.sto2_button.config(foreground="black")
+        self.nir_button.config(foreground="red")
+        self.thi_button.config(foreground="black")
+        self.twi_button.config(foreground="black")
         self.displayed_image_mode = NIR
-        pass
 
     def __update_to_thi(self):
+        self.sto2_button.config(foreground="black")
+        self.nir_button.config(foreground="black")
+        self.thi_button.config(foreground="red")
+        self.twi_button.config(foreground="black")
         self.displayed_image_mode = THI
-        pass
 
     def __update_to_twi(self):
+        self.sto2_button.config(foreground="black")
+        self.nir_button.config(foreground="black")
+        self.thi_button.config(foreground="black")
+        self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
-        pass
 
     def __update_scale_upper(self):
         pass

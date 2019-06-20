@@ -12,3 +12,6 @@ STO2 = "STO2"
 NIR = "NIR"
 THI = "THI"
 TWI = "TWI"
+
+WL = "WL"
+IDX = "IDX"
