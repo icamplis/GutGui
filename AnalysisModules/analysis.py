@@ -1,4 +1,3 @@
-from AnalysisModules.Indices import Index
 import numpy as np
 from AnalysisModules.analysis_constant import *
 
