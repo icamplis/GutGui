@@ -10,7 +10,9 @@ class AnalysisAndForm:
         self.absorbance_button = None
         self.OR_text = None
         self.wavelength_text = None
-        self.wavelength = None
+        self.wavelength_lower_entry = None
+        self.wavelength_upper_entry = None
+        self.TO_text = None
         self.idx_title = None
         self.idx1_button = None
         self.idx2_button = None
@@ -46,7 +48,7 @@ class AnalysisAndForm:
         self._build_OR_text(height=1, width=2, row=2, column=3, columnspan=2, pady=5)
         self._build_absorbance_button()
         self._build_wavelength_text()
-        self._build_wavelength()
+        self._build_wavelength_entry()
         self._build_stO2_text()
         self._build_stO2()
         self._build_perf_text()
@@ -82,10 +84,15 @@ class AnalysisAndForm:
 
     def _build_wavelength_text(self):
         self.wavelength_text = make_text(self.root, content="Wavelength: ", 
-            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=4, pady=(10, 0))
+            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=3, pady=(10, 0))
 
-    def _build_wavelength(self):
-        self.wavelength = make_entry(self.root, row=3, column=4, width=15, pady=(10,0), padx=(0, 20), columnspan=4, command=self.__update_wavelength)
+    def _build_wavelength_entry(self):
+        self.wavelength_lower_entry = make_entry(self.root, row=3, column=3, width=5, pady=(10, 0), padx=(0, 20),
+                                                 columnspan=2, command=self.__update_wavelength)
+        self.TO_text = make_text(self.root, content="TO", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB),
+                                 height=1, width=2, row=3, column=5, pady=0, columnspan=1)
+        self.wavelength_upper_entry = make_entry(self.root, row=3, column=6, width=5, pady=(10, 0), padx=(0, 20),
+                                                 columnspan=2, command=self.__update_wavelength)
 
     def _build_idx_title(self):
         self.idx_title = make_text(self.root, content="Individual Index:",
