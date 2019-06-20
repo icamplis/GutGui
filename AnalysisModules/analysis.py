@@ -40,7 +40,6 @@ class Analysis:
         self._x_absorbance_mean_880_900 = None
         self._x_absorbance_mean_955_980 = None
 
-        # TODO: Make reflectance version as well
         self._x_reflectance_gradient = None
         self._x_reflectance_gradient_min_1 = None
         self._x_reflectance_gradient_min_2 = None
