@@ -25,6 +25,8 @@ class NewColour:
         self.upper_scale_input = None
         self.lower_scale_input = None
 
+        self.displayed_image_mode = WL
+
         self.new_image = None
 
         self._init_widget()
@@ -96,10 +98,14 @@ class NewColour:
 
     # Commands (Callbacks)
     def __update_to_wl(self):
-        pass
+        self.wl_button.config(foreground="red")
+        self.idx_button.config(foreground="black")
+        self.displayed_image_mode = WL
 
     def __update_to_idx(self):
-        pass
+        self.wl_button.config(foreground="black")
+        self.idx_button.config(foreground="red")
+        self.displayed_image_mode = IDX
 
     def __update_scale_upper(self):
         pass

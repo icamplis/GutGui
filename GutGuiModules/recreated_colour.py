@@ -34,6 +34,7 @@ class RecColour:
         self.lower_scale_input = None
 
         self.displayed_image_mode = STO2  # STO2 by default
+
         self.recreated_image = None
 
         self._init_widget()
