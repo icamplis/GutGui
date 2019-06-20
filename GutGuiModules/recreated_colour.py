@@ -33,11 +33,12 @@ class RecColour:
         self.upper_scale_input = None
         self.lower_scale_input = None
 
-        self.displayed_image_mode = STO2  # STO2 by default
-
         self.recreated_image = None
 
         self._init_widget()
+
+        self.displayed_image_mode = STO2  # STO2 by default
+        self.sto2_button.config(foreground="red")
 
     def get_sto2_checkbox_value(self):
         return self.sto2_checkbox_value

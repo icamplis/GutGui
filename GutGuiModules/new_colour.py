@@ -25,11 +25,12 @@ class NewColour:
         self.upper_scale_input = None
         self.lower_scale_input = None
 
-        self.displayed_image_mode = WL
-
         self.new_image = None
 
         self._init_widget()
+
+        self.displayed_image_mode = WL
+        self.wl_button.config(foreground="red")
 
     def get_wl_checkbox_value(self):
         return self.wl_checkbox_value

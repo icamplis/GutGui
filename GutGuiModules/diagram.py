@@ -12,9 +12,10 @@ class Diagram:
         self.masked_region_checkbox = None
         self.masked_region_checkbox_value = IntVar()
 
-        self.whole_image = True
-
         self._init_widget()
+
+        self.whole_image = True
+        self.whole_image_button.config(foreground="red")
 
     def get_whole_image_checkbox_value(self):
         return self.whole_image_checkbox_value
