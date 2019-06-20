@@ -8,26 +8,30 @@ class AnalysisAndForm:
         self.original_button = None
         self.reflection_button = None
         self.absorbance_button = None
-        self.OR_text = ''
-        self.wavelength_text = ''
+        self.OR_text = None
+        self.wavelength_text = None
         self.wavelength = None
-        self.idx = ''
-        self.idx1 = None
-        self.idx2 = None
-        self.idx3 = None
-        self.idx4 = None
-        self.idx5 = None
-        self.idx6 = None
-        self.idx7 = None
-        self.idx8 = None
-        self.stO2_text = ''
+        self.idx_title = None
+        self.idx1_button = None
+        self.idx2_button = None
+        self.idx3_button = None
+        self.idx4_button = None
+        self.idx5_button = None
+        self.idx6_button = None
+        self.idx7_button = None
+        self.idx8_button = None
+        self.stO2_text = None
         self.stO2 = None
-        self.perf_text = ''
+        self.perf_text = None
         self.perf = None
-        self.hemo_text = ''
+        self.hemo_text = None
         self.hemo = None
-        self.tissue_text = ''
+        self.tissue_text = None
         self.tissue = None
+
+        # State vars
+        self.normal = True  # True by default
+        self.absorbance = True
 
         self._init_widget()
 
@@ -55,6 +59,7 @@ class AnalysisAndForm:
     def _build_normalisation_button(self):
         self.normalisation_button = make_button(self.root, text='Normalisation', command=self.__normal, row=1, column=0, outer_pady=(0,5), 
             outer_padx=(15, 0), columnspan=3)
+        self.normalisation_button.config(foreground="red")
 
     def _build_original_button(self):
         self.original_button = make_button(self.root, text='Original', 
@@ -69,6 +74,7 @@ class AnalysisAndForm:
         self.absorbance_button = make_button(self.root, text='Absorbance', 
             command=self.__absorb,row=2, column=5, outer_pady=(0,5), 
             outer_padx=(0, 15), columnspan=3)
+        self.absorbance_button.config(foreground="red")
 
     def _build_OR_text(self, height, width, row, column, columnspan, padx=0, pady=10):
         self.OR_text = make_text(self.root, content="OR", 
@@ -82,19 +88,19 @@ class AnalysisAndForm:
         self.wavelength = make_entry(self.root, row=3, column=4, width=15, pady=(10,0), padx=(0, 20), columnspan=4, command=self.__update_wavelength)
 
     def _build_idx_title(self):
-        self.idx = make_text(self.root, content="Individual Index:", 
-            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=17, columnspan=8, pady=(10, 0))
+        self.idx_title = make_text(self.root, content="Individual Index:",
+                                   bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=17, columnspan=8, pady=(10, 0))
 
     def _build_idxs(self):
-        self.idx1 = make_button(self.root, text='1', command=lambda:self.__idxn(1), row=5, column=0, outer_pady=5, outer_padx=(15,5), width=1)
-        self.idx2 = make_button(self.root, text='2', command=lambda:self.__idxn(2), row=5, column=1, outer_pady=5, outer_padx=5, width=1)
-        self.idx3 = make_button(self.root, text='3', command=lambda:self.__idxn(3), row=5, column=2, outer_pady=5, outer_padx=5, width=1)
-        self.idx4 = make_button(self.root, text='4', command=lambda:self.__idxn(4), row=5, column=3, outer_pady=5, outer_padx=5, width=1)
-        self.idx5 = make_button(self.root, text='5', command=lambda:self.__idxn(5), row=5, column=4, outer_pady=5, outer_padx=5, width=1)
-        self.idx6 = make_button(self.root, text='6', command=lambda:self.__idxn(6), row=5, column=5, outer_pady=5, outer_padx=5, width=1)
-        self.idx7 = make_button(self.root, text='7', command=lambda:self.__idxn(7), row=5, column=6, outer_pady=5, outer_padx=5, width=1)
-
-        self.idx8 = make_button(self.root, text='8', command=lambda:self.__idxn(8), row=5, column=7, outer_pady=5, outer_padx=(5, 15), width=1)
+        self.idx1_button = make_button(self.root, text='1', command=lambda:self.__idxn(1), row=5, column=0, outer_pady=5, outer_padx=(15, 5), width=1)
+        self.idx2_button = make_button(self.root, text='2', command=lambda:self.__idxn(2), row=5, column=1, outer_pady=5, outer_padx=5, width=1)
+        self.idx3_button = make_button(self.root, text='3', command=lambda:self.__idxn(3), row=5, column=2, outer_pady=5, outer_padx=5, width=1)
+        self.idx4_button = make_button(self.root, text='4', command=lambda:self.__idxn(4), row=5, column=3, outer_pady=5, outer_padx=5, width=1)
+        self.idx5_button = make_button(self.root, text='5', command=lambda:self.__idxn(5), row=5, column=4, outer_pady=5, outer_padx=5, width=1)
+        self.idx6_button = make_button(self.root, text='6', command=lambda:self.__idxn(6), row=5, column=5, outer_pady=5, outer_padx=5, width=1)
+        self.idx7_button = make_button(self.root, text='7', command=lambda:self.__idxn(7), row=5, column=6, outer_pady=5, outer_padx=5, width=1)
+        self.idx8_button = make_button(self.root, text='8', command=lambda:self.__idxn(8), row=5, column=7, outer_pady=5, outer_padx=(5, 15), width=1)
+        self.idx1_button.config(foreground="red")
 
     def _build_stO2_text(self):
         self.stO2_text = make_text(self.root, content="Saturation index: ", 
@@ -126,24 +132,33 @@ class AnalysisAndForm:
         
     # Commands (Callbacks)
     def __normal(self):
-        print('normal placeholder')
-        #     TODO
+        self.normalisation_button.config(foreground="red")
+        self.original_button.config(foreground="black")
+        self.normal = True
 
     def __original(self):
-        print('original placeholder')
-        #     TODO
+        self.original_button.config(foreground="red")
+        self.normalisation_button.config(foreground="black")
+        self.normal = False
 
     def __reflect(self):
-        print('reflect placeholder')
-        #     TODO
+        self.reflection_button.config(foreground="red")
+        self.absorbance_button.config(foreground="black")
+        self.absorbance = True
 
     def __absorb(self):
-        print('absorb placeholder')
-        #     TODO
+        self.absorbance_button.config(foreground="red")
+        self.reflection_button.config(foreground="black")
+        self.absorbance = False
 
     def __idxn(self, n):
-        print('idxn placeholder')
-        #     TODO
+        buttons = [self.idx1_button, self.idx2_button, self.idx3_button, self.idx4_button,
+                   self.idx5_button, self.idx6_button, self.idx7_button, self.idx8_button]
+        for i in range(len(buttons)):
+            if i+1 == n:
+                buttons[i].config(foreground="red")
+            else:
+                buttons[i].config(foreground="black")
 
     def __update_wavelength(self):
         print('wavey')

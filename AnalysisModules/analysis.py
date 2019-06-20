@@ -3,11 +3,12 @@ from AnalysisModules.analysis_constant import *
 
 # TODO: Need to make an analysis object for each data cube loaded
 class Analysis:
-    def __init__(self, data_cube, mask, normal=True, wavelength=64):
+    def __init__(self, data_cube, mask, normal=True, absorbance=True, wavelength=64):
         self.data_cube = data_cube
         self.mask = mask
         self.wavelength = wavelength
         self.normal = normal
+        self.absorbance = absorbance
 
         self.x1 = None
         self.x2 = None
@@ -27,6 +28,7 @@ class Analysis:
         self.twi = None
         self.twi_masked = None
 
+        # TODO: Make reflectance version as well
         self._x_absorbance_gradient = None
         self._x_absorbance_gradient_min_1 = None
         self._x_absorbance_gradient_min_2 = None
