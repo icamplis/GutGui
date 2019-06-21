@@ -33,10 +33,12 @@ class RecColour:
         self.upper_scale_input = None
         self.lower_scale_input = None
 
-        self.displayed_image_mode = STO2  # STO2 by default
         self.recreated_image = None
 
         self._init_widget()
+
+        self.displayed_image_mode = STO2  # STO2 by default
+        self.sto2_button.config(foreground="red")
 
     def get_sto2_checkbox_value(self):
         return self.sto2_checkbox_value
@@ -106,10 +108,12 @@ class RecColour:
     def _build_upper_scale(self):
         self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=2, width=17, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=(15, 0))
         self.upper_scale_input = make_entry(self.root, row=6, column=2, width=11, pady=(5,0), padx=(0,15), columnspan=2)
+        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=2, width=17, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=(15, 0))
         self.lower_scale_input = make_entry(self.root, row=7, column=2, width=11, pady=5, padx=(0,15), columnspan=2)
+        self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
 
     def _build_recreated_image(self):
         # todo
@@ -117,27 +121,37 @@ class RecColour:
 
     # Commands (Callbacks)
     def __update_to_sto2(self):
+        self.sto2_button.config(foreground="red")
+        self.nir_button.config(foreground="black")
+        self.thi_button.config(foreground="black")
+        self.twi_button.config(foreground="black")
         self.displayed_image_mode = STO2
-        pass
 
     def __update_to_nir(self):
+        self.sto2_button.config(foreground="black")
+        self.nir_button.config(foreground="red")
+        self.thi_button.config(foreground="black")
+        self.twi_button.config(foreground="black")
         self.displayed_image_mode = NIR
-        pass
 
     def __update_to_thi(self):
+        self.sto2_button.config(foreground="black")
+        self.nir_button.config(foreground="black")
+        self.thi_button.config(foreground="red")
+        self.twi_button.config(foreground="black")
         self.displayed_image_mode = THI
-        pass
 
     def __update_to_twi(self):
+        self.sto2_button.config(foreground="black")
+        self.nir_button.config(foreground="black")
+        self.thi_button.config(foreground="black")
+        self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
-        pass
 
     def __update_scale_upper(self):
-        pass
+        # todo
+        self._build_recreated_image()
 
     def __update_scale_lower(self):
-        pass
-
-    def __update_recreated_image(self, mode):
-        pass
-
+        # todo
+        self._build_recreated_image()

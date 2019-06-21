@@ -29,6 +29,9 @@ class NewColour:
 
         self._init_widget()
 
+        self.displayed_image_mode = WL
+        self.wl_button.config(foreground="red")
+
     def get_wl_checkbox_value(self):
         return self.wl_checkbox_value
 
@@ -75,26 +78,31 @@ class NewColour:
     def _build_upper_scale(self):
         self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
         self.upper_scale_input = make_entry(self.root, row=6, column=3, width=9, pady=(5,0), padx=(0,15))
+        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=(15, 0))
         self.lower_scale_input = make_entry(self.root, row=7, column=3, width=9, pady=5, padx=(0,15))
+        self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
 
     def _build_new_image(self):
         self.new_image = make_label(self.root, "new image placeholder",row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
 
     # Commands (Callbacks)
     def __update_to_wl(self):
-        print("wl placeholder")
+        self.wl_button.config(foreground="red")
+        self.idx_button.config(foreground="black")
+        self.displayed_image_mode = WL
 
     def __update_to_idx(self):
-        pass
+        self.wl_button.config(foreground="black")
+        self.idx_button.config(foreground="red")
+        self.displayed_image_mode = IDX
 
     def __update_scale_upper(self):
-        pass
+        # todo
+        self._build_new_image()
 
     def __update_scale_lower(self):
-        pass
-
-    def __update_new_image(self):
-        pass
+        # todo
+        self._build_new_image()

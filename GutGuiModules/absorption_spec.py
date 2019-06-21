@@ -14,10 +14,10 @@ class AbsorptionSpec:
         self.y_upper_scale_input = None
         self.x_lower_scale_input = None
         self.y_lower_scale_input = None
-        self.x_upper_scale_value = None
-        self.y_upper_scale_value = None
-        self.x_lower_scale_value = None
-        self.y_lower_scale_value = None
+        self.x_upper_scale_value = 10
+        self.y_upper_scale_value = 10
+        self.x_lower_scale_value = 0
+        self.y_lower_scale_value = 0
 
         self.save_label = None
         self.save_checkbox = None
@@ -54,36 +54,48 @@ class AbsorptionSpec:
         self._build_interactive_absorption_spec()
 
     def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=7, column=0, inner_padx=10, inner_pady=5, outer_padx=15, outer_pady=(0, 15))
-        self.save_checkbox = make_checkbox(self.root, "", row=7, column=0, var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(16, 10))
+        self.save_label = make_label(self.root, "Save", row=7, column=0,
+                                     inner_padx=10, inner_pady=5, outer_padx=15, outer_pady=(0, 15))
+        self.save_checkbox = make_checkbox(self.root, "", row=7, column=0, var=self.save_checkbox_value, sticky=NE,
+                                           inner_padx=0, inner_pady=0, outer_padx=(16, 10))
         self.save_checkbox.deselect()
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=7, column=1, inner_padx=10, inner_pady=5, outer_padx=(5, 16), outer_pady=(0, 15))
-        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=7, column=1, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0,11))
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=7, column=1, inner_padx=10, inner_pady=5,
+                                              outer_padx=(5, 16), outer_pady=(0, 15))
+        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=7, column=1,
+                                                    var=self.save_wo_scale_checkbox_value, sticky=NE,
+                                                    inner_padx=0, inner_pady=0, outer_padx=(0,11))
         self.save_wo_scale_checkbox.deselect()
 
     def _build_save_as_excel(self):
-        self.save_as_excel_label = make_label(self.root, "Save as Excel", row=7, column=2, inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
-        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=7, column=2, var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 10))
+        self.save_as_excel_label = make_label(self.root, "Save as Excel", row=7, column=2,
+                                              inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
+        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=7, column=2,
+                                                    var=self.save_as_excel_checkbox_value, sticky=NE,
+                                                    inner_padx=0, inner_pady=0, outer_padx=(0, 10))
         self.save_as_excel_checkbox.deselect()
 
     def _build_scale(self):
         # maximum
         self.maximum_text = make_text(self.root, content="Maximum: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=1, width=9, columnspan=1, pady=(0, 10))
+
         self.maximum_input = make_entry(self.root, row=1, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.maximum_input.bind('<Return>', self.__update_maximum)
 
         # minimum
         self.minimum_text = make_text(self.root, content="Minimum: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=2, width=9, columnspan=1, pady=(0, 10))
+
         self.minimum_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.minimum_input.bind('<Return>', self.__update_minimum)
+
 
         # selection
         self.selection_text = make_text(self.root, content="Selection: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=3, width=11, columnspan=1, pady=(0, 10))
+
         self.selection_input = make_entry(self.root, row=3, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.selection_input.bind('<Return>', self.__update_selected)
 
@@ -145,14 +157,5 @@ class AbsorptionSpec:
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_absorption_spec()
 
-    def __update_save_checked(self):
-        pass
-
-    def __update_save_wo_scale_checked(self):
-        pass
-
-    def __update_save_as_excel_checked(self):
-        pass
-
-    def __update_interactive_histogram(self):
+    def __update_interactive_absorption_spec(self):
         pass
