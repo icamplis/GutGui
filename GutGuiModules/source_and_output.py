@@ -57,10 +57,17 @@ class SourceAndOutput:
         self._build_delete_button()
 
     def _build_select_dc_button(self):
-        self.select_data_cube_button = make_button(self.root, text="Select Data Cube", command=self.__set_data_cube, inner_padx=10, inner_pady=10, outer_padx=(15, 0), outer_pady=0, row=1, column=0, width=15)
+        self.select_data_cube_button = make_button(self.root, text="Select Data Cube", command=self.__set_data_cube,
+                                                   inner_padx=10, inner_pady=10,
+                                                   outer_padx=(15, 0), outer_pady=0,
+                                                   row=1, column=0, width=15)
 
     def _build_select_od_button(self):
-        self.select_output_dir_button = make_button(self.root, text="Select Output Folder", command=self.__set_output_dir, inner_padx=10, inner_pady=10, outer_padx=(15, 0), outer_pady=0, row=2, column=0, width=15)
+        self.select_output_dir_button = make_button(self.root, text="Select Output Folder",
+                                                    command=self.__set_output_dir,
+                                                    inner_padx=10, inner_pady=10,
+                                                    outer_padx=(15, 0), outer_pady=0,
+                                                    row=2, column=0, width=15)
 
     def _build_selection_box(self):
         self.selection_listbox = make_listbox(self.root, input=None, row=1, column=1, rowspan=2)
@@ -73,10 +80,8 @@ class SourceAndOutput:
                                          inner_padx=2, inner_pady=2, outer_padx=(10, 5), outer_pady=5, width=14)
     # Commands (Callbacks)
     def __update_selected_data_cube(self):
-        data_cube = self.get_selected_data_cube()
         dc_path = self.get_selected_data_cube_path()
-        self.listener.submit_data_cube(data_cube, dc_path)
-        self.listener.update_data()
+        self.listener.select_data_cube(dc_path)
 
     def __set_data_cube(self):
         (data_cube, dc_path) = self.__process_data_cube()
@@ -92,7 +97,6 @@ class SourceAndOutput:
 
             # Add data cube to listener
             self.listener.submit_data_cube(data_cube, dc_path)
-            self.listener.update_data()
 
     def __set_output_dir(self):
         self.path = self.__get_path_to_dir("Select a folder for the output to be stored.")
@@ -122,5 +126,8 @@ class SourceAndOutput:
 
     def __delete_selected_data_cube(self):
         if self.selection_listbox.size() > 0 and self.selection_listbox.curselection:
+            index = self.selection_listbox.curselection
             self.selection_listbox.delete(self.selection_listbox.curselection())
             self.listener.delete_analysis_result(self.data_cube_paths[self.selection_listbox.curselection()])
+            self.data_cube_paths.pop(index)
+            self.data_cubes.pop(index)

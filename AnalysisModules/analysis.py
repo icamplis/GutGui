@@ -1,7 +1,7 @@
 import numpy as np
 from AnalysisModules.analysis_constant import *
 
-# TODO: Need to make an analysis object for each data cube loaded
+# TODO: figure out how the index fits into this picture
 class Analysis:
     def __init__(self, data_cube, normal, absorbance, wavelength, mask=None):
         self.data_cube = data_cube
