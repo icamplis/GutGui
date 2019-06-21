@@ -14,10 +14,10 @@ class AbsorptionSpec:
         self.y_upper_scale_input = None
         self.x_lower_scale_input = None
         self.y_lower_scale_input = None
-        self.x_upper_scale_value = 10
-        self.y_upper_scale_value = 10
-        self.x_lower_scale_value = 0
-        self.y_lower_scale_value = 0
+        self.x_upper_scale_value = None
+        self.y_upper_scale_value = None
+        self.x_lower_scale_value = None
+        self.y_lower_scale_value = None
 
         self.save_label = None
         self.save_checkbox = None

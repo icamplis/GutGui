@@ -77,7 +77,7 @@ class RecColour:
         self._build_recreated_image()
 
     def _build_sto2(self):
-        self.st02_button = make_button(self.root, text='St02', width=4, command=self.__update_to_sto2, row=1, column=0, inner_pady=5, 
+        self.sto2_button = make_button(self.root, text='St02', width=4, command=self.__update_to_sto2, row=1, column=0, inner_pady=5, 
             outer_padx=(15, 0))
         self.sto2_checkbox = make_checkbox(self.root, "", row=1, column=0, var=self.sto2_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 15))
         self.sto2_checkbox.deselect()
