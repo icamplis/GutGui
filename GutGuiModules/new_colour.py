@@ -86,13 +86,16 @@ class NewColour:
         self.upper_scale_text = make_label(self.root, "Upper Scale End", row=6, column=0, columnspan=3,
                                            inner_padx=30, inner_pady=10, outer_pady=5, outer_padx=15)
         self.upper_scale_input = make_entry(self.root, row=6, column=3, width=5)
+        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_label(self.root, "Lower Scale End", row=7, column=0, columnspan=3,
                                            inner_padx=30, inner_pady=10, outer_pady=5, outer_padx=15)
         self.lower_scale_input = make_entry(self.root, row=7, column=3, width=5)
+        self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
 
     def _build_new_image(self):
+        # todo
         self.new_image = make_label(self.root, "        new image placeholder",
                                           row=2, column=0, rowspan=4, columnspan=4,
                                           inner_pady=50, inner_padx=50, outer_padx=2)
@@ -109,10 +112,9 @@ class NewColour:
         self.displayed_image_mode = IDX
 
     def __update_scale_upper(self):
-        pass
+        # todo
+        self._build_new_image()
 
     def __update_scale_lower(self):
-        pass
-
-    def __update_new_image(self):
-        pass
+        # todo
+        self._build_new_image()

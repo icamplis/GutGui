@@ -169,7 +169,3 @@ class RecColour:
     def __update_scale_lower(self):
         # todo
         self._build_recreated_image()
-
-    def __update_recreated_image(self, mode):
-        pass
-
