@@ -1,8 +1,11 @@
 from GutGuiModules.utility import *
 
 class AnalysisAndForm:
-    def __init__(self, analysis_and_form_frame):
+    def __init__(self, analysis_and_form_frame, listener):
         self.root = analysis_and_form_frame
+
+        # Listener
+        self.listener = listener
 
         self.normalisation_button = None
         self.original_button = None

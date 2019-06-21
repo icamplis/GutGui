@@ -1,8 +1,11 @@
 from GutGuiModules.utility import *
 
 class RecColour:
-    def __init__(self, recreated_color_frame):
+    def __init__(self, recreated_color_frame, listener):
         self.root = recreated_color_frame
+
+        # Listener
+        self.listener = listener
 
         self.sto2_button = None
         self.sto2_checkbox = None

@@ -6,9 +6,12 @@ import os
 
 # Manages the source and output directory
 class SourceAndOutput:
-    def __init__(self, source_and_output_frame):
+    def __init__(self, source_and_output_frame, listener):
         # Root
         self.root = source_and_output_frame
+
+        # Listener
+        self.listener = listener
 
         # GUI
         self.select_data_cube_button = None

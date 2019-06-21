@@ -1,6 +1,9 @@
 class OGColour:
-    def __init__(self, original_color_frame):
+    def __init__(self, original_color_frame, listener):
         self.root = original_color_frame
+
+        # Listener
+        self.listener = listener
 
         self.rgb_label = None
         self.rgb_checkbox = None

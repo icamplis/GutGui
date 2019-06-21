@@ -1,8 +1,11 @@
 from GutGuiModules.utility import *
 
 class Diagram:
-    def __init__(self, diagram_frame):
+    def __init__(self, diagram_frame, listener):
         self.root = diagram_frame
+
+        # Listener
+        self.listener = listener
 
         self.whole_image_button = None
         self.whole_image_checkbox = None
