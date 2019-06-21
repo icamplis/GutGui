@@ -32,7 +32,7 @@ class ModuleListener:
             self.absorbance = self.modules[ANALYSIS_AND_FORM].get_absorbance()
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
             self.mask = self.modules[ORIGINAL_COLOUR].get_mask()
-            self._make_new_analysis(dc_path, data_cube, normal, absorbance, wavelength, mask)
+            self._make_new_analysis(dc_path, data_cube, self.normal, self.absorbance, self.wavelength, self.mask)
 
     def submit_output_folder(self, path):
         self.output_folder = path
