@@ -1,8 +1,12 @@
 from GutGuiModules.utility import *
 
 class AbsorptionSpec:
-    def __init__(self, absorption_spec_frame):
+    def __init__(self, absorption_spec_frame, listener):
         self.root = absorption_spec_frame
+
+        # Listener
+        self.listener = listener
+
         self.x_vals = [1, 3, 3, 4, 5, 7, 7, 9] # x_vals
         self.y_vals = [43, 6, 34, 6, 9, 31, 3, 21] # y_vals
 

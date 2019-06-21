@@ -1,9 +1,9 @@
 import numpy as np
 from AnalysisModules.analysis_constant import *
 
-# TODO: Need to make an analysis object for each data cube loaded
+# TODO: figure out how the index fits into this picture
 class Analysis:
-    def __init__(self, data_cube, mask, normal, absorbance, wavelength):
+    def __init__(self, data_cube, normal, absorbance, wavelength, mask=None):
         self.data_cube = data_cube
         self.mask = mask
         self.wavelength = wavelength
@@ -143,7 +143,8 @@ class Analysis:
             temp1 = self._x_reflectance_min_570_590 / R1
             temp2 = self._x_reflectance_min_740_780 / R2
         self.sto2 = temp1 / (temp1 + temp2)
-        self.sto2_masked = np.ma.array(self.sto2[:, :], mask=[self.mask])
+        if self.mask:
+            self.sto2_masked = np.ma.array(self.sto2[:, :], mask=[self.mask])
 
     def _calc_nir(self):
         if self.absorbance:
@@ -155,7 +156,8 @@ class Analysis:
             self._x_reflectance_mean_655_735 = self.x_reflectance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
             temp1 = self._x_reflectance_mean_825_925 / self._x_reflectance_mean_655_735
         self.nir = (temp1 - S1) / (S2 - S1)
-        self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
+        if self.mask:
+            self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
 
     def _calc_thi(self):
         if self.absorbance:
@@ -167,7 +169,8 @@ class Analysis:
             self._x_reflectance_mean_785_825 = self.x_reflectance[:, :, 57:65].mean(axis=2)  # between (785nm : 825nm)
             temp1 = self._x_reflectance_mean_530_590 / self._x_reflectance_mean_785_825
         self.thi = (temp1 - T1) / (T2 - T1)
-        self.thi_masked = np.ma.array(self.thi[:, :], mask=[self.mask])
+        if self.mask:
+            self.thi_masked = np.ma.array(self.thi[:, :], mask=[self.mask])
 
     def _calc_twi(self):
         if self.absorbance:
@@ -179,7 +182,8 @@ class Analysis:
             self._x_reflectance_mean_955_980 = self.x_reflectance[:, :, 91:96].mean(axis=2)  # between (955nm : 980nm)
             temp1 = self._x_reflectance_mean_880_900 / self._x_reflectance_mean_955_980
         self.twi = (temp1 - U1) / (U2 - U1)
-        self.twi_masked = np.ma.array(self.twi[:, :], mask=[self.mask])
+        if self.mask:
+            self.twi_masked = np.ma.array(self.twi[:, :], mask=[self.mask])
 
     def __calc_x1(self):
         if self.normal:
@@ -201,5 +205,6 @@ class Analysis:
         if self.normal:
             self.x_absorbance = self.x_absorbance / self.x_absorbance.max()
         self.x_absorbance_w = self.x_absorbance[:, :, self.wavelength]
-        self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=[self.mask] * 100)
-        self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength], mask=self.mask)
+        if self.mask:
+            self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=[self.mask] * 100)
+            self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength], mask=self.mask)

@@ -1,6 +1,9 @@
 class OGColour:
-    def __init__(self, original_color_frame):
+    def __init__(self, original_color_frame, listener):
         self.root = original_color_frame
+
+        # Listener
+        self.listener = listener
 
         self.rgb_label = None
         self.rgb_checkbox = None
@@ -63,6 +66,11 @@ class OGColour:
         self.pt8_checkbox_value = None
 
         self.original_image = None
+
+        self._init_widget()
+
+    def get_mask(self):
+        return None
 
     # Helper
     def _init_widget(self):

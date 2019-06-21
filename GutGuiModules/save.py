@@ -1,8 +1,11 @@
 from GutGuiModules.utility import *
 
 class Save:
-    def __init__(self, save_frame):
+    def __init__(self, save_frame, listener):
         self.root = save_frame
+
+        # Listener
+        self.listener = listener
 
         self.save_specific_button = None
         self.save_all_button = None

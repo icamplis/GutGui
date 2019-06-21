@@ -1,8 +1,11 @@
 from GutGuiModules.utility import *
 
 class NewColour:
-    def __init__(self, new_color_frame):
+    def __init__(self, new_color_frame, listener):
         self.root = new_color_frame
+
+        # Listener
+        self.listener = listener
 
         self.wl_button = None
         self.wl_checkbox = None

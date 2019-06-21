@@ -1,8 +1,11 @@
 from GutGuiModules.utility import *
 
 class AnalysisAndForm:
-    def __init__(self, analysis_and_form_frame):
+    def __init__(self, analysis_and_form_frame, listener):
         self.root = analysis_and_form_frame
+
+        # Listener
+        self.listener = listener
 
         self.normalisation_button = None
         self.original_button = None
@@ -10,8 +13,7 @@ class AnalysisAndForm:
         self.absorbance_button = None
         self.OR_text = None
         self.wavelength_text = None
-        self.wavelength_lower_entry = None
-        self.wavelength_upper_entry = None
+        self.wavelength_entry = None
         self.TO_text = None
         self.idx_title = None
         self.idx1_button = None
@@ -36,6 +38,15 @@ class AnalysisAndForm:
         self.absorbance = True
 
         self._init_widget()
+
+    def get_normal(self):
+        return self.normal
+
+    def get_absorbance(self):
+        return self.absorbance
+
+    def get_wavelength(self):
+        return float(self.wavelength_entry.get())
 
     # Helpers
     def _init_widget(self):
@@ -90,12 +101,9 @@ class AnalysisAndForm:
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=3, pady=(10, 0))
 
     def _build_wavelength_entry(self):
-        self.wavelength_lower_entry = make_entry(self.root, row=3, column=3, width=5, pady=(10, 0), padx=(0, 20),
-                                                 columnspan=2, command=self.__update_wavelength)
-        self.TO_text = make_text(self.root, content="TO", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB),
-                                 height=1, width=2, row=3, column=5, pady=0, columnspan=1)
-        self.wavelength_upper_entry = make_entry(self.root, row=3, column=6, width=5, pady=(10, 0), padx=(0, 20),
-                                                 columnspan=2, command=self.__update_wavelength)
+        self.wavelength_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), padx=(0, 20),
+                                           columnspan=4, command=self.__update_wavelength)
+        self.wavelength_entry.insert(0, str(64))
 
     def _build_idx_title(self):
         self.idx_title = make_text(self.root, content="Individual Index:",

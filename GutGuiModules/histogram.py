@@ -2,7 +2,7 @@ from GutGuiModules.utility import *
 import tkinter as tk
 
 class Histogram:
-    def __init__(self, histogram_frame):
+    def __init__(self, histogram_frame, listener):
         self.root = histogram_frame
         self.x_vals = [1, 2, 3, 4, 5, 6, 7, 13, 4, 3, 2, 2, 2, 2, 2] # x_vals
 
