@@ -39,11 +39,15 @@ class SourceAndOutput:
         index = self.selection_listbox.curselection()
         return self._get_data_cube_by_index(index)
 
-    def _get_data_cube_by_index(self, index):
-        return deepcopy(self.data_cubes[index])
+    def get_selected_data_cube_path(self):
+        index = self.selection_listbox.curselection()
+        return self.data_cube_paths[index]
 
     def get_path(self):
         return self.path
+
+    def _get_data_cube_by_index(self, index):
+        return deepcopy(self.data_cubes[index])
 
     # Helpers
     def _init_widgets(self):
@@ -60,6 +64,7 @@ class SourceAndOutput:
 
     def _build_selection_box(self):
         self.selection_listbox = make_listbox(self.root, input=None, row=1, column=1, rowspan=2)
+        self.selection_listbox.bind('<ListboxSelect>', self.__update_selected_data_cube)
 
     def _build_delete_button(self):
         self.delete_button = make_button(self.root, text="Remove Selected",
@@ -67,21 +72,33 @@ class SourceAndOutput:
                                          row=3, column=1,
                                          inner_padx=2, inner_pady=2, outer_padx=(10, 5), outer_pady=5, width=14)
     # Commands (Callbacks)
+    def __update_selected_data_cube(self):
+        data_cube = self.get_selected_data_cube()
+        dc_path = self.get_selected_data_cube_path()
+        self.listener.submit_data_cube(data_cube, dc_path)
+        self.listener.update_data()
+
     def __set_data_cube(self):
         (data_cube, dc_path) = self.__process_data_cube()
         concat_dc_path = os.path.basename(os.path.normpath(dc_path))
         if dc_path in self.data_cube_paths:
             messagebox.showinfo("Error", "That data cube has already been added.")
         else:
+            # Add data cube to src and output store
             self.data_cube_paths.append(dc_path)
             self.data_cubes.append(data_cube)
             self.selection_listbox.insert(END, concat_dc_path)
             self.selection_listbox.config(width=0)  # resizes to widest path
 
+            # Add data cube to listener
+            self.listener.submit_data_cube(data_cube, dc_path)
+            self.listener.update_data()
+
     def __set_output_dir(self):
         self.path = self.__get_path_to_dir("Select a folder for the output to be stored.")
         self.path_label = make_label(self.root, "Using Output Folder at: " + str(self.path),
                                                row=3, column=0, wraplength=160, outer_pady=(2, 5), outer_padx=(15, 0))
+        self.listener.submit_output_dir(self.path)
 
     def __process_data_cube(self):
         path = self.__get_path_to_file("Select a data cube (ending in .dat)")
@@ -106,3 +123,4 @@ class SourceAndOutput:
     def __delete_selected_data_cube(self):
         if self.selection_listbox.size() > 0 and self.selection_listbox.curselection:
             self.selection_listbox.delete(self.selection_listbox.curselection())
+            self.listener.delete_analysis_result(self.data_cube_paths[self.selection_listbox.curselection()])

@@ -67,6 +67,11 @@ class OGColour:
 
         self.original_image = None
 
+        self._init_widget()
+
+    def get_mask(self):
+        return None
+
     # Helper
     def _init_widget(self):
         pass
