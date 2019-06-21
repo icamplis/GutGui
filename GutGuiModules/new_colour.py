@@ -55,48 +55,37 @@ class NewColour:
         self._build_new_image()
 
     def _build_wl(self):
-        self.wl_button = make_button(self.root, text="WL", row=1, column=0, columnspan=2, command=self.__update_to_wl,
-                                     inner_padx=10, inner_pady=2, width=10)
-        self.wl_checkbox = make_checkbox(self.root, "", row=1, column=0, columnspan=2,
-                                           var=self.wl_checkbox_value, sticky=E, inner_padx=0, inner_pady=0)
+        self.wl_button = make_button(self.root, text='WL', width=3, command=self.__update_to_wl, row=1, column=0, columnspan=2, inner_pady=5, outer_padx=(35, 0))
+        self.wl_checkbox = make_checkbox(self.root, "", row=1, column=0, columnspan=2, var=self.wl_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         self.wl_checkbox.deselect()
 
     def _build_idx(self):
-        self.idx_button = make_button(self.root, text="IDX", row=1, column=2,columnspan=2, command=self.__update_to_idx,
-                                      inner_padx=10, inner_pady=2, width=10)
-        self.idx_checkbox = make_checkbox(self.root, "", row=1, column=2, columnspan=2,
-                                           var=self.idx_checkbox_value, sticky=E, inner_padx=0, inner_pady=0)
+        self.idx_button = make_button(self.root, text="IDX", width=3, row=1, column=2, columnspan=2, command=self.__update_to_idx, inner_pady=5)
+        self.idx_checkbox = make_checkbox(self.root, "", row=1, column=2, columnspan=2,var=self.idx_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 40))
         self.idx_checkbox.deselect()
 
     def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=4, column=4)
-        self.save_checkbox = make_checkbox(self.root, text="", row=4, column=4,
-                                           var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
+        self.save_label = make_label(self.root, "Save", row=8, column=0, rowspan=2, outer_padx=(10, 0), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
+        self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 5))
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=5, column=4, columnspan=3, wraplength=40)
-        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=5, column=4,
-                                                    var=self.save_wo_scale_checkbox_value,
-                                                    sticky=NE, inner_padx=0, inner_pady=0)
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=2, columnspan=2, outer_padx=(0, 15), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
+        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 10))
 
     def _build_upper_scale(self):
-        self.upper_scale_text = make_label(self.root, "Upper Scale End", row=6, column=0, columnspan=3,
-                                           inner_padx=30, inner_pady=10, outer_pady=5, outer_padx=15)
-        self.upper_scale_input = make_entry(self.root, row=6, column=3, width=5)
+        self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
+        self.upper_scale_input = make_entry(self.root, row=6, column=3, width=9, pady=(5,0), padx=(0,15))
 
     def _build_lower_scale(self):
-        self.lower_scale_text = make_label(self.root, "Lower Scale End", row=7, column=0, columnspan=3,
-                                           inner_padx=30, inner_pady=10, outer_pady=5, outer_padx=15)
-        self.lower_scale_input = make_entry(self.root, row=7, column=3, width=5)
+        self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=(15, 0))
+        self.lower_scale_input = make_entry(self.root, row=7, column=3, width=9, pady=5, padx=(0,15))
 
     def _build_new_image(self):
-        self.new_image = make_label(self.root, "        new image placeholder",
-                                          row=2, column=0, rowspan=4, columnspan=4,
-                                          inner_pady=50, inner_padx=50, outer_padx=2)
+        self.new_image = make_label(self.root, "new image placeholder",row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
 
     # Commands (Callbacks)
     def __update_to_wl(self):
-        pass
+        print("wl placeholder")
 
     def __update_to_idx(self):
         pass

@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter.ttk import Notebook
 from GutGuiModules.constants import *
 
 import matplotlib
@@ -14,9 +15,20 @@ def init():
     root.resizable(width=False, height=False)
     root.title(WINDOW_TITLE)
     root.geometry("+0+0")
-    window = Frame(root, width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
-    window.pack()
-    return window
+
+    notebook = Notebook(root)
+
+    input_output = Frame(notebook)
+    input_output.pack()
+    notebook.add(input_output, text="Input and Output")
+
+    image_diagram = Frame(notebook)
+    image_diagram.pack()
+    notebook.add(image_diagram, text="Images and Diagrams")
+
+    notebook.pack()
+
+    return (root, input_output, image_diagram)
 
 def tkcolour_from_rgb(rgb):
     '''translates an rgb tuple of int to a tkinter friendly color code'''
@@ -35,14 +47,13 @@ def make_button(window, text, command, row, column, height=1, width=10,
     return button
 
 def make_label(window, text, row, column,
-               borderwidth=2, inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=15,
-               relief="solid", rowspan=1, columnspan=1, wraplength=160):
+               borderwidth=2, inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=15, relief="solid", rowspan=1, columnspan=1, wraplength=140):
     label = Label(window, text=text, borderwidth=borderwidth, relief=relief,
                   padx=inner_padx, pady=inner_pady, wraplength=wraplength)
     label.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, columnspan=columnspan, rowspan=rowspan)
     return label
 
-def make_text(window, content, row, column, padx=10, pady=10, height=1, width=2,
+def make_text(window, content, row, column, padx=0, pady=0, height=1, width=2,
               highlightthickness=0, bg="white", columnspan=1,  rowspan=1):
     text = Text(window, bg=bg, height=height, width=width, highlightthickness=highlightthickness)
     text.insert(END, content)
@@ -50,14 +61,14 @@ def make_text(window, content, row, column, padx=10, pady=10, height=1, width=2,
     text.grid(row=row, column=column, padx=padx, pady=pady, columnspan=columnspan, rowspan=rowspan)
     return text
 
-def make_listbox(window, input, row, column, padx=15, pady=(0, 15),
+def make_listbox(window, input, row, column, padx=0, pady=0,
                  highlightthickness=0, columnspan=1,  rowspan=1):
     listbox = Listbox(window, width=15, highlightthickness=highlightthickness, selectmode=SINGLE)
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 
-def make_entry(window, row, column, width, columnspan=1, pady=10, 
-    padx=10, highlightthickness=0, command=None):
+def make_entry(window, row, column, width, columnspan=1, pady=0, 
+    padx=0, highlightthickness=0, command=None):
     entry = Entry(window, width=width, highlightthickness=highlightthickness, textvariable=StringVar())
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)
     return entry
@@ -67,19 +78,6 @@ def make_checkbox(window, text, row, column, var, columnspan=1,
     checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg, width=2)
     checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky, columnspan=columnspan)
     return checkbox
-
-def make_graph(master, x_vals, y_vals, row, column, x_size, y_size, colour, x_upper=None, x_lower=None, y_upper=None, y_lower=None, inner_pady=0, inner_padx=0, rowspan=1, columnspan=1):
-    figure = Figure(figsize=(x_size, y_size))
-    axes = figure.add_subplot(111)
-    axes.plot(x_vals, y_vals)
-    figure.patch.set_facecolor(rgb_to_rgba(colour))
-    figure.set_tight_layout(True)
-    axes.set_xlim(left=x_lower, right=x_upper)
-    axes.set_ylim(bottom=y_lower, top=y_upper)
-    canvas = FigureCanvasTkAgg(figure, master=master)
-    canvas.draw()
-    canvas.get_tk_widget().grid(column=column, row=row, columnspan=columnspan, rowspan=rowspan, ipady=inner_pady, ipadx=inner_padx)
-    return canvas
 
 def rgb_to_rgba(rgb):
     r = rgb[0]/255
