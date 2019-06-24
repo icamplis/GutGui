@@ -35,6 +35,8 @@ class RecColour:
         self.lower_scale_text = None
         self.upper_scale_input = None
         self.lower_scale_input = None
+        self.upper_scale_value = None
+        self.lower_scale_value = None
 
         self.recreated_image = None
 
@@ -151,10 +153,10 @@ class RecColour:
         self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
 
-    def __update_scale_upper(self):
-        # todo
+    def __update_scale_upper(self, event):
+        self.upper_scale_value = float(self.upper_scale_input.get())
         self._build_recreated_image()
 
-    def __update_scale_lower(self):
-        # todo
+    def __update_scale_lower(self, event):
+        self.lower_scale_value = float(self.lower_scale_input.get())
         self._build_recreated_image()

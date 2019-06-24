@@ -14,6 +14,7 @@ class AnalysisAndForm:
         self.OR_text = None
         self.wavelength_text = None
         self.wavelength_entry = None
+        self.wavelength_value = None
         self.TO_text = None
         self.idx_title = None
         self.idx1_button = None
@@ -107,6 +108,7 @@ class AnalysisAndForm:
         self.wavelength_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), padx=(0, 20),
                                            columnspan=4, command=self.__update_wavelength)
         self.wavelength_entry.insert(0, str(64))
+        self.wavelength_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):
         self.idx_title = make_text(self.root, content="Individual Index:",
@@ -169,23 +171,28 @@ class AnalysisAndForm:
         self.normalisation_button.config(foreground="red")
         self.original_button.config(foreground="black")
         self.normal = True
+        self.listener.submit_normal(self.normal)
 
     def __original(self):
         self.original_button.config(foreground="red")
         self.normalisation_button.config(foreground="black")
         self.normal = False
-
-    def __reflect(self):
-        self.reflection_button.config(foreground="red")
-        self.absorbance_button.config(foreground="black")
-        self.absorbance = True
+        self.listener.submit_normal(self.normal)
 
     def __absorb(self):
         self.absorbance_button.config(foreground="red")
         self.reflection_button.config(foreground="black")
+        self.absorbance = True
+        self.listener.submit_absorbance(self.absorbance)
+
+    def __reflect(self):
+        self.reflection_button.config(foreground="red")
+        self.absorbance_button.config(foreground="black")
         self.absorbance = False
+        self.listener.submit_absorbance(self.absorbance)
 
     def __idxn(self, n):
+        self.listener.submit_index(n)
         buttons = [self.idx1_button, self.idx2_button, self.idx3_button, self.idx4_button,
                    self.idx5_button, self.idx6_button, self.idx7_button, self.idx8_button]
         for i in range(len(buttons)):
@@ -194,9 +201,9 @@ class AnalysisAndForm:
             else:
                 buttons[i].config(foreground="black")
 
-    def __update_wavelength(self):
-        print('wavey')
-        #     TODO
+    def __update_wavelength(self, event):
+        self.wavelength_value = int(self.wavelength_entry.get())
+        self.listener.submit_wavelength(self.wavelength_value)
 
     def __update_st02(self):
         print('oxy')

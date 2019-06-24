@@ -86,7 +86,7 @@ class ModuleListener:
     def submit_index(self, new_index_number):
         logging.debug("SETTING NEW INDEX: [...]")
         self.index_number = new_index_number
-        self._update_analysis(self.current_result_path, new_index_number)
+        self._update_analysis(self.current_result_path, index_number=new_index_number)
         self._broadcast_new_data()
 
     def submit_iswholeimage(self, new_iswholeimage):
@@ -103,11 +103,11 @@ class ModuleListener:
         return None
 
     def _get_analysis(self, path):
-        if self.results[path]:
+        if self.results[path] is not None:
             return self.results[path]
 
     def _update_analysis(self, path, mask=None, normal=None, absorbance=None, wavelength=None, index_number=None):
-        if self.results[path]:  # only execute if there is an initialized data cube
+        if self.results[path] is not None:  # only execute if there is an initialized data cube
             if mask:
                 self.results[path].update_mask(mask)
             if normal:

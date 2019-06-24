@@ -102,10 +102,10 @@ class NewColour:
         self.idx_button.config(foreground="red")
         self.displayed_image_mode = IDX
 
-    def __update_scale_upper(self):
-        # todo
+    def __update_scale_upper(self, event):
+        self.upper_scale_value = float(self.upper_scale_input.get())
         self._build_new_image()
 
-    def __update_scale_lower(self):
-        # todo
+    def __update_scale_lower(self, event):
+        self.lower_scale_value = float(self.lower_scale_input.get())
         self._build_new_image()
