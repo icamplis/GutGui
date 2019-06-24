@@ -33,6 +33,7 @@ class AbsorptionSpec:
         self.save_as_excel_checkbox = None
         self.save_as_excel_checkbox_value = None
 
+        self.absorption_spec_data = None
         self.interactive_absorption_spec = None
         self.axes = None
         self.absorption_spec_canvas = None
@@ -48,6 +49,10 @@ class AbsorptionSpec:
         self.selectd_value = StringVar()
 
         self._init_widgets()
+
+    def update_absorption_spec(self, absorption_spec_data):
+        self.absorption_spec_data = absorption_spec_data
+        self._build_interactive_absorption_spec()
 
     # Helper
     def _init_widgets(self):
@@ -95,7 +100,6 @@ class AbsorptionSpec:
         self.minimum_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.minimum_input.bind('<Return>', self.__update_minimum)
 
-
         # selection
         self.selection_text = make_text(self.root, content="Selection: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=3, width=11, columnspan=1, pady=(0, 10))
@@ -124,6 +128,7 @@ class AbsorptionSpec:
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
 
     def _build_interactive_absorption_spec(self):
+        # TODO: Need to build absorption spec according to notebook
         self.interactive_absorption_spec = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_absorption_spec.add_subplot(111)
         self.axes.plot(self.x_vals, self.y_vals)
@@ -160,6 +165,3 @@ class AbsorptionSpec:
     def __update_scale_y_lower(self, event):
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_absorption_spec()
-
-    def __update_interactive_absorption_spec(self):
-        pass

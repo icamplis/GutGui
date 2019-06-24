@@ -17,7 +17,7 @@ class Diagram:
 
         self._init_widget()
 
-        self.whole_image = True
+        self.is_masked = False
         self.whole_image_button.config(foreground="red")
 
     def get_whole_image_checkbox_value(self):
@@ -39,7 +39,7 @@ class Diagram:
                                                   sticky=NE, inner_padx=0, inner_pady=0)
         self.whole_image_checkbox.deselect()
         self.whole_image_button.config(foreground="red")
-        self.listener.submit_iswholeimage(self.whole_image)  # is true by default
+        self.listener.submit_is_masked(self.is_masked)  # is false by default
 
     def _build_masked_region(self):
         self.masked_region_button = make_button(self.root, "Masked Region", row=1, column=1,
@@ -51,13 +51,13 @@ class Diagram:
         self.masked_region_checkbox.deselect()
 
     def __use_whole_image(self):
-        self.whole_image = True
+        self.is_masked = False
         self.whole_image_button.config(foreground="red")
         self.masked_region_button.config(foreground="black")
-        self.listener.submit_iswholeimage(self.whole_image)
+        self.listener.submit_is_masked(self.is_masked)
 
     def __use_masked_image(self):
-        self.whole_image = False
+        self.is_masked = True
         self.masked_region_button.config(foreground="red")
         self.whole_image_button.config(foreground="black")
-        self.listener.submit_iswholeimage(self.whole_image)
+        self.listener.submit_is_masked(self.is_masked)

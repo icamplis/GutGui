@@ -28,12 +28,20 @@ class NewColour:
         self.upper_scale_input = None
         self.lower_scale_input = None
 
+        self.new_colour_image_data = None
         self.new_image = None
 
         self._init_widget()
 
-        self.displayed_image_mode = WL
-        self.wl_button.config(foreground="red")
+        self.displayed_image_mode = IDX
+        self.idx_button.config(foreground="red")
+
+    def update_new_colour_image(self, new_colour_image_data):
+        self.new_colour_image_data = new_colour_image_data
+        self._build_new_image()
+
+    def get_displayed_image_mode(self):
+        return self.displayed_image_mode
 
     def get_wl_checkbox_value(self):
         return self.wl_checkbox_value

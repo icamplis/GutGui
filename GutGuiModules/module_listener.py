@@ -24,7 +24,7 @@ class ModuleListener:
         self.mask = None
 
         # DIAGRAM
-        self.iswholeimage = True #  TODO: uncomment once diagram is placed back in GUI
+        self.is_masked = False #  TODO: uncomment once diagram is placed back in GUI
 
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
@@ -67,7 +67,7 @@ class ModuleListener:
         logging.debug("NEW MASK: [...]")
         self.mask = new_mask
         self._update_analysis(self.current_result_path, mask=self.mask)
-        if not self.iswholeimage:
+        if self.is_masked:
             self._broadcast_new_data()
 
     def submit_absorbance(self, new_absorbance):
@@ -89,9 +89,9 @@ class ModuleListener:
         self._update_analysis(self.current_result_path, index_number=new_index_number)
         self._broadcast_new_data()
 
-    def submit_iswholeimage(self, new_iswholeimage):
-        logging.debug("USING WHOLE IMAGE? " + str(new_iswholeimage))
-        self.iswholeimage = new_iswholeimage
+    def submit_is_masked(self, new_is_masked):
+        logging.debug("USING WHOLE IMAGE? " + str(new_is_masked))
+        self.is_masked = new_is_masked
         self._broadcast_new_data()
 
     # Helpers
@@ -103,25 +103,58 @@ class ModuleListener:
         self._broadcast_to_absorption_spec()
 
     def _broadcast_to_original_image(self):
-        # TODO: complete once original image module is complete
-        pass
+        # TODO
+        if self.absorbance:
+            if self.is_masked:
+                pass
+            else:
+                pass
+        else:
+            if self.is_masked:
+                pass
+            else:
+                pass
 
     def _broadcast_to_recreated_image(self):
-        # TODO
-        pass
+        if self.absorbance:
+            if self.is_masked:
+                pass
+            else:
+                pass
+        else:
+            if self.is_masked:
+                pass
+            else:
+                pass
 
     def _broadcast_to_new_image(self):
-        # TODO
-        pass
+        display_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
+        new_data = None
+        if self.is_masked:
+            if display_mode == WL:
+                # todo: ask Alex what WL data is wrt to notebook
+                new_data = None
+            elif display_mode == IDX:
+                new_data = self._get_analysis(self.current_result_path).get_index()
+        else:
+            if display_mode == WL:
+                # todo: ask Alex what WL data is wrt to notebook
+                new_data = None
+            elif display_mode == IDX:
+                new_data = self._get_analysis(self.current_result_path).get_masked_index()
+        self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
     def _broadcast_to_histogram(self):
         # TODO: Check with Alex that this is actually for the data cube itself and not absorbance or something
-        new_data = self.results[self.current_result_path].get_data_cube()
-        self.modules[HISTOGRAM].update_data(new_data)
+        new_data_cube = self._get_analysis(self.current_result_path).get_data_cube()
+        self.modules[HISTOGRAM].update_histogram(new_data_cube)
 
     def _broadcast_to_absorption_spec(self):
-        # TODO
-        pass
+        if self.mask:
+            new_absorption_spec = self._get_analysis(self.current_result_path).get_absorption_spec()
+        else:
+            new_absorption_spec = self._get_analysis(self.current_result_path).get_absorption_spec_masked()
+        self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
 
     def _get_analysis(self, path):
         if self.results[path] is not None:

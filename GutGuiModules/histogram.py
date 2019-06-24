@@ -51,7 +51,7 @@ class Histogram:
 
         self._init_widgets()
 
-    def update_data(self, data):
+    def update_histogram(self, data):
         self.flattened_data = data.flatten()
         self._build_interactive_histogram()
 

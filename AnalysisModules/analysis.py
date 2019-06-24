@@ -60,6 +60,9 @@ class Analysis:
         self._x_reflectance_mean_880_900 = None
         self._x_reflectance_mean_955_980 = None
 
+        self.absorption_spec = None
+        self.absorption_spec_masked = None
+
         self.analysis()
 
     def analysis(self):
@@ -140,6 +143,12 @@ class Analysis:
 
     def get_masked_index(self):
         return self.masked_index
+
+    def get_absorption_spec(self):
+        return self.absorption_spec
+
+    def get_absorption_spec_masked(self):
+        return self.absorption_spec_masked
 
     def _calc_index(self, index_number):
         logging.debug("CALCULATING: INDEX...")
@@ -251,3 +260,7 @@ class Analysis:
         if self.mask:
             self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=[self.mask] * 100)
             self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength], mask=self.mask)
+
+    def __calc_absorption_spec(self):
+        pass
+        # TODO
