@@ -36,11 +36,11 @@ class SourceAndOutput:
         return deepcopy(self.data_cubes)
 
     def get_selected_data_cube(self):
-        index = self.selection_listbox.curselection()
+        index = self.selection_listbox.curselection()[0]
         return self._get_data_cube_by_index(index)
 
     def get_selected_data_cube_path(self):
-        index = self.selection_listbox.curselection()
+        index = self.selection_listbox.curselection()[0]
         return self.data_cube_paths[index]
 
     def get_path(self):
@@ -75,9 +75,9 @@ class SourceAndOutput:
                                          inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15)
 
     # Commands (Callbacks)
-    def __update_selected_data_cube(self):
+    def __update_selected_data_cube(self, event):
         dc_path = self.get_selected_data_cube_path()
-        self.listener.select_data_cube(dc_path)
+        self.listener.set_data_cube(dc_path)
 
     def __set_data_cube(self):
         (data_cube, dc_path) = self.__process_data_cube()
@@ -98,7 +98,7 @@ class SourceAndOutput:
         self.path = self.__get_path_to_dir("Select a folder for the output to be stored.")
         self.path_label = make_label(self.root, "Using Output Folder at: " + str(self.path),
                                                row=3, column=0, wraplength=160, outer_pady=(2, 5), outer_padx=(15, 0))
-        self.listener.submit_output_dir(self.path)
+        self.listener.submit_output_folder(self.path)
 
     def __process_data_cube(self):
         path = self.__get_path_to_file("Select a data cube (ending in .dat)")
@@ -121,9 +121,9 @@ class SourceAndOutput:
         return path
 
     def __delete_selected_data_cube(self):
-        if self.selection_listbox.size() > 0 and self.selection_listbox.curselection:
-            index = self.selection_listbox.curselection
-            self.selection_listbox.delete(self.selection_listbox.curselection())
-            self.listener.delete_analysis_result(self.data_cube_paths[self.selection_listbox.curselection()])
+        if self.selection_listbox.size() > 0 and self.selection_listbox.curselection():
+            index = self.selection_listbox.curselection()[0]
+            self.selection_listbox.delete(index)
+            self.listener.delete_analysis_result(self.data_cube_paths[index])
             self.data_cube_paths.pop(index)
             self.data_cubes.pop(index)

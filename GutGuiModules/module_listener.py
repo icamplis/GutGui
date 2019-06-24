@@ -18,6 +18,7 @@ class ModuleListener:
         self.absorbance = None
         self.wavelength = None
         self.index = None
+        self.index_number = None
 
         # ORIGINAL IMAGE
         self.mask = None
@@ -43,10 +44,12 @@ class ModuleListener:
                                     self.normal, self.absorbance, self.wavelength, self.index, self.mask)
 
     def set_data_cube(self, dc_path):
+        logging.debug("SELECTED DATA CUBE AT: " + dc_path)
         self.current_result_path = dc_path
         self._broadcast_new_data()
 
     def delete_analysis_result(self, path):
+        logging.debug("DELETING DATA CUBE: " + path)
         self.results[path] = None
 
     def submit_output_folder(self, path):
@@ -87,6 +90,7 @@ class ModuleListener:
         self._broadcast_new_data()
 
     def submit_iswholeimage(self, new_iswholeimage):
+        logging.debug("USING WHOLE IMAGE? " + str(new_iswholeimage))
         self.iswholeimage = new_iswholeimage
         self._broadcast_new_data()
 
