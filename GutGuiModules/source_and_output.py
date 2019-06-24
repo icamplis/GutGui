@@ -57,17 +57,22 @@ class SourceAndOutput:
         self._build_delete_button()
 
     def _build_select_dc_button(self):
-        self.select_data_cube_button = make_button(self.root, text="Select Data Cube", command=self.__set_data_cube, inner_padx=10, inner_pady=10, outer_padx=15, row=1, column=0, width=15)
+        self.select_data_cube_button = make_button(self.root, text="Select Data Cube", command=self.__set_data_cube,
+                                                   inner_padx=10, inner_pady=10, outer_padx=15, row=1, column=0, width=15)
 
     def _build_select_od_button(self):
-        self.select_output_dir_button = make_button(self.root, text="Select Output Folder", command=self.__set_output_dir, inner_padx=10, inner_pady=10, outer_padx=15, row=2, column=0, width=15)
+        self.select_output_dir_button = make_button(self.root, text="Select Output Folder",
+                                                    command=self.__set_output_dir,
+                                                    inner_padx=10, inner_pady=10, outer_padx=15,
+                                                    row=2, column=0, width=15)
 
     def _build_selection_box(self):
         self.selection_listbox = make_listbox(self.root, input=None, row=1, column=1, rowspan=3, padx=(0, 15))
         self.selection_listbox.bind('<<ListboxSelect>>', self.__update_selected_data_cube)
 
     def _build_delete_button(self):
-        self.delete_button = make_button(self.root, text="Remove Data Cube",command=self.__delete_selected_data_cube, inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15)
+        self.delete_button = make_button(self.root, text="Remove Data Cube",command=self.__delete_selected_data_cube,
+                                         inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15)
 
     # Commands (Callbacks)
     def __update_selected_data_cube(self):
@@ -104,7 +109,7 @@ class SourceAndOutput:
             return
         else:
             data = np.fromfile(path, dtype='>f')  # returns 1D array and reads file in big-endian binary format
-            data_cube = data[3:].reshape(640, 480, 100)  # reshape to data cube and ignore first 3 values which are wrong
+            data_cube = data[3:].reshape(640, 480, 100)  # reshape to data cube and ignore first 3 values
             return data_cube, path
 
     def __get_path_to_file(self, title):

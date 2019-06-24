@@ -1,5 +1,7 @@
 from GutGuiModules import *
-from tkinter import *
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 def main():
     (window, input_output, image_diagram) = init()
@@ -24,6 +26,8 @@ def main():
 
     # original colour
     (og_color_frame, ogc_label) = frame_and_label(image_diagram, "Original Image", PASTEL_PINK_RGB, 0, 0, 7, 2)
+    og_color_module = OGColour(og_color_frame, listener)
+    listener.attach_module(ORIGINAL_COLOUR, og_color_module)
 
     # recreated colour
     (recreated_color_frame, recreated_color_label) = frame_and_label(image_diagram, "Recreated Image", PASTEL_BLUE_RGB, 7, 0, 7, 1, labelspan=5)

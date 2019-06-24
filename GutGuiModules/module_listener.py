@@ -34,7 +34,8 @@ class ModuleListener:
             self.absorbance = self.modules[ANALYSIS_AND_FORM].get_absorbance()
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
             self.mask = self.modules[ORIGINAL_COLOUR].get_mask()
-            self._make_new_analysis(dc_path, data_cube, self.normal, self.absorbance, self.wavelength, self.mask)
+            self._make_new_analysis(dc_path, data_cube,
+                                    self.normal, self.absorbance, self.wavelength, self.index, self.mask)
 
     def set_data_cube(self, dc_path):
         self.current_result_path = dc_path
@@ -104,5 +105,5 @@ class ModuleListener:
                 self.results[path].update_absorbance(absorbance)
 
     # Uses the path of the data cube as an identifier
-    def _make_new_analysis(self, path, data_cube, normal, absorbance, wavelength, mask=None):
-        self.results[path] = Analysis(data_cube, normal, absorbance, wavelength, mask)
+    def _make_new_analysis(self, path, data_cube, normal, absorbance, wavelength, index, mask=None):
+        self.results[path] = Analysis(data_cube, normal, absorbance, wavelength, index, mask)

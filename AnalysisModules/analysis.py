@@ -3,12 +3,13 @@ from AnalysisModules.analysis_constant import *
 
 # TODO: figure out how the index fits into this picture
 class Analysis:
-    def __init__(self, data_cube, normal, absorbance, wavelength, mask=None):
+    def __init__(self, data_cube, normal, absorbance, wavelength, index, mask=None):
         self.data_cube = data_cube
         self.mask = mask
-        self.wavelength = wavelength
-        self.normal = normal
-        self.absorbance = absorbance
+        self.wavelength = int(wavelength)
+        self.normal = bool(normal)
+        self.absorbance = bool(absorbance)
+        self.index = index  # todo - get function pointer instead of int
 
         self.x1 = None
         self.x2 = None
