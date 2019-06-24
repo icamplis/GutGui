@@ -4,7 +4,9 @@ import tkinter as tk
 class Histogram:
     def __init__(self, histogram_frame, listener):
         self.root = histogram_frame
-        self.x_vals = [1, 2, 3, 4, 5, 6, 7, 13, 4, 3, 2, 2, 2, 2, 2] # x_vals
+        self.listener = listener
+
+        self.flattened_data = [0, 0, 1, 1, 1, 3, 3, 3, 3, 3] # x_vals
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -48,6 +50,10 @@ class Histogram:
         self.selectd_value = StringVar()
 
         self._init_widgets()
+
+    def update_data(self, data):
+        self.flattened_data = data.flatten()
+        self._build_interactive_histogram()
 
     # Helper
     def _init_widgets(self):
@@ -126,9 +132,10 @@ class Histogram:
 
     def _build_interactive_histogram(self):
         # TODO: figure out how to set the bin width instead of the number of bins
+        #       Also, figure out a right step size for the data cube
         self.interactive_histogram = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_histogram.add_subplot(111)
-        self.axes.hist(self.x_vals, bins=self.step_size_value)
+        self.axes.hist(self.flattened_data, bins=self.step_size_value)
         self.interactive_histogram.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
         self.interactive_histogram.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
@@ -162,18 +169,6 @@ class Histogram:
     def __update_scale_y_lower(self, event):
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_histogram()
-
-    def __update_save_checked(self, event):
-        pass
-
-    def __update_save_wo_scale_checked(self, event):
-        pass
-
-    def __update_save_as_excel_checked(self, event):
-        pass
-
-    def __update_interactive_histogram(self, event):
-        pass
 
     def __update_step_size(self, event):
         self.step_size_value = int(self.step_size_input.get())

@@ -90,6 +90,9 @@ class Analysis:
         self.index_number = new_index_number
         self.analysis()
 
+    def get_data_cube(self):
+        return self.data_cube
+
     def get_x_absorbance(self):
         return self.x_absorbance
 

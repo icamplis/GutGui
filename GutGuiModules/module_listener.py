@@ -96,11 +96,32 @@ class ModuleListener:
 
     # Helpers
     def _broadcast_new_data(self):
+        self._broadcast_to_original_image()
+        self._broadcast_to_recreated_image()
+        self._broadcast_to_new_image()
+        self._broadcast_to_histogram()
+        self._broadcast_to_absorption_spec()
+
+    def _broadcast_to_original_image(self):
+        # TODO: complete once original image module is complete
+        pass
+
+    def _broadcast_to_recreated_image(self):
         # TODO
-        # Broadcast changes based on new data
-        # Called when changes in display are necessitated
-        # Recalculates the results based on the current path and invokes rebuild of related modules
-        return None
+        pass
+
+    def _broadcast_to_new_image(self):
+        # TODO
+        pass
+
+    def _broadcast_to_histogram(self):
+        # TODO: Check with Alex that this is actually for the data cube itself and not absorbance or something
+        new_data = self.results[self.current_result_path].get_data_cube()
+        self.modules[HISTOGRAM].update_data(new_data)
+
+    def _broadcast_to_absorption_spec(self):
+        # TODO
+        pass
 
     def _get_analysis(self, path):
         if self.results[path] is not None:
