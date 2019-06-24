@@ -48,6 +48,9 @@ class AnalysisAndForm:
     def get_wavelength(self):
         return float(self.wavelength_entry.get())
 
+    def get_index(self):
+        return self.index_selected
+
     # Helpers
     def _init_widget(self):
         self._build_idx_title()
@@ -127,6 +130,7 @@ class AnalysisAndForm:
         self.idx8_button = make_button(self.root, text='8', command=lambda:self.__idxn(8),
                                        row=5, column=7, outer_pady=5, outer_padx=(5, 15), width=1)
         self.idx1_button.config(foreground="red")
+        self.index_selected = 1  # Use index no.1 by default
 
     def _build_stO2_text(self):
         self.stO2_text = make_text(self.root, content="Saturation index: ", 

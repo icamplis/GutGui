@@ -1,15 +1,20 @@
 import numpy as np
 from AnalysisModules.analysis_constant import *
+from AnalysisModules.Indices import Index
+import logging
 
 # TODO: figure out how the index fits into this picture
 class Analysis:
-    def __init__(self, data_cube, normal, absorbance, wavelength, index, mask=None):
+    def __init__(self, data_cube, normal, absorbance, wavelength, index_number, mask=None):
         self.data_cube = data_cube
         self.mask = mask
         self.wavelength = int(wavelength)
         self.normal = bool(normal)
         self.absorbance = bool(absorbance)
-        self.index = index  # todo - get function pointer instead of int
+
+        self.index_number = index_number
+        self.index = None
+        self.masked_index = None
 
         self.x1 = None
         self.x2 = None
@@ -19,6 +24,8 @@ class Analysis:
         self.x_reflectance_w = None
         self.x_absorbance_masked = None
         self.x_absorbance_masked_w = None
+        self.x_reflectance_masked = None
+        self.x_reflectance_masked_w = None
 
         self.sto2 = None
         self.sto2_masked = None
@@ -61,6 +68,7 @@ class Analysis:
         self._calc_nir()
         self._calc_thi()
         self._calc_twi()
+        self._calc_index(self.index_number)
 
     def update_mask(self, new_mask):
         self.mask = new_mask
@@ -76,6 +84,10 @@ class Analysis:
 
     def update_absorbance(self, new_absorbance):
         self.absorbance = new_absorbance
+        self.analysis()
+
+    def update_index(self, new_index_number):
+        self.index_number = new_index_number
         self.analysis()
 
     def get_x_absorbance(self):
@@ -120,13 +132,34 @@ class Analysis:
     def get_twi_masked(self):
         return self.twi_masked
 
+    def get_index(self):
+        return self.index
+
+    def get_masked_index(self):
+        return self.masked_index
+
+    def _calc_index(self, index_number):
+        logging.debug("CALCULATING: INDEX...")
+        if self.absorbance:
+            index_module = Index(index_number, self.x_absorbance)
+            self.index = index_module.get_index()
+            if self.mask:
+                self.masked_index = index_module.get_index_masked()
+        else:
+            index_module = Index(index_number, self.x_reflectance)
+            self.index = index_module.get_index()
+            if self.mask:
+                self.masked_index = index_module.get_index_masked()
+
     def _calc_general(self):
+        logging.debug("CALCULATING: ABSORBANCE AND REFLECTANCE...")
         self.__calc_x1()
         self.__calc_x_reflectance()
         self.__calc_x2()
         self.__calc_x_absorbance()
 
     def _calc_sto2(self):
+        logging.debug("CALCULATING: STO2...")
         if self.absorbance:
             self._x_absorbance_gradient = np.gradient(self.x_absorbance, axis=2)
             self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
@@ -148,6 +181,7 @@ class Analysis:
             self.sto2_masked = np.ma.array(self.sto2[:, :], mask=[self.mask])
 
     def _calc_nir(self):
+        logging.debug("CALCULATING: NIR...")
         if self.absorbance:
             self._x_absorbance_mean_825_925 = self.x_absorbance[:, :, 65:85].mean(axis=2)  # between (825nm : 925nm)
             self._x_absorbance_mean_655_735 = self.x_absorbance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
@@ -161,6 +195,7 @@ class Analysis:
             self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
 
     def _calc_thi(self):
+        logging.debug("CALCULATING: THI...")
         if self.absorbance:
             self._x_absorbance_mean_530_590 = self.x_absorbance[:, :, 6:18].mean(axis=2)  # between (530nm : 590nm)
             self._x_absorbance_mean_785_825 = self.x_absorbance[:, :, 57:65].mean(axis=2)  # between (785nm : 825nm)
@@ -174,6 +209,7 @@ class Analysis:
             self.thi_masked = np.ma.array(self.thi[:, :], mask=[self.mask])
 
     def _calc_twi(self):
+        logging.debug("CALCULATING: TWI...")
         if self.absorbance:
             self._x_absorbance_mean_880_900 = self.x_absorbance[:, :, 76:80].mean(axis=2)  # between (880nm : 900nm)
             self._x_absorbance_mean_955_980 = self.x_absorbance[:, :, 91:96].mean(axis=2)  # between (955nm : 980nm)
@@ -196,6 +232,9 @@ class Analysis:
         self.x_reflectance = self.x1
         self.x_reflectance = np.ma.array(self.x_reflectance, mask=self.data_cube < 0)
         self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength]
+        if self.mask:
+            self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=[self.mask] * 100)
+            self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength], mask=self.mask)
 
     def __calc_x2(self):
         self.x1 = self.x1.clip(min=0)
