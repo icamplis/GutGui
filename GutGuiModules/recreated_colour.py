@@ -39,11 +39,19 @@ class RecColour:
         self.lower_scale_value = None
 
         self.recreated_image = None
+        self.recreated_image_data = None
 
         self._init_widget()
 
         self.displayed_image_mode = STO2  # STO2 by default
         self.sto2_button.config(foreground="red")
+
+    def update_recreated_image(self, new_rec_image_data):
+        self.recreated_image_data = new_rec_image_data
+        self._build_recreated_image()
+
+    def get_displayed_image_mode(self):
+        return self.displayed_image_mode
 
     def get_sto2_checkbox_value(self):
         return self.sto2_checkbox_value

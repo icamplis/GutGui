@@ -104,28 +104,32 @@ class ModuleListener:
 
     def _broadcast_to_original_image(self):
         # TODO
-        if self.absorbance:
-            if self.is_masked:
-                pass
-            else:
-                pass
-        else:
-            if self.is_masked:
-                pass
-            else:
-                pass
+        pass
 
     def _broadcast_to_recreated_image(self):
-        if self.absorbance:
+        display_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
+        new_data = None
+        if display_mode == STO2:
             if self.is_masked:
-                pass
+                new_data = self._get_analysis(self.current_result_path).get_sto2()
             else:
-                pass
-        else:
+                new_data = self._get_analysis(self.current_result_path).get_sto2_masked()
+        elif display_mode == NIR:
             if self.is_masked:
-                pass
+                new_data = self._get_analysis(self.current_result_path).get_nir()
             else:
-                pass
+                new_data = self._get_analysis(self.current_result_path).get_nir_masked()
+        elif display_mode == THI:
+            if self.is_masked:
+                new_data = self._get_analysis(self.current_result_path).get_thi()
+            else:
+                new_data = self._get_analysis(self.current_result_path).get_thi_masked()
+        elif display_mode == TWI:
+            if self.is_masked:
+                new_data = self._get_analysis(self.current_result_path).get_twi()
+            else:
+                new_data = self._get_analysis(self.current_result_path).get_twi_masked()
+        self.modules[RECREATED_COLOUR].update_recreated_image(new_data)
 
     def _broadcast_to_new_image(self):
         display_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
