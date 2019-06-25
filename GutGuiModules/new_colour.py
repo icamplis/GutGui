@@ -104,11 +104,13 @@ class NewColour:
         self.wl_button.config(foreground="red")
         self.idx_button.config(foreground="black")
         self.displayed_image_mode = WL
+        self.listener.render_new_new_image_data()
 
     def __update_to_idx(self):
         self.wl_button.config(foreground="black")
         self.idx_button.config(foreground="red")
         self.displayed_image_mode = IDX
+        self.listener.render_new_new_image_data()
 
     def __update_scale_upper(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())

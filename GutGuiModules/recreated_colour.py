@@ -139,6 +139,7 @@ class RecColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = STO2
+        self.listener.render_new_recreated_image_data()
 
     def __update_to_nir(self):
         self.sto2_button.config(foreground="black")
@@ -146,6 +147,7 @@ class RecColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = NIR
+        self.listener.render_new_recreated_image_data()
 
     def __update_to_thi(self):
         self.sto2_button.config(foreground="black")
@@ -153,6 +155,7 @@ class RecColour:
         self.thi_button.config(foreground="red")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = THI
+        self.listener.render_new_recreated_image_data()
 
     def __update_to_twi(self):
         self.sto2_button.config(foreground="black")
@@ -160,6 +163,7 @@ class RecColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
+        self.listener.render_new_recreated_image_data()
 
     def __update_scale_upper(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())
