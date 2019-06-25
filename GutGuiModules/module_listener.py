@@ -110,21 +110,25 @@ class ModuleListener:
         display_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
         new_data = None
         if display_mode == STO2:
+            logging.debug("GETTING STO2 IMAGE")
             if self.is_masked:
                 new_data = self._get_analysis(self.current_result_path).get_sto2()
             else:
                 new_data = self._get_analysis(self.current_result_path).get_sto2_masked()
         elif display_mode == NIR:
+            logging.debug("GETTING NIR IMAGE")
             if self.is_masked:
                 new_data = self._get_analysis(self.current_result_path).get_nir()
             else:
                 new_data = self._get_analysis(self.current_result_path).get_nir_masked()
         elif display_mode == THI:
+            logging.debug("GETTING THI IMAGE")
             if self.is_masked:
                 new_data = self._get_analysis(self.current_result_path).get_thi()
             else:
                 new_data = self._get_analysis(self.current_result_path).get_thi_masked()
         elif display_mode == TWI:
+            logging.debug("GETTING TWI IMAGE")
             if self.is_masked:
                 new_data = self._get_analysis(self.current_result_path).get_twi()
             else:
