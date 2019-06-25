@@ -1,4 +1,5 @@
 from GutGuiModules.utility import *
+import logging
 
 class RecColour:
     def __init__(self, recreated_color_frame, listener):
@@ -38,6 +39,7 @@ class RecColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
+        self.recreated_image_graph = None
         self.recreated_image = None
         self.recreated_image_data = None
 
@@ -122,15 +124,34 @@ class RecColour:
         self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=2, width=17, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=(15, 0))
         self.upper_scale_input = make_entry(self.root, row=6, column=2, width=11, pady=(5,0), padx=(0,15), columnspan=2)
         self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
+        self.upper_scale_input.insert(END, "1")
+        self.upper_scale_value = 1
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=2, width=17, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=(15, 0))
         self.lower_scale_input = make_entry(self.root, row=7, column=2, width=11, pady=5, padx=(0,15), columnspan=2)
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
+        self.lower_scale_input.insert(END, "0")
+        self.lower_scale_value = 0
 
     def _build_recreated_image(self):
-        # todo
-        self.recreated_image = make_label(self.root, "recreated image placeholder", row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
+        if self.recreated_image_data is None:
+            # Placeholder
+            self.recreated_image = make_label(self.root, "recreated image placeholder",
+                                              row=2, column=0, rowspan=4, columnspan=4,
+                                              inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
+        else:
+            logging.debug("BUILDING RECREATED IMAGE...")
+            self.recreated_image_graph = Figure(figsize=(3, 3))
+            self.axes = self.recreated_image_graph.add_subplot(111)
+            self.axes.imshow(self.recreated_image_data[:,:], cmap='jet',
+                             vmin=max(0.0, float(self.lower_scale_value)),
+                             vmax=min(1.0, float(self.upper_scale_value)))
+            self.recreated_image_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
+            self.recreated_image_graph.set_tight_layout(True)
+            self.recreated_image = FigureCanvasTkAgg(self.recreated_image_graph, master=self.root)
+            self.recreated_image.draw()
+            self.recreated_image.get_tk_widget().grid(column=0, row=2, columnspan=4, rowspan=4, ipady=15, ipadx=15)
 
     # Commands (Callbacks)
     def __update_to_sto2(self):

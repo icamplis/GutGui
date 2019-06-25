@@ -177,8 +177,10 @@ class Analysis:
             temp1 = self._x_reflectance_min_570_590 / R1
             temp2 = self._x_reflectance_min_740_780 / R2
         self.sto2 = temp1 / (temp1 + temp2)
+        logging.debug("Complete Sto2 Mean: " + str(self.sto2[:, :].mean()))
         if self.mask:
             self.sto2_masked = np.ma.array(self.sto2[:, :], mask=[self.mask])
+            logging.debug("Masked Sto2 Mean: " + str(self.sto2_masked.mean()))
 
     def _calc_nir(self):
         logging.debug("CALCULATING: NIR...")
@@ -191,8 +193,10 @@ class Analysis:
             self._x_reflectance_mean_655_735 = self.x_reflectance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
             temp1 = self._x_reflectance_mean_825_925 / self._x_reflectance_mean_655_735
         self.nir = (temp1 - S1) / (S2 - S1)
+        logging.debug("Complete NIR Mean: " + str(self.nir[:, :].mean()))
         if self.mask:
             self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
+            logging.debug("Masked NIR Mean: " + str(self.nir_masked.mean()))
 
     def _calc_thi(self):
         logging.debug("CALCULATING: THI...")
@@ -205,8 +209,10 @@ class Analysis:
             self._x_reflectance_mean_785_825 = self.x_reflectance[:, :, 57:65].mean(axis=2)  # between (785nm : 825nm)
             temp1 = self._x_reflectance_mean_530_590 / self._x_reflectance_mean_785_825
         self.thi = (temp1 - T1) / (T2 - T1)
+        logging.debug("Complete THI Mean: " + str(self.thi[:, :].mean()))
         if self.mask:
             self.thi_masked = np.ma.array(self.thi[:, :], mask=[self.mask])
+            logging.debug("Masked THI Mean: " + str(self.thi_masked.mean()))
 
     def _calc_twi(self):
         logging.debug("CALCULATING: TWI...")
@@ -219,8 +225,10 @@ class Analysis:
             self._x_reflectance_mean_955_980 = self.x_reflectance[:, :, 91:96].mean(axis=2)  # between (955nm : 980nm)
             temp1 = self._x_reflectance_mean_880_900 / self._x_reflectance_mean_955_980
         self.twi = (temp1 - U1) / (U2 - U1)
+        logging.debug("Complete TWI Mean: " + str(self.twi[:, :].mean()))
         if self.mask:
             self.twi_masked = np.ma.array(self.twi[:, :], mask=[self.mask])
+            logging.debug("Masked TWI Mean: " + str(self.twi_masked.mean()))
 
     def _calc_index(self, index_number):
         logging.debug("CALCULATING: INDEX...")
