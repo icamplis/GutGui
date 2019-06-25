@@ -1,4 +1,5 @@
 from GutGuiModules.utility import *
+import numpy as np
 
 class AbsorptionSpec:
     def __init__(self, absorption_spec_frame, listener):
@@ -7,8 +8,8 @@ class AbsorptionSpec:
         # Listener
         self.listener = listener
 
-        self.x_vals = [1, 3, 3, 4, 5, 7, 7, 9] # x_vals
-        self.y_vals = [43, 6, 34, 6, 9, 31, 3, 21] # y_vals
+        self.x_vals = np.arange(500, 1000, 5) # [500, 505, 510, ... , 995, 1000]
+        self.absorption_spec = range(100)  # PLACEHOLDER before actual data is gained
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -33,7 +34,6 @@ class AbsorptionSpec:
         self.save_as_excel_checkbox = None
         self.save_as_excel_checkbox_value = None
 
-        self.absorption_spec_data = None
         self.interactive_absorption_spec = None
         self.axes = None
         self.absorption_spec_canvas = None
@@ -51,7 +51,7 @@ class AbsorptionSpec:
         self._init_widgets()
 
     def update_absorption_spec(self, absorption_spec_data):
-        self.absorption_spec_data = absorption_spec_data
+        self.absorption_spec = absorption_spec_data[:, 1]
         self._build_interactive_absorption_spec()
 
     # Helper
@@ -131,7 +131,7 @@ class AbsorptionSpec:
         # TODO: Need to build absorption spec according to notebook
         self.interactive_absorption_spec = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_absorption_spec.add_subplot(111)
-        self.axes.plot(self.x_vals, self.y_vals)
+        self.axes.plot(self.x_vals, self.absorption_spec, '-', lw=0.5)
         self.interactive_absorption_spec.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
         self.interactive_absorption_spec.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)

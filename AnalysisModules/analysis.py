@@ -72,7 +72,7 @@ class Analysis:
         self._calc_thi()
         self._calc_twi()
         self._calc_index(self.index_number)
-        self.__calc_absorption_spec()
+        self._calc_absorption_spec()
 
     def update_mask(self, new_mask):
         self.mask = new_mask
@@ -235,18 +235,18 @@ class Analysis:
             if self.mask:
                 self.masked_index = index_module.get_index_masked()
 
-    def __calc_absorption_spec(self):
+    def _calc_absorption_spec(self):
         logging.debug("CALCULATING: ABSORPTION SPEC...")
-        self.absorbance_roi = []
+        self.absorption_roi = []
 
         if self.absorbance:
-            absorbance_roi = []
+            absorption_roi = []
             wavelengths = np.arange(500, 1000, 5)
 
             for i in range(self.x_absorbance.shape[2]):
                 tmp = np.ma.median(self.x_absorbance[:, :, i])
-                absorbance_roi.append((int(wavelengths[i]), tmp))
-            self.absorbance_roi = np.array(absorbance_roi)
+                absorption_roi.append((int(wavelengths[i]), tmp))
+            self.absorption_roi = np.array(absorption_roi)
 
             if self.mask:
                 self.absorption_roi_masked = []
@@ -254,13 +254,13 @@ class Analysis:
                 #       In the notebook, the implementation is the same as the "area roi"
         else:
             # TODO: Ask Alex if the reflectance applies relevantly
-            absorbance_roi = []
+            absorption_roi = []
             wavelengths = np.arange(500, 1000, 5)
 
             for i in range(self.x_reflectance.shape[2]):
                 tmp = np.ma.median(self.x_reflectance[:, :, i])
-                absorbance_roi.append((int(wavelengths[i]), tmp))
-            self.absorbance_roi = np.array(absorbance_roi)
+                absorption_roi.append((int(wavelengths[i]), tmp))
+            self.absorption_roi = np.array(absorption_roi)
 
             if self.mask:
                 self.absorption_roi_masked = []

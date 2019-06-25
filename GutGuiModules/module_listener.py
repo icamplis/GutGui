@@ -155,9 +155,9 @@ class ModuleListener:
 
     def _broadcast_to_absorption_spec(self):
         if self.mask:
-            new_absorption_spec = self._get_analysis(self.current_result_path).get_absorption_spec()
-        else:
             new_absorption_spec = self._get_analysis(self.current_result_path).get_absorption_spec_masked()
+        else:
+            new_absorption_spec = self._get_analysis(self.current_result_path).get_absorption_spec()
         self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
 
     def _get_analysis(self, path):
