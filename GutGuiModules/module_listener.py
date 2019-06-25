@@ -94,6 +94,12 @@ class ModuleListener:
         self.is_masked = new_is_masked
         self._broadcast_new_data()
 
+    def render_new_recreated_image_data(self):
+        self._broadcast_to_recreated_image()
+
+    def render_new_new_image_data(self):
+        self._broadcast_to_new_image()
+
     # Helpers
     def _broadcast_new_data(self):
         self._broadcast_to_original_image()
