@@ -1,4 +1,5 @@
 from GutGuiModules.utility import *
+import logging
 
 class NewColour:
     def __init__(self, new_color_frame, listener):
@@ -27,9 +28,12 @@ class NewColour:
         self.lower_scale_text = None
         self.upper_scale_input = None
         self.lower_scale_input = None
+        self.upper_scale_value = None
+        self.lower_scale_value = None
 
+        self.new_colour_image_graph = None
+        self.new_colour_image = None
         self.new_colour_image_data = None
-        self.new_image = None
 
         self._init_widget()
 
@@ -90,14 +94,34 @@ class NewColour:
         self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
         self.upper_scale_input = make_entry(self.root, row=6, column=3, width=9, pady=(5,0), padx=(0,15))
         self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
+        self.upper_scale_input.insert(END, "1")
+        self.upper_scale_value = 1
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=(15, 0))
         self.lower_scale_input = make_entry(self.root, row=7, column=3, width=9, pady=5, padx=(0,15))
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
+        self.lower_scale_input.insert(END, "0")
+        self.lower_scale_value = 0
 
     def _build_new_image(self):
-        self.new_image = make_label(self.root, "new image placeholder",row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
+        if self.new_colour_image_data is None:
+            # Placeholder
+            self.new_colour_image = make_label(self.root, "new_colour image placeholder",
+                                              row=2, column=0, rowspan=4, columnspan=4,
+                                              inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
+        else:
+            logging.debug("BUILDING NEW COLOUR IMAGE...")
+            self.new_colour_image_graph = Figure(figsize=(3, 3))
+            self.axes = self.new_colour_image_graph.add_subplot(111)
+            self.axes.imshow(self.new_colour_image_data[:,:], cmap='jet',
+                             vmin=max(0.0, float(self.lower_scale_value)),
+                             vmax=min(1.0, float(self.upper_scale_value)))
+            self.new_colour_image_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
+            self.new_colour_image_graph.set_tight_layout(True)
+            self.new_colour_image = FigureCanvasTkAgg(self.new_colour_image_graph, master=self.root)
+            self.new_colour_image.draw()
+            self.new_colour_image.get_tk_widget().grid(column=0, row=2, columnspan=4, rowspan=4, ipady=15, ipadx=15)
 
     # Commands (Callbacks)
     def __update_to_wl(self):

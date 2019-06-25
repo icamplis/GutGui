@@ -149,13 +149,13 @@ class ModuleListener:
                 # todo: ask Alex what WL data is wrt to notebook
                 new_data = None
             elif display_mode == IDX:
-                new_data = self._get_analysis(self.current_result_path).get_index()
+                new_data = self._get_analysis(self.current_result_path).get_masked_index()
         else:
             if display_mode == WL:
                 # todo: ask Alex what WL data is wrt to notebook
                 new_data = None
             elif display_mode == IDX:
-                new_data = self._get_analysis(self.current_result_path).get_masked_index()
+                new_data = self._get_analysis(self.current_result_path).get_index()
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
     def _broadcast_to_histogram(self):
