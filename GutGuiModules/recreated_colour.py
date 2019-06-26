@@ -142,16 +142,11 @@ class RecColour:
                                               inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING RECREATED IMAGE...")
-            self.recreated_image_graph = Figure(figsize=(3, 3))
-            self.axes = self.recreated_image_graph.add_subplot(111)
-            self.axes.imshow(self.recreated_image_data[:,:], cmap='jet',
-                             vmin=max(0.0, float(self.lower_scale_value)),
-                             vmax=min(1.0, float(self.upper_scale_value)))
-            self.recreated_image_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
-            self.recreated_image_graph.set_tight_layout(True)
-            self.recreated_image = FigureCanvasTkAgg(self.recreated_image_graph, master=self.root)
-            self.recreated_image.draw()
-            self.recreated_image.get_tk_widget().grid(column=0, row=2, columnspan=4, rowspan=4, ipady=15, ipadx=15)
+            self.recreated_image = make_image(self.root, self.recreated_image_data, row=2, column=0,
+                                               columnspan=4, rowspan=4,
+                                               lower_scale_value=self.lower_scale_value,
+                                               upper_scale_value=self.upper_scale_value,
+                                               color_rgb=PASTEL_BLUE_RGB)
 
     # Commands (Callbacks)
     def __update_to_sto2(self):

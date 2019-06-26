@@ -61,7 +61,7 @@ def make_text(window, content, row, column, padx=0, pady=0, height=1, width=2,
     text.grid(row=row, column=column, padx=padx, pady=pady, columnspan=columnspan, rowspan=rowspan)
     return text
 
-def make_listbox(window, input, row, column, padx=0, pady=0,
+def make_listbox(window, row, column, padx=0, pady=0,
                  highlightthickness=0, columnspan=1,  rowspan=1):
     listbox = Listbox(window, width=15, highlightthickness=highlightthickness, selectmode=SINGLE)
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
@@ -75,9 +75,23 @@ def make_entry(window, row, column, width, columnspan=1, pady=0,
 
 def make_checkbox(window, text, row, column, var, columnspan=1,
                   inner_padx=1, inner_pady=1, outer_padx=0, outer_pady=0, bg="yellow", sticky=W+N+S+E):
-    checkbox = Checkbutton(window, text=text, variable=var, padx=inner_padx, pady=inner_pady, bg=bg, width=2)
+    checkbox = Checkbutton(window, text=text, variable=var,padx=inner_padx, pady=inner_pady, bg=bg, width=2)
     checkbox.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, sticky=sticky, columnspan=columnspan)
     return checkbox
+
+def make_image(window, image_data, row, column, columnspan, rowspan,
+               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=3):
+    graph = Figure(figsize=(figwidth, figheight))
+    axes = graph.add_subplot(111)
+    axes.imshow(image_data[:,:], cmap='jet',
+                vmin=max(0.0, float(lower_scale_value)),
+                vmax=min(1.0, float(upper_scale_value)))
+    graph.patch.set_facecolor(rgb_to_rgba(color_rgb))
+    graph.set_tight_layout('True')
+    image = FigureCanvasTkAgg(graph, master=window)
+    image.draw()
+    image.get_tk_widget().grid(column=column, row=row, columnspan=columnspan, rowspan=rowspan)
+    return image
 
 def rgb_to_rgba(rgb):
     r = rgb[0]/255
