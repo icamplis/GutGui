@@ -91,7 +91,14 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
     image = FigureCanvasTkAgg(graph, master=window)
     image.draw()
     image.get_tk_widget().grid(column=column, row=row, columnspan=columnspan, rowspan=rowspan)
-    return image
+    return graph, image
+
+def make_popup_image(graph, graphsize=(8,8)):
+    window = Toplevel()
+    graph.set_size_inches(graphsize[0], graphsize[1])
+    image = FigureCanvasTkAgg(graph, master=window)
+    image.draw()
+    image.get_tk_widget().grid(column=0, row=0)
 
 def rgb_to_rgba(rgb):
     r = rgb[0]/255

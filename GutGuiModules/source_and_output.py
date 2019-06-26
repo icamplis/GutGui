@@ -83,7 +83,7 @@ class SourceAndOutput:
         (data_cube, dc_path) = self.__process_data_cube()
         concat_dc_path = os.path.basename(os.path.normpath(dc_path))
         if dc_path in self.data_cube_paths:
-            messagebox.showinfo("Error", "That data cube has already been added.")
+            messagebox.showerror("Error", "That data cube has already been added.")
         else:
             # Add data cube to src and output store
             self.data_cube_paths.append(dc_path)
@@ -105,7 +105,7 @@ class SourceAndOutput:
         if path == '':
             return
         if path[-4:] != ".dat":
-            messagebox.showinfo("Error", "That's not a .dat file!")
+            messagebox.showerror("Error", "That's not a .dat file!")
             return
         else:
             data = np.fromfile(path, dtype='>f')  # returns 1D array and reads file in big-endian binary format

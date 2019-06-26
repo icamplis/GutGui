@@ -35,9 +35,9 @@ class Histogram:
         self.save_as_excel_checkbox = None
         self.save_as_excel_checkbox_value = IntVar()
 
-        self.interactive_histogram = None
+        self.interactive_histogram_graph = None
         self.axes = None
-        self.histogram_canvas = None
+        self.interactive_histogram = None
 
         self.maximum_text = None
         self.maximum_input = None
@@ -133,16 +133,17 @@ class Histogram:
     def _build_interactive_histogram(self):
         # TODO: figure out how to set the bin width instead of the number of bins
         #       Also, figure out a right step size for the data cube
-        self.interactive_histogram = Figure(figsize=(3.5, 2.5))
-        self.axes = self.interactive_histogram.add_subplot(111)
+        self.interactive_histogram_graph = Figure(figsize=(3.5, 2.5))
+        self.axes = self.interactive_histogram_graph.add_subplot(111)
         self.axes.hist(self.flattened_data, bins=self.step_size_value)
-        self.interactive_histogram.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
-        self.interactive_histogram.set_tight_layout(True)
+        self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
+        self.interactive_histogram_graph.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
         self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
-        self.histogram_canvas = FigureCanvasTkAgg(self.interactive_histogram, master=self.root)
-        self.histogram_canvas.draw()
-        self.histogram_canvas.get_tk_widget().grid(column=0, row=1, columnspan=3, rowspan=7, ipady=5, ipadx=0)
+        self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
+        self.interactive_histogram.draw()
+        self.interactive_histogram.get_tk_widget().grid(column=0, row=1, columnspan=3, rowspan=7, ipady=5, ipadx=0)
+        self.interactive_histogram.get_tk_widget().bind('<Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)
     def __update_maximum(self):
@@ -173,3 +174,6 @@ class Histogram:
     def __update_step_size(self, event):
         self.step_size_value = int(self.step_size_input.get())
         self._build_interactive_histogram()
+
+    def __pop_up_image(self, event):
+        make_popup_image(self.interactive_histogram_graph)

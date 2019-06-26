@@ -142,11 +142,12 @@ class RecColour:
                                               inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING RECREATED IMAGE...")
-            self.recreated_image = make_image(self.root, self.recreated_image_data, row=2, column=0,
+            (self.recreated_image_graph, self.recreated_image) = make_image(self.root, self.recreated_image_data, row=2, column=0,
                                                columnspan=4, rowspan=4,
                                                lower_scale_value=self.lower_scale_value,
                                                upper_scale_value=self.upper_scale_value,
                                                color_rgb=PASTEL_BLUE_RGB)
+            self.recreated_image.get_tk_widget().bind('<Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)
     def __update_to_sto2(self):
@@ -188,3 +189,6 @@ class RecColour:
     def __update_scale_lower(self, event):
         self.lower_scale_value = float(self.lower_scale_input.get())
         self._build_recreated_image()
+
+    def __pop_up_image(self, event):
+        make_popup_image(self.recreated_image_graph)
