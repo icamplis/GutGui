@@ -24,7 +24,7 @@ class ModuleListener:
         self.mask = None
 
         # DIAGRAM
-        self.is_masked = False #  TODO: uncomment once diagram is placed back in GUI
+        self.is_masked = False
 
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod

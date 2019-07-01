@@ -1,12 +1,14 @@
 from GutGuiModules.utility import *
 import tkinter as tk
+import numpy as np
+from matplotlib.offsetbox import AnchoredText
 
 class Histogram:
     def __init__(self, histogram_frame, listener):
         self.root = histogram_frame
         self.listener = listener
 
-        self.flattened_data = [0, 0, 1, 1, 1, 3, 3, 3, 3, 3] # x_vals
+        self.flattened_data = [0, 0, 1, 1, 1, 3, 3, 3, 3, 3, 1, 3, 4, 5, 6, 3, 7, 8,9 ,5 , 6, 7, 9, 3, 4, 7, 1, 2, 10, 12, 42, 31, 21, 12, 21, 31, 30, 42, 21, 22, 2] # x_vals
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -23,7 +25,7 @@ class Histogram:
 
         self.step_size_text = None
         self.step_size_input = None
-        self.step_size_value = None
+        self.step_size_value = 1 # TODO: find a good starting stepsize value
 
         self.save_label = None
         self.save_checkbox = None
@@ -37,7 +39,10 @@ class Histogram:
 
         self.interactive_histogram_graph = None
         self.axes = None
+        self.axes2 = None
         self.interactive_histogram = None
+        self.median = None
+        self.median_text = None
 
         self.maximum_text = None
         self.maximum_input = None
@@ -70,12 +75,8 @@ class Histogram:
         self.save_checkbox.deselect()
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1,
-                                              inner_padx=10, inner_pady=5,
-                                              outer_padx=(10, 16), outer_pady=(0, 20))
-        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=8, column=1,
-                                                    var=self.save_wo_scale_checkbox_value, sticky=NE,
-                                                    inner_padx=0, inner_pady=0, outer_padx=(0,12))
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, inner_padx=10, inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 20))
+        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=8, column=1, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0,12))
         self.save_wo_scale_checkbox.deselect()
 
     def _build_save_as_excel(self):
@@ -103,10 +104,8 @@ class Histogram:
         self.selection_input.bind('<Return>', self.__update_selected)
 
         # x upper
-        self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),
-                                            column=3, row=5, width=11, columnspan=1, pady=(0, 10))
-        self.x_upper_scale_input = make_entry(self.root, row=5, column=4, width=5,
-                                              pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=5, width=11, columnspan=1, pady=(0, 10))
+        self.x_upper_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_upper_scale_input.bind('<Return>', self.__update_scale_x_upper)
 
         # x lower
@@ -131,15 +130,26 @@ class Histogram:
         self.step_size_input.bind('<Return>', self.__update_step_size)
 
     def _build_interactive_histogram(self):
-        # TODO: figure out how to set the bin width instead of the number of bins
-        #       Also, figure out a right step size for the data cube
+        # calc bins
+        bins = bins=range(min(self.flattened_data), max(self.flattened_data) + self.step_size_value, self.step_size_value)
+        # create canvas
         self.interactive_histogram_graph = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_histogram_graph.add_subplot(111)
-        self.axes.hist(self.flattened_data, bins=self.step_size_value)
         self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
+        # plot histogram
+        self.axes.hist(self.flattened_data, bins=bins, align='left')
+        self.median = np.median(self.flattened_data)
+        self.median_text = AnchoredText("Median = " + str(self.median), loc=1, frameon=False)
+        self.axes.add_artist(self.median_text)
+        # plot boxplot
+        self.axes2 = self.axes.twinx()
+        self.axes2.boxplot(self.flattened_data, vert=False, sym='')
+        self.axes2.get_yaxis().set_visible(False)
+        # set axes
         self.interactive_histogram_graph.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
         self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+        # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
         self.interactive_histogram.get_tk_widget().grid(column=0, row=1, columnspan=3, rowspan=7, ipady=5, ipadx=0)

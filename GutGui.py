@@ -40,9 +40,9 @@ def main():
     listener.attach_module(NEW_COLOUR, new_color_module)
 
     # diagram
-    # (diagram_frame, diagram_label) = frame_and_label(image_diagram, "Diagram",PASTEL_ORANGE_RGB, 13, 0, 1, 2, labelspan=2)
-    # diagram_module = Diagram(diagram_frame, listener)
-    # listener.attach_module(DIAGRAM, diagram_module)
+    (diagram_frame, diagram_label) = frame_and_label(image_diagram, "Diagram",PASTEL_ORANGE_RGB, 0, 4, 14, 1, labelspan=1)
+    diagram_module = Diagram(diagram_frame, listener)
+    listener.attach_module(DIAGRAM, diagram_module)
 
     # histogram
     (histogram_frame, histogram_label) = frame_and_label(image_diagram, "Histogram", PASTEL_BLUE_RGB, 0, 2, 7, 2, labelspan=5)
