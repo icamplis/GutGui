@@ -38,7 +38,7 @@ class ModuleListener:
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
             self.index = self.modules[ANALYSIS_AND_FORM].get_index()
             self.mask = self.modules[ORIGINAL_COLOUR].get_mask()
-            self.iswholeimage = self.modules[DIAGRAM].get_iswholeimage()
+            self.iswholeimage = self.modules[DIAGRAM].get_is_masked()
             self._make_new_analysis(dc_path, data_cube,
                                     self.normal, self.absorbance, self.wavelength, self.index, self.mask)
 

@@ -19,6 +19,9 @@ class Diagram:
 
         self._init_widget()
 
+    def get_is_masked(self):
+        return self.is_masked
+
     def get_whole_image_checkbox_value(self):
         return self.whole_image_checkbox_value
 

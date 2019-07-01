@@ -134,9 +134,9 @@ class Histogram:
         self.interactive_histogram_graph = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_histogram_graph.add_subplot(111)
         self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
-        if self.flattened_data != None:
+        if self.flattened_data is not None:
             # calc bins
-            bins = bins=range(min(self.flattened_data), max(self.flattened_data) + self.step_size_value, self.step_size_value)
+            bins = range(min(self.flattened_data), max(self.flattened_data) + self.step_size_value, self.step_size_value)
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins, align='left')
             self.median = np.median(self.flattened_data)
