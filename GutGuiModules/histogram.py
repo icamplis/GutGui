@@ -8,7 +8,7 @@ class Histogram:
         self.root = histogram_frame
         self.listener = listener
 
-        self.flattened_data = [0, 0, 1, 1, 1, 3, 3, 3, 3, 3, 1, 3, 4, 5, 6, 3, 7, 8,9 ,5 , 6, 7, 9, 3, 4, 7, 1, 2, 10, 12, 42, 31, 21, 12, 21, 31, 30, 42, 21, 22, 2] # x_vals
+        self.flattened_data = None
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -130,25 +130,26 @@ class Histogram:
         self.step_size_input.bind('<Return>', self.__update_step_size)
 
     def _build_interactive_histogram(self):
-        # calc bins
-        bins = bins=range(min(self.flattened_data), max(self.flattened_data) + self.step_size_value, self.step_size_value)
         # create canvas
         self.interactive_histogram_graph = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_histogram_graph.add_subplot(111)
         self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
-        # plot histogram
-        self.axes.hist(self.flattened_data, bins=bins, align='left')
-        self.median = np.median(self.flattened_data)
-        self.median_text = AnchoredText("Median = " + str(self.median), loc=1, frameon=False)
-        self.axes.add_artist(self.median_text)
-        # plot boxplot
-        self.axes2 = self.axes.twinx()
-        self.axes2.boxplot(self.flattened_data, vert=False, sym='')
-        self.axes2.get_yaxis().set_visible(False)
-        # set axes
-        self.interactive_histogram_graph.set_tight_layout(True)
-        self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
-        self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+        if self.flattened_data != None:
+            # calc bins
+            bins = bins=range(min(self.flattened_data), max(self.flattened_data) + self.step_size_value, self.step_size_value)
+            # plot histogram
+            self.axes.hist(self.flattened_data, bins=bins, align='left')
+            self.median = np.median(self.flattened_data)
+            self.median_text = AnchoredText("Median = " + str(self.median), loc=1, frameon=False)
+            self.axes.add_artist(self.median_text)
+            # plot boxplot
+            self.axes2 = self.axes.twinx()
+            self.axes2.boxplot(self.flattened_data, vert=False, sym='')
+            self.axes2.get_yaxis().set_visible(False)
+            # set axes
+            self.interactive_histogram_graph.set_tight_layout(True)
+            self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
+            self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
         # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()

@@ -9,7 +9,7 @@ class AbsorptionSpec:
         self.listener = listener
 
         self.x_vals = np.arange(500, 1000, 5) # [500, 505, 510, ... , 995, 1000]
-        self.absorption_spec = range(100)  # PLACEHOLDER before actual data is gained
+        self.absorption_spec = None  # PLACEHOLDER before actual data is gained
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -128,14 +128,19 @@ class AbsorptionSpec:
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
 
     def _build_interactive_absorption_spec(self):
-        # TODO: Need to build absorption spec according to notebook
+        # create canvas
         self.interactive_absorption_spec_graph = Figure(figsize=(3.5, 2.5))
         self.axes = self.interactive_absorption_spec_graph.add_subplot(111)
-        self.axes.plot(self.x_vals, self.absorption_spec, '-', lw=0.5)
         self.interactive_absorption_spec_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
+        # plot absorption spec
+        # TODO: Need to build absorption spec according to notebook
+        if self.absorption_spec != None:
+            self.axes.plot(self.x_vals, self.absorption_spec, '-', lw=0.5)
+        # set axes
         self.interactive_absorption_spec_graph.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
         self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+        # draw figure
         self.interactve_absorption_spec = FigureCanvasTkAgg(self.interactive_absorption_spec_graph, master=self.root)
         self.interactve_absorption_spec.draw()
         self.interactve_absorption_spec.get_tk_widget().grid(column=0, row=1, columnspan=3, rowspan=6, ipady=5, ipadx=0)
