@@ -98,23 +98,22 @@ class SourceAndOutput:
         dc_path = [sub_dir + "/" + i for i in contents if ".dat" in i]  # takes first data cube it finds
         if len(dc_path) > 0:
             dc_path = dc_path[0]
+            if dc_path in self.data_paths:
+                messagebox.showerror("Error", "That data has already been added.")
+            else:
+                data_cube = self.__process_data_cube(dc_path)
 
-        if dc_path in self.data_paths:
-            messagebox.showerror("Error", "That data has already been added.")
-        else:
-            data_cube = self.__process_data_cube(dc_path)
+                # Add the new data to current class
+                self.data_paths.append(dc_path)
+                self.data_cubes.append(data_cube)
 
-            # Add the new data to current class
-            self.data_paths.append(dc_path)
-            self.data_cubes.append(data_cube)
+                # Display the data cube
+                concat_path = os.path.basename(os.path.normpath(dc_path))
+                self.selection_listbox.insert(END, concat_path)
+                self.selection_listbox.config(width=0)
 
-            # Display the data cube
-            concat_path = os.path.basename(os.path.normpath(dc_path))
-            self.selection_listbox.insert(END, concat_path)
-            self.selection_listbox.config(width=0)
-
-            # Add data cube to listener for analysis
-            self.listener.submit_data_cube(data_cube, dc_path)
+                # Add data cube to listener for analysis
+                self.listener.submit_data_cube(data_cube, dc_path)
 
     def __process_data_cube(self, path):
         if path == '' or path is None:
