@@ -175,7 +175,6 @@ class ModuleListener:
         self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
 
     def _get_analysis(self, path):
-        print(self.results)
         if self.results[path] is not None:
             return self.results[path]
 
