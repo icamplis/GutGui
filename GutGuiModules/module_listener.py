@@ -11,6 +11,7 @@ class ModuleListener:
         # {data_cube_path: analysis object}
         self.results = {}
         self.current_result_path = None
+        self.selected_paths = []
         self.output_folder = None  # init with None intentionally
 
         # ANALYSIS AND FORM
@@ -25,6 +26,12 @@ class ModuleListener:
 
         # DIAGRAM
         self.is_masked = False
+
+    def get_selected_paths(self):
+        return self.selected_paths
+
+    def get_results(self):
+        return self.results
 
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
@@ -47,13 +54,12 @@ class ModuleListener:
         self.current_result_path = dc_path
         self._broadcast_new_data()
 
+    def update_selected_paths(self, selected_paths):
+        self.selected_paths = selected_paths
+
     def delete_analysis_result(self, path):
         logging.debug("DELETING DATA CUBE: " + path)
         self.results[path] = None
-
-    # def submit_output_folder(self, path):
-    #     logging.debug("NEW OUTPUT FOLDER: " + path)
-    #     self.output_folder = path
 
     def submit_normal(self, new_normal):
         assert type(new_normal) == bool
@@ -158,7 +164,6 @@ class ModuleListener:
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
     def _broadcast_to_histogram(self):
-        # TODO: Check with Alex that this is actually for the data cube itself and not absorbance or something
         new_data_cube = self._get_analysis(self.current_result_path).get_data_cube()
         self.modules[HISTOGRAM].update_histogram(new_data_cube)
 
@@ -170,7 +175,6 @@ class ModuleListener:
         self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
 
     def _get_analysis(self, path):
-        print(self.results)
         if self.results[path] is not None:
             return self.results[path]
 

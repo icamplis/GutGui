@@ -132,10 +132,9 @@ class AbsorptionSpec:
         self.axes = self.interactive_absorption_spec_graph.add_subplot(111)
         self.interactive_absorption_spec_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
         # plot absorption spec
-        # TODO: Need to build absorption spec according to notebook
         if len(self.absorption_spec) != 0:
             self.axes.plot(self.x_vals, self.absorption_spec, '-', lw=0.5)
-            self.axes.grid(linestyle=':', linewidth='0.5')
+            self.axes.grid(linestyle=':', linewidth=0.5)
         # set axes
         self.interactive_absorption_spec_graph.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
