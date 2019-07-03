@@ -26,29 +26,6 @@ class ModuleListener:
         # DIAGRAM
         self.is_masked = False
 
-        # SAVES
-        # by default, nothing is saved
-        self.saves = {
-            WHOLE_IMAGE_SAVE: False,
-            MASKED_IMAGE_SAVE: False,
-            STO2_DATA: False,
-            NIR_DATA: False,
-            TWI_DATA: False,
-            THI_DATA: False,
-            REC_IMAGE: False,
-            REC_IMAGE_WO_SCALE: False,
-            WL_DATA: False,
-            IDX_DATA: False,
-            NEW_IMAGE: False,
-            NEW_IMAGE_WO_SCALE: False,
-            HISTOGRAM_IMAGE: False,
-            HISTOGRAM_IMAGE_WO_SCALE: False,
-            HISTOGRAM_EXCEL: False,
-            ABSORPTION_SPEC_IMAGE: False,
-            ABSORPTION_SPEC_IMAGE_WO_SCALE: False,
-            ABSORPTION_SPEC_EXCEL: False
-        }
-
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
 
@@ -73,10 +50,6 @@ class ModuleListener:
     def delete_analysis_result(self, path):
         logging.debug("DELETING DATA CUBE: " + path)
         self.results[path] = None
-
-    # def submit_output_folder(self, path):
-    #     logging.debug("NEW OUTPUT FOLDER: " + path)
-    #     self.output_folder = path
 
     def submit_normal(self, new_normal):
         assert type(new_normal) == bool
