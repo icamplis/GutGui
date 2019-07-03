@@ -82,37 +82,37 @@ class Histogram:
         self.save_as_excel_checkbox.deselect()
 
     def _build_scale(self):
-        # upper
-        self.upper_text = make_text(self.root, content="Upper: ", 
-            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=2, width=7, columnspan=1, pady=(0, 10))
-        self.upper_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.upper_input.bind('<Return>', self.__update_upper)
-
         # lower
         self.lower_text = make_text(self.root, content="Lower: ", 
-            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=3, width=7, columnspan=1, pady=(0, 10))
-        self.lower_input = make_entry(self.root, row=3, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=2, width=7, columnspan=1, pady=(0, 10))
+        self.lower_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.lower_input.bind('<Return>', self.__update_lower)
 
-        # x upper
-        self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=4, width=11, columnspan=1, pady=(0, 10))
-        self.x_upper_scale_input = make_entry(self.root, row=4, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.x_upper_scale_input.bind('<Return>', self.__update_scale_x_upper)
+        # upper
+        self.upper_text = make_text(self.root, content="Upper: ", 
+            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=1, width=7, columnspan=1, pady=(0, 10))
+        self.upper_input = make_entry(self.root, row=1, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.upper_input.bind('<Return>', self.__update_upper)
 
         # x lower
-        self.x_lower_scale_text = make_text(self.root, content="Min x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=5, width=11, columnspan=1, pady=(0, 10))
-        self.x_lower_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_lower_scale_text = make_text(self.root, content="Min x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=4, width=11, columnspan=1, pady=(0, 10))
+        self.x_lower_scale_input = make_entry(self.root, row=4, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_lower_scale_input.bind('<Return>', self.__update_scale_x_lower)
 
-        # y upper
-        self.y_upper_scale_text = make_text(self.root, content="Max y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=6, width=11, columnspan=1, pady=(0, 10))
-        self.y_upper_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.y_upper_scale_input.bind('<Return>', self.__update_scale_y_upper)
+         # x upper
+        self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=5, width=11, columnspan=1, pady=(0, 10))
+        self.x_upper_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_upper_scale_input.bind('<Return>', self.__update_scale_x_upper)
 
         # y lower
-        self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),column=3, row=7, width=11, columnspan=1, pady=(0, 20))
-        self.y_lower_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 20), padx=(0, 15),columnspan=1, command=self.__update_scale_y_lower)
+        self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),column=3, row=6, width=11, columnspan=1, pady=(0, 20))
+        self.y_lower_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 20), padx=(0, 15),columnspan=1, command=self.__update_scale_y_lower)
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
+
+        # y upper
+        self.y_upper_scale_text = make_text(self.root, content="Max y val: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=7, width=11, columnspan=1, pady=(0, 10))
+        self.y_upper_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.y_upper_scale_input.bind('<Return>', self.__update_scale_y_upper)
 
     def _build_step_size(self):
         self.step_size_text = make_text(self.root, content="Stepsize: ", 

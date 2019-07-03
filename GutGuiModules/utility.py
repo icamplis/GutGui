@@ -55,10 +55,10 @@ def make_label(window, text, row, column,
     return label
 
 def make_text(window, content, row, column, padx=0, pady=0, height=1, width=2,
-              highlightthickness=0, bg="white", columnspan=1,  rowspan=1):
+              highlightthickness=0, bg="white", columnspan=1,  rowspan=1, state=DISABLED):
     text = Text(window, bg=bg, height=height, width=width, highlightthickness=highlightthickness)
     text.insert(END, content)
-    text.config(state=DISABLED)
+    text.config(state=state)
     text.grid(row=row, column=column, padx=padx, pady=pady, columnspan=columnspan, rowspan=rowspan)
     return text
 
