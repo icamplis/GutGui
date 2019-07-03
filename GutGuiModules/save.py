@@ -17,10 +17,10 @@ class Save:
         self._build_save_all_button()
 
     def _build_save_specific_button(self):
-        self.save_specific_button = make_button(self.root, text="Save Selected", command=self._save_specific, row=1, column=0, outer_pady=0, outer_padx=2, width=10)
+        self.save_specific_button = make_button(self.root, text="Save Selected", command=self._save_specific, row=1, column=0, outer_pady=0, outer_padx=15, width=10)
 
     def _build_save_all_button(self):
-        self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=1, column=2, outer_pady=0, outer_padx=5, width=10)
+        self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=2, column=0, outer_pady=5, outer_padx=15, width=10)
 
     def _save_specific(self):
         print('save for specific placeholder')
