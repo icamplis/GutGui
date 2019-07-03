@@ -51,9 +51,9 @@ class ModuleListener:
         logging.debug("DELETING DATA CUBE: " + path)
         self.results[path] = None
 
-    def submit_output_folder(self, path):
-        logging.debug("NEW OUTPUT FOLDER: " + path)
-        self.output_folder = path
+    # def submit_output_folder(self, path):
+    #     logging.debug("NEW OUTPUT FOLDER: " + path)
+    #     self.output_folder = path
 
     def submit_normal(self, new_normal):
         assert type(new_normal) == bool

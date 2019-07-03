@@ -23,7 +23,7 @@ class SourceAndOutput:
 
         # Data
         self.data_cubes = []
-        self.data_cube_paths = []
+        self.data_paths = []
         self.path = ""
         self.data_cube_path_label = None
         self.path_label = None
@@ -41,7 +41,7 @@ class SourceAndOutput:
 
     def get_selected_data_cube_path(self):
         index = self.selection_listbox.curselection()[0]
-        return self.data_cube_paths[index]
+        return self.data_paths[index]
 
     def get_path(self):
         return self.path
@@ -49,22 +49,26 @@ class SourceAndOutput:
     def _get_data_cube_by_index(self, index):
         return deepcopy(self.data_cubes[index])
 
+    def get_selected_data_paths(self):
+        selecteds = self.selection_listbox.curselection()
+        selected_data_paths = [self.data_paths[i] for i in selecteds]
+        return selected_data_paths
+
     # Helpers
     def _init_widgets(self):
-        self._build_select_dc_button()
-        self._build_select_od_button()
+        self._build_select_superdir_button()
+        self._build_select_dir_button()
+        # self._build_select_od_button()
         self._build_selection_box()
         self._build_delete_button()
 
-    def _build_select_dc_button(self):
-        self.select_data_cube_button = make_button(self.root, text="Select Data Cube", command=self.__set_data_cube,
+    def _build_select_superdir_button(self):
+        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory", command=self.__add_data_cube_dirs,
                                                    inner_padx=10, inner_pady=10, outer_padx=15, row=1, column=0, width=15)
 
-    def _build_select_od_button(self):
-        self.select_output_dir_button = make_button(self.root, text="Select Output Folder",
-                                                    command=self.__set_output_dir,
-                                                    inner_padx=10, inner_pady=10, outer_padx=15,
-                                                    row=2, column=0, width=15)
+    def _build_select_dir_button(self):
+        self.select_data_cube_button = make_button(self.root, text=" Select Data Directory", command=self.__add_data_cube_dir,
+                                                   inner_padx=10, inner_pady=10, outer_padx=15, row=2, column=0, width=15)
 
     def _build_selection_box(self):
         self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=3, padx=(0, 15))
@@ -79,38 +83,49 @@ class SourceAndOutput:
         dc_path = self.get_selected_data_cube_path()
         self.listener.set_data_cube(dc_path)
 
-    def __set_data_cube(self):
-        (data_cube, dc_path) = self.__process_data_cube()
-        concat_dc_path = os.path.basename(os.path.normpath(dc_path))
-        if dc_path in self.data_cube_paths:
-            messagebox.showerror("Error", "That data cube has already been added.")
-        else:
-            # Add data cube to src and output store
-            self.data_cube_paths.append(dc_path)
-            self.data_cubes.append(data_cube)
-            self.selection_listbox.insert(END, concat_dc_path)
-            self.selection_listbox.config(width=0)  # resizes to widest path
+    def __add_data_cube_dirs(self):
+        super_dir = self.__get_path_to_dir("Please select folder containing all the data folders.")
+        sub_dirs = self.__get_sub_folder_paths(super_dir)
+        for sub_dir in sub_dirs:
+            self.__add_data_cube(sub_dir)
 
-            # Add data cube to listener
+    def __add_data_cube_dir(self):
+        dc_dir_path = self.__get_path_to_dir("Please select a folder containing data.")
+        self.__add_data_cube(dc_dir_path)
+
+    def __add_data_cube(self, sub_dir):
+        contents = os.listdir(sub_dir)
+        dc_path = [sub_dir + "/" + i for i in contents if ".dat" in i]  # takes first data cube it finds
+        if len(dc_path) > 0:
+            dc_path = dc_path[0]
+
+        if dc_path in self.data_paths:
+            messagebox.showerror("Error", "That data has already been added.")
+        else:
+            data_cube = self.__process_data_cube(dc_path)
+
+            # Add the new data to current class
+            self.data_paths.append(dc_path)
+            self.data_cubes.append(data_cube)
+
+            # Display the data cube
+            concat_path = os.path.basename(os.path.normpath(dc_path))
+            self.selection_listbox.insert(END, concat_path)
+            self.selection_listbox.config(width=0)
+
+            # Add data cube to listener for analysis
             self.listener.submit_data_cube(data_cube, dc_path)
 
-    def __set_output_dir(self):
-        self.path = self.__get_path_to_dir("Select a folder for the output to be stored.")
-        self.path_label = make_label(self.root, "Using Output Folder at: " + str(self.path),
-                                               row=3, column=0, wraplength=160, outer_pady=(2, 5), outer_padx=(15, 0))
-        self.listener.submit_output_folder(self.path)
-
-    def __process_data_cube(self):
-        path = self.__get_path_to_file("Select a data cube (ending in .dat)")
-        if path == '':
-            return
+    def __process_data_cube(self, path):
+        if path == '' or path is None:
+            return None
         if path[-4:] != ".dat":
             messagebox.showerror("Error", "That's not a .dat file!")
-            return
+            return None
         else:
             data = np.fromfile(path, dtype='>f')  # returns 1D array and reads file in big-endian binary format
             data_cube = data[3:].reshape(640, 480, 100)  # reshape to data cube and ignore first 3 values
-            return data_cube, path
+            return data_cube
 
     def __get_path_to_file(self, title):
         path = filedialog.askopenfilename(parent=self.root, title=title)
@@ -124,6 +139,12 @@ class SourceAndOutput:
         if self.selection_listbox.size() > 0 and self.selection_listbox.curselection():
             index = self.selection_listbox.curselection()[0]
             self.selection_listbox.delete(index)
-            self.listener.delete_analysis_result(self.data_cube_paths[index])
-            self.data_cube_paths.pop(index)
+            self.listener.delete_analysis_result(self.data_paths[index])
+            self.data_paths.pop(index)
             self.data_cubes.pop(index)
+
+    def __get_sub_folder_paths(self, path_to_main_folder):
+        contents = os.listdir(path_to_main_folder)
+        # Adds the path to the main folder in front for traversal
+        sub_folders = [path_to_main_folder + "/" + i for i in contents if bool(re.match('[\d/-_]+$', i))]
+        return sub_folders
