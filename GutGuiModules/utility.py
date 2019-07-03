@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.ttk import Notebook
 from GutGuiModules.constants import *
+import numpy as np
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -63,7 +64,7 @@ def make_text(window, content, row, column, padx=0, pady=0, height=1, width=2,
 
 def make_listbox(window, row, column, padx=0, pady=0,
                  highlightthickness=0, columnspan=1,  rowspan=1):
-    listbox = Listbox(window, width=15, highlightthickness=highlightthickness, selectmode=SINGLE)
+    listbox = Listbox(window, width=15, highlightthickness=highlightthickness, selectmode=EXTENDED)
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 
@@ -80,10 +81,10 @@ def make_checkbox(window, text, row, column, var, columnspan=1,
     return checkbox
 
 def make_image(window, image_data, row, column, columnspan, rowspan,
-               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=3):
+               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=2):
     graph = Figure(figsize=(figwidth, figheight))
     axes = graph.add_subplot(111)
-    axes.imshow(image_data[:,:], cmap='jet',
+    axes.imshow(image_data[:,:], origin='lower', cmap='jet',
                 vmin=max(0.0, float(lower_scale_value)),
                 vmax=min(1.0, float(upper_scale_value)))
     graph.patch.set_facecolor(rgb_to_rgba(color_rgb))

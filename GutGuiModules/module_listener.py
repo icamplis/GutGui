@@ -38,7 +38,7 @@ class ModuleListener:
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
             self.index = self.modules[ANALYSIS_AND_FORM].get_index()
             self.mask = self.modules[ORIGINAL_COLOUR].get_mask()
-            self.iswholeimage = self.modules[DIAGRAM].get_iswholeimage()
+            self.is_masked = self.modules[DIAGRAM].get_is_masked()
             self._make_new_analysis(dc_path, data_cube,
                                     self.normal, self.absorbance, self.wavelength, self.index, self.mask)
 
@@ -51,9 +51,9 @@ class ModuleListener:
         logging.debug("DELETING DATA CUBE: " + path)
         self.results[path] = None
 
-    def submit_output_folder(self, path):
-        logging.debug("NEW OUTPUT FOLDER: " + path)
-        self.output_folder = path
+    # def submit_output_folder(self, path):
+    #     logging.debug("NEW OUTPUT FOLDER: " + path)
+    #     self.output_folder = path
 
     def submit_normal(self, new_normal):
         assert type(new_normal) == bool
@@ -170,6 +170,7 @@ class ModuleListener:
         self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
 
     def _get_analysis(self, path):
+        print(self.results)
         if self.results[path] is not None:
             return self.results[path]
 
