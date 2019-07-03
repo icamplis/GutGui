@@ -11,6 +11,7 @@ class ModuleListener:
         # {data_cube_path: analysis object}
         self.results = {}
         self.current_result_path = None
+        self.selected_paths = []
         self.output_folder = None  # init with None intentionally
 
         # ANALYSIS AND FORM
@@ -25,6 +26,12 @@ class ModuleListener:
 
         # DIAGRAM
         self.is_masked = False
+
+    def get_selected_paths(self):
+        return self.selected_paths
+
+    def get_results(self):
+        return self.results
 
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
@@ -46,6 +53,9 @@ class ModuleListener:
         logging.debug("SELECTED DATA CUBE AT: " + dc_path)
         self.current_result_path = dc_path
         self._broadcast_new_data()
+
+    def update_selected_paths(self, selected_paths):
+        self.selected_paths = selected_paths
 
     def delete_analysis_result(self, path):
         logging.debug("DELETING DATA CUBE: " + path)

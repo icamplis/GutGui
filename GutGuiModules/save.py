@@ -2,6 +2,7 @@ from GutGuiModules.utility import *
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import os
 
 class Save:
     def __init__(self, save_frame, listener):
@@ -35,6 +36,7 @@ class Save:
             ABSORPTION_SPEC_IMAGE_WO_SCALE: False,
             ABSORPTION_SPEC_EXCEL: False
         }
+        self.current_output_path = ""
 
         self._init_widgets()
 
@@ -49,65 +51,158 @@ class Save:
         self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=1, column=2, outer_pady=0, outer_padx=5, width=10)
 
     def _save_specific(self):
-        print('save for specific placeholder')
-        #     TODO
+        for path, analysis in self.listener.get_results().items():
+            selected_paths = self.listener.get_selected_paths()
+            if path in selected_paths:
+                self._save_to_path(path)
 
     def _save_all(self):
-        print('save for all placeholder')
-        #     TODO
+        for path, analysis in self.listener.get_results().items():
+            self._save_to_path(path)
 
-    def __save_whole_image(self):
+    def _save_to_path(self, path):
+        self.current_output_path = os.path.dirname(path)
+
+        if self.saves[STO2_DATA]:
+            self.__save_sto2_data_and_image()
+
+        if self.saves[NIR_DATA]:
+            self.__save_nir_data_and_image()
+
+        if self.saves[TWI_DATA]:
+            self.__save_twi_data_and_image()
+
+        if self.saves[THI_DATA]:
+            self.__save_thi_data_and_image()
+
+        if self.saves[WL_DATA]:
+            self.__save_wl_data_and_image()
+
+        if self.saves[IDX_DATA]:
+            self.__save_idx_data_and_image()
+
+        if self.saves[HISTOGRAM_IMAGE] or \
+                self.saves[HISTOGRAM_IMAGE_WO_SCALE] or \
+                self.saves[HISTOGRAM_EXCEL]:
+            self.__save_histogram()
+
+        if self.saves[ABSORPTION_SPEC_IMAGE] or \
+                self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE] or \
+                self.saves[ABSORPTION_SPEC_EXCEL]:
+            self.__save_absorption_spec()
+
+    def __save_sto2_data_and_image(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
-    def __save_masked_image(self):
+    def __save_nir_data_and_image(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
-    def __save_sto2_data(self):
+    def __save_twi_data_and_image(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
-    def __save_nir_data(self):
+    def __save_thi_data_and_image(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
-    def __save_twi_data(self):
+    def __save_wl_data_and_image(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
-    def __save_thi_data(self):
+    def __save_idx_data_and_image(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
-    def __save_rec_image(self):
+    def __save_histogram(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save to excel:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
-    def __save_rec_image_wo_scale(self):
-        pass
-
-    def __save_wl_data(self):
-        pass
-
-    def __save_idx_data(self):
-        pass
-
-    def __save_new_image(self):
-        pass
-
-    def __save_new_image_wo_scale(self):
-        pass
-
-    def __save_histogram_image(self):
-        pass
-
-    def __save_histogram_image_wo_scale(self):
-        pass
-
-    def __save_histogram_excel(self):
-        pass
-
-    def __save_absorption_spec_image(self):
-        pass
-
-    def __save_absorption_spec_wo_scale(self):
-        pass
-
-    def __save_absorption_spec_excel(self):
+    def __save_absorption_spec(self):
+        # if save with scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save wo scale:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
+        # if save to excel:
+        #     if save whole image
+        #       todo
+        #     if save masked image
+        #       todo
         pass
 
     def __save_data(self, data, title, format=".csv"):

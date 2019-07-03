@@ -23,8 +23,7 @@ class SourceAndOutput:
 
         # Data
         self.data_cubes = []
-        self.data_paths = []
-        self.path = ""
+        self.data_cube_paths = []
         self.data_cube_path_label = None
         self.path_label = None
 
@@ -41,17 +40,14 @@ class SourceAndOutput:
 
     def get_selected_data_cube_path(self):
         index = self.selection_listbox.curselection()[0]
-        return self.data_paths[index]
-
-    def get_path(self):
-        return self.path
+        return self.data_cube_paths[index]
 
     def _get_data_cube_by_index(self, index):
         return deepcopy(self.data_cubes[index])
 
     def get_selected_data_paths(self):
         selecteds = self.selection_listbox.curselection()
-        selected_data_paths = [self.data_paths[i] for i in selecteds]
+        selected_data_paths = [self.data_cube_paths[i] for i in selecteds]
         return selected_data_paths
 
     # Helpers
@@ -81,7 +77,9 @@ class SourceAndOutput:
     # Commands (Callbacks)
     def __update_selected_data_cube(self, event):
         dc_path = self.get_selected_data_cube_path()
+        selected_paths = self.get_selected_data_paths()
         self.listener.set_data_cube(dc_path)
+        self.listener.update_selected_paths(selected_paths)
 
     def __add_data_cube_dirs(self):
         super_dir = self.__get_path_to_dir("Please select folder containing all the data folders.")
@@ -98,13 +96,13 @@ class SourceAndOutput:
         dc_path = [sub_dir + "/" + i for i in contents if ".dat" in i]  # takes first data cube it finds
         if len(dc_path) > 0:
             dc_path = dc_path[0]
-            if dc_path in self.data_paths:
+            if dc_path in self.data_cube_paths:
                 messagebox.showerror("Error", "That data has already been added.")
             else:
                 data_cube = self.__process_data_cube(dc_path)
 
                 # Add the new data to current class
-                self.data_paths.append(dc_path)
+                self.data_cube_paths.append(dc_path)
                 self.data_cubes.append(data_cube)
 
                 # Display the data cube
@@ -138,8 +136,8 @@ class SourceAndOutput:
         if self.selection_listbox.size() > 0 and self.selection_listbox.curselection():
             index = self.selection_listbox.curselection()[0]
             self.selection_listbox.delete(index)
-            self.listener.delete_analysis_result(self.data_paths[index])
-            self.data_paths.pop(index)
+            self.listener.delete_analysis_result(self.data_cube_paths[index])
+            self.data_cube_paths.pop(index)
             self.data_cubes.pop(index)
 
     def __get_sub_folder_paths(self, path_to_main_folder):
