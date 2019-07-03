@@ -83,11 +83,11 @@ class NewColour:
         self.idx_checkbox.deselect()
 
     def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=8, column=0, rowspan=2, outer_padx=(10, 0), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
+        self.save_label = make_label(self.root, "Save", row=8, column=0, rowspan=2, outer_padx=(10, 0), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
         self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 5))
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=2, columnspan=2, outer_padx=(0, 15), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=2, columnspan=2, outer_padx=(0, 15), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
         self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 10))
 
     def _build_upper_scale(self):
@@ -107,17 +107,11 @@ class NewColour:
     def _build_new_image(self):
         if self.new_colour_image_data is None:
             # Placeholder
-            self.new_colour_image = make_label(self.root, "new_colour image placeholder",
-                                              row=2, column=0, rowspan=4, columnspan=4,
-                                              inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
+            self.new_colour_image = make_label(self.root, "new_colour image placeholder",row=2, column=0, rowspan=4, columnspan=4,inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING NEW COLOUR IMAGE...")
-            (self.new_colour_image_graph, self.new_colour_image) = make_image(self.root, self.new_colour_image_data, row=2, column=0,
-                                               columnspan=4, rowspan=4,
-                                               lower_scale_value=self.lower_scale_value,
-                                               upper_scale_value=self.upper_scale_value,
-                                               color_rgb=PASTEL_ORANGE_RGB)
-            self.new_colour_image.get_tk_widget().bind('<Button-1>', self.__pop_up_image)
+            (self.new_colour_image_graph, self.new_colour_image) = make_image(self.root, self.new_colour_image_data, row=2, column=0,columnspan=4, rowspan=4,lower_scale_value=self.lower_scale_value,upper_scale_value=self.upper_scale_value, color_rgb=PASTEL_ORANGE_RGB)
+            self.new_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)
     def __update_to_wl(self):

@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.ttk import Notebook
 from GutGuiModules.constants import *
+import numpy as np
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -80,10 +81,10 @@ def make_checkbox(window, text, row, column, var, columnspan=1,
     return checkbox
 
 def make_image(window, image_data, row, column, columnspan, rowspan,
-               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=3):
+               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=2):
     graph = Figure(figsize=(figwidth, figheight))
     axes = graph.add_subplot(111)
-    axes.imshow(image_data[:,:], cmap='jet',
+    axes.imshow(image_data[:,:], origin='lower', cmap='jet',
                 vmin=max(0.0, float(lower_scale_value)),
                 vmax=min(1.0, float(upper_scale_value)))
     graph.patch.set_facecolor(rgb_to_rgba(color_rgb))
@@ -95,6 +96,7 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
 
 def make_popup_image(graph, graphsize=(8,8)):
     window = Toplevel()
+    window.geometry("+0+0")
     graph.set_size_inches(graphsize[0], graphsize[1])
     image = FigureCanvasTkAgg(graph, master=window)
     image.draw()
