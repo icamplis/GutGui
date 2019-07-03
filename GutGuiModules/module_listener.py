@@ -26,6 +26,29 @@ class ModuleListener:
         # DIAGRAM
         self.is_masked = False
 
+        # SAVES
+        # by default, nothing is saved
+        self.saves = {
+            WHOLE_IMAGE_SAVE: False,
+            MASKED_IMAGE_SAVE: False,
+            STO2_DATA: False,
+            NIR_DATA: False,
+            TWI_DATA: False,
+            THI_DATA: False,
+            REC_IMAGE: False,
+            REC_IMAGE_WO_SCALE: False,
+            WL_DATA: False,
+            IDX_DATA: False,
+            NEW_IMAGE: False,
+            NEW_IMAGE_WO_SCALE: False,
+            HISTOGRAM_IMAGE: False,
+            HISTOGRAM_IMAGE_WO_SCALE: False,
+            HISTOGRAM_EXCEL: False,
+            ABSORPTION_SPEC_IMAGE: False,
+            ABSORPTION_SPEC_IMAGE_WO_SCALE: False,
+            ABSORPTION_SPEC_EXCEL: False
+        }
+
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
 
@@ -158,7 +181,6 @@ class ModuleListener:
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
     def _broadcast_to_histogram(self):
-        # TODO: Check with Alex that this is actually for the data cube itself and not absorbance or something
         new_data_cube = self._get_analysis(self.current_result_path).get_data_cube()
         self.modules[HISTOGRAM].update_histogram(new_data_cube)
 

@@ -3,7 +3,6 @@ from AnalysisModules.analysis_constant import *
 from AnalysisModules.Indices import Index
 import logging
 
-# TODO: figure out how the index fits into this picture
 class Analysis:
     def __init__(self, data_cube, normal, absorbance, wavelength, index_number, mask=None):
         self.data_cube = data_cube
