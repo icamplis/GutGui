@@ -96,6 +96,7 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
 
 def make_popup_image(graph, graphsize=(8,8)):
     window = Toplevel()
+    window.geometry("+0+0")
     graph.set_size_inches(graphsize[0], graphsize[1])
     image = FigureCanvasTkAgg(graph, master=window)
     image.draw()

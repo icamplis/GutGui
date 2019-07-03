@@ -135,7 +135,7 @@ class AbsorptionSpec:
         self.interactive_absorption_spec = FigureCanvasTkAgg(self.interactive_absorption_spec_graph, master=self.root)
         self.interactive_absorption_spec.draw()
         self.interactive_absorption_spec.get_tk_widget().grid(column=0, row=1, columnspan=3, rowspan=6, ipady=5, ipadx=0)
-        self.interactive_absorption_spec.get_tk_widget().bind('<Button-1>', self.__pop_up_image)
+        self.interactive_absorption_spec.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)
     def __update_upper(self):

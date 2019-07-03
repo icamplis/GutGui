@@ -146,7 +146,7 @@ class Histogram:
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
         self.interactive_histogram.get_tk_widget().grid(column=0, row=2, columnspan=3, rowspan=6, ipady=5, ipadx=0, pady=(0, 15))
-        self.interactive_histogram.get_tk_widget().bind('<Button-1>', self.__pop_up_image)
+        self.interactive_histogram.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)
     def __update_upper(self):

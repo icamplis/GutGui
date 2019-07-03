@@ -39,17 +39,17 @@ class RecColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
-        self.recreated_image_graph = None
-        self.recreated_image = None
-        self.recreated_image_data = None
+        self.recreated_colour_image_graph = None
+        self.recreated_colour_image = None
+        self.recreated_colour_image_data = None
 
         self._init_widget()
 
         self.displayed_image_mode = STO2  # STO2 by default
         self.sto2_button.config(foreground="red")
 
-    def update_recreated_image(self, new_rec_image_data):
-        self.recreated_image_data = new_rec_image_data
+    def update_recreated_image(self, recreated_colour_image_data):
+        self.recreated_colour_image_data = recreated_colour_image_data
         self._build_recreated_image()
 
     def get_displayed_image_mode(self):
@@ -75,9 +75,6 @@ class RecColour:
 
     def get_upper_scale_value(self):
         return self.upper_scale_input.get()
-
-    def get_lower_scale_value(self):
-        return self.lower_scale_input.get()
 
     # Helper
     def _init_widget(self):
@@ -135,19 +132,14 @@ class RecColour:
         self.lower_scale_value = 0
 
     def _build_recreated_image(self):
-        if self.recreated_image_data is None:
+        if self.recreated_colour_image_data is None:
             # Placeholder
-            self.recreated_image = make_label(self.root, "recreated image placeholder",
-                                              row=2, column=0, rowspan=4, columnspan=4,
-                                              inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
+            self.recreated_colour_image = make_label(self.root, "recreated_colour image placeholder", row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
         else:
-            logging.debug("BUILDING RECREATED IMAGE...")
-            (self.recreated_image_graph, self.recreated_image) = make_image(self.root, self.recreated_image_data, row=2, column=0,
-                                               columnspan=4, rowspan=4,
-                                               lower_scale_value=self.lower_scale_value,
-                                               upper_scale_value=self.upper_scale_value,
-                                               color_rgb=PASTEL_BLUE_RGB)
-            self.recreated_image.get_tk_widget().bind('<Button-1>', self.__pop_up_image)
+            logging.debug("BUILDING RECREATED COLOUR IMAGE...")
+            (self.recreated_colour_image_graph, self.recreated_colour_image) = make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value, color_rgb=PASTEL_BLUE_RGB)
+            self.recreated_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
+
 
     # Commands (Callbacks)
     def __update_to_sto2(self):
@@ -182,13 +174,13 @@ class RecColour:
         self.displayed_image_mode = TWI
         self.listener.render_new_recreated_image_data()
 
-    def __update_scale_upper(self, event):
+    def __update_scale_upper(self):
         self.upper_scale_value = float(self.upper_scale_input.get())
         self._build_recreated_image()
 
-    def __update_scale_lower(self, event):
+    def __update_scale_lower(self):
         self.lower_scale_value = float(self.lower_scale_input.get())
         self._build_recreated_image()
 
     def __pop_up_image(self, event):
-        make_popup_image(self.recreated_image_graph)
+        make_popup_image(self.recreated_colour_image_graph)
