@@ -121,36 +121,30 @@ class Histogram:
         self.step_size_input.bind('<Return>', self.__update_step_size)
 
     def _build_interactive_histogram(self):
-        print("CREATING CANVAS")
         # create canvas
         self.interactive_histogram_graph = Figure(figsize=(3.5, 2))
         self.axes = self.interactive_histogram_graph.add_subplot(111)
         self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
         if self.flattened_data is not None:
-            print("CALCULATING BINS")
             # calc bins
             start = np.min(self.flattened_data)
             stop = np.max(self.flattened_data) + self.step_size_value
             step = self.step_size_value
             bins = np.arange(start=start, stop=stop, step=step)
-            # print("PLOT HISTOGRAM")
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins, align='left')
             self.median = np.median(self.flattened_data)
             self.median_text = AnchoredText("Median = " + str(self.median), loc=1, frameon=False)
             self.axes.add_artist(self.median_text)
-            # print("PLOT BOXPLOT")
             # plot boxplot
             self.axes2 = self.axes.twinx()
             self.axes2.boxplot(self.flattened_data, vert=False, sym='')
             self.axes2.get_yaxis().set_visible(False)
-            # print("SET AXES")
             # set axes
             self.interactive_histogram_graph.set_tight_layout(True)
             self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
             self.axes.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
             self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
-        # print("DRAW FIGURE")
         # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
