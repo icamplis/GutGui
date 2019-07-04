@@ -148,10 +148,10 @@ class AbsorptionSpec:
     def _calc_extrema(self):
         abs_spec_list = self.absorption_spec.tolist()
         abs_range = abs_spec_list[int((self.lower_value-500)/5):int((self.upper_value-500)/5)]
-        maximum = max(abs_range)
+        maximum = np.max(abs_range)
         maximum_x = abs_spec_list.index(maximum) * 5 + 500
         self.local_maximum_value = (maximum_x, round(maximum, 3))
-        minimum = min(abs_range)
+        minimum = np.min(abs_range)
         minimum_x = abs_spec_list.index(minimum) * 5 + 500
         self.local_minimum_value = (minimum_x, round(minimum, 3))
         self._build_extrema()
