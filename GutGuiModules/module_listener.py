@@ -128,8 +128,11 @@ class ModuleListener:
 
     def render_new_new_image_data(self):
         self._broadcast_to_new_image()
-    # Helpers
 
+    def update_saved(self, saves_key, value):
+        self.modules[SAVE].update_saves(saves_key, value)
+
+    # Helpers
     def _broadcast_new_data(self):
         self._broadcast_to_original_image()
         self._broadcast_to_recreated_image()
@@ -175,13 +178,13 @@ class ModuleListener:
         new_data = None
         if self.is_masked:
             if display_mode == WL:
-                # todo: ask Alex what WL data is wrt to notebook
+                # todo: use x_abs_masked or x_ref_masked depending on mode
                 new_data = None
             elif display_mode == IDX:
                 new_data = self._get_analysis(self.current_result_path).get_index_masked()
         else:
             if display_mode == WL:
-                # todo: ask Alex what WL data is wrt to notebook
+                # todo: use x_abs_masked or x_ref_masked depending on mode
                 new_data = None
             elif display_mode == IDX:
                 new_data = self._get_analysis(self.current_result_path).get_index()
