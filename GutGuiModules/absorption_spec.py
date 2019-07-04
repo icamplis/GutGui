@@ -85,10 +85,10 @@ class AbsorptionSpec:
 
     def _build_extrema(self):
         self.local_maximum_title = make_text(self.root, content="Local Max: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=1, width=11, columnspan=1, pady=(0, 5), padx=(15, 5))
-        self.local_maximum_text = make_text(self.root, content=str(self.local_maximum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=1, row=1, width=12, columnspan=1, pady=(0, 5), padx=(15,5), state=NORMAL)
+        self.local_maximum_text = make_text(self.root, content=str(self.local_maximum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=1, row=1, width=12, columnspan=1, pady=(0, 5), padx=5, state=NORMAL)
 
-        self.local_minimum_title= make_text(self.root, content="Local Min: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=2, row=1, width=11, columnspan=1, pady=(0, 5), padx=5)
-        self.local_minimum_text = make_text(self.root, content=str(self.local_minimum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=1, width=12, columnspan=1, pady=(0, 5), padx=5, state=NORMAL)
+        self.local_minimum_title= make_text(self.root, content="Local Min: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=2, row=1, width=11, columnspan=1, pady=(0, 5), padx=(5, 0))
+        self.local_minimum_text = make_text(self.root, content=str(self.local_minimum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=1, width=12, columnspan=1, pady=(0, 5), padx=(0,5), state=NORMAL)
 
     def _build_scale(self):
 
