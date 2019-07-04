@@ -146,7 +146,7 @@ class AbsorptionSpec:
         self.interactive_absorption_spec.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     def _calc_extrema(self):
-        abs_spec_list = self.absorption_spec.tolist()
+        abs_spec_list = list(self.absorption_spec)
         abs_range = abs_spec_list[int((self.lower_value-500)/5):int((self.upper_value-500)/5)]
         maximum = max(abs_range)
         maximum_x = abs_spec_list.index(maximum) * 5 + 500

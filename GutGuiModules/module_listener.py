@@ -36,10 +36,31 @@ class ModuleListener:
     def get_result(self, data_cube_path):
         return self.results[data_cube_path]
 
+    def get_whole_image_data(self):
+        if self.absorbance:
+            data = self._get_analysis(self.current_result_path).get_x_absorbance()
+        else:
+            data = self._get_analysis(self.current_result_path).get_x_reflectance()
+        return data
+
+    def get_masked_image_data(self):
+        if self.absorbance:
+            data = self._get_analysis(self.current_result_path).get_x_absorbance_masked()
+        else:
+            data = self._get_analysis(self.current_result_path).get_x_reflectance_masked()
+        return data
+
+    def get_histogram_data(self):
+        if self.is_masked:
+            data = self.get_masked_image_data()
+        else:
+            data = self.get_whole_image_data()
+        return data
+
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
-
     # Updaters
+
     def submit_data_cube(self, data_cube, dc_path):
         logging.debug("ANALYZING DATA CUBE AT " + dc_path)
         if self.modules[ANALYSIS_AND_FORM]:
@@ -107,8 +128,8 @@ class ModuleListener:
 
     def render_new_new_image_data(self):
         self._broadcast_to_new_image()
-
     # Helpers
+
     def _broadcast_new_data(self):
         self._broadcast_to_original_image()
         self._broadcast_to_recreated_image()
@@ -167,16 +188,7 @@ class ModuleListener:
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
     def _broadcast_to_histogram(self):
-        if self.is_masked:
-            if self.absorbance:
-                data = self._get_analysis(self.current_result_path).get_x_absorbance_masked()
-            else:
-                data = self._get_analysis(self.current_result_path).get_x_reflectance_masked()
-        else:
-            if self.absorbance:
-                data = self._get_analysis(self.current_result_path).get_x_absorbance()
-            else:
-                data = self._get_analysis(self.current_result_path).get_x_reflectance()
+        data = self.get_histogram_data()
         self.modules[HISTOGRAM].update_histogram(data)
 
     def _broadcast_to_absorption_spec(self):
