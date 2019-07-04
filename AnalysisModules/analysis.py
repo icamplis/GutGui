@@ -293,7 +293,7 @@ class Analysis:
 
         if self.mask:
             self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=[self.mask] * 100)
-            # TODO: HEY IS THIS THE WL STUFF???
+            # TODO: HEY IS THIS THE WL STUFF?
             self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength], mask=self.mask)
 
     def __calc_x2(self):

@@ -33,6 +33,9 @@ class ModuleListener:
     def get_results(self):
         return self.results
 
+    def get_result(self, data_cube_path):
+        return self.results[data_cube_path]
+
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
 
@@ -154,7 +157,7 @@ class ModuleListener:
                 # todo: ask Alex what WL data is wrt to notebook
                 new_data = None
             elif display_mode == IDX:
-                new_data = self._get_analysis(self.current_result_path).get_masked_index()
+                new_data = self._get_analysis(self.current_result_path).get_index_masked()
         else:
             if display_mode == WL:
                 # todo: ask Alex what WL data is wrt to notebook
@@ -164,8 +167,17 @@ class ModuleListener:
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
     def _broadcast_to_histogram(self):
-        new_data_cube = self._get_analysis(self.current_result_path).get_data_cube()
-        self.modules[HISTOGRAM].update_histogram(new_data_cube)
+        if self.is_masked:
+            if self.absorbance:
+                data = self._get_analysis(self.current_result_path).get_x_absorbance_masked()
+            else:
+                data = self._get_analysis(self.current_result_path).get_x_reflectance_masked()
+        else:
+            if self.absorbance:
+                data = self._get_analysis(self.current_result_path).get_x_absorbance()
+            else:
+                data = self._get_analysis(self.current_result_path).get_x_reflectance()
+        self.modules[HISTOGRAM].update_histogram(data)
 
     def _broadcast_to_absorption_spec(self):
         if self.mask:
