@@ -53,7 +53,7 @@ class RecColour:
         self._build_recreated_image()
 
     def get_displayed_image_mode(self):
-        return not self.displayed_image_mode
+        return self.displayed_image_mode
 
     def get_sto2_checkbox_value(self):
         return not bool(self.sto2_checkbox_value.get())
