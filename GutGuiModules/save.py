@@ -51,6 +51,7 @@ class Save:
     def update_saves(self, key, value):
         assert type(value) == bool
         self.saves[key] = value
+        # print(self.saves)
 
     def _init_widgets(self):
         self._build_save_specific_button()

@@ -36,9 +36,10 @@ class Diagram:
     def _build_whole_image(self):
         self.whole_image_button = make_button(self.root, "Whole Image", row=1, column=0, command=self.__use_whole_image, inner_padx=15, inner_pady=5, outer_padx=15, outer_pady=(0, 10))
         self.whole_image_button.config(foreground="red")
-        self.whole_image_checkbox = make_checkbox(self.root, "", row=1, column=0,var=self.whole_image_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
-        self.whole_image_checkbox.deselect()
+        self.whole_image_checkbox = make_checkbox(self.root, "", row=1, column=0, var=self.whole_image_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
         self.whole_image_checkbox.bind('<Button-1>', self.__update_whole_image_check_status)
+        self.whole_image_checkbox.select()
+        self.listener.update_saved(WHOLE_IMAGE_SAVE, True)  # set whole image save to true by default
 
     def _build_masked_region(self):
         self.masked_region_button = make_button(self.root, "Masked Region", row=2, column=0, command=self.__use_masked_image, inner_padx=15, inner_pady=5, outer_padx=15, outer_pady=(0, 15))
