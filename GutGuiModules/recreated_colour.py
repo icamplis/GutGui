@@ -56,22 +56,22 @@ class RecColour:
         return self.displayed_image_mode
 
     def get_sto2_checkbox_value(self):
-        return self.sto2_checkbox_value
+        return bool(self.sto2_checkbox_value.get())
 
     def get_nir_checkbox_value(self):
-        return self.nir_checkbox_value
+        return bool(self.nir_checkbox_value.get())
 
     def get_thi_checkbox_value(self):
-        return self.thi_checkbox_value
+        return bool(self.thi_checkbox_value.get())
 
     def get_twi_checkbox_value(self):
-        return self.twi_checkbox_value
+        return bool(self.twi_checkbox_value.get())
 
     def get_save_checkbox_value(self):
-        return self.save_checkbox_value
+        return bool(self.save_checkbox_value.get())
 
     def get_save_wo_scale_checkbox_value(self):
-        return self.save_wo_scale_checkbox_value
+        return bool(self.save_wo_scale_checkbox_value.get())
 
     def get_upper_scale_value(self):
         return self.upper_scale_input.get()
@@ -182,27 +182,27 @@ class RecColour:
         self.listener.render_new_recreated_image_data()
 
     def __update_sto2_check_status(self, event):
-        value = bool(self.get_sto2_checkbox_value().get())
+        value = self.get_sto2_checkbox_value()
         self.listener.update_saved(STO2_DATA, value)
 
     def __update_nir_check_status(self, event):
-        value = bool(self.get_nir_checkbox_value().get())
+        value = self.get_nir_checkbox_value()
         self.listener.update_saved(NIR_DATA, value)
 
     def __update_twi_check_status(self, event):
-        value = bool(self.get_twi_checkbox_value().get())
+        value = self.get_twi_checkbox_value()
         self.listener.update_saved(TWI_DATA, value)
 
     def __update_thi_check_status(self, event):
-        value = bool(self.get_thi_checkbox_value().get())
+        value = self.get_thi_checkbox_value()
         self.listener.update_saved(THI_DATA, value)
 
     def __update_save_with_scale_check_status(self, event):
-        value = bool(self.get_save_checkbox_value().get())
+        value = self.get_save_checkbox_value()
         self.listener.update_saved(REC_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
-        value = bool(self.get_save_wo_scale_checkbox_value().get())
+        value = self.get_save_wo_scale_checkbox_value()
         self.listener.update_saved(REC_IMAGE_WO_SCALE, value)
 
     def __update_scale_upper(self):

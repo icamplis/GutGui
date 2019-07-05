@@ -54,13 +54,13 @@ class Histogram:
         self._init_widgets()
 
     def get_save_checkbox_value(self):
-        return self.save_checkbox_value
+        return bool(self.save_checkbox_value.get())
 
     def get_save_wo_scale_checkbox_value(self):
-        return self.save_wo_scale_checkbox_value
+        return bool(self.save_wo_scale_checkbox_value.get())
 
     def get_save_as_excel_checkbox_value(self):
-        return self.save_as_excel_checkbox_value
+        return bool(self.save_as_excel_checkbox_value.get())
 
     def update_histogram(self, data):
         self.flattened_data = data.flatten()
@@ -194,13 +194,13 @@ class Histogram:
         make_popup_image(self.interactive_histogram_graph)
 
     def __update_save_with_scale_check_status(self, event):
-        value = bool(self.get_save_checkbox_value().get())
+        value = self.get_save_checkbox_value()
         self.listener.update_saved(HISTOGRAM_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
-        value = bool(self.get_save_wo_scale_checkbox_value().get())
+        value = self.get_save_wo_scale_checkbox_value()
         self.listener.update_saved(HISTOGRAM_IMAGE_WO_SCALE, value)
 
     def __update_save_as_excel_check_status(self, event):
-        value = bool(self.get_save_as_excel_checkbox_value().get())
+        value = self.get_save_as_excel_checkbox_value()
         self.listener.update_saved(HISTOGRAM_EXCEL, value)

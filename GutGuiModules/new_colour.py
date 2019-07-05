@@ -48,16 +48,16 @@ class NewColour:
         return self.displayed_image_mode
 
     def get_wl_checkbox_value(self):
-        return self.wl_checkbox_value
+        return bool(self.wl_checkbox_value.get())
 
     def get_idx_checkbox_value(self):
-        return self.idx_checkbox_value
+        return bool(self.idx_checkbox_value.get())
 
     def get_save_checkbox_value(self):
-        return self.save_checkbox_value
+        return bool(self.save_checkbox_value.get())
 
     def get_save_wo_scale_checkbox_value(self):
-        return self.save_wo_scale_checkbox_value
+        return bool(self.save_wo_scale_checkbox_value.get())
 
     def get_upper_scale_input(self):
         return self.upper_scale_input.get()
@@ -139,19 +139,19 @@ class NewColour:
         self._build_new_image()
 
     def __update_wl_check_status(self, event):
-        value = bool(self.get_wl_checkbox_value().get())
+        value = self.get_wl_checkbox_value()
         self.listener.update_saved(WL_DATA, value)
 
-    def __update_idz_check_status(self, event):
-        value = bool(self.get_idx_checkbox_value().get())
+    def __update_idx_check_status(self, event):
+        value = self.get_idx_checkbox_value()
         self.listener.update_saved(IDX_DATA, value)
 
     def __update_save_with_scale_check_status(self, event):
-        value = bool(self.get_save_checkbox_value().get())
+        value = self.get_save_checkbox_value()
         self.listener.update_saved(NEW_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
-        value = bool(self.get_save_wo_scale_checkbox_value().get())
+        value = self.get_save_wo_scale_checkbox_value()
         self.listener.update_saved(NEW_IMAGE_WO_SCALE, value)
 
     def __pop_up_image(self, event):
