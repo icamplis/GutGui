@@ -198,19 +198,3 @@ class AnalysisAndForm:
     def __update_wavelength(self, event):
         self.wavelength_value = int(self.wavelength_entry.get())
         self.listener.submit_wavelength(self.wavelength_value)
-
-    def __update_st02(self):
-        print('oxy')
-        #     TODO
-
-    def __update_perf(self):
-        print('perf')
-        #     TODO
-
-    def __update_hemo(self):
-        print('hëhë')
-        #     TODO
-
-    def __update_tissue(self, n):
-        print('tisu')
-        #     TODO

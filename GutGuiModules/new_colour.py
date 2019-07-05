@@ -109,12 +109,20 @@ class NewColour:
         self.lower_scale_value = 0
 
     def _build_new_image(self):
+        print(self.new_colour_image_data)
         if self.new_colour_image_data is None:
             # Placeholder
-            self.new_colour_image = make_label(self.root, "new_colour image placeholder",row=2, column=0, rowspan=4, columnspan=4,inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
+            self.new_colour_image = make_label(self.root, "new_colour image placeholder",row=2, column=0,
+                                               rowspan=4, columnspan=4,
+                                               inner_pady=50, inner_padx=50,
+                                               outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING NEW COLOUR IMAGE...")
-            (self.new_colour_image_graph, self.new_colour_image) = make_image(self.root, self.new_colour_image_data, row=2, column=0,columnspan=4, rowspan=4,lower_scale_value=self.lower_scale_value,upper_scale_value=self.upper_scale_value, color_rgb=PASTEL_ORANGE_RGB)
+            (self.new_colour_image_graph, self.new_colour_image) = make_image(self.root, self.new_colour_image_data,
+                                                                              row=2, column=0,columnspan=4, rowspan=4,
+                                                                              lower_scale_value=self.lower_scale_value,
+                                                                              upper_scale_value=self.upper_scale_value,
+                                                                              color_rgb=PASTEL_ORANGE_RGB)
             self.new_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)

@@ -114,6 +114,9 @@ class Analysis:
     def get_x_absorbance_masked_w(self):
         return self.x_absorbance_masked_w
 
+    def get_x_reflectance_masked_w(self):
+        return self.x_reflectance_masked_w
+
     def get_sto2(self):
         return self.sto2
 
