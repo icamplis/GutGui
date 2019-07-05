@@ -1,7 +1,7 @@
 from GutGuiModules.utility import *
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
+from matplotlib.offsetbox import AnchoredText
 import os
 import logging
 
@@ -234,26 +234,66 @@ class Save:
     def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale,
                          format=".png", min=0, max=1):
         if is_hist_with_scale:
-            self.__save_histogram_with_scale(data, title, format=format, min=min, max=max)
+            self.__save_histogram_with_scale(data, title + "_WITH_SCALE", format=format)
         if is_hist_wo_scale:
-            self.__save_histogram_wo_scale(data, title, format=format, min=min, max=max)
+            self.__save_histogram_wo_scale(data, title + "_WO_SCALE", format=format)
 
-    def __save_histogram_with_scale(self, data, title, format=".png", min=0, max=1):
-        print("save histogram with scale placeholder")
-        # todo
-        pass
+    def __save_histogram_with_scale(self, data, title, format=".png", step_size_value=0.01):
+        output_path = self.current_output_path + "/" + title + format
+        logging.debug("SAVING IMAGE WITH SCALE TO " + output_path)
+        axes = plt.subplot(111)
+        # calc bins
+        start = np.min(data)
+        stop = np.max(data) + step_size_value
+        step = step_size_value
+        bins = np.arange(start=start, stop=stop, step=step)
+        # plot histogram
+        axes.hist(data, bins=bins, align='left')
+        median = np.median(data)
+        median_text = AnchoredText("Median = " + str(median), loc=1, frameon=False)
+        axes.add_artist(median_text)
+        # plot boxplot
+        axes2 = axes.twinx()
+        axes2.boxplot(data, vert=False, sym='')
+        axes2.get_yaxis().set_visible(False)
+        # set axes
+        axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+        plt.title(title)
+        plt.savefig(output_path)
+        plt.clf()
 
-    def __save_histogram_wo_scale(self, data, title, format=".png", min=0, max=1):
-        print("save histogram wo scale placeholder")
-        # todo
-        pass
+    def __save_histogram_wo_scale(self, data, title, format=".png", step_size_value=0.01):
+        output_path = self.current_output_path + "/" + title + format
+        logging.debug("SAVING IMAGE WO SCALE TO " + output_path)
+        axes = plt.subplot(111)
+        # calc bins
+        start = np.min(data)
+        stop = np.max(data) + step_size_value
+        step = step_size_value
+        bins = np.arange(start=start, stop=stop, step=step)
+        # plot histogram
+        axes.hist(data, bins=bins, align='left')
+        median = np.median(data)
+        median_text = AnchoredText("Median = " + str(median), loc=1, frameon=False)
+        axes.add_artist(median_text)
+        # plot boxplot
+        axes2 = axes.twinx()
+        axes2.boxplot(data, vert=False, sym='')
+        axes2.get_yaxis().set_visible(False)
+        # set axes
+        # axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+        axes.set_yticklabels([])
+        axes.set_xticklabels([])
+        plt.axis('off')
+        plt.savefig(output_path)
+        plt.clf()
 
     def __save_absorption_spec_graph(self, data, title, is_abspc_with_scale, is_abspc_wo_scale,
                          format=".png", min=0, max=1):
         if is_abspc_with_scale:
-            self.__save_absorption_spec_with_scale(data, title, format=format, min=min, max=max)
+            self.__save_absorption_spec_with_scale(data, title + "_WITH_SCALE", format=format, min=min, max=max)
         if is_abspc_wo_scale:
-            self.__save_absorption_spec_wo_scale(data, title, format=format, min=min, max=max)
+            self.__save_absorption_spec_wo_scale(data, title + "_WO_SCALE", format=format, min=min, max=max)
 
     def __save_absorption_spec_with_scale(self, data, title, format=".png", min=0, max=1):
         print("save absorptionspec with scale placeholder")
