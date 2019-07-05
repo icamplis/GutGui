@@ -109,7 +109,6 @@ class NewColour:
         self.lower_scale_value = 0
 
     def _build_new_image(self):
-        print(self.new_colour_image_data)
         if self.new_colour_image_data is None:
             # Placeholder
             self.new_colour_image = make_label(self.root, "new_colour image placeholder",row=2, column=0,

@@ -171,12 +171,10 @@ class AbsorptionSpec:
     # Commands (Callbacks)
     def __update_upper(self, event):
         self.upper_value = int(self.upper_input.get())
-        # print(self.upper_value)
         self._calc_extrema()
 
     def __update_lower(self, event):
         self.lower_value = int(self.lower_input.get())
-        # print(self.lower_value)
         self._calc_extrema()
 
     def __update_scale_x_upper(self, event):
