@@ -48,16 +48,16 @@ class NewColour:
         return self.displayed_image_mode
 
     def get_wl_checkbox_value(self):
-        return bool(self.wl_checkbox_value.get())
+        return not bool(self.wl_checkbox_value.get())
 
     def get_idx_checkbox_value(self):
-        return bool(self.idx_checkbox_value.get())
+        return not bool(self.idx_checkbox_value.get())
 
     def get_save_checkbox_value(self):
-        return bool(self.save_checkbox_value.get())
+        return not bool(self.save_checkbox_value.get())
 
     def get_save_wo_scale_checkbox_value(self):
-        return bool(self.save_wo_scale_checkbox_value.get())
+        return not bool(self.save_wo_scale_checkbox_value.get())
 
     def get_upper_scale_input(self):
         return self.upper_scale_input.get()

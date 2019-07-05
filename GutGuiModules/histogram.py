@@ -54,13 +54,13 @@ class Histogram:
         self._init_widgets()
 
     def get_save_checkbox_value(self):
-        return bool(self.save_checkbox_value.get())
+        return not bool(self.save_checkbox_value.get())
 
     def get_save_wo_scale_checkbox_value(self):
-        return bool(self.save_wo_scale_checkbox_value.get())
+        return not bool(self.save_wo_scale_checkbox_value.get())
 
     def get_save_as_excel_checkbox_value(self):
-        return bool(self.save_as_excel_checkbox_value.get())
+        return not bool(self.save_as_excel_checkbox_value.get())
 
     def update_histogram(self, data):
         self.flattened_data = data.flatten()

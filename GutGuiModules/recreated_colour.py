@@ -53,25 +53,25 @@ class RecColour:
         self._build_recreated_image()
 
     def get_displayed_image_mode(self):
-        return self.displayed_image_mode
+        return not self.displayed_image_mode
 
     def get_sto2_checkbox_value(self):
-        return bool(self.sto2_checkbox_value.get())
+        return not bool(self.sto2_checkbox_value.get())
 
     def get_nir_checkbox_value(self):
-        return bool(self.nir_checkbox_value.get())
+        return not bool(self.nir_checkbox_value.get())
 
     def get_thi_checkbox_value(self):
-        return bool(self.thi_checkbox_value.get())
+        return not bool(self.thi_checkbox_value.get())
 
     def get_twi_checkbox_value(self):
-        return bool(self.twi_checkbox_value.get())
+        return not bool(self.twi_checkbox_value.get())
 
     def get_save_checkbox_value(self):
-        return bool(self.save_checkbox_value.get())
+        return not bool(self.save_checkbox_value.get())
 
     def get_save_wo_scale_checkbox_value(self):
-        return bool(self.save_wo_scale_checkbox_value.get())
+        return not bool(self.save_wo_scale_checkbox_value.get())
 
     def get_upper_scale_value(self):
         return self.upper_scale_input.get()

@@ -59,8 +59,8 @@ class ModuleListener:
 
     def attach_module(self, module_name, mod):
         self.modules[module_name] = mod
-    # Updaters
 
+    # Updaters
     def submit_data_cube(self, data_cube, dc_path):
         logging.debug("ANALYZING DATA CUBE AT " + dc_path)
         if self.modules[ANALYSIS_AND_FORM]:
@@ -130,6 +130,7 @@ class ModuleListener:
         self._broadcast_to_new_image()
 
     def update_saved(self, saves_key, value):
+        logging.debug("UPDATING " + saves_key + " TO " + str(value))
         self.modules[SAVE].update_saves(saves_key, value)
 
     # Helpers

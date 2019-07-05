@@ -33,13 +33,13 @@ class AbsorptionSpec:
 
         self.save_label = None
         self.save_checkbox = None
-        self.save_checkbox_value = None
+        self.save_checkbox_value = IntVar()
         self.save_wo_scale_label = None
         self.save_wo_scale_checkbox = None
-        self.save_wo_scale_checkbox_value = None
+        self.save_wo_scale_checkbox_value = IntVar()
         self.save_as_excel_label = None
         self.save_as_excel_checkbox = None
-        self.save_as_excel_checkbox_value = None
+        self.save_as_excel_checkbox_value = IntVar()
 
         self.interactive_absorption_spec_graph = None
         self.axes = None
@@ -55,13 +55,13 @@ class AbsorptionSpec:
         self._init_widgets()
 
     def get_save_checkbox_value(self):
-        return bool(self.save_checkbox_value.get())
+        return not bool(self.save_checkbox_value.get())
 
     def get_save_wo_scale_checkbox_value(self):
-        return bool(self.save_wo_scale_checkbox_value.get())
+        return not bool(self.save_wo_scale_checkbox_value.get())
 
     def get_save_as_excel_checkbox_value(self):
-        return bool(self.save_as_excel_checkbox_value.get())
+        return not bool(self.save_as_excel_checkbox_value.get())
 
     def update_absorption_spec(self, absorption_spec_data):
         self.absorption_spec = absorption_spec_data[:, 1]

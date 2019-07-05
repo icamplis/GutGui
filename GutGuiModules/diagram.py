@@ -23,10 +23,10 @@ class Diagram:
         return self.is_masked
 
     def get_whole_image_checkbox_value(self):
-        return bool(self.whole_image_checkbox_value.get())
+        return not bool(self.whole_image_checkbox_value.get())
 
     def get_masked_region_checkbox_value(self):
-        return bool(self.masked_region_checkbox_value.get())
+        return not bool(self.masked_region_checkbox_value.get())
 
     # Helper
     def _init_widget(self):
