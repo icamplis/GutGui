@@ -85,7 +85,7 @@ class AnalysisAndForm:
             outer_padx=(0, 15), columnspan=3)
 
     def _build_reflection_button(self):
-        self.reflection_button = make_button(self.root, text='Reflection',
+        self.reflection_button = make_button(self.root, text='Reflectance',
                                              command=self.__reflect, row=2, column=0, outer_pady=(0,5),
             outer_padx=(15, 0), columnspan=3)
 

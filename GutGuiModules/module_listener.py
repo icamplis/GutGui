@@ -184,16 +184,21 @@ class ModuleListener:
 
     def _update_analysis(self, mask=None, normal=None, absorbance=None, wavelength=None, index_number=None):
         for path, result in self.results.items():  # for each of the data cubes
-            if mask:
-                result[path].update_mask(mask)
-            if normal:
-                result[path].update_normal(normal)
-            if absorbance:
-                result[path].update_wavelength(wavelength)
-            if wavelength:
-                result[path].update_absorbance(absorbance)
-            if index_number:
-                result[path].update_index(index_number)
+            if mask is not None:
+                logging.debug("UPDATING MASK")
+                result.update_mask(mask)
+            if normal is not None:
+                logging.debug("UPDATING NORMAL")
+                result.update_normal(normal)
+            if absorbance is not None:
+                logging.debug("UPDATING ABSORBANCE")
+                result.update_wavelength(wavelength)
+            if wavelength is not None:
+                logging.debug("UPDATING WAVELENGTH")
+                result.update_absorbance(absorbance)
+            if index_number is not None:
+                logging.debug("UPDATING INDEX")
+                result.update_index(index_number)
 
     # Uses the path of the data cube as an identifier
     def _make_new_analysis(self, path, data_cube, normal, absorbance, wavelength, index, mask=None):
