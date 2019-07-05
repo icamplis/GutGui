@@ -50,6 +50,20 @@ class ModuleListener:
             data = self._get_analysis(self.current_result_path).get_x_reflectance_masked()
         return data
 
+    def get_wl_data(self):
+        if self.absorbance:
+            new_data = self._get_analysis(self.current_result_path).get_x_absorbance_w()
+        else:
+            new_data = self._get_analysis(self.current_result_path).get_x_reflectance_w()
+        return new_data
+
+    def get_wl_data_masked(self):
+        if self.absorbance:
+            new_data = self._get_analysis(self.current_result_path).get_x_absorbance_masked_w()
+        else:
+            new_data = self._get_analysis(self.current_result_path).get_x_reflectance_masked_w()
+        return new_data
+
     def get_histogram_data(self):
         if self.is_masked:
             data = self.get_masked_image_data()
@@ -179,18 +193,12 @@ class ModuleListener:
         new_data = None
         if self.is_masked:
             if display_mode == WL:
-                if self.absorbance:
-                    new_data = self._get_analysis(self.current_result_path).get_x_absorbance_masked_w()
-                else:
-                    new_data = self._get_analysis(self.current_result_path).get_x_reflectance_masked_w()
+                new_data = self.get_wl_data_masked()
             elif display_mode == IDX:
                 new_data = self._get_analysis(self.current_result_path).get_index_masked()
         else:
             if display_mode == WL:
-                if self.absorbance:
-                    new_data = self._get_analysis(self.current_result_path).get_x_absorbance_w()
-                else:
-                    new_data = self._get_analysis(self.current_result_path).get_x_reflectance_w()
+                new_data = self.get_wl_data()
             elif display_mode == IDX:
                 new_data = self._get_analysis(self.current_result_path).get_index()
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)

@@ -153,30 +153,26 @@ class Save:
                                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
 
     def __save_wl_data_and_image(self):
-        # todo: There is no WL data or image currently
         if self.saves[WL_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
-                pass
-                # self.__save_data(self.current_result.get_wl(), "WL_DATA")
-                # self.__save_image(self.current_result.get_wl(), "WL_WHOLE_IMAGE",
-                #                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                self.__save_data(self.current_result.get_wl_data(), "WL_DATA")
+                self.__save_image(self.current_result.get_wl_data(), "WL_WHOLE_IMAGE",
+                                  self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
-                pass
-                # self.__save_data(self.current_result.get_wl_masked(), "WL_DATA_MASKED")
-                # self.__save_image(self.current_result.get_wl_masked(), "WL_MASKED_IMAGE",
-                #                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
-        pass
+                self.__save_data(self.current_result.get_wl_masked_data(), "WL_DATA_MASKED")
+                self.__save_image(self.current_result.get_wl_masked_data(), "WL_MASKED_IMAGE",
+                                  self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
 
     def __save_idx_data_and_image(self):
         if self.saves[IDX_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_index(), "INDEX_DATA")
                 self.__save_image(self.current_result.get_index(), "INDEX_WHOLE_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                                  self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_index_masked(), "INDEX_DATA_MASKED")
                 self.__save_image(self.current_result.get_index_masked(), "INDEX_MASKED_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                                  self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
 
     def __save_histogram(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
