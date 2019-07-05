@@ -64,7 +64,7 @@ class Save:
 
     # Callbacks
     def _save_specific(self):
-        for path, analysis in self.listener.get_results().items():
+        for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 self._save_to_path(path)
@@ -159,8 +159,8 @@ class Save:
                 self.__save_image(self.current_result.get_wl_data(), "WL_WHOLE_IMAGE",
                                   self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
-                self.__save_data(self.current_result.get_wl_masked_data(), "WL_DATA_MASKED")
-                self.__save_image(self.current_result.get_wl_masked_data(), "WL_MASKED_IMAGE",
+                self.__save_data(self.current_result.get_wl_data_masked(), "WL_DATA_MASKED")
+                self.__save_image(self.current_result.get_wl_data_masked(), "WL_MASKED_IMAGE",
                                   self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
 
     def __save_idx_data_and_image(self):
@@ -184,7 +184,7 @@ class Save:
             self.__save_histogram_graph(data, "HISTOGRAM_MASKED_IMAGE",
                                         self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE])
         if self.saves[HISTOGRAM_EXCEL]:
-            data = self.current_result.get_histogram_data().flatten()
+            data = self.current_result.get_histogram_data(self.saves[MASKED_IMAGE_SAVE]).flatten()
             self.__save_excel(data, "HISTOGRAM_EXCEL")
 
     def __save_absorption_spec(self):
@@ -214,7 +214,7 @@ class Save:
         if is_image_with_scale:
             self.__save_image_with_scale(data, title, format, vmin, vmax)
         if is_image_wo_scale:
-            self.__save_image_wo_scale((data, title, format, vmin, vmax))
+            self.__save_image_wo_scale(data, title, format, vmin, vmax)
 
     def __save_image_with_scale(self, data, title, format=".png", vmin=0, vmax=1):
         print("save image with scale placeholder")

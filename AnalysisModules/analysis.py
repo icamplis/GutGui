@@ -111,6 +111,9 @@ class Analysis:
     def get_x_absorbance_masked(self):
         return self.x_absorbance_masked
 
+    def get_x_reflectance_masked(self):
+        return self.x_reflectance_masked
+
     def get_x_absorbance_masked_w(self):
         return self.x_absorbance_masked_w
 
@@ -152,6 +155,41 @@ class Analysis:
 
     def get_absorption_spec_masked(self):
         return self.absorption_roi_masked
+
+    def get_whole_image_data(self):
+        if self.absorbance:
+            data = self.get_x_absorbance()
+        else:
+            data = self.get_x_reflectance()
+        return data
+
+    def get_masked_image_data(self):
+        if self.absorbance:
+            data = self.get_x_absorbance_masked()
+        else:
+            data = self.get_x_reflectance_masked()
+        return data
+
+    def get_wl_data(self):
+        if self.absorbance:
+            new_data = self.get_x_absorbance_w()
+        else:
+            new_data = self.get_x_reflectance_w()
+        return new_data
+
+    def get_wl_data_masked(self):
+        if self.absorbance:
+            new_data = self.get_x_absorbance_masked_w()
+        else:
+            new_data = self.get_x_reflectance_masked_w()
+        return new_data
+
+    def get_histogram_data(self, is_masked):
+        if is_masked:
+            data = self.get_masked_image_data()
+        else:
+            data = self.get_whole_image_data()
+        return data
 
     def _calc_general(self):
         logging.debug("CALCULATING: ABSORBANCE AND REFLECTANCE...")
