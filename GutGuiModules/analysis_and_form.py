@@ -104,7 +104,7 @@ class AnalysisAndForm:
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=3, pady=(10, 0))
 
     def _build_wavelength_entry(self):
-        self.wavelength_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), padx=(0, 20), columnspan=4, command=self.__update_wavelength)
+        self.wavelength_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), padx=(0, 20), columnspan=4)
         self.wavelength_entry.insert(0, str(64))
         self.wavelength_entry.bind('<Return>', self.__update_wavelength)
 

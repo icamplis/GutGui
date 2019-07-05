@@ -296,7 +296,8 @@ class Analysis:
             if self.mask:
                 self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_reflectance_masked)
 
-    def _calc_absorption_spec_roi(self, data):
+    @staticmethod
+    def _calc_absorption_spec_roi(data):
         absorption_roi = []
         wavelengths = np.arange(500, 1000, 5)
 

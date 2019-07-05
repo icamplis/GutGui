@@ -7,9 +7,6 @@ import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from matplotlib.axes import Axes
-from matplotlib import pyplot as plt
-
 
 def init():
     root = Tk()
@@ -29,10 +26,10 @@ def init():
 
     notebook.pack()
 
-    return (root, input_output, image_diagram)
+    return root, input_output, image_diagram
 
 def tkcolour_from_rgb(rgb):
-    '''translates an rgb tuple of int to a tkinter friendly color code'''
+    """translates an rgb tuple of int to a tkinter friendly color code"""
     return "#%02x%02x%02x" % rgb
 
 def frame_and_label(window, name, colour, row, column, rowspan, columnspan, labelspan=1):
@@ -69,7 +66,7 @@ def make_listbox(window, row, column, padx=0, pady=0,
     return listbox
 
 def make_entry(window, row, column, width, columnspan=1, pady=0, 
-    padx=0, highlightthickness=0, command=None):
+    padx=0, highlightthickness=0):
     entry = Entry(window, width=width, highlightthickness=highlightthickness, textvariable=StringVar())
     entry.grid(row=row, column=column, columnspan=columnspan, padx=padx, pady=pady)
     return entry
@@ -106,7 +103,7 @@ def rgb_to_rgba(rgb):
     r = rgb[0]/255
     g = rgb[1]/255
     b = rgb[2]/255
-    return (r, g, b)
+    return r, g, b
 
 
 

@@ -130,7 +130,7 @@ class AbsorptionSpec:
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=5, width=11, columnspan=1, pady=(0, 20))
-        self.y_lower_scale_input = make_entry(self.root, row=5, column=5, width=5, pady=(0, 20), padx=(0, 15), columnspan=1, command=self.__update_scale_y_lower)
+        self.y_lower_scale_input = make_entry(self.root, row=5, column=5, width=5, pady=(0, 20), padx=(0, 15), columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
 
         # y upper
