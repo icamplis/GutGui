@@ -195,12 +195,12 @@ class Histogram:
 
     def __update_save_with_scale_check_status(self, event):
         value = bool(self.get_save_checkbox_value().get())
-        self.listener.update_saved(ABSORPTION_SPEC_IMAGE, value)
+        self.listener.update_saved(HISTOGRAM_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
         value = bool(self.get_save_wo_scale_checkbox_value().get())
-        self.listener.update_saved(ABSORPTION_SPEC_IMAGE_WO_SCALE, value)
+        self.listener.update_saved(HISTOGRAM_IMAGE_WO_SCALE, value)
 
     def __update_save_as_excel_check_status(self, event):
         value = bool(self.get_save_as_excel_checkbox_value().get())
-        self.listener.update_saved(ABSORPTION_SPEC_EXCEL, value)
+        self.listener.update_saved(HISTOGRAM_EXCEL, value)
