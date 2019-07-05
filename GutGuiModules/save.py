@@ -186,7 +186,7 @@ class Save:
                                         self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE])
         if self.saves[HISTOGRAM_EXCEL]:
             data = self.current_result.get_histogram_data(self.saves[MASKED_IMAGE_SAVE]).flatten()
-            self.__save_excel(data, "HISTOGRAM_EXCEL")
+            self.__save_data(data, "HISTOGRAM_EXCEL")  # it's too slow to save it as an actual xlsx
 
     def __save_absorption_spec(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
@@ -201,44 +201,35 @@ class Save:
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
         if self.saves[ABSORPTION_SPEC_EXCEL]:
             data = self.current_result.get_absorption_spec()
-            self.__save_excel(data, "ABSORPTION_SPEC_EXCEL")
+            self.__save_data(data, "ABSORPTION_SPEC_EXCEL")
 
     # Saving helpers
     def __save_data(self, data, title, format=".csv"):
-        print("save csv data placeholder")
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING DATA TO " + output_path)
-        # np.savetxt(self.current_output_path + "/" + title + format, data, delimiter=",")
+        np.savetxt(self.current_output_path + "/" + title + format, data, delimiter=",")
 
     def __save_image(self, data, title, is_image_with_scale, is_image_wo_scale,
                      format=".png", vmin=0, vmax=1):
         if is_image_with_scale:
-            self.__save_image_with_scale(data, title, format, vmin, vmax)
+            self.__save_image_with_scale(data, title + "_WITH_SCALE", format, vmin, vmax)
         if is_image_wo_scale:
-            self.__save_image_wo_scale(data, title, format, vmin, vmax)
+            self.__save_image_wo_scale(data, title + "_WO_SCALE", format, vmin, vmax)
 
     def __save_image_with_scale(self, data, title, format=".png", vmin=0, vmax=1):
-        print("save image with scale placeholder")
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING IMAGE TO " + output_path)
-        # plt.title(title)
-        # plt.imsave(output_path, data[:, :], cmap='jet', vmin=vmin, vmax=vmax)
-        # plt.clf()
+        plt.imshow(data[:, :], cmap='jet', vmin=vmin, vmax=vmax)
+        plt.colorbar()
+        plt.title(title)
+        plt.savefig(output_path)
+        plt.clf()
 
     def __save_image_wo_scale(self, data, title, format=".png", vmin=0, vmax=1):
-        print("save image without scale placeholder")
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING IMAGE WO SCALE TO " + output_path)
-        # plt.axis('off')  # removes the axis
-        # plt.imsave(output_path, data[:, :], cmap='jet', vmin=vmin, vmax=vmax)
-        # plt.clf()
-
-    def __save_excel(self, data, title, format=".xlsx"):
-        print("save excel")
-        output_path = self.current_output_path + "/" + title + format
-        logging.debug("SAVING EXCEL TO " + output_path)
-        # df = pd.DataFrame(data)
-        # df.to_excel(output_path, index=False)
+        plt.imsave(output_path, data[:, :], cmap='jet', vmin=vmin, vmax=vmax)
+        plt.clf()
 
     def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale,
                          format=".png", min=0, max=1):
