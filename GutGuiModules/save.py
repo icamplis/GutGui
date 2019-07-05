@@ -240,7 +240,7 @@ class Save:
 
     def __save_histogram_with_scale(self, data, title, format=".png", step_size_value=0.01):
         output_path = self.current_output_path + "/" + title + format
-        logging.debug("SAVING IMAGE WITH SCALE TO " + output_path)
+        logging.debug("SAVING HISTOGRAM WITH SCALE TO " + output_path)
         axes = plt.subplot(111)
         # calc bins
         start = np.min(data)
@@ -264,7 +264,7 @@ class Save:
 
     def __save_histogram_wo_scale(self, data, title, format=".png", step_size_value=0.01):
         output_path = self.current_output_path + "/" + title + format
-        logging.debug("SAVING IMAGE WO SCALE TO " + output_path)
+        logging.debug("SAVING HISTOGRAM WO SCALE TO " + output_path)
         axes = plt.subplot(111)
         # calc bins
         start = np.min(data)
@@ -281,7 +281,6 @@ class Save:
         axes2.boxplot(data, vert=False, sym='')
         axes2.get_yaxis().set_visible(False)
         # set axes
-        # axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
         axes.set_yticklabels([])
         axes.set_xticklabels([])
         plt.axis('off')
@@ -291,16 +290,30 @@ class Save:
     def __save_absorption_spec_graph(self, data, title, is_abspc_with_scale, is_abspc_wo_scale,
                          format=".png", min=0, max=1):
         if is_abspc_with_scale:
-            self.__save_absorption_spec_with_scale(data, title + "_WITH_SCALE", format=format, min=min, max=max)
+            self.__save_absorption_spec_with_scale(data, title + "_WITH_SCALE", format=format)
         if is_abspc_wo_scale:
-            self.__save_absorption_spec_wo_scale(data, title + "_WO_SCALE", format=format, min=min, max=max)
+            self.__save_absorption_spec_wo_scale(data, title + "_WO_SCALE", format=format)
 
-    def __save_absorption_spec_with_scale(self, data, title, format=".png", min=0, max=1):
-        print("save absorptionspec with scale placeholder")
-        # todo
-        pass
+    def __save_absorption_spec_with_scale(self, data, title, format=".png"):
+        output_path = self.current_output_path + "/" + title + format
+        logging.debug("SAVING ABSORPTION SPEC WO SCALE TO " + output_path)
+        axes = plt.subplot(111)
+        x_vals = np.arange(500, 1000, 5)
+        # plot absorption spec
+        axes.plot(x_vals, data[:, 1], '-', lw=0.5)
+        axes.grid(linestyle=':', linewidth=0.5)
+        plt.title(title)
+        plt.savefig(output_path)
+        plt.clf()
 
-    def __save_absorption_spec_wo_scale(self, data, title, format=".png", min=0, max=1):
-        print("save absorptionspec wo scale placeholder")
-        # todo
-        pass
+    def __save_absorption_spec_wo_scale(self, data, title, format=".png"):
+        output_path = self.current_output_path + "/" + title + format
+        logging.debug("SAVING ABSORPTION SPEC WO SCALE TO " + output_path)
+        axes = plt.subplot(111)
+        x_vals = np.arange(500, 1000, 5)
+        # plot absorption spec
+        axes.plot(x_vals, data[:, 1], '-', lw=0.5)
+        axes.grid(linestyle=':', linewidth=0.5)
+        plt.axis('off')
+        plt.savefig(output_path)
+        plt.clf()
