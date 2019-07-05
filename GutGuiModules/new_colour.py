@@ -76,19 +76,23 @@ class NewColour:
         self.wl_button = make_button(self.root, text='WL', width=3, command=self.__update_to_wl, row=1, column=0, columnspan=2, inner_pady=5, outer_padx=(35, 0))
         self.wl_checkbox = make_checkbox(self.root, "", row=1, column=0, columnspan=2, var=self.wl_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         self.wl_checkbox.deselect()
+        self.wl_checkbox.bind('<Button-1>', self.__update_wl_check_status)
 
     def _build_idx(self):
         self.idx_button = make_button(self.root, text="IDX", width=3, row=1, column=2, columnspan=2, command=self.__update_to_idx, inner_pady=5)
         self.idx_checkbox = make_checkbox(self.root, "", row=1, column=2, columnspan=2,var=self.idx_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 40))
         self.idx_checkbox.deselect()
+        self.idx_checkbox.bind('<Button-1>', self.__update_idx_check_status)
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, rowspan=2, outer_padx=(10, 0), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
         self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 5))
+        self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
         self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=2, columnspan=2, outer_padx=(0, 15), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
         self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 10))
+        self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_upper_scale(self):
         self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
@@ -133,6 +137,22 @@ class NewColour:
     def __update_scale_lower(self, event):
         self.lower_scale_value = float(self.lower_scale_input.get())
         self._build_new_image()
+
+    def __update_wl_check_status(self, event):
+        value = bool(self.get_wl_checkbox_value().get())
+        self.listener.update_saved(WL_DATA, value)
+
+    def __update_idz_check_status(self, event):
+        value = bool(self.get_idx_checkbox_value().get())
+        self.listener.update_saved(IDX_DATA, value)
+
+    def __update_save_with_scale_check_status(self, event):
+        value = bool(self.get_save_checkbox_value().get())
+        self.listener.update_saved(NEW_IMAGE, value)
+
+    def __update_save_wo_scale_check_status(self, event):
+        value = bool(self.get_save_wo_scale_checkbox_value().get())
+        self.listener.update_saved(NEW_IMAGE_WO_SCALE, value)
 
     def __pop_up_image(self, event):
         make_popup_image(self.new_colour_image_graph)
