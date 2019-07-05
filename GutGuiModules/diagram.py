@@ -55,3 +55,4 @@ class Diagram:
         self.masked_region_button.config(foreground="red")
         self.whole_image_button.config(foreground="black")
         self.listener.submit_is_masked(self.is_masked)
+
