@@ -8,8 +8,8 @@ class AbsorptionSpec:
         # Listener
         self.listener = listener
 
-        self.x_vals = np.arange(500, 1000, 5) # [500, 505, 510, ... , 995, 1000]
-        self.absorption_spec = []  # PLACEHOLDER before actual data is gained
+        self.x_vals = np.arange(500, 1000, 5) 
+        self.absorption_spec = [] 
 
         self.local_maximum_title = None
         self.local_maximum_text = None
@@ -67,6 +67,8 @@ class AbsorptionSpec:
         self.absorption_spec = absorption_spec_data[:, 1]
         self._build_interactive_absorption_spec()
         self._calc_extrema()
+        self._calc_high_low()
+        self._build_scale()
 
     # Helper
     def _init_widgets(self):
@@ -103,40 +105,43 @@ class AbsorptionSpec:
         self.local_minimum_text = make_text(self.root, content=str(self.local_minimum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=1, width=12, columnspan=1, pady=(0, 5), padx=(0,5), state=NORMAL)
 
     def _build_scale(self):
-
         # lower
         self.lower_text = make_text(self.root, content="Lower: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=1, width=7, columnspan=1, pady=(0, 10))
         self.lower_input = make_entry(self.root, row=1, column=5, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.lower_input.bind('<Return>', self.__update_lower)
-        self.lower_input.insert(END, self.lower_value)
+        self.lower_input.insert(END, str(self.lower_value))
 
         # upper
         self.upper_text = make_text(self.root, content="Upper: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=2, width=7, columnspan=1, pady=(0, 10))
         self.upper_input = make_entry(self.root, row=2, column=5, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.upper_input.bind('<Return>', self.__update_upper)
-        self.upper_input.insert(END, self.upper_value)
+        self.upper_input.insert(END, str(self.upper_value))
 
         # x lower
         self.x_lower_scale_text = make_text(self.root, content="Min x val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=3, width=11, columnspan=1, pady=(0, 10))
         self.x_lower_scale_input = make_entry(self.root, row=3, column=5, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_lower_scale_input.bind('<Return>', self.__update_scale_x_lower)
+        self.x_lower_scale_input.insert(END, str(self.x_lower_scale_value))
 
         # x upper
         self.x_upper_scale_text = make_text(self.root, content="Max x val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=4, width=11, columnspan=1, pady=(0, 10))
         self.x_upper_scale_input = make_entry(self.root, row=4, column=5, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_upper_scale_input.bind('<Return>', self.__update_scale_x_upper)
+        self.x_upper_scale_input.insert(END, str(self.x_upper_scale_value))
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=5, width=11, columnspan=1, pady=(0, 20))
         self.y_lower_scale_input = make_entry(self.root, row=5, column=5, width=5, pady=(0, 20), padx=(0, 15), columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
+        self.y_lower_scale_input.insert(END, str(self.y_lower_scale_value))
 
         # y upper
         self.y_upper_scale_text = make_text(self.root, content="Max y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=6, width=11, columnspan=1, pady=(0, 10))
         self.y_upper_scale_input = make_entry(self.root, row=6, column=5, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.y_upper_scale_input.bind('<Return>', self.__update_scale_y_upper)
+        self.y_upper_scale_input.insert(END, str(self.y_upper_scale_value))
 
     def _build_interactive_absorption_spec(self):
         # create canvas
@@ -157,13 +162,19 @@ class AbsorptionSpec:
         self.interactive_absorption_spec.get_tk_widget().grid(column=0, row=2, columnspan=4, rowspan=6, ipady=5, ipadx=0)
         self.interactive_absorption_spec.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
+    def _calc_high_low(self):
+        self.x_lower_scale_value = np.min(self.x_vals)
+        self.x_upper_scale_value = np.max(self.x_vals)
+        self.y_lower_scale_value = round(np.min(self.absorption_spec), 3)
+        self.y_upper_scale_value = round(np.max(self.absorption_spec), 3)
+
     def _calc_extrema(self):
         abs_spec_list = list(self.absorption_spec)
         abs_range = abs_spec_list[int((self.lower_value-500)/5):int((self.upper_value-500)/5)]
-        maximum = max(abs_range)
+        maximum = np.max(abs_range)
         maximum_x = abs_spec_list.index(maximum) * 5 + 500
         self.local_maximum_value = (maximum_x, round(maximum, 3))
-        minimum = min(abs_range)
+        minimum = np.min(abs_range)
         minimum_x = abs_spec_list.index(minimum) * 5 + 500
         self.local_minimum_value = (minimum_x, round(minimum, 3))
         self._build_extrema()

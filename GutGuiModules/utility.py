@@ -81,7 +81,7 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
                lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=2):
     graph = Figure(figsize=(figwidth, figheight))
     axes = graph.add_subplot(111)
-    axes.imshow(np.rot90(np.fliplr(image_data[:,:])), origin='lower', cmap='jet',
+    axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
                 vmin=max(0.0, float(lower_scale_value)),
                 vmax=min(1.0, float(upper_scale_value)))
     graph.patch.set_facecolor(rgb_to_rgba(color_rgb))
