@@ -111,8 +111,14 @@ class Analysis:
     def get_x_absorbance_masked(self):
         return self.x_absorbance_masked
 
+    def get_x_reflectance_masked(self):
+        return self.x_reflectance_masked
+
     def get_x_absorbance_masked_w(self):
         return self.x_absorbance_masked_w
+
+    def get_x_reflectance_masked_w(self):
+        return self.x_reflectance_masked_w
 
     def get_sto2(self):
         return self.sto2
@@ -149,6 +155,41 @@ class Analysis:
 
     def get_absorption_spec_masked(self):
         return self.absorption_roi_masked
+
+    def get_whole_image_data(self):
+        if self.absorbance:
+            data = self.get_x_absorbance()
+        else:
+            data = self.get_x_reflectance()
+        return data
+
+    def get_masked_image_data(self):
+        if self.absorbance:
+            data = self.get_x_absorbance_masked()
+        else:
+            data = self.get_x_reflectance_masked()
+        return data
+
+    def get_wl_data(self):
+        if self.absorbance:
+            new_data = self.get_x_absorbance_w()
+        else:
+            new_data = self.get_x_reflectance_w()
+        return new_data
+
+    def get_wl_data_masked(self):
+        if self.absorbance:
+            new_data = self.get_x_absorbance_masked_w()
+        else:
+            new_data = self.get_x_reflectance_masked_w()
+        return new_data
+
+    def get_histogram_data(self, is_masked):
+        if is_masked:
+            data = self.get_masked_image_data()
+        else:
+            data = self.get_whole_image_data()
+        return data
 
     def _calc_general(self):
         logging.debug("CALCULATING: ABSORBANCE AND REFLECTANCE...")
@@ -246,39 +287,25 @@ class Analysis:
 
     def _calc_absorption_spec(self):
         logging.debug("CALCULATING: ABSORPTION SPEC...")
-        self.absorption_roi = []
-
         if self.absorbance:
-            absorption_roi = []
-            wavelengths = np.arange(500, 1000, 5)
-
-            for i in range(self.x_absorbance.shape[2]):
-                tmp = np.ma.median(self.x_absorbance[:, :, i])
-                absorption_roi.append((int(wavelengths[i]), tmp))
-            self.absorption_roi = np.array(absorption_roi)
-
+            self.absorption_roi = self._calc_absorption_spec_roi(self.x_absorbance)
             if self.mask:
-                self.absorption_roi_masked = []
-                # TODO: Ask Alex what the implementation should be here
-                #       In the notebook, the implementation is the same as the "area roi"
+                self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_absorbance_masked)
         else:
-            # TODO: Ask Alex if the reflectance applies relevantly
-            absorption_roi = []
-            wavelengths = np.arange(500, 1000, 5)
-
-            for i in range(self.x_reflectance.shape[2]):
-                tmp = np.ma.median(self.x_reflectance[:, :, i])
-                absorption_roi.append((int(wavelengths[i]), tmp))
-            self.absorption_roi = np.array(absorption_roi)
-
+            self.absorption_roi = self._calc_absorption_spec_roi(self.x_reflectance)
             if self.mask:
-                self.absorption_roi_masked = []
-                # TODO: Ask Alex what the implementation should be here
-                #       In the notebook, the implementation is the same as the "area roi"
+                self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_reflectance_masked)
 
-        # May come into handy?
-        # max_index = np.argmax(absorbance_roi[int((500 - 500) / 5):int((995 - 500) / 5), 1])
-        # min_index = np.argmin(absorbance_roi[int((500 - 500) / 5):int((995 - 500) / 5), 1])
+    @staticmethod
+    def _calc_absorption_spec_roi(data):
+        absorption_roi = []
+        wavelengths = np.arange(500, 1000, 5)
+
+        for i in range(data.shape[2]):
+            tmp = np.ma.median(data[:, :, i])
+            absorption_roi.append((int(wavelengths[i]), tmp))
+
+        return np.array(absorption_roi)
 
     def __calc_x1(self):
         if self.normal:
@@ -293,7 +320,6 @@ class Analysis:
 
         if self.mask:
             self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=[self.mask] * 100)
-            # TODO: HEY IS THIS THE WL STUFF?
             self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength], mask=self.mask)
 
     def __calc_x2(self):

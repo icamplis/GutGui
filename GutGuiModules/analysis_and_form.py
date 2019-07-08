@@ -85,7 +85,7 @@ class AnalysisAndForm:
             outer_padx=(0, 15), columnspan=3)
 
     def _build_reflection_button(self):
-        self.reflection_button = make_button(self.root, text='Reflection',
+        self.reflection_button = make_button(self.root, text='Reflectance',
                                              command=self.__reflect, row=2, column=0, outer_pady=(0,5),
             outer_padx=(15, 0), columnspan=3)
 
@@ -104,7 +104,7 @@ class AnalysisAndForm:
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=3, pady=(10, 0))
 
     def _build_wavelength_entry(self):
-        self.wavelength_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), padx=(0, 20), columnspan=4, command=self.__update_wavelength)
+        self.wavelength_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), padx=(0, 20), columnspan=4)
         self.wavelength_entry.insert(0, str(64))
         self.wavelength_entry.bind('<Return>', self.__update_wavelength)
 
@@ -198,19 +198,3 @@ class AnalysisAndForm:
     def __update_wavelength(self, event):
         self.wavelength_value = int(self.wavelength_entry.get())
         self.listener.submit_wavelength(self.wavelength_value)
-
-    def __update_st02(self):
-        print('oxy')
-        #     TODO
-
-    def __update_perf(self):
-        print('perf')
-        #     TODO
-
-    def __update_hemo(self):
-        print('hëhë')
-        #     TODO
-
-    def __update_tissue(self, n):
-        print('tisu')
-        #     TODO

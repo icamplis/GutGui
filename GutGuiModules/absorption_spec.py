@@ -33,13 +33,13 @@ class AbsorptionSpec:
 
         self.save_label = None
         self.save_checkbox = None
-        self.save_checkbox_value = None
+        self.save_checkbox_value = IntVar()
         self.save_wo_scale_label = None
         self.save_wo_scale_checkbox = None
-        self.save_wo_scale_checkbox_value = None
+        self.save_wo_scale_checkbox_value = IntVar()
         self.save_as_excel_label = None
         self.save_as_excel_checkbox = None
-        self.save_as_excel_checkbox_value = None
+        self.save_as_excel_checkbox_value = IntVar()
 
         self.interactive_absorption_spec_graph = None
         self.axes = None
@@ -53,6 +53,15 @@ class AbsorptionSpec:
         self.lower_value = 500
 
         self._init_widgets()
+
+    def get_save_checkbox_value(self):
+        return not bool(self.save_checkbox_value.get())
+
+    def get_save_wo_scale_checkbox_value(self):
+        return not bool(self.save_wo_scale_checkbox_value.get())
+
+    def get_save_as_excel_checkbox_value(self):
+        return not bool(self.save_as_excel_checkbox_value.get())
 
     def update_absorption_spec(self, absorption_spec_data):
         self.absorption_spec = absorption_spec_data[:, 1]
@@ -72,16 +81,19 @@ class AbsorptionSpec:
         self.save_label = make_label(self.root, "Save", row=8, column=0, inner_padx=10, inner_pady=5, outer_padx=15, outer_pady=(0, 15))
         self.save_checkbox = make_checkbox(self.root, "", row=8, column=0, var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 13))
         self.save_checkbox.deselect()
+        self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
         self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, inner_padx=10, inner_pady=5, outer_padx=(5, 16), outer_pady=(0, 15), columnspan=2)
         self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=8, column=2, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0,25))
         self.save_wo_scale_checkbox.deselect()
+        self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_save_as_excel(self):
         self.save_as_excel_label = make_label(self.root, "Save as Excel", row=8, column=3,inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
         self.save_as_excel_checkbox = make_checkbox(self.root, "", row=8, column=3,var=self.save_as_excel_checkbox_value, sticky=NE,inner_padx=0, inner_pady=0, outer_padx=(0, 7))
         self.save_as_excel_checkbox.deselect()
+        self.save_as_excel_checkbox.bind('<Button-1>', self.__update_save_as_excel_check_status)
 
     def _build_extrema(self):
         self.local_maximum_title = make_text(self.root, content="Local Max: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=1, width=11, columnspan=1, pady=(0, 5), padx=(15, 5))
@@ -118,7 +130,7 @@ class AbsorptionSpec:
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y val: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=4, row=5, width=11, columnspan=1, pady=(0, 20))
-        self.y_lower_scale_input = make_entry(self.root, row=5, column=5, width=5, pady=(0, 20), padx=(0, 15), columnspan=1, command=self.__update_scale_y_lower)
+        self.y_lower_scale_input = make_entry(self.root, row=5, column=5, width=5, pady=(0, 20), padx=(0, 15), columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
 
         # y upper
@@ -146,7 +158,7 @@ class AbsorptionSpec:
         self.interactive_absorption_spec.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     def _calc_extrema(self):
-        abs_spec_list = self.absorption_spec.tolist()
+        abs_spec_list = list(self.absorption_spec)
         abs_range = abs_spec_list[int((self.lower_value-500)/5):int((self.upper_value-500)/5)]
         maximum = np.max(abs_range)
         maximum_x = abs_spec_list.index(maximum) * 5 + 500
@@ -159,12 +171,10 @@ class AbsorptionSpec:
     # Commands (Callbacks)
     def __update_upper(self, event):
         self.upper_value = int(self.upper_input.get())
-        print(self.upper_value)
         self._calc_extrema()
 
     def __update_lower(self, event):
         self.lower_value = int(self.lower_input.get())
-        print(self.lower_value)
         self._calc_extrema()
 
     def __update_scale_x_upper(self, event):
@@ -182,6 +192,18 @@ class AbsorptionSpec:
     def __update_scale_y_lower(self, event):
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_absorption_spec()
+
+    def __update_save_with_scale_check_status(self, event):
+        value = self.get_save_checkbox_value()
+        self.listener.update_saved(ABSORPTION_SPEC_IMAGE, value)
+
+    def __update_save_wo_scale_check_status(self, event):
+        value = self.get_save_wo_scale_checkbox_value()
+        self.listener.update_saved(ABSORPTION_SPEC_IMAGE_WO_SCALE, value)
+
+    def __update_save_as_excel_check_status(self, event):
+        value = self.get_save_as_excel_checkbox_value()
+        self.listener.update_saved(ABSORPTION_SPEC_EXCEL, value)
 
     def __pop_up_image(self, event):
         make_popup_image(self.interactive_absorption_spec_graph)
