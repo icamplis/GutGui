@@ -5,6 +5,8 @@ class OGColour:
         # Listener
         self.listener = listener
 
+        self.coords_list = [None for i in range(8)]
+
         self.rgb_label = None
         self.rgb_checkbox = None
         self.rgb_checkbox_value = None
@@ -30,38 +32,42 @@ class OGColour:
         self.save_coords_checkbox_value = None
 
         self.pt1_label = None
+        self.pt1_remove = None
         self.pt1_checkbox = None
         self.pt1_checkbox_value = None
 
         self.pt2_label = None
-        self.pt2_checkbox = None
-        self.pt2_checkbox_value = None
-
-        self.pt2_label = None
+        self.pt2_remove = None
         self.pt2_checkbox = None
         self.pt2_checkbox_value = None
 
         self.pt3_label = None
+        self.pt3_remove = None
         self.pt3_checkbox = None
         self.pt3_checkbox_value = None
 
         self.pt4_label = None
+        self.pt4_remove = None
         self.pt4_checkbox = None
         self.pt4_checkbox_value = None
 
         self.pt5_label = None
+        self.pt5_remove = None
         self.pt5_checkbox = None
         self.pt5_checkbox_value = None
 
         self.pt6_label = None
+        self.pt6_remove = None
         self.pt6_checkbox = None
         self.pt6_checkbox_value = None
 
         self.pt7_label = None
+        self.pt7_remove = None
         self.pt7_checkbox = None
         self.pt7_checkbox_value = None
 
         self.pt8_label = None
+        self.pt8_remove = None
         self.pt8_checkbox = None
         self.pt8_checkbox_value = None
 
