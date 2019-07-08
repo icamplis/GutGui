@@ -14,7 +14,8 @@ class AnalysisAndForm:
 
         self.OR_text = None
 
-        self.wavelength_text = None
+        self.upper_wavelength_text = None
+        self.lower_wavelength_text = None
         self.wavelength_entry = None
         self.wavelength_value = None
         self.wavelength_upper_text = None
@@ -24,7 +25,6 @@ class AnalysisAndForm:
         self.wavelength_lower_entry = None
         self.wavelength_lower_value = None
 
-        self.TO_text = None
         self.idx_title = None
         self.idx1_button = None
         self.idx2_button = None
@@ -81,7 +81,6 @@ class AnalysisAndForm:
         # self._build_wavelength_entry()
         self._build_wavelength_upper_entry()
         self._build_wavelength_lower_entry()
-        self._build_TO_text(height=1, width=2, row=3, column=5, columnspan=1, pady=5)
         # self._build_stO2_text()
         # self._build_stO2()
         # self._build_perf_text()
@@ -117,13 +116,9 @@ class AnalysisAndForm:
         self.OR_text = make_text(self.root, content="OR",
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), height=height, width=width, row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
 
-    def _build_TO_text(self, height, width, row, column, columnspan, padx=0, pady=10):
-        self.TO_text = make_text(self.root, content="TO",
-            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), height=height, width=width, row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
-
     def _build_wavelength_text(self):
-        self.wavelength_text = make_text(self.root, content="Wavelength:",
-            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=2, pady=(10, 0))
+        self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=19, columnspan=4, pady=(10, 0))
+        self.upper_wavelength_text = make_text(self.root, content="Upper Wavelength: ", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=19, columnspan=4, pady=(10, 0))
 
     # def _build_wavelength_entry(self):
     #     self.wavelength_entry = make_entry(self.root, row=3, column=3, width=15, pady=(10, 0), padx=(0, 20), columnspan=2)
@@ -131,38 +126,36 @@ class AnalysisAndForm:
     #     self.wavelength_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_wavelength_upper_entry(self):
-        self.wavelength_upper_entry = make_entry(self.root, row=3, column=3, width=5, pady=(10, 0), padx=(0, 20),
-                                           columnspan=2)
+        self.wavelength_upper_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), columnspan=4)
         self.wavelength_upper_entry.insert(0, str(64))
         self.wavelength_upper_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_wavelength_lower_entry(self):
-        self.wavelength_lower_entry = make_entry(self.root, row=3, column=6, width=5, pady=(10, 0), padx=(0, 20),
-                                           columnspan=2)
+        self.wavelength_lower_entry = make_entry(self.root, row=4, column=4, width=15, pady=(10, 0), columnspan=4)
         self.wavelength_lower_entry.insert(0, str(64))
         self.wavelength_lower_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):
         self.idx_title = make_text(self.root, content="Individual Index:",
-                                   bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=17, columnspan=8, pady=(10, 0))
+                                   bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=17, columnspan=8, pady=(10, 0))
 
     def _build_idxs(self):
         self.idx1_button = make_button(self.root, text='1', command=lambda:self.__idxn(1),
-                                       row=5, column=0, outer_pady=(5, 15), outer_padx=(15, 5), width=1)
+                                       row=6, column=0, outer_pady=(5, 15), outer_padx=(15, 5), width=1)
         self.idx2_button = make_button(self.root, text='2', command=lambda:self.__idxn(2),
-                                       row=5, column=1, outer_pady=(5, 15), outer_padx=5, width=1)
+                                       row=6, column=1, outer_pady=(5, 15), outer_padx=5, width=1)
         self.idx3_button = make_button(self.root, text='3', command=lambda:self.__idxn(3),
-                                       row=5, column=2, outer_pady=(5, 15), outer_padx=5, width=1)
+                                       row=6, column=2, outer_pady=(5, 15), outer_padx=5, width=1)
         self.idx4_button = make_button(self.root, text='4', command=lambda:self.__idxn(4),
-                                       row=5, column=3, outer_pady=(5, 15), outer_padx=5, width=1)
+                                       row=6, column=3, outer_pady=(5, 15), outer_padx=5, width=1)
         self.idx5_button = make_button(self.root, text='5', command=lambda:self.__idxn(5),
-                                       row=5, column=4, outer_pady=(5, 15), outer_padx=5, width=1)
+                                       row=6, column=4, outer_pady=(5, 15), outer_padx=5, width=1)
         self.idx6_button = make_button(self.root, text='6', command=lambda:self.__idxn(6),
-                                       row=5, column=5, outer_pady=(5, 15), outer_padx=5, width=1)
+                                       row=6, column=5, outer_pady=(5, 15), outer_padx=5, width=1)
         self.idx7_button = make_button(self.root, text='7', command=lambda:self.__idxn(7),
-                                       row=5, column=6, outer_pady=(5, 15), outer_padx=5, width=1)
+                                       row=6, column=6, outer_pady=(5, 15), outer_padx=5, width=1)
         self.idx8_button = make_button(self.root, text='8', command=lambda:self.__idxn(8),
-                                       row=5, column=7, outer_pady=(5, 15), outer_padx=(5, 15), width=1)
+                                       row=6, column=7, outer_pady=(5, 15), outer_padx=(5, 15), width=1)
         self.idx1_button.config(foreground="red")
         self.index_selected = 1  # Use index no.1 by default
 
