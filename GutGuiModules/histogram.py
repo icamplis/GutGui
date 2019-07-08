@@ -163,7 +163,7 @@ class Histogram:
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),column=3, row=9, width=7, columnspan=1, pady=(0, 20))
-        self.y_lower_scale_input = make_entry(self.root, row=9, column=4, width=7, pady=(0, 20), padx=(0, 15),columnspan=1, command=self.__update_scale_y_lower)
+        self.y_lower_scale_input = make_entry(self.root, row=9, column=4, width=7, pady=(0, 20), padx=(0, 15),columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
         self.y_lower_scale_input.insert(END, str(self.min_bin_size))
 
