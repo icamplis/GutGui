@@ -192,10 +192,10 @@ class ModuleListener:
                 result.update_normal(normal)
             if absorbance is not None:
                 logging.debug("UPDATING ABSORBANCE")
-                result.update_wavelength(wavelength)
+                result.update_absorbance(absorbance)
             if wavelength is not None:
                 logging.debug("UPDATING WAVELENGTH")
-                result.update_absorbance(absorbance)
+                result.update_wavelength(wavelength)
             if index_number is not None:
                 logging.debug("UPDATING INDEX")
                 result.update_index(index_number)
