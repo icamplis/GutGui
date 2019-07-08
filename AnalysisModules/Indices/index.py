@@ -16,15 +16,11 @@ class Index:
         self.mask = mask
 
         self.index = None
-        self.index_masked = None
 
         self._calc_index()
 
     def get_index(self):
         return self.index
-
-    def get_index_masked(self):
-        return self.index_masked
 
     def _calc_index(self):
         # Get raw index

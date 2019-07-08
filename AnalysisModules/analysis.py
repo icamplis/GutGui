@@ -13,7 +13,7 @@ class Analysis:
 
         self.index_number = index_number
         self.index = None
-        self.masked_index = None
+        self.index_masked = None
 
         self.x1 = None
         self.x2 = None
@@ -141,8 +141,8 @@ class Analysis:
     def get_index(self):
         return self.index
 
-    def get_masked_index(self):
-        return self.masked_index
+    def get_index_masked(self):
+        return self.index_masked
 
     def get_absorption_spec(self):
         return self.absorption_roi
@@ -235,12 +235,14 @@ class Analysis:
             index_module = Index(index_number, self.x_absorbance)
             self.index = index_module.get_index()
             if self.mask:
-                self.masked_index = index_module.get_index_masked()
+                masked_index_module = Index(index_number, self.x_absorbance_masked_w)
+                self.index_masked = masked_index_module.get_index()
         else:
             index_module = Index(index_number, self.x_reflectance)
             self.index = index_module.get_index()
             if self.mask:
-                self.masked_index = index_module.get_index_masked()
+                masked_index_module = Index(index_number, self.x_reflectance_masked)
+                self.index_masked = masked_index_module.get_index()
 
     def _calc_absorption_spec(self):
         logging.debug("CALCULATING: ABSORPTION SPEC...")
@@ -291,6 +293,7 @@ class Analysis:
 
         if self.mask:
             self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=[self.mask] * 100)
+            # TODO: HEY IS THIS THE WL STUFF?
             self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength], mask=self.mask)
 
     def __calc_x2(self):
