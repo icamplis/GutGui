@@ -6,14 +6,14 @@ from AnalysisModules.Indices.index_5 import get_index_5
 from AnalysisModules.Indices.index_6 import get_index_6
 from AnalysisModules.Indices.index_7 import get_index_7
 from AnalysisModules.Indices.index_8 import get_index_8
+import numpy as np
 
 class Index:
-    def __init__(self, index_no, x_abs_or_ref, mask=None):
+    def __init__(self, index_no, x_abs_or_ref, wavelength=None):
         self.index_no = index_no
         self.x_abs_or_ref = x_abs_or_ref
         assert index_no in [1, 2, 3, 4, 5, 6, 7, 8]
-
-        self.mask = mask
+        self.wavelength = wavelength
 
         self.index = None
 
@@ -22,10 +22,21 @@ class Index:
     def get_index(self):
         return self.index
 
+    """
+    NOTE REGARDING INDICES
+    In the original implementation, the index gradient calculation assumed there being 3 axis,
+        and that wavelength is not yet bounded.
+    That assumption was false, 
+        as the index used to calculate the index gradient was ALREADY based on a subset of wavelengths.
+    If you look at the implementation of the existant indices, 
+        they are an average of a subset of the wavelengths.
+    HOWEVER, that subset has nothing to do with the input wavelength, which is very odd.
+    """
+
     def _calc_index(self):
         # Get raw index
         self._calc_raw_index()
-        self._calc_index_gradient()
+        self._calc_index_gradient(wavelength=self.wavelength)
 
     def _calc_raw_index(self):
         if self.index_no == 1:
@@ -45,10 +56,6 @@ class Index:
         elif self.index_no == 8:
             self.index = get_index_8(self.x_abs_or_ref)
 
-    # TODO: get index gradient
-    def _calc_index_gradient(self):
-        # Todo: I'm not sure why this isn't working
-        # index_gradient = np.gradient(index)
-        # index_gradient = index_gradient[:, :, wavelength[0], wavelength[1]]
-        # index = (index_gradient)
-        pass
+    def _calc_index_gradient(self, wavelength=None):
+        index_gradient = np.array(np.gradient(self.index, axis=1))
+        self.index = index_gradient

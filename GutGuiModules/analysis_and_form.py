@@ -11,10 +11,19 @@ class AnalysisAndForm:
         self.original_button = None
         self.reflection_button = None
         self.absorbance_button = None
+
         self.OR_text = None
+
         self.wavelength_text = None
         self.wavelength_entry = None
         self.wavelength_value = None
+        self.wavelength_upper_text = None
+        self.wavelength_upper_entry = None
+        self.wavelength_upper_value = None
+        self.wavelength_lower_text = None
+        self.wavelength_lower_entry = None
+        self.wavelength_lower_value = None
+
         self.TO_text = None
         self.idx_title = None
         self.idx1_button = None
@@ -46,8 +55,14 @@ class AnalysisAndForm:
     def get_absorbance(self):
         return self.absorbance
 
+    def get_wavelength_upper(self):
+        return int(self.wavelength_upper_entry.get())
+
+    def get_wavelength_lower(self):
+        return int(self.wavelength_lower_entry.get())
+
     def get_wavelength(self):
-        return float(self.wavelength_entry.get())
+        return (self.get_wavelength_lower(), self.get_wavelength_upper())
 
     def get_index(self):
         return self.index_selected
@@ -56,14 +71,17 @@ class AnalysisAndForm:
     def _init_widget(self):
         self._build_idx_title()
         self._build_idxs()
-        self._build_normalisation_button() 
+        self._build_normalisation_button()
         self._build_OR_text(height=1, width=2, row=1, column=3, columnspan=2, pady=0)
         self._build_original_button()
         self._build_reflection_button()
         self._build_OR_text(height=1, width=2, row=2, column=3, columnspan=2, pady=5)
         self._build_absorbance_button()
         self._build_wavelength_text()
-        self._build_wavelength_entry()
+        # self._build_wavelength_entry()
+        self._build_wavelength_upper_entry()
+        self._build_wavelength_lower_entry()
+        self._build_TO_text(height=1, width=2, row=3, column=5, columnspan=1, pady=5)
         # self._build_stO2_text()
         # self._build_stO2()
         # self._build_perf_text()
@@ -80,8 +98,8 @@ class AnalysisAndForm:
         self.normalisation_button.config(foreground="red")
 
     def _build_original_button(self):
-        self.original_button = make_button(self.root, text='Original', 
-            command=self.__original, row=1, column=5, outer_pady=(0,5), 
+        self.original_button = make_button(self.root, text='Original',
+            command=self.__original, row=1, column=5, outer_pady=(0,5),
             outer_padx=(0, 15), columnspan=3)
 
     def _build_reflection_button(self):
@@ -90,23 +108,39 @@ class AnalysisAndForm:
             outer_padx=(15, 0), columnspan=3)
 
     def _build_absorbance_button(self):
-        self.absorbance_button = make_button(self.root, text='Absorbance', 
-            command=self.__absorb,row=2, column=5, outer_pady=(0,5), 
+        self.absorbance_button = make_button(self.root, text='Absorbance',
+            command=self.__absorb,row=2, column=5, outer_pady=(0,5),
             outer_padx=(0, 15), columnspan=3)
         self.absorbance_button.config(foreground="red")
 
     def _build_OR_text(self, height, width, row, column, columnspan, padx=0, pady=10):
-        self.OR_text = make_text(self.root, content="OR", 
+        self.OR_text = make_text(self.root, content="OR",
+            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), height=height, width=width, row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
+
+    def _build_TO_text(self, height, width, row, column, columnspan, padx=0, pady=10):
+        self.TO_text = make_text(self.root, content="TO",
             bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), height=height, width=width, row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
 
     def _build_wavelength_text(self):
-        self.wavelength_text = make_text(self.root, content="Wavelength: ", 
-            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=3, pady=(10, 0))
+        self.wavelength_text = make_text(self.root, content="Wavelength:",
+            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=12, columnspan=2, pady=(10, 0))
 
-    def _build_wavelength_entry(self):
-        self.wavelength_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), padx=(0, 20), columnspan=4)
-        self.wavelength_entry.insert(0, str(64))
-        self.wavelength_entry.bind('<Return>', self.__update_wavelength)
+    # def _build_wavelength_entry(self):
+    #     self.wavelength_entry = make_entry(self.root, row=3, column=3, width=15, pady=(10, 0), padx=(0, 20), columnspan=2)
+    #     self.wavelength_entry.insert(0, str(64))
+    #     self.wavelength_entry.bind('<Return>', self.__update_wavelength)
+
+    def _build_wavelength_upper_entry(self):
+        self.wavelength_upper_entry = make_entry(self.root, row=3, column=3, width=5, pady=(10, 0), padx=(0, 20),
+                                           columnspan=2)
+        self.wavelength_upper_entry.insert(0, str(64))
+        self.wavelength_upper_entry.bind('<Return>', self.__update_wavelength)
+
+    def _build_wavelength_lower_entry(self):
+        self.wavelength_lower_entry = make_entry(self.root, row=3, column=6, width=5, pady=(10, 0), padx=(0, 20),
+                                           columnspan=2)
+        self.wavelength_lower_entry.insert(0, str(64))
+        self.wavelength_lower_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):
         self.idx_title = make_text(self.root, content="Individual Index:",
@@ -159,7 +193,7 @@ class AnalysisAndForm:
 
     # def _build_tissue(self):
     #     self.tissue_entry = make_entry(self.root, row=9, column=4, width=15, pady=(5, 15), padx=(0, 20), columnspan=4, command=self.__update_tissue)
-        
+
     # Commands (Callbacks)
     def __normal(self):
         self.normalisation_button.config(foreground="red")
@@ -196,5 +230,6 @@ class AnalysisAndForm:
                 buttons[i].config(foreground="black")
 
     def __update_wavelength(self, event):
-        self.wavelength_value = int(self.wavelength_entry.get())
-        self.listener.submit_wavelength(self.wavelength_value)
+        (wav1, wav2) = self.get_wavelength()
+        wavelength = tuple((wav1, wav2))
+        self.listener.submit_wavelength(wavelength)
