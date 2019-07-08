@@ -273,16 +273,16 @@ class Analysis:
     def _calc_index(self, index_number):
         logging.debug("CALCULATING: INDEX...")
         if self.absorbance:
-            index_module = Index(index_number, self.x_absorbance)
+            index_module = Index(index_number, self.x_absorbance, wavelength=self.wavelength)
             self.index = index_module.get_index()
             if self.mask:
-                masked_index_module = Index(index_number, self.x_absorbance_masked_w)
+                masked_index_module = Index(index_number, self.x_absorbance_masked, wavelength=self.wavelength)
                 self.index_masked = masked_index_module.get_index()
         else:
-            index_module = Index(index_number, self.x_reflectance)
+            index_module = Index(index_number, self.x_reflectance, wavelength=self.wavelength)
             self.index = index_module.get_index()
             if self.mask:
-                masked_index_module = Index(index_number, self.x_reflectance_masked)
+                masked_index_module = Index(index_number, self.x_reflectance_masked, wavelength=self.wavelength)
                 self.index_masked = masked_index_module.get_index()
 
     def _calc_absorption_spec(self):
