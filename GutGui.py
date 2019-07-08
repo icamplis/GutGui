@@ -44,12 +44,12 @@ def main():
     listener.attach_module(DIAGRAM, diagram_module)
 
     # histogram
-    (histogram_frame, histogram_label) = frame_and_label(image_diagram, "Histogram", PASTEL_BLUE_RGB, 0, 2, 7, 2, labelspan=5)
+    (histogram_frame, histogram_label) = frame_and_label(image_diagram, "Histogram", PASTEL_BLUE_RGB, 0, 2, 8, 2, labelspan=5)
     histogram_module = Histogram(histogram_frame, listener)
     listener.attach_module(HISTOGRAM, histogram_module)
 
     # absorption
-    (absorption_spec_frame, absorption_spec_label) = frame_and_label(image_diagram, "Absorption Spectrum", PASTEL_PINK_RGB, 7, 2, 7, 2, labelspan=5)
+    (absorption_spec_frame, absorption_spec_label) = frame_and_label(image_diagram, "Absorption Spectrum", PASTEL_PINK_RGB, 8, 2, 6, 2, labelspan=5)
     absorption_module = AbsorptionSpec(absorption_spec_frame, listener)
     listener.attach_module(ABSORPTION_SPEC, absorption_module)
 
@@ -57,4 +57,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    

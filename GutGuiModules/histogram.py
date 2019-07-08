@@ -113,7 +113,7 @@ class Histogram:
         # IQR
         self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=2, width=20, columnspan=1, padx=(0, 10), state=NORMAL)
         # min and max
-        self.min_text = make_text(self.root, content="Min bin = " + str(self.min_bin), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=3, width=15, columnspan=1, padx=(15, 0), state=NORMAL)
+        self.min_text = make_text(self.root, content="Min bin = " + str(self.min_bin), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=3, width=15, columnspan=1, padx=0, state=NORMAL)
         self.max_text = make_text(self.root, content="Max bin = " + str(self.max_bin), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=3, width=15, columnspan=1, padx=0, state=NORMAL)
 
     def _build_save(self):
@@ -176,7 +176,7 @@ class Histogram:
     def _build_step_size(self):
         self.step_size_text = make_text(self.root, content="Step: ", 
             bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=4, width=6, columnspan=1, pady=(0, 10))
-        self.step_size_input = make_entry(self.root, row=4, column=4, width=9, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.step_size_input = make_entry(self.root, row=4, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.step_size_input.bind('<Return>', self.__update_step_size)
         self.step_size_input.insert(END, str(self.step_size_value))
 
