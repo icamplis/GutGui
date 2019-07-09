@@ -212,9 +212,9 @@ class Save:
     def __save_image(self, data, title, is_image_with_scale, is_image_wo_scale,
                      format=".png", vmin=0, vmax=1):
         if is_image_with_scale:
-            self.__save_image_with_scale(data, title + "_WITH_SCALE", format, vmin, vmax)
+            self.__save_image_with_scale(data.T, title + "_WITH_SCALE", format, vmin, vmax)
         if is_image_wo_scale:
-            self.__save_image_wo_scale(data, title + "_WO_SCALE", format, vmin, vmax)
+            self.__save_image_wo_scale(data.T, title + "_WO_SCALE", format, vmin, vmax)
 
     def __save_image_with_scale(self, data, title, format=".png", vmin=0, vmax=1):
         output_path = self.current_output_path + "/" + title + format
