@@ -170,40 +170,25 @@ class Analysis:
         self.rgb_og = image_to_array(filename)
         return self.rgb_og[24:504, 4:644, :]
 
-    def get_rgb_masked_og(self):
-        return self.rgb_masked_og
-
     def get_sto2_og(self):
         filename = str(self.path[:-13]) + STO2_FILE
         self.sto2_og = image_to_array(filename)
         return self.sto2_og[24:504, 4:644, :]
-
-    def get_sto2_masked_og(self):
-        return self.sto2_masked_og
 
     def get_nir_og(self):
         filename = str(self.path[:-13]) + NIR_FILE
         self.nir_og = image_to_array(filename)
         return self.nir_og[24:504, 4:644, :]
 
-    def get_nir_masked_og(self):
-        return self.nir_masked_og
-
     def get_thi_og(self):
         filename = str(self.path[:-13]) + THI_FILE
         self.thi_og = image_to_array(filename)
         return self.thi_og[24:504, 4:644, :]
 
-    def get_thi_masked_og(self):
-        return self.thi_masked_og
-
     def get_twi_og(self):
         filename = str(self.path[:-13]) + TWI_FILE
         self.twi_og = image_to_array(filename)
         return self.twi_og[24:504, 4:644, :]
-
-    def get_twi_masked_og(self):
-        return self.twi_masked_og
 
     def get_index(self):
         return self.index
