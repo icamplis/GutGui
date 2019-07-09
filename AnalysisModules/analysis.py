@@ -1,10 +1,20 @@
 import numpy as np
 from AnalysisModules.analysis_constant import *
 from AnalysisModules.Indices import Index
+from GutGuiModules.utility import *
+from GutGuiModules.constants import *
 import logging
 
+RGB_FILE = "_RGB-Image.png"
+STO2_FILE = "_Oxygenation.png"
+NIR_FILE = "_NIR-Perfusion.png"
+THI_FILE = "_THI.png"
+TWI_FILE = "_TWI.png"
+
 class Analysis:
-    def __init__(self, data_cube, normal, absorbance, wavelength, index_number, mask=None):
+    def __init__(self, path, data_cube, normal, absorbance, wavelength, index_number, mask=None):
+
+        self.path = path
         self.data_cube = data_cube
         self.mask = mask
         self.wavelength = wavelength
@@ -34,6 +44,17 @@ class Analysis:
         self.thi_masked = None
         self.twi = None
         self.twi_masked = None
+
+        self.rgb_og = None
+        self.rgb_masked_og = None
+        self.sto2_og = None
+        self.sto2_masked_og = None
+        self.nir_og = None
+        self.nir_masked_og = None
+        self.thi_og = None
+        self.thi_masked_og = None
+        self.twi_og = None
+        self.twi_masked_og = None
 
         self._x_absorbance_gradient = None
         self._x_absorbance_gradient_min_1 = None
@@ -143,6 +164,46 @@ class Analysis:
 
     def get_twi_masked(self):
         return self.twi_masked
+
+    def get_rgb_og(self):
+        filename = str(self.path[:-13]) + RGB_FILE
+        self.rgb_og = image_to_array(filename)
+        return self.rgb_og[24:504, 4:644, :]
+
+    def get_rgb_masked_og(self):
+        return self.rgb_masked_og
+
+    def get_sto2_og(self):
+        filename = str(self.path[:-13]) + STO2_FILE
+        self.sto2_og = image_to_array(filename)
+        return self.sto2_og[24:504, 4:644, :]
+
+    def get_sto2_masked_og(self):
+        return self.sto2_masked_og
+
+    def get_nir_og(self):
+        filename = str(self.path[:-13]) + NIR_FILE
+        self.nir_og = image_to_array(filename)
+        return self.nir_og[24:504, 4:644, :]
+
+    def get_nir_masked_og(self):
+        return self.nir_masked_og
+
+    def get_thi_og(self):
+        filename = str(self.path[:-13]) + THI_FILE
+        self.thi_og = image_to_array(filename)
+        return self.thi_og[24:504, 4:644, :]
+
+    def get_thi_masked_og(self):
+        return self.thi_masked_og
+
+    def get_twi_og(self):
+        filename = str(self.path[:-13]) + TWI_FILE
+        self.twi_og = image_to_array(filename)
+        return self.twi_og[24:504, 4:644, :]
+
+    def get_twi_masked_og(self):
+        return self.twi_masked_og
 
     def get_index(self):
         return self.index
@@ -330,11 +391,9 @@ class Analysis:
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
                 wav_upper = int(round(max(max(self.wavelength), 100), 0))
-                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper],
-                                                                  axis=2), mask=[self.mask] * 100)
+                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper], axis=2), mask=[self.mask] * 100)
             else:
-                self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]],
-                                                          mask=[self.mask] * 100)
+                self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=[self.mask] * 100)
 
     def __calc_x2(self):
         self.x1 = self.x1.clip(min=0)

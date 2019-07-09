@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter.ttk import Notebook
 from GutGuiModules.constants import *
 import numpy as np
+from scipy import misc
+from PIL import Image
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -39,8 +41,8 @@ def frame_and_label(window, name, colour, row, column, rowspan, columnspan, labe
     return frame, label
 
 def make_button(window, text, command, row, column, height=1, width=10, 
-    inner_padx=10, inner_pady=10, outer_padx=0, outer_pady=0, columnspan=1, rowspan=1):
-    button = Button(window, text=text, command=command, padx=inner_padx, pady=inner_pady, height=height, width=width)
+    inner_padx=10, inner_pady=10, outer_padx=0, outer_pady=0, columnspan=1, rowspan=1, highlightthickness=1):
+    button = Button(window, text=text, command=command, padx=inner_padx, pady=inner_pady, height=height, width=width, highlightthickness=highlightthickness)
     button.grid(row=row, column=column, padx=outer_padx, pady=outer_pady, columnspan=columnspan, rowspan=rowspan)
     return button
 
@@ -78,12 +80,16 @@ def make_checkbox(window, text, row, column, var, columnspan=1,
     return checkbox
 
 def make_image(window, image_data, row, column, columnspan, rowspan,
-               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=2):
+               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=2, original=False):
     graph = Figure(figsize=(figwidth, figheight))
     axes = graph.add_subplot(111)
-    axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
-                vmin=max(0.0, float(lower_scale_value)),
-                vmax=min(1.0, float(upper_scale_value)))
+    if original:
+        axes.imshow(np.flipud(image_data[:,:,:]), origin='lower', cmap='jet')
+        axes.axis('off')
+    else:
+        axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
+                    vmin=max(0.0, float(lower_scale_value)),
+                    vmax=min(1.0, float(upper_scale_value)))
     graph.patch.set_facecolor(rgb_to_rgba(color_rgb))
     graph.set_tight_layout('True')
     image = FigureCanvasTkAgg(graph, master=window)
@@ -98,6 +104,9 @@ def make_popup_image(graph, graphsize=(8,8)):
     image = FigureCanvasTkAgg(graph, master=window)
     image.draw()
     image.get_tk_widget().grid(column=0, row=0)
+
+def image_to_array(filename):
+    return misc.imread(filename)
 
 def rgb_to_rgba(rgb):
     r = rgb[0]/255

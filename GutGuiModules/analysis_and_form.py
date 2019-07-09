@@ -120,11 +120,6 @@ class AnalysisAndForm:
         self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=19, columnspan=4, pady=(10, 0))
         self.upper_wavelength_text = make_text(self.root, content="Upper Wavelength: ", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=19, columnspan=4, pady=(10, 0))
 
-    # def _build_wavelength_entry(self):
-    #     self.wavelength_entry = make_entry(self.root, row=3, column=3, width=15, pady=(10, 0), padx=(0, 20), columnspan=2)
-    #     self.wavelength_entry.insert(0, str(64))
-    #     self.wavelength_entry.bind('<Return>', self.__update_wavelength)
-
     def _build_wavelength_upper_entry(self):
         self.wavelength_upper_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), columnspan=4)
         self.wavelength_upper_entry.insert(0, str(64))

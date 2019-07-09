@@ -24,7 +24,7 @@ def main():
     listener.attach_module(SAVE, save_module)
 
     # original colour
-    (og_color_frame, ogc_label) = frame_and_label(image_diagram, "Original Image", PASTEL_PINK_RGB, 0, 0, 7, 2)
+    (og_color_frame, ogc_label) = frame_and_label(image_diagram, "Original Image", PASTEL_PINK_RGB, 0, 0, 7, 2, labelspan=8)
     og_color_module = OGColour(og_color_frame, listener)
     listener.attach_module(ORIGINAL_COLOUR, og_color_module)
 

@@ -52,8 +52,7 @@ class ModuleListener:
             self.index = self.modules[ANALYSIS_AND_FORM].get_index()
             self.mask = self.modules[ORIGINAL_COLOUR].get_mask()
             self.is_masked = self.modules[DIAGRAM].get_is_masked()
-            self._make_new_analysis(dc_path, data_cube,
-                                    self.normal, self.absorbance, self.wavelength, self.index, self.mask)
+            self._make_new_analysis(dc_path, data_cube, self.normal, self.absorbance, self.wavelength, self.index, self.mask)
 
     def set_data_cube(self, dc_path):
         logging.debug("SELECTED DATA CUBE AT: " + dc_path)
@@ -105,6 +104,9 @@ class ModuleListener:
         self.is_masked = new_is_masked
         self._broadcast_new_data()
 
+    def render_original_image_data(self):
+        self._broadcast_to_original_image()
+
     def render_new_recreated_image_data(self):
         self._broadcast_to_recreated_image()
 
@@ -124,8 +126,39 @@ class ModuleListener:
         self._broadcast_to_absorption_spec()
 
     def _broadcast_to_original_image(self):
-        # TODO
-        pass
+        display_mode = self.modules[ORIGINAL_COLOUR].get_displayed_image_mode()
+        new_data = None
+        if display_mode == RGB:
+            logging.debug("GETTING RGB IMAGE")
+            if not self.is_masked:
+                new_data = self.get_result(self.current_rendered_result_path).get_rgb_og()
+            else:
+                new_data = self.get_result(self.current_rendered_result_path).get_rgb_masked_og()
+        elif display_mode == STO2:
+            logging.debug("GETTING STO2 IMAGE")
+            if not self.is_masked:
+                new_data = self.get_result(self.current_rendered_result_path).get_sto2_og()
+            else:
+                new_data = self.get_result(self.current_rendered_result_path).get_sto2_masked_og()
+        elif display_mode == NIR:
+            logging.debug("GETTING NIR IMAGE")
+            if not self.is_masked:
+                new_data = self.get_result(self.current_rendered_result_path).get_nir_og()
+            else:
+                new_data = self.get_result(self.current_rendered_result_path).get_nir_masked_og()
+        elif display_mode == THI:
+            logging.debug("GETTING THI IMAGE")
+            if not self.is_masked:
+                new_data = self.get_result(self.current_rendered_result_path).get_thi_og()
+            else:
+                new_data = self.get_result(self.current_rendered_result_path).get_thi_masked_og()
+        elif display_mode == TWI:
+            logging.debug("GETTING TWI IMAGE")
+            if not self.is_masked:
+                new_data = self.get_result(self.current_rendered_result_path).get_twi_og()
+            else:
+                new_data = self.get_result(self.current_rendered_result_path).get_twi_masked_og()
+        self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
 
     def _broadcast_to_recreated_image(self):
         display_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
@@ -202,4 +235,4 @@ class ModuleListener:
 
     # Uses the path of the data cube as an identifier
     def _make_new_analysis(self, path, data_cube, normal, absorbance, wavelength, index, mask=None):
-        self.results[path] = Analysis(data_cube, normal, absorbance, wavelength, index, mask)
+        self.results[path] = Analysis(path, data_cube, normal, absorbance, wavelength, index, mask)
