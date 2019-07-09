@@ -323,12 +323,11 @@ class OGColour:
 
     # Commands (Callbacks)
     def __use_coords(self):
-        # produces a 640x480 mask
+        # produces a 640x480 8-bit mask
         polygon = [point for point in self.coords_list if point != (None, None)]
         img = Image.new('L', (640, 480), 0)
         ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
         self.mask = np.array(img)
-        print(self.mask.size)
 
     def __remove_pt(self, index):
         self.coords_list[index-1] = (None, None)

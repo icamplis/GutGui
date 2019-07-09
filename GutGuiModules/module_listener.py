@@ -130,34 +130,19 @@ class ModuleListener:
         new_data = None
         if display_mode == RGB:
             logging.debug("GETTING RGB IMAGE")
-            if not self.is_masked:
-                new_data = self.get_result(self.current_rendered_result_path).get_rgb_og()
-            else:
-                new_data = self.get_result(self.current_rendered_result_path).get_rgb_masked_og()
+            new_data = self.get_result(self.current_rendered_result_path).get_rgb_og()
         elif display_mode == STO2:
             logging.debug("GETTING STO2 IMAGE")
-            if not self.is_masked:
-                new_data = self.get_result(self.current_rendered_result_path).get_sto2_og()
-            else:
-                new_data = self.get_result(self.current_rendered_result_path).get_sto2_masked_og()
+            new_data = self.get_result(self.current_rendered_result_path).get_sto2_og()
         elif display_mode == NIR:
             logging.debug("GETTING NIR IMAGE")
-            if not self.is_masked:
-                new_data = self.get_result(self.current_rendered_result_path).get_nir_og()
-            else:
-                new_data = self.get_result(self.current_rendered_result_path).get_nir_masked_og()
+            new_data = self.get_result(self.current_rendered_result_path).get_nir_og()
         elif display_mode == THI:
             logging.debug("GETTING THI IMAGE")
-            if not self.is_masked:
-                new_data = self.get_result(self.current_rendered_result_path).get_thi_og()
-            else:
-                new_data = self.get_result(self.current_rendered_result_path).get_thi_masked_og()
+            new_data = self.get_result(self.current_rendered_result_path).get_thi_og()
         elif display_mode == TWI:
             logging.debug("GETTING TWI IMAGE")
-            if not self.is_masked:
-                new_data = self.get_result(self.current_rendered_result_path).get_twi_og()
-            else:
-                new_data = self.get_result(self.current_rendered_result_path).get_twi_masked_og()
+            new_data = self.get_result(self.current_rendered_result_path).get_twi_og()
         self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
 
     def _broadcast_to_recreated_image(self):
