@@ -1,4 +1,6 @@
 import numpy as np
+import sys
+np.set_printoptions(threshold=sys.maxsize)
 from AnalysisModules.analysis_constant import *
 from AnalysisModules.Indices import Index
 from GutGuiModules.utility import *
@@ -371,7 +373,8 @@ class Analysis:
             self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength[0]]
 
         if self.mask is not None:
-            self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=[self.mask] * 100)
+            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=mask)
             # self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
@@ -398,8 +401,10 @@ class Analysis:
             self.x_absorbance_w = self.x_absorbance[:, :, self.wavelength[0]]
 
         if self.mask is not None:
-            self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=[self.mask] * 100)
-            # self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength[0]], mask=self.mask)
+            # self.x_absorbance_masked = self.__apply_2DMask_on_3DArray(self.mask, self.x_absorbance)
+            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=mask)
+            # self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=np.array([self.mask] * 100))
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
                 wav_upper = int(round(max(max(self.wavelength), 100), 0))

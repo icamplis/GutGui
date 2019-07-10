@@ -117,7 +117,11 @@ class NewColour:
                                                outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING NEW COLOUR IMAGE...")
-            (self.new_colour_image_graph, self.new_colour_image) = make_image(self.root, self.new_colour_image_data,row=2, column=0,columnspan=4, rowspan=4,lower_scale_value=self.lower_scale_value,upper_scale_value=self.upper_scale_value,color_rgb=PASTEL_ORANGE_RGB)
+            (self.new_colour_image_graph, self.new_colour_image) = make_image(self.root, self.new_colour_image_data,
+                                                                              row=2, column=0,columnspan=4, rowspan=4,
+                                                                              lower_scale_value=self.lower_scale_value,
+                                                                              upper_scale_value=self.upper_scale_value,
+                                                                              color_rgb=PASTEL_ORANGE_RGB)
             self.new_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)
