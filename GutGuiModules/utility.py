@@ -2,9 +2,9 @@ from tkinter import *
 from tkinter.ttk import Notebook
 from GutGuiModules.constants import *
 import numpy as np
-from scipy import misc
 from PIL import Image
 from matplotlib import cm
+import imageio
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -123,7 +123,8 @@ def make_popup_image(graph, graphsize=(8,8), interactive = False):
         return (window, image)
 
 def image_to_array(filename):
-    return misc.imread(filename)
+
+    return imageio.imread(filename)
 
 def rgb_to_rgba(rgb):
     r = rgb[0]/255
