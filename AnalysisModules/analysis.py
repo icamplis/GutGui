@@ -1,4 +1,6 @@
 import numpy as np
+import sys
+np.set_printoptions(threshold=sys.maxsize)
 from AnalysisModules.analysis_constant import *
 from AnalysisModules.Indices import Index
 from GutGuiModules.utility import *
@@ -259,7 +261,7 @@ class Analysis:
             temp2 = self._x_reflectance_min_740_780 / R2
         self.sto2 = temp1 / (temp1 + temp2)
         logging.debug("Complete Sto2 Mean: " + str(self.sto2[:, :].mean()))
-        if self.mask:
+        if self.mask is not None:
             self.sto2_masked = np.ma.array(self.sto2[:, :], mask=[self.mask])
             logging.debug("Masked Sto2 Mean: " + str(self.sto2_masked.mean()))
 
@@ -275,7 +277,7 @@ class Analysis:
             temp1 = self._x_reflectance_mean_825_925 / self._x_reflectance_mean_655_735
         self.nir = (temp1 - S1) / (S2 - S1)
         logging.debug("Complete NIR Mean: " + str(self.nir[:, :].mean()))
-        if self.mask:
+        if self.mask is not None:
             self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
             logging.debug("Masked NIR Mean: " + str(self.nir_masked.mean()))
 
@@ -291,7 +293,7 @@ class Analysis:
             temp1 = self._x_reflectance_mean_530_590 / self._x_reflectance_mean_785_825
         self.thi = (temp1 - T1) / (T2 - T1)
         logging.debug("Complete THI Mean: " + str(self.thi[:, :].mean()))
-        if self.mask:
+        if self.mask is not None:
             self.thi_masked = np.ma.array(self.thi[:, :], mask=[self.mask])
             logging.debug("Masked THI Mean: " + str(self.thi_masked.mean()))
 
@@ -307,7 +309,7 @@ class Analysis:
             temp1 = self._x_reflectance_mean_880_900 / self._x_reflectance_mean_955_980
         self.twi = (temp1 - U1) / (U2 - U1)
         logging.debug("Complete TWI Mean: " + str(self.twi[:, :].mean()))
-        if self.mask:
+        if self.mask is not None:
             self.twi_masked = np.ma.array(self.twi[:, :], mask=[self.mask])
             logging.debug("Masked TWI Mean: " + str(self.twi_masked.mean()))
 
@@ -316,13 +318,13 @@ class Analysis:
         if self.absorbance:
             index_module = Index(index_number, self.x_absorbance, wavelength=self.wavelength)
             self.index = index_module.get_index()
-            if self.mask:
+            if self.mask is not None:
                 masked_index_module = Index(index_number, self.x_absorbance_masked, wavelength=self.wavelength)
                 self.index_masked = masked_index_module.get_index()
         else:
             index_module = Index(index_number, self.x_reflectance, wavelength=self.wavelength)
             self.index = index_module.get_index()
-            if self.mask:
+            if self.mask is not None:
                 masked_index_module = Index(index_number, self.x_reflectance_masked, wavelength=self.wavelength)
                 self.index_masked = masked_index_module.get_index()
 
@@ -330,11 +332,11 @@ class Analysis:
         logging.debug("CALCULATING: ABSORPTION SPEC...")
         if self.absorbance:
             self.absorption_roi = self._calc_absorption_spec_roi(self.x_absorbance)
-            if self.mask:
+            if self.mask is not None:
                 self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_absorbance_masked)
         else:
             self.absorption_roi = self._calc_absorption_spec_roi(self.x_reflectance)
-            if self.mask:
+            if self.mask is not None:
                 self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_reflectance_masked)
 
     @staticmethod
@@ -365,15 +367,16 @@ class Analysis:
         else:
             self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength[0]]
 
-        if self.mask:
-            self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=[self.mask] * 100)
+        if self.mask is not None:
+            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=mask)
             # self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
                 wav_upper = int(round(max(max(self.wavelength), 100), 0))
-                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper], axis=2), mask=[self.mask] * 100)
+                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper], axis=2), mask=self.mask)
             else:
-                self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=[self.mask] * 100)
+                self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
     def __calc_x2(self):
         self.x1 = self.x1.clip(min=0)
@@ -388,15 +391,15 @@ class Analysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 100), 0))
-            print(wav_lower)
-            print(wav_upper)
             self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower : wav_upper], axis=2)
         else:
             self.x_absorbance_w = self.x_absorbance[:, :, self.wavelength[0]]
 
-        if self.mask:
-            self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=[self.mask] * 100)
-            # self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength[0]], mask=self.mask)
+        if self.mask is not None:
+            # self.x_absorbance_masked = self.__apply_2DMask_on_3DArray(self.mask, self.x_absorbance)
+            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=mask)
+            # self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=np.array([self.mask] * 100))
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
                 wav_upper = int(round(max(max(self.wavelength), 100), 0))

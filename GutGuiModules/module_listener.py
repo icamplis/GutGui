@@ -199,7 +199,7 @@ class ModuleListener:
         self.modules[HISTOGRAM].update_histogram(data)
 
     def _broadcast_to_absorption_spec(self):
-        if self.mask:
+        if self.is_masked:
             new_absorption_spec = self.get_result(self.current_rendered_result_path).get_absorption_spec_masked()
         else:
             new_absorption_spec = self.get_result(self.current_rendered_result_path).get_absorption_spec()
