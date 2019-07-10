@@ -129,7 +129,7 @@ class Histogram:
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_save_as_excel(self):
-        self.save_as_excel_label = make_label(self.root, "Save as Excel", row=11, column=2,inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 20))
+        self.save_as_excel_label = make_label(self.root, "Save as CSV", row=11, column=2,inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 20))
         self.save_as_excel_checkbox = make_checkbox(self.root, "", row=11, column=2,var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 9))
         self.save_as_excel_checkbox.deselect()
         self.save_as_excel_checkbox.bind('<Button-1>', self.__update_save_as_excel_check_status)

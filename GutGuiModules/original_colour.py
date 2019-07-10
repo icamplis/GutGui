@@ -14,67 +14,67 @@ class OGColour:
 
         self.rgb_button = None
         self.rgb_checkbox = None
-        self.rgb_checkbox_value = None
+        self.rgb_checkbox_value = IntVar()
 
         self.sto2_button = None
         self.sto2_checkbox = None
-        self.sto2_checkbox_value = None
+        self.sto2_checkbox_value = IntVar()
 
         self.nir_button = None
         self.nir_checkbox = None
-        self.nir_checkbox_value = None
+        self.nir_checkbox_value = IntVar()
 
         self.thi_button = None
         self.thi_checkbox = None
-        self.thi_checkbox_value = None
+        self.thi_checkbox_value = IntVar()
 
         self.twi_button = None
         self.twi_checkbox = None
-        self.twi_checkbox_value = None
+        self.twi_checkbox_value = IntVar()
 
         self.save_coords_label = None
         self.save_coords_checkbox = None
-        self.save_coords_checkbox_value = None
+        self.save_coords_checkbox_value = IntVar()
 
         self.pt1_label = None
         self.pt1_remove = None
         self.pt1_checkbox = None
-        self.pt1_checkbox_value = None
+        self.pt1_checkbox_value = IntVar()
 
         self.pt2_label = None
         self.pt2_remove = None
         self.pt2_checkbox = None
-        self.pt2_checkbox_value = None
+        self.pt2_checkbox_value = IntVar()
 
         self.pt3_label = None
         self.pt3_remove = None
         self.pt3_checkbox = None
-        self.pt3_checkbox_value = None
+        self.pt3_checkbox_value = IntVar()
 
         self.pt4_label = None
         self.pt4_remove = None
         self.pt4_checkbox = None
-        self.pt4_checkbox_value = None
+        self.pt4_checkbox_value = IntVar()
 
         self.pt5_label = None
         self.pt5_remove = None
         self.pt5_checkbox = None
-        self.pt5_checkbox_value = None
+        self.pt5_checkbox_value = IntVar()
 
         self.pt6_label = None
         self.pt6_remove = None
         self.pt6_checkbox = None
-        self.pt6_checkbox_value = None
+        self.pt6_checkbox_value = IntVar()
 
         self.pt7_label = None
         self.pt7_remove = None
         self.pt7_checkbox = None
-        self.pt7_checkbox_value = None
+        self.pt7_checkbox_value = IntVar()
 
         self.pt8_label = None
         self.pt8_remove = None
         self.pt8_checkbox = None
-        self.pt8_checkbox_value = None
+        self.pt8_checkbox_value = IntVar()
 
         self.use_mask_button = None
 
@@ -119,28 +119,28 @@ class OGColour:
     def get_save_coords_checkbox_value(self):
         return not bool(self.save_coords_checkbox_value.get())
 
-    def get_pt1_checkbox_value():
+    def get_pt1_checkbox_value(self):
         return not bool(self.pt1_checkbox_value.get())
 
-    def get_pt2_checkbox_value():
+    def get_pt2_checkbox_value(self):
         return not bool(self.pt2_checkbox_value.get())
 
-    def get_pt3_checkbox_value():
+    def get_pt3_checkbox_value(self):
         return not bool(self.pt3_checkbox_value.get())
 
-    def get_pt4_checkbox_value():
+    def get_pt4_checkbox_value(self):
         return not bool(self.pt4_checkbox_value.get())
 
-    def get_pt5_checkbox_value():
+    def get_pt5_checkbox_value(self):
         return not bool(self.pt5_checkbox_value.get())
 
-    def get_pt6_checkbox_value():
+    def get_pt6_checkbox_value(self):
         return not bool(self.pt6_checkbox_value.get())
 
-    def get_pt7_checkbox_value():
+    def get_pt7_checkbox_value(self):
         return not bool(self.pt7_checkbox_value.get())
         
-    def get_pt8_checkbox_value():
+    def get_pt8_checkbox_value(self):
         return not bool(self.pt8_checkbox_value.get())
 
     # Helper
@@ -298,8 +298,8 @@ class OGColour:
             x = int(point[1])
             for xi in range(-4, 5):
                 for yi in range(-4, 5):
-                    copy_data[x+xi, y+yi, :] = BRIGHT_GREEN_RGB
-            idx = self.coords_list.index(point)
+                    copy_data[(x+xi)%480, (y+yi)%640, :] = BRIGHT_GREEN_RGB
+            idx = not_none.index(point)
             self._draw_a_line(not_none[idx-1], not_none[idx], copy_data)    
         self._build_original_image(copy_data)
 
@@ -308,7 +308,7 @@ class OGColour:
         r1, c1 = point2
         rr, cc, val = line_aa(c0, r0, c1, r1)
         for i in range(len(rr)):
-            image[rr[i], cc[i]] = (int(113*val[i]), int(255*val[i]), int(66*val[i]))
+            image[rr[i]%480, cc[i]%640] = (int(113*val[i]), int(255*val[i]), int(66*val[i]))
         return image
 
     def _build_points(self):
@@ -343,7 +343,7 @@ class OGColour:
 
     def __get_coords(self, eventorigin):
         x = int((eventorigin.x - 54)*640/260)
-        y = int((eventorigin.y - 18)*480/193)
+        y = int((eventorigin.y - 18)*480/192)
         if 0 <= x < 640 and 0 <= y < 640:
             self.__add_pt((x, y))
 
