@@ -27,11 +27,20 @@ class OGColourData:
 
     def update_original_image_data(self, original_colour_image_data):
         self.data = original_colour_image_data
+        self._calc_data()
         self._build_data()
 
     # Helper
     def _init_widget(self):
         self._build_data()
+
+    def _calc_data(self):
+        self.mean_value = None
+        self.sd_value = None
+        self.median_value = None
+        self.iqr_value = None
+        self.min_value = None
+        self.max_value = None
 
     def _build_data(self):
         # mean
@@ -45,4 +54,4 @@ class OGColourData:
         # min
         self.min_text = make_text(self.root, content="Min = " + str(self.min_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=5, width=11, columnspan=1, padx=0, state=NORMAL)
         # max
-        self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=6, width=11, columnspan=1, padx=0, state=NORMAL)
+        self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=6, width=11, columnspan=1, padx=0, pady=(0, 15), state=NORMAL)

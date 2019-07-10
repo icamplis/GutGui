@@ -29,19 +29,32 @@ def main():
     listener.attach_module(ORIGINAL_COLOUR, og_color_module)
 
     # original colour data
-    (og_color_data_frame, ogc_data_label) = frame_and_label(image_diagram, "Original Image Data", PASTEL_PINK_RGB, 2, 4, 3, 1, labelspan=1)
+    (og_color_data_frame, ogc_data_label) = frame_and_label(image_diagram, "Original Image Data", PASTEL_PINK_RGB, 2, 4, 4, 1, labelspan=1)
     og_color_data_module = OGColourData(og_color_data_frame, listener)
     listener.attach_module(ORIGINAL_COLOUR_DATA, og_color_data_module)
+    ogc_data_label.grid(padx=15, pady=(15, 10))
 
     # recreated colour
     (recreated_color_frame, recreated_color_label) = frame_and_label(image_diagram, "Recreated Image", PASTEL_BLUE_RGB, 7, 0, 7, 1, labelspan=5)
     recreated_color_module = RecColour(recreated_color_frame, listener)
     listener.attach_module(RECREATED_COLOUR, recreated_color_module)
 
+    # recreated colour data
+    (rec_color_data_frame, rec_data_label) = frame_and_label(image_diagram, "Recreated Image Data", PASTEL_ORANGE_RGB, 6, 4, 4, 1, labelspan=1)
+    rec_color_data_module = RecreatedColourData(rec_color_data_frame, listener)
+    listener.attach_module(RECREATED_COLOUR_DATA, rec_color_data_module)
+    rec_data_label.grid(padx=15, pady=(15, 10))
+
     # new colour
     (new_color_frame, new_color_label) = frame_and_label(image_diagram, "New Image", PASTEL_ORANGE_RGB, 7, 1, 7, 1, labelspan=5)
     new_color_module = NewColour(new_color_frame, listener)
     listener.attach_module(NEW_COLOUR, new_color_module)
+
+    # new colour data
+    (new_color_data_frame, new_data_label) = frame_and_label(image_diagram, "New Image Data", PASTEL_BLUE_RGB, 10, 4, 4, 1, labelspan=1)
+    new_color_data_module = NewColourData(new_color_data_frame, listener)
+    listener.attach_module(NEW_COLOUR_DATA, new_color_data_module)
+    new_data_label.grid(padx=15, pady=(15, 10))
 
     # diagram
     (diagram_frame, diagram_label) = frame_and_label(image_diagram, "Diagram",PASTEL_ORANGE_RGB, 0, 4, 2, 1, labelspan=1)

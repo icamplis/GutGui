@@ -148,6 +148,7 @@ class ModuleListener:
         elif display_mode == TWI:
             logging.debug("GETTING TWI IMAGE")
             new_data = self.get_result(self.current_rendered_result_path).get_twi_og()
+        self.modules[ORIGINAL_COLOUR_DATA].update_original_image_data(new_data)
         self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
 
     def _broadcast_to_recreated_image(self):
@@ -177,6 +178,7 @@ class ModuleListener:
                 new_data = self.get_result(self.current_rendered_result_path).get_twi()
             else:
                 new_data = self.get_result(self.current_rendered_result_path).get_twi_masked()
+        self.modules[RECREATED_COLOUR_DATA].update_original_image_data(new_data)
         self.modules[RECREATED_COLOUR].update_recreated_image(new_data)
 
     def _broadcast_to_new_image(self):
@@ -192,6 +194,7 @@ class ModuleListener:
                 new_data = self.get_result(self.current_rendered_result_path).get_wl_data()
             elif display_mode == IDX:
                 new_data = self.get_result(self.current_rendered_result_path).get_index()
+        self.modules[NEW_COLOUR_DATA].update_original_image_data(new_data)
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
     def _broadcast_to_histogram(self):

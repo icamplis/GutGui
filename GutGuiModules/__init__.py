@@ -11,3 +11,5 @@ from GutGuiModules.save import Save
 from GutGuiModules.recreated_colour import RecColour
 from GutGuiModules.module_listener import ModuleListener
 from GutGuiModules.original_colour_data import OGColourData
+from GutGuiModules.recreated_colour_data import RecreatedColourData
+from GutGuiModules.new_colour_data import NewColourData
