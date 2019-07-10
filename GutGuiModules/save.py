@@ -2,7 +2,6 @@ from GutGuiModules.utility import *
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
-from progress.bar import Bar
 import os
 import logging
 
@@ -36,7 +35,15 @@ class Save:
             HISTOGRAM_EXCEL: False,
             ABSORPTION_SPEC_IMAGE: False,
             ABSORPTION_SPEC_IMAGE_WO_SCALE: False,
-            ABSORPTION_SPEC_EXCEL: False
+            ABSORPTION_SPEC_EXCEL: False,
+            PT1: False, 
+            PT2: False,
+            PT3: False, 
+            PT4: False,
+            PT5: False, 
+            PT6: False,
+            PT7: False, 
+            PT8: False,
         }
 
         # The current data cube whose data is being saved.
@@ -109,7 +116,17 @@ class Save:
                 self.saves[ABSORPTION_SPEC_EXCEL]:
             self.__save_absorption_spec()
 
+        if self.saves[PT1] or self.saves[PT2] or self.saves[PT3] or \
+                self.saves[PT4] or self.saves[PT5] or self.saves[PT6] or \
+                self.saves[PT7] or self.saves[PT8]:
+            self.__save_points()
+
     # Module savers
+    def __save_points(self):
+        point_bools = [self.saves[PT1], self.saves[PT2], self.saves[PT3], self.saves[PT4], self.saves[PT5], self.saves[PT6], self.saves[PT7], self.saves[PT8]]
+        data = self.listener.get_coords(point_bools)
+        self.__save_data(data, title="MASK_COORDINATES")
+
     def __save_sto2_data_and_image(self):
         if self.saves[STO2_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
@@ -302,3 +319,6 @@ class Save:
         plt.axis('off')
         plt.savefig(output_path)
         plt.clf()
+
+
+

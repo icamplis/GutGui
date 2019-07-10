@@ -32,10 +32,6 @@ class OGColour:
         self.twi_checkbox = None
         self.twi_checkbox_value = IntVar()
 
-        self.save_coords_label = None
-        self.save_coords_checkbox = None
-        self.save_coords_checkbox_value = IntVar()
-
         self.pt1_label = None
         self.pt1_remove = None
         self.pt1_checkbox = None
@@ -99,6 +95,9 @@ class OGColour:
     def get_mask(self):
         return self.mask
 
+    def get_coords(self):
+        return self.coords_list
+
     def update_original_image(self, original_image_data):
         self.original_image_data = original_image_data
         self._draw_points()
@@ -120,9 +119,6 @@ class OGColour:
 
     def get_twi_checkbox_value(self):
         return not bool(self.twi_checkbox_value.get())
-
-    def get_save_coords_checkbox_value(self):
-        return not bool(self.save_coords_checkbox_value.get())
 
     def get_pt1_checkbox_value(self):
         return not bool(self.pt1_checkbox_value.get())
@@ -155,7 +151,6 @@ class OGColour:
         self._build_nir()
         self._build_thi()
         self._build_twi()
-        self._build_original_image(self.original_image_data)
         self._build_pt1()
         self._build_pt2()
         self._build_pt3()
@@ -164,8 +159,8 @@ class OGColour:
         self._build_pt6()
         self._build_pt7()
         self._build_pt8()
-        self._build_save_coords()
         self._build_use_mask_button()
+        self._build_original_image(self.original_image_data)
 
     def _build_rgb(self):
         self.rgb_button = make_button(self.root, text='RGB', width=3, command=self.__update_to_rgb, row=1, column=0, columnspan=1, inner_pady=5, outer_padx=(15, 10))
@@ -196,11 +191,6 @@ class OGColour:
         # self.twi_checkbox = make_checkbox(self.root, "", row=1, column=4, columnspan=1, var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         # self.twi_checkbox.deselect()
         # self.twi_checkbox.bind('<Button-1>', self.__update_twi_checked)
-
-    def _build_save_coords(self):
-        self.save_coords_label = make_label(self.root, "Save Coordinates of Freehand Selection", row=10, column=0, columnspan=5, outer_padx=(15, 0), outer_pady=(10, 15), inner_padx=5, inner_pady=5, wraplength=300)
-        self.save_coords_checkbox = make_checkbox(self.root, text="", row=10, column=0, var=self.save_coords_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(0, 25), columnspan=5)
-        self.save_coords_checkbox.bind('<Button-1>', self.__update_save_coords_checked)
 
     def _build_pt1(self):
         # text
@@ -420,10 +410,6 @@ class OGColour:
         self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
         self.listener.render_original_image_data()
-
-    def __update_save_coords_checked(self, event):
-        value = self.get_save_coords_checkbox_value()
-        self.listener.update_saved(OG_IMAGE, value)
 
     def __update_pt1_checked(self, event):
         value = self.get_pt1_checkbox_value()

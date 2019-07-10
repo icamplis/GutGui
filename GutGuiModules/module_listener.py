@@ -117,6 +117,11 @@ class ModuleListener:
         logging.debug("UPDATING " + saves_key + " TO " + str(value))
         self.modules[SAVE].update_saves(saves_key, value)
 
+    def get_coords(self, point_bools):
+        point_coords = self.modules[ORIGINAL_COLOUR].get_coords()
+        data = [[point_coords[i][0], point_coords[i][1]] for i in range(8) if point_bools[i] and point_coords[i] != (None, None)]
+        return data
+
     # Helpers
     def _broadcast_new_data(self):
         self._broadcast_to_original_image()
