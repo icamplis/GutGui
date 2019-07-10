@@ -35,7 +35,15 @@ class Save:
             HISTOGRAM_EXCEL: False,
             ABSORPTION_SPEC_IMAGE: False,
             ABSORPTION_SPEC_IMAGE_WO_SCALE: False,
-            ABSORPTION_SPEC_EXCEL: False
+            ABSORPTION_SPEC_EXCEL: False,
+            PT1: False, 
+            PT2: False,
+            PT3: False, 
+            PT4: False,
+            PT5: False, 
+            PT6: False,
+            PT7: False, 
+            PT8: False,
         }
 
         # The current data cube whose data is being saved.
@@ -108,7 +116,17 @@ class Save:
                 self.saves[ABSORPTION_SPEC_EXCEL]:
             self.__save_absorption_spec()
 
+        if self.saves[PT1] or self.saves[PT2] or self.saves[PT3] or \
+                self.saves[PT4] or self.saves[PT5] or self.saves[PT6] or \
+                self.saves[PT7] or self.saves[PT8]:
+            self.__save_points()
+
     # Module savers
+    def __save_points(self):
+        point_bools = [self.saves[PT1], self.saves[PT2], self.saves[PT3], self.saves[PT4], self.saves[PT5], self.saves[PT6], self.saves[PT7], self.saves[PT8]]
+        data = self.listener.get_coords(point_bools)
+        self.__save_data(data, title="MASK_COORDINATES")
+
     def __save_sto2_data_and_image(self):
         if self.saves[STO2_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
@@ -117,15 +135,13 @@ class Save:
                                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_sto2_masked(), "STO2_DATA_MASKED")
-                self.__save_image(self.current_result.get_sto2_masked(), "STO2_MASKED_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_sto2_masked(), "STO2_MASKED_IMAGE",self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
 
     def __save_nir_data_and_image(self):
         if self.saves[NIR_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_nir(), "NIR_DATA")
-                self.__save_image(self.current_result.get_nir(), "NIR_WHOLE_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_nir(), "NIR_WHOLE_IMAGE", self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_nir_masked(), "NIR_DATA_MASKED")
                 self.__save_image(self.current_result.get_nir_masked(), "NIR_MASKED_IMAGE",
@@ -135,41 +151,34 @@ class Save:
         if self.saves[TWI_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_twi(), "TWI_DATA")
-                self.__save_image(self.current_result.get_twi(), "TWI_WHOLE_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_twi(), "TWI_WHOLE_IMAGE", self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_twi_masked(), "TWI_DATA_MASKED")
-                self.__save_image(self.current_result.get_twi_masked(), "TWI_MASKED_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_twi_masked(), "TWI_MASKED_IMAGE", self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
 
     def __save_thi_data_and_image(self):
         if self.saves[THI_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_thi(), "THI_DATA")
-                self.__save_image(self.current_result.get_thi(), "THI_WHOLE_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_thi(), "THI_WHOLE_IMAGE", self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_thi_masked(), "THI_DATA_MASKED")
-                self.__save_image(self.current_result.get_thi_masked(), "THI_MASKED_IMAGE",
-                                  self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_thi_masked(), "THI_MASKED_IMAGE", self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
 
     def __save_wl_data_and_image(self):
         if self.saves[WL_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_wl_data(), "WL_DATA")
-                self.__save_image(self.current_result.get_wl_data(), "WL_WHOLE_IMAGE",
-                                  self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_wl_data(), "WL_WHOLE_IMAGE", self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_wl_data_masked(), "WL_DATA_MASKED")
-                self.__save_image(self.current_result.get_wl_data_masked(), "WL_MASKED_IMAGE",
-                                  self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_wl_data_masked(), "WL_MASKED_IMAGE", self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
 
     def __save_idx_data_and_image(self):
         if self.saves[IDX_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_index(), "INDEX_DATA")
-                self.__save_image(self.current_result.get_index(), "INDEX_WHOLE_IMAGE",
-                                  self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
+                self.__save_image(self.current_result.get_index(), "INDEX_WHOLE_IMAGE", self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
             if self.saves[MASKED_IMAGE_SAVE]:
                 self.__save_data(self.current_result.get_index_masked(), "INDEX_DATA_MASKED")
                 self.__save_image(self.current_result.get_index_masked(), "INDEX_MASKED_IMAGE",
@@ -178,12 +187,10 @@ class Save:
     def __save_histogram(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_result.get_whole_image_data().flatten()
-            self.__save_histogram_graph(data, "HISTOGRAM_WHOLE_IMAGE",
-                                        self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE])
+            self.__save_histogram_graph(data, "HISTOGRAM_WHOLE_IMAGE", self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE])
         if self.saves[MASKED_IMAGE_SAVE]:
             data = self.current_result.get_masked_image_data().flatten()
-            self.__save_histogram_graph(data, "HISTOGRAM_MASKED_IMAGE",
-                                        self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE])
+            self.__save_histogram_graph(data, "HISTOGRAM_MASKED_IMAGE", self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE])
         if self.saves[HISTOGRAM_EXCEL]:
             data = self.current_result.get_histogram_data(self.saves[MASKED_IMAGE_SAVE]).flatten()
             self.__save_data(data, "HISTOGRAM_EXCEL")  # it's too slow to save it as an actual xlsx
@@ -191,14 +198,10 @@ class Save:
     def __save_absorption_spec(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_result.get_absorption_spec()
-            self.__save_absorption_spec_graph(data, "ABSORPTION_SPEC_WHOLE_IMAGE",
-                                              self.saves[ABSORPTION_SPEC_IMAGE],
-                                              self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
+            self.__save_absorption_spec_graph(data, "ABSORPTION_SPEC_WHOLE_IMAGE", self.saves[ABSORPTION_SPEC_IMAGE], self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
         if self.saves[MASKED_IMAGE_SAVE]:
             data = self.current_result.get_absorption_spec_masked()
-            self.__save_absorption_spec_graph(data, "ABSORPTION_SPEC_MASKED_IMAGE",
-                                              self.saves[ABSORPTION_SPEC_IMAGE],
-                                              self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
+            self.__save_absorption_spec_graph(data, "ABSORPTION_SPEC_MASKED_IMAGE", self.saves[ABSORPTION_SPEC_IMAGE], self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
         if self.saves[ABSORPTION_SPEC_EXCEL]:
             data = self.current_result.get_absorption_spec()
             self.__save_data(data, "ABSORPTION_SPEC_EXCEL")
@@ -212,14 +215,14 @@ class Save:
     def __save_image(self, data, title, is_image_with_scale, is_image_wo_scale,
                      format=".png", vmin=0, vmax=1):
         if is_image_with_scale:
-            self.__save_image_with_scale(data.T, title + "_WITH_SCALE", format, vmin, vmax)
+            self.__save_image_with_scale(data, title + "_WITH_SCALE", format, vmin, vmax)
         if is_image_wo_scale:
-            self.__save_image_wo_scale(data.T, title + "_WO_SCALE", format, vmin, vmax)
+            self.__save_image_wo_scale(data, title + "_WO_SCALE", format, vmin, vmax)
 
     def __save_image_with_scale(self, data, title, format=".png", vmin=0, vmax=1):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING IMAGE TO " + output_path)
-        plt.imshow(data[:, :], cmap='jet', vmin=vmin, vmax=vmax)
+        plt.imshow(np.flipud(data[:, :].T), cmap='jet', vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.title(title)
         plt.savefig(output_path)
@@ -228,11 +231,10 @@ class Save:
     def __save_image_wo_scale(self, data, title, format=".png", vmin=0, vmax=1):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING IMAGE WO SCALE TO " + output_path)
-        plt.imsave(output_path, data[:, :], cmap='jet', vmin=vmin, vmax=vmax)
+        plt.imsave(output_path, np.flipud(data[:, :].T), cmap='jet', vmin=vmin, vmax=vmax)
         plt.clf()
 
-    def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale,
-                         format=".png", min=0, max=1):
+    def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale, format=".png", min=0, max=1):
         if is_hist_with_scale:
             self.__save_histogram_with_scale(data, title + "_WITH_SCALE", format=format)
         if is_hist_wo_scale:
@@ -317,3 +319,6 @@ class Save:
         plt.axis('off')
         plt.savefig(output_path)
         plt.clf()
+
+
+

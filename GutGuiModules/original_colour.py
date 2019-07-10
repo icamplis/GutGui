@@ -1,9 +1,11 @@
 from GutGuiModules.utility import *
 from GutGuiModules.constants import *
 from skimage.draw import line_aa
+from tkinter import filedialog, messagebox
 from PIL import Image, ImageDraw
 import numpy as np
 import logging
+import csv
 
 class OGColour:
     def __init__(self, original_color_frame, listener):
@@ -31,10 +33,6 @@ class OGColour:
         self.twi_button = None
         self.twi_checkbox = None
         self.twi_checkbox_value = IntVar()
-
-        self.save_coords_label = None
-        self.save_coords_checkbox = None
-        self.save_coords_checkbox_value = IntVar()
 
         self.pt1_label = None
         self.pt1_remove = None
@@ -78,9 +76,16 @@ class OGColour:
 
         self.use_mask_button = None
 
+        self.upload_mask_button = None
+
         self.original_image_graph = None
         self.original_image_data = None
         self.original_image = None
+
+        self.pop_up_graph = None
+        self.pop_up_window = None
+        self.pop_up_image = None
+        self.pop_up = False
 
         # coords in dimensions of image, i.e. xrange=[0, 640], yrange=[0, 480]
         self.coords_list = [(None, None) for i in range(8)]
@@ -93,6 +98,9 @@ class OGColour:
 
     def get_mask(self):
         return self.mask_raw
+
+    def get_coords(self):
+        return self.coords_list
 
     def update_original_image(self, original_image_data):
         self.original_image_data = original_image_data
@@ -115,9 +123,6 @@ class OGColour:
 
     def get_twi_checkbox_value(self):
         return not bool(self.twi_checkbox_value.get())
-
-    def get_save_coords_checkbox_value(self):
-        return not bool(self.save_coords_checkbox_value.get())
 
     def get_pt1_checkbox_value(self):
         return not bool(self.pt1_checkbox_value.get())
@@ -150,7 +155,6 @@ class OGColour:
         self._build_nir()
         self._build_thi()
         self._build_twi()
-        self._build_original_image(self.original_image_data)
         self._build_pt1()
         self._build_pt2()
         self._build_pt3()
@@ -159,8 +163,9 @@ class OGColour:
         self._build_pt6()
         self._build_pt7()
         self._build_pt8()
-        self._build_save_coords()
         self._build_use_mask_button()
+        self._build_upload_mask_button()
+        self._build_original_image(self.original_image_data)
 
     def _build_rgb(self):
         self.rgb_button = make_button(self.root, text='RGB', width=3, command=self.__update_to_rgb, row=1, column=0, columnspan=1, inner_pady=5, outer_padx=(15, 10))
@@ -191,11 +196,6 @@ class OGColour:
         # self.twi_checkbox = make_checkbox(self.root, "", row=1, column=4, columnspan=1, var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
         # self.twi_checkbox.deselect()
         # self.twi_checkbox.bind('<Button-1>', self.__update_twi_checked)
-
-    def _build_save_coords(self):
-        self.save_coords_label = make_label(self.root, "Save Coordinates of Freehand Selection", row=10, column=0, columnspan=5, outer_padx=(15, 0), outer_pady=(10, 15), inner_padx=5, inner_pady=5, wraplength=300)
-        self.save_coords_checkbox = make_checkbox(self.root, text="", row=10, column=0, var=self.save_coords_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(0, 25), columnspan=5)
-        self.save_coords_checkbox.bind('<Button-1>', self.__update_save_coords_checked)
 
     def _build_pt1(self):
         # text
@@ -280,15 +280,25 @@ class OGColour:
     def _build_use_mask_button(self):
         self.use_mask_button = make_button(self.root, text='Use this mask', width=13, command=self.__use_coords, row=10, column=5, columnspan=3, inner_pady=5, outer_padx=(0, 15), outer_pady=(10, 15))
 
+    def _build_upload_mask_button(self):
+        self.upload_mask_button = make_button(self.root, text='Upload .csv mask', width=16, command=self.__upload_mask, row=10, column=0, columnspan=5, inner_pady=5, outer_padx=15, outer_pady=(10, 15))
+
     def _build_original_image(self, data):
         if data is None:
             # Placeholder
             self.original_image = make_label(self.root, "original image placeholder", row=2, column=0, rowspan=8, columnspan=5, inner_pady=80, inner_padx=120, outer_padx=(15, 10), outer_pady=(15, 10))
         else:
             logging.debug("BUILDING ORIGINAL COLOUR IMAGE...")
-            (self.original_image_graph, self.original_image) = make_image(self.root, data,row=2, column=0,columnspan=5, rowspan=8, lower_scale_value=None, upper_scale_value=None, color_rgb=PASTEL_PINK_RGB, original=True, figheight=2.5, figwidth=3.5)
+            (self.original_image_graph, self.original_image) = make_image(self.root, data, row=2, column=0, columnspan=5, rowspan=8, lower_scale_value=None, upper_scale_value=None, color_rgb=PASTEL_PINK_RGB, original=True, figheight=2.5, figwidth=3.5)
             self.original_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
             self.original_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
+            if self.pop_up == True:
+                self.pop_up_graph = self.original_image_graph
+                self.pop_up_graph.set_size_inches(8, 8)
+                self.pop_up_image = FigureCanvasTkAgg(self.pop_up_graph, master=self.pop_up_window)
+                self.pop_up_image.draw()
+                self.pop_up_image.get_tk_widget().grid(column=0, row=0)
+                self.pop_up_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
 
     def _draw_points(self):
         copy_data = self.original_image_data.copy()
@@ -336,6 +346,25 @@ class OGColour:
         mask = np.fliplr(mask.T)
         return mask
 
+    def __upload_mask(self):
+        mask_dir_path = filedialog.askopenfilename(parent=self.root, title="Please select a .csv file containing the coordinates of a mask.")
+        if mask_dir_path[-4:] != ".csv":
+            messagebox.showerror("Error", "That's not a .csv file!")
+        else:
+            self.__process_mask(mask_dir_path)
+
+    def __process_mask(self, path):
+        coords = []
+        with open(path) as csvfile:
+            readCSV = csv.reader(csvfile, delimiter=',')
+            for row in readCSV:
+                coords.append((int(float(row[0])), (int(float(row[1])))))
+        for i in range(8-len(coords)):
+            coords.append((None, None))
+        self.coords_list = coords
+        self._build_points()
+        self._draw_points()
+
     def __remove_pt(self, index):
         self.coords_list[index-1] = (None, None)
         self._build_points()
@@ -349,13 +378,27 @@ class OGColour:
             self._draw_points()
 
     def __get_coords(self, eventorigin):
-        x = int((eventorigin.x - 54)*640/260)
-        y = int((eventorigin.y - 18)*480/192)
-        if 0 <= x < 640 and 0 <= y < 640:
-            self.__add_pt((x, y))
+        if not self.pop_up:
+            x = int((eventorigin.x - 54)*640/260)
+            y = int((eventorigin.y - 18)*480/192)
+            if 0 <= x < 640 and 0 <= y < 640:
+                self.__add_pt((x, y))
+        else:
+            x = int(((eventorigin.x) - 53)*640/734)
+            y = int(((eventorigin.y) - 128)*480/550)
+            if 0 <= x < 640 and 0 <= y < 640:
+                self.__add_pt((x, y))
 
     def __pop_up_image(self, event):
-        make_popup_image(self.original_image_graph)
+        (self.pop_up_window, self.pop_up_image) = make_popup_image(self.original_image_graph, interactive=True)
+        self.pop_up = True
+        self.pop_up_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
+        self.pop_up_window.protocol("WM_DELETE_WINDOW", func=self.__close_pop_up)
+        self.pop_up_window.attributes("-topmost", True)
+
+    def __close_pop_up(self):
+        self.pop_up = False
+        self.pop_up_window.destroy()
 
     def __update_to_rgb(self):
         self.rgb_button.config(foreground="red")
@@ -401,10 +444,6 @@ class OGColour:
         self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
         self.listener.render_original_image_data()
-
-    def __update_save_coords_checked(self, event):
-        value = self.get_save_coords_checkbox_value()
-        self.listener.update_saved(OG_IMAGE, value)
 
     def __update_pt1_checked(self, event):
         value = self.get_pt1_checkbox_value()
