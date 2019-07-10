@@ -1,9 +1,11 @@
 from GutGuiModules.utility import *
 from GutGuiModules.constants import *
 from skimage.draw import line_aa
+from tkinter import filedialog, messagebox
 from PIL import Image, ImageDraw
 import numpy as np
 import logging
+import csv
 
 class OGColour:
     def __init__(self, original_color_frame, listener):
@@ -73,6 +75,8 @@ class OGColour:
         self.pt8_checkbox_value = IntVar()
 
         self.use_mask_button = None
+
+        self.upload_mask_button = None
 
         self.original_image_graph = None
         self.original_image_data = None
@@ -160,6 +164,7 @@ class OGColour:
         self._build_pt7()
         self._build_pt8()
         self._build_use_mask_button()
+        self._build_upload_mask_button()
         self._build_original_image(self.original_image_data)
 
     def _build_rgb(self):
@@ -275,6 +280,9 @@ class OGColour:
     def _build_use_mask_button(self):
         self.use_mask_button = make_button(self.root, text='Use this mask', width=13, command=self.__use_coords, row=10, column=5, columnspan=3, inner_pady=5, outer_padx=(0, 15), outer_pady=(10, 15))
 
+    def _build_upload_mask_button(self):
+        self.upload_mask_button = make_button(self.root, text='Upload .csv mask', width=16, command=self.__upload_mask, row=10, column=0, columnspan=5, inner_pady=5, outer_padx=15, outer_pady=(10, 15))
+
     def _build_original_image(self, data):
         if data is None:
             # Placeholder
@@ -330,6 +338,25 @@ class OGColour:
         img = Image.new('L', (640, 480), 0)
         ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
         self.mask = np.array(img)
+
+    def __upload_mask(self):
+        mask_dir_path = filedialog.askopenfilename(parent=self.root, title="Please select a .csv file containing the coordinates of a mask.")
+        if mask_dir_path[-4:] != ".csv":
+            messagebox.showerror("Error", "That's not a .csv file!")
+        else:
+            self.__process_mask(mask_dir_path)
+
+    def __process_mask(self, path):
+        coords = []
+        with open(path) as csvfile:
+            readCSV = csv.reader(csvfile, delimiter=',')
+            for row in readCSV:
+                coords.append((int(float(row[0])), (int(float(row[1])))))
+        for i in range(8-len(coords)):
+            coords.append((None, None))
+        self.coords_list = coords
+        self._build_points()
+        self._draw_points()
 
     def __remove_pt(self, index):
         self.coords_list[index-1] = (None, None)
