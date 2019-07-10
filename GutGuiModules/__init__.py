@@ -10,3 +10,4 @@ from GutGuiModules.source_and_output import SourceAndOutput
 from GutGuiModules.save import Save
 from GutGuiModules.recreated_colour import RecColour
 from GutGuiModules.module_listener import ModuleListener
+from GutGuiModules.original_colour_data import OGColourData

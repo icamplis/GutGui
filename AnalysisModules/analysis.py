@@ -46,15 +46,10 @@ class Analysis:
         self.twi_masked = None
 
         self.rgb_og = None
-        self.rgb_masked_og = None
         self.sto2_og = None
-        self.sto2_masked_og = None
         self.nir_og = None
-        self.nir_masked_og = None
         self.thi_og = None
-        self.thi_masked_og = None
         self.twi_og = None
-        self.twi_masked_og = None
 
         self._x_absorbance_gradient = None
         self._x_absorbance_gradient_min_1 = None

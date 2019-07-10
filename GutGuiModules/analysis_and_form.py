@@ -62,7 +62,7 @@ class AnalysisAndForm:
         return int(self.wavelength_lower_entry.get())
 
     def get_wavelength(self):
-        return (self.get_wavelength_lower(), self.get_wavelength_upper())
+        return (int((self.get_wavelength_lower()-500)/5), int((self.get_wavelength_upper()-500)/5))
 
     def get_index(self):
         return self.index_selected
@@ -122,12 +122,12 @@ class AnalysisAndForm:
 
     def _build_wavelength_upper_entry(self):
         self.wavelength_upper_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), columnspan=4)
-        self.wavelength_upper_entry.insert(0, str(64))
+        self.wavelength_upper_entry.insert(0, str(820))
         self.wavelength_upper_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_wavelength_lower_entry(self):
         self.wavelength_lower_entry = make_entry(self.root, row=4, column=4, width=15, pady=(10, 0), columnspan=4)
-        self.wavelength_lower_entry.insert(0, str(64))
+        self.wavelength_lower_entry.insert(0, str(820))
         self.wavelength_lower_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):

@@ -169,33 +169,18 @@ class OGColour:
 
     def _build_rgb(self):
         self.rgb_button = make_button(self.root, text='RGB', width=3, command=self.__update_to_rgb, row=1, column=0, columnspan=1, inner_pady=5, outer_padx=(15, 10))
-        # self.rgb_checkbox = make_checkbox(self.root, "", row=1, column=0, columnspan=1, var=self.rgb_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
-        # self.rgb_checkbox.deselect()
-        # self.rgb_checkbox.bind('<Button-1>', self.__update_rgb_checked)
 
     def _build_sto2(self):
         self.sto2_button = make_button(self.root, text='StO2', width=4, command=self.__update_to_sto2, row=1, column=1, columnspan=1, inner_pady=5, outer_padx=(0, 10))
-        # self.sto2_checkbox = make_checkbox(self.root, "", row=1, column=1, columnspan=1, var=self.sto2_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
-        # self.sto2_checkbox.deselect()
-        # self.sto2_checkbox.bind('<Button-1>', self.__update_sto2_checked)
 
     def _build_nir(self):
         self.nir_button = make_button(self.root, text='NIR', width=3, command=self.__update_to_nir, row=1, column=2, columnspan=1, inner_pady=5, outer_padx=(0, 10))
-        # self.nir_checkbox = make_checkbox(self.root, "", row=1, column=2, columnspan=1, var=self.nir_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
-        # self.nir_checkbox.deselect()
-        # self.nir_checkbox.bind('<Button-1>', self.__update_nir_checked)
 
     def _build_thi(self):
         self.thi_button = make_button(self.root, text='THI', width=3, command=self.__update_to_thi, row=1, column=3, columnspan=1, inner_pady=5, outer_padx=(0, 10))
-        # self.thi_checkbox = make_checkbox(self.root, "", row=1, column=3, columnspan=1, var=self.thi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
-        # self.thi_checkbox.deselect()
-        # self.thi_checkbox.bind('<Button-1>', self.__update_thi_checked)
 
     def _build_twi(self):
         self.twi_button = make_button(self.root, text='TWI', width=3, command=self.__update_to_twi, row=1, column=4, columnspan=1, inner_pady=5, outer_padx=0)
-        # self.twi_checkbox = make_checkbox(self.root, "", row=1, column=4, columnspan=1, var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
-        # self.twi_checkbox.deselect()
-        # self.twi_checkbox.bind('<Button-1>', self.__update_twi_checked)
 
     def _build_pt1(self):
         # text

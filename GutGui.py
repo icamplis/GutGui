@@ -28,6 +28,11 @@ def main():
     og_color_module = OGColour(og_color_frame, listener)
     listener.attach_module(ORIGINAL_COLOUR, og_color_module)
 
+    # original colour data
+    (og_color_data_frame, ogc_data_label) = frame_and_label(image_diagram, "Original Image Data", PASTEL_PINK_RGB, 2, 4, 3, 1, labelspan=1)
+    og_color_data_module = OGColourData(og_color_data_frame, listener)
+    listener.attach_module(ORIGINAL_COLOUR_DATA, og_color_data_module)
+
     # recreated colour
     (recreated_color_frame, recreated_color_label) = frame_and_label(image_diagram, "Recreated Image", PASTEL_BLUE_RGB, 7, 0, 7, 1, labelspan=5)
     recreated_color_module = RecColour(recreated_color_frame, listener)
@@ -39,7 +44,7 @@ def main():
     listener.attach_module(NEW_COLOUR, new_color_module)
 
     # diagram
-    (diagram_frame, diagram_label) = frame_and_label(image_diagram, "Diagram",PASTEL_ORANGE_RGB, 0, 4, 14, 1, labelspan=1)
+    (diagram_frame, diagram_label) = frame_and_label(image_diagram, "Diagram",PASTEL_ORANGE_RGB, 0, 4, 2, 1, labelspan=1)
     diagram_module = Diagram(diagram_frame, listener)
     listener.attach_module(DIAGRAM, diagram_module)
 
