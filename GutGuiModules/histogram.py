@@ -214,7 +214,7 @@ class Histogram:
         logging.debug("CALCULATING STATS...")
         self.mean_value = np.round(np.mean(data), 3)
         self.sd_value = np.round(np.std(data), 3)
-        self.median_value = np.round(np.median(data), 3)
+        self.median_value = np.round(np.ma.median(data), 3)
         self.iqr_value = (np.round(np.quantile(data, 0.25), 3), round(np.quantile(data, 0.75), 3))
         # generate bins
         bins = np.arange(start = self.lower_value, stop = self.upper_value + self.step_size_value, step = self.step_size_value)

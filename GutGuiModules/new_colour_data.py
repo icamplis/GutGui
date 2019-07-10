@@ -34,6 +34,7 @@ class NewColourData:
 
     def update_array(self, data):
         self.stats_data = data
+        print(self.stats_data[:100])
 
     # Helper
     def _init_widget(self):
