@@ -84,7 +84,7 @@ class OGColour:
 
         # coords in dimensions of image, i.e. xrange=[0, 640], yrange=[0, 480]
         self.coords_list = [(None, None) for i in range(8)]
-        self.mask = None 
+        self.mask_raw = None
 
         self._init_widget()
 
@@ -92,7 +92,7 @@ class OGColour:
         self.rgb_button.config(foreground="red")
 
     def get_mask(self):
-        return self.mask
+        return self.mask_raw
 
     def update_original_image(self, original_image_data):
         self.original_image_data = original_image_data
@@ -327,7 +327,14 @@ class OGColour:
         polygon = [point for point in self.coords_list if point != (None, None)]
         img = Image.new('L', (640, 480), 0)
         ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
-        self.mask = np.array(img)
+        self.mask_raw = np.array(img)
+        mask = self.__process_mask(self.mask_raw)
+        self.listener.submit_mask(mask) # re-transpose the mask - original data is transposed
+
+    def __process_mask(self, mask_raw):
+        mask = np.logical_not(mask_raw)
+        mask = np.fliplr(mask.T)
+        return mask
 
     def __remove_pt(self, index):
         self.coords_list[index-1] = (None, None)
