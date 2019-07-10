@@ -4,6 +4,7 @@ from GutGuiModules.constants import *
 import numpy as np
 from scipy import misc
 from PIL import Image
+from matplotlib import cm
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -34,11 +35,15 @@ def tkcolour_from_rgb(rgb):
     """translates an rgb tuple of int to a tkinter friendly color code"""
     return "#%02x%02x%02x" % rgb
 
-def frame_and_label(window, name, colour, row, column, rowspan, columnspan, labelspan=1):
-    frame = Frame(window, bg=tkcolour_from_rgb(colour))
+def frame_and_label(window, name, colour, row, column, rowspan, columnspan, labelspan=1, wraplength=140, label=True):
+    frame = Frame(window, bg=tkcolour_from_rgb(colour), highlightbackground=tkcolour_from_rgb(BORDER), highlightcolor=tkcolour_from_rgb(BORDER), highlightthickness=2)
     frame.grid(row=row, rowspan=rowspan, column=column, columnspan=columnspan, sticky=W+E+N+S)
-    label = make_label(frame, text=name, row=0, column=0, borderwidth=2, columnspan=labelspan)
-    return frame, label
+    if label:
+        label = make_label(frame, text=name, row=0, column=0, borderwidth=2, columnspan=labelspan, wraplength=wraplength)
+        return frame, label
+    else:
+        return frame
+        
 
 def make_button(window, text, command, row, column, height=1, width=10, 
     inner_padx=10, inner_pady=10, outer_padx=0, outer_pady=0, columnspan=1, rowspan=1, highlightthickness=1):
@@ -84,18 +89,22 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
     graph = Figure(figsize=(figwidth, figheight))
     axes = graph.add_subplot(111)
     if original:
-        axes.imshow(np.flipud(image_data[:,:,:]), origin='lower', cmap='jet')
+        image = axes.imshow(np.flipud(image_data[:,:,:]), origin='lower', cmap='jet')
         axes.axis('off')
+        image_array = image.get_array().flatten()
     else:
-        axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
+
+        image = axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
                     vmin=max(0.0, float(lower_scale_value)),
                     vmax=min(1.0, float(upper_scale_value)))
+        image_array = image.get_array().flatten()
+        
     graph.patch.set_facecolor(rgb_to_rgba(color_rgb))
     graph.set_tight_layout('True')
     image = FigureCanvasTkAgg(graph, master=window)
     image.draw()
     image.get_tk_widget().grid(column=column, row=row, columnspan=columnspan, rowspan=rowspan)
-    return graph, image
+    return graph, image, image_array
 
 def make_popup_image(graph, graphsize=(8,8), interactive = False):
     window = Toplevel()

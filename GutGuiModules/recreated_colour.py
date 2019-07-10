@@ -42,6 +42,7 @@ class RecColour:
         self.recreated_colour_image_graph = None
         self.recreated_colour_image = None
         self.recreated_colour_image_data = None
+        self.image_array = None
 
         self._init_widget()
 
@@ -145,7 +146,8 @@ class RecColour:
             self.recreated_colour_image = make_label(self.root, "recreated_colour image placeholder", row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING RECREATED COLOUR IMAGE...")
-            (self.recreated_colour_image_graph, self.recreated_colour_image) = make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value, color_rgb=PASTEL_BLUE_RGB)
+            (self.recreated_colour_image_graph, self.recreated_colour_image, self.image_array) = make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value, color_rgb=PASTEL_BLUE_RGB)
+            self.listener._image_array_to_rec_data(self.image_array)
             self.recreated_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     # Commands (Callbacks)

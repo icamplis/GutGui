@@ -81,11 +81,11 @@ class Histogram:
         logging.debug("BUILDING HISTOGRAM...")
         self.flattened_data = data.flatten()
         self.flattened_data = self.flattened_data[self.flattened_data != np.array(None)]
-        self._build_interactive_histogram()
         self.upper_value = np.max(self.flattened_data)
         self.lower_value = np.min(self.flattened_data)
         self._calc_stats()
         self._build_scale()
+        self._build_interactive_histogram()
 
     # Helper
 

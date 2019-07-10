@@ -81,6 +81,7 @@ class OGColour:
         self.original_image_graph = None
         self.original_image_data = None
         self.original_image = None
+        self.image_array = None
 
         self.pop_up_graph = None
         self.pop_up_window = None
@@ -274,7 +275,8 @@ class OGColour:
             self.original_image = make_label(self.root, "original image placeholder", row=2, column=0, rowspan=8, columnspan=5, inner_pady=80, inner_padx=120, outer_padx=(15, 10), outer_pady=(15, 10))
         else:
             logging.debug("BUILDING ORIGINAL COLOUR IMAGE...")
-            (self.original_image_graph, self.original_image) = make_image(self.root, data, row=2, column=0, columnspan=5, rowspan=8, lower_scale_value=None, upper_scale_value=None, color_rgb=PASTEL_PINK_RGB, original=True, figheight=2.5, figwidth=3.5)
+            (self.original_image_graph, self.original_image, self.image_array) = make_image(self.root, data, row=2, column=0, columnspan=5, rowspan=8, lower_scale_value=None, upper_scale_value=None, color_rgb=PASTEL_PINK_RGB, original=True, figheight=2.5, figwidth=3.5)
+            self.listener._image_array_to_og_data(self.image_array)
             self.original_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
             self.original_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
             if self.pop_up == True:
@@ -336,9 +338,9 @@ class OGColour:
         if mask_dir_path[-4:] != ".csv":
             messagebox.showerror("Error", "That's not a .csv file!")
         else:
-            self.__process_mask(mask_dir_path)
+            self.__load_mask(mask_dir_path)
 
-    def __process_mask(self, path):
+    def __load_mask(self, path):
         coords = []
         with open(path) as csvfile:
             readCSV = csv.reader(csvfile, delimiter=',')

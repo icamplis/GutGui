@@ -9,6 +9,7 @@ class RecreatedColourData:
         self.listener = listener
 
         self.data = None
+        self.stats_data = None
 
         self.mean_text = None
         self.mean_value = None
@@ -26,32 +27,35 @@ class RecreatedColourData:
         self._init_widget()
 
     def update_recreated_image_data(self, recreated_colour_image_data):
-        self.data = recreated_colour_image_data
+        self.data = recreated_colour_image_data.flatten()
         self._calc_data()
         self._build_data()
+
+    def update_array(self, data):
+        self.stats_data = data
 
     # Helper
     def _init_widget(self):
         self._build_data()
 
     def _calc_data(self):
-        self.mean_value = None
-        self.sd_value = None
-        self.median_value = None
-        self.iqr_value = None
-        self.min_value = None
-        self.max_value = None
+        self.mean_value = np.round(np.mean(self.stats_data), 3)
+        self.sd_value = np.round(np.std(self.stats_data), 3)
+        self.median_value = np.round(np.median(self.stats_data), 3)
+        self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.data, 0.75), 3))
+        self.min_value = np.round(np.min(self.stats_data), 3)
+        self.max_value = np.round(np.max(self.stats_data), 3)
 
     def _build_data(self):
         # mean
-        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=12, columnspan=1, padx=0, state=NORMAL)
+        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=13, columnspan=1, padx=(15, 15), state=NORMAL)
         # standard deviation
-        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=2, width=10, columnspan=1, padx=0, state=NORMAL)
+        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=2, width=11, columnspan=1, padx=0, state=NORMAL)
         # median
-        self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=14, columnspan=1, padx=0, state=NORMAL)
+        self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=15, columnspan=1, padx=(15, 15), state=NORMAL)
         # IQR
-        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=20, columnspan=1, padx=0, state=NORMAL)
+        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=22, columnspan=1, padx=(15, 15), state=NORMAL)
         # min
-        self.min_text = make_text(self.root, content="Min = " + str(self.min_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=11, columnspan=1, padx=0, state=NORMAL)
+        self.min_text = make_text(self.root, content="Min = " + str(self.min_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=12, columnspan=1, padx=(15, 15), state=NORMAL)
         # max
-        self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=6, width=11, columnspan=1, padx=0, pady=(0, 15), state=NORMAL)
+        self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=6, width=12, columnspan=1, padx=(15, 15), pady=(0, 15), state=NORMAL)
