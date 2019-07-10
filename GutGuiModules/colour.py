@@ -33,7 +33,7 @@ class Colour:
     def _make_colourbar(self):
         colour_fig = Figure(figsize=(2, 1))
         axes = colour_fig.add_subplot(111)
-        self.colourbar = ColorbarBase(axes, cmap='jet', orientation='horizontal', norm=colors.NoNorm(vmin=0, vmax=255))
+        self.colourbar = ColorbarBase(axes, orientation='horizontal', norm=colors.NoNorm(vmin=0, vmax=255))
         self.colourbar.set_ticks([0, 255])
         colour_fig.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
         colour_fig.set_tight_layout('True')
