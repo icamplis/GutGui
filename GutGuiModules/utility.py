@@ -97,13 +97,15 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
     image.get_tk_widget().grid(column=column, row=row, columnspan=columnspan, rowspan=rowspan)
     return graph, image
 
-def make_popup_image(graph, graphsize=(8,8)):
+def make_popup_image(graph, graphsize=(8,8), interactive = False):
     window = Toplevel()
     window.geometry("+0+0")
     graph.set_size_inches(graphsize[0], graphsize[1])
     image = FigureCanvasTkAgg(graph, master=window)
     image.draw()
     image.get_tk_widget().grid(column=0, row=0)
+    if interactive == True:
+        return (window, image)
 
 def image_to_array(filename):
     return misc.imread(filename)

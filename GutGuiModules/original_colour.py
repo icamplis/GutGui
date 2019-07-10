@@ -82,6 +82,11 @@ class OGColour:
         self.original_image_data = None
         self.original_image = None
 
+        self.pop_up_graph = None
+        self.pop_up_window = None
+        self.pop_up_image = None
+        self.pop_up = False
+
         # coords in dimensions of image, i.e. xrange=[0, 640], yrange=[0, 480]
         self.coords_list = [(None, None) for i in range(8)]
         self.mask = None 
@@ -286,9 +291,16 @@ class OGColour:
             self.original_image = make_label(self.root, "original image placeholder", row=2, column=0, rowspan=8, columnspan=5, inner_pady=80, inner_padx=120, outer_padx=(15, 10), outer_pady=(15, 10))
         else:
             logging.debug("BUILDING ORIGINAL COLOUR IMAGE...")
-            (self.original_image_graph, self.original_image) = make_image(self.root, data,row=2, column=0,columnspan=5, rowspan=8, lower_scale_value=None, upper_scale_value=None, color_rgb=PASTEL_PINK_RGB, original=True, figheight=2.5, figwidth=3.5)
+            (self.original_image_graph, self.original_image) = make_image(self.root, data, row=2, column=0, columnspan=5, rowspan=8, lower_scale_value=None, upper_scale_value=None, color_rgb=PASTEL_PINK_RGB, original=True, figheight=2.5, figwidth=3.5)
             self.original_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
             self.original_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
+            if self.pop_up == True:
+                self.pop_up_graph = self.original_image_graph
+                self.pop_up_graph.set_size_inches(8, 8)
+                self.pop_up_image = FigureCanvasTkAgg(self.pop_up_graph, master=self.pop_up_window)
+                self.pop_up_image.draw()
+                self.pop_up_image.get_tk_widget().grid(column=0, row=0)
+                self.pop_up_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
 
     def _draw_points(self):
         copy_data = self.original_image_data.copy()
@@ -342,13 +354,27 @@ class OGColour:
             self._draw_points()
 
     def __get_coords(self, eventorigin):
-        x = int((eventorigin.x - 54)*640/260)
-        y = int((eventorigin.y - 18)*480/192)
-        if 0 <= x < 640 and 0 <= y < 640:
-            self.__add_pt((x, y))
+        if not self.pop_up:
+            x = int((eventorigin.x - 54)*640/260)
+            y = int((eventorigin.y - 18)*480/192)
+            if 0 <= x < 640 and 0 <= y < 640:
+                self.__add_pt((x, y))
+        else:
+            x = int(((eventorigin.x) - 53)*640/734)
+            y = int(((eventorigin.y) - 128)*480/550)
+            if 0 <= x < 640 and 0 <= y < 640:
+                self.__add_pt((x, y))
 
     def __pop_up_image(self, event):
-        make_popup_image(self.original_image_graph)
+        (self.pop_up_window, self.pop_up_image) = make_popup_image(self.original_image_graph, interactive=True)
+        self.pop_up = True
+        self.pop_up_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
+        self.pop_up_window.protocol("WM_DELETE_WINDOW", func=self.__close_pop_up)
+        self.pop_up_window.attributes("-topmost", True)
+
+    def __close_pop_up(self):
+        self.pop_up = False
+        self.pop_up_window.destroy()
 
     def __update_to_rgb(self):
         self.rgb_button.config(foreground="red")
