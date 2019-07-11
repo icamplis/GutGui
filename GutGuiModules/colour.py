@@ -5,6 +5,7 @@ from matplotlib.figure import Figure
 from matplotlib.colorbar import ColorbarBase
 from GutGuiModules.utility import *
 from matplotlib import colors
+from matplotlib.pyplot import cm
 
 class Colour:
     def __init__(self, colour_frame, listener):
@@ -17,15 +18,6 @@ class Colour:
 
         self._init_widget()
 
-    def get_is_masked(self):
-        return self.is_masked
-
-    def get_whole_image_checkbox_value(self):
-        return not bool(self.whole_image_checkbox_value.get())
-
-    def get_masked_region_checkbox_value(self):
-        return not bool(self.masked_region_checkbox_value.get())
-
     # Helper
     def _init_widget(self):
         self._make_colourbar()
@@ -33,9 +25,14 @@ class Colour:
     def _make_colourbar(self):
         colour_fig = Figure(figsize=(2, 1))
         axes = colour_fig.add_subplot(111)
-        self.colourbar = ColorbarBase(axes, orientation='horizontal', norm=colors.NoNorm(vmin=0, vmax=255))
-        self.colourbar
-        self.colourbar.set_ticks([0, 255])
+
+        cmap = cm.get_cmap('jet')
+        self.colourbar = cmap(np.arange(cmap.N))
+
+        axes.imshow([self.colourbar], extent=[0, 255, 0, 100])
+        axes.set_xlim(left=0, right=255)
+        axes.get_yaxis().set_visible(False)
+        axes.get_xaxis().set_ticks([0, 85, 170, 255])
         colour_fig.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
         colour_fig.set_tight_layout('True')
         image = FigureCanvasTkAgg(colour_fig, master=self.root)

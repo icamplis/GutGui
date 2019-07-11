@@ -9,12 +9,12 @@ def main():
     listener = ModuleListener()
 
     # source and output
-    (source_and_output_frame, sno_label) = frame_and_label(input_output, "Source & Output", PASTEL_BLUE_RGB, 0, 0, 1, 1, labelspan=2)
+    (source_and_output_frame, sno_label) = frame_and_label(input_output, "Source & Output", PASTEL_BLUE_RGB, 0, 0, 2, 1, labelspan=2)
     source_and_output_module = SourceAndOutput(source_and_output_frame, listener)
     listener.attach_module(SOURCE_AND_OUTPUT, source_and_output_module)
 
     # analysis and form
-    (analysis_and_form_frame, anf_label) = frame_and_label(input_output, "Analysis & Form", PASTEL_ORANGE_RGB, 0, 1, 1, 1, labelspan=8)
+    (analysis_and_form_frame, anf_label) = frame_and_label(input_output, "Analysis & Form", PASTEL_ORANGE_RGB, 0, 1, 2, 1, labelspan=8)
     analysis_and_form_module = AnalysisAndForm(analysis_and_form_frame, listener)
     listener.attach_module(ANALYSIS_AND_FORM, analysis_and_form_module)
 
@@ -22,6 +22,10 @@ def main():
     (save_frame, s_label) = frame_and_label(input_output, "Save",PASTEL_PINK_RGB, 0, 2, 1, 1)
     save_module = Save(save_frame, listener)
     listener.attach_module(SAVE, save_module)
+
+    # info
+    info_frame = frame_and_label(input_output, "Info", PASTEL_PINK_RGB, 1, 2, 1, 1, label=False)
+    info_module = Info(info_frame, listener)
 
     # original colour
     (og_color_frame, ogc_label) = frame_and_label(image_diagram, "Original Image", PASTEL_PINK_RGB, 0, 0, 7, 5, labelspan=8)

@@ -366,13 +366,13 @@ class OGColour:
 
     def __get_coords(self, eventorigin):
         if not self.pop_up:
-            x = int((eventorigin.x - 54)*640/260)
-            y = int((eventorigin.y - 18)*480/192)
+            x = int((eventorigin.x - 30)*640/296)
+            y = int((eventorigin.y - 18)*480/221)
             if 0 <= x < 640 and 0 <= y < 640:
                 self.__add_pt((x, y))
         else:
-            x = int(((eventorigin.x) - 53)*640/734)
-            y = int(((eventorigin.y) - 128)*480/550)
+            x = int(((eventorigin.x) - 17)*640/770)
+            y = int(((eventorigin.y) - 114)*480/578)
             if 0 <= x < 640 and 0 <= y < 640:
                 self.__add_pt((x, y))
 

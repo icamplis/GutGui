@@ -14,3 +14,4 @@ from GutGuiModules.original_colour_data import OGColourData
 from GutGuiModules.recreated_colour_data import RecreatedColourData
 from GutGuiModules.new_colour_data import NewColourData
 from GutGuiModules.colour import Colour
+from GutGuiModules.info import Info
