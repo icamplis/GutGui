@@ -1,6 +1,7 @@
 from GutGuiModules.utility import *
 import numpy as np
 from matplotlib.offsetbox import AnchoredText
+from decimal import Decimal
 import logging
 
 class Histogram:
@@ -26,6 +27,8 @@ class Histogram:
         self.max_text = None
         self.max_bin = None
         self.max_bin_size = None
+        self.percent_negative_text = None
+        self.percent_negative_value = None
 
         self.og_data_button = None
         self.wl_data_button = None
@@ -124,6 +127,8 @@ class Histogram:
         # min and max
         self.min_text = make_text(self.root, content="Min bin = " + str(self.min_bin), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=3, width=15, columnspan=1, padx=0, state=NORMAL)
         self.max_text = make_text(self.root, content="Max bin = " + str(self.max_bin), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=3, width=15, columnspan=1, padx=0, state=NORMAL)
+        # percent negative
+        self.percent_negative_text = make_text(self.root, content="% Negative Data = " + str(self.min_bin) + '%', bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=0, row=11, width=24, columnspan=3, padx=0, state=NORMAL, pady=0)
 
     def _build_data_buttons(self):
         self.og_data_button = make_button(self.root, text='Original Data', width=12, command=self.__update_to_original_data, row=1, column=3, columnspan=2, inner_padx=3, inner_pady=2, outer_pady=2, highlightthickness=0)
@@ -131,20 +136,20 @@ class Histogram:
         self.idx_data_button = make_button(self.root, text='IDX Data', width=12, command=self.__update_to_idx_data,  row=3, column=3, columnspan=2, inner_padx=3, inner_pady=2, outer_pady=(2, 10), highlightthickness=0)
 
     def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=11, column=0,inner_padx=10, inner_pady=5, outer_padx=(15, 10), outer_pady=(0, 15))
-        self.save_checkbox = make_checkbox(self.root, "", row=11, column=0, var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
+        self.save_label = make_label(self.root, "Save", row=12, column=0,inner_padx=10, inner_pady=5, outer_padx=(15, 10), outer_pady=(0, 15))
+        self.save_checkbox = make_checkbox(self.root, "", row=12, column=0, var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
         self.save_checkbox.deselect()
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=11, column=1, inner_padx=10, inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 15))
-        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=11, column=1, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0,12))
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=12, column=1, inner_padx=10, inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 15))
+        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=12, column=1, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0,12))
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_save_as_excel(self):
-        self.save_as_excel_label = make_label(self.root, "Save as CSV", row=11, column=2, inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
-        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=11, column=2,var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 9))
+        self.save_as_excel_label = make_label(self.root, "Save as CSV", row=12, column=2, inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
+        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=12, column=2,var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 9))
         self.save_as_excel_checkbox.deselect()
         self.save_as_excel_checkbox.bind('<Button-1>', self.__update_save_as_excel_check_status)
 
@@ -222,7 +227,7 @@ class Histogram:
         # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
-        self.interactive_histogram.get_tk_widget().grid(column=0, row=4, columnspan=3, rowspan=7, ipady=5, ipadx=0, pady=(0, 15))
+        self.interactive_histogram.get_tk_widget().grid(column=0, row=4, columnspan=3, rowspan=7, ipady=5, ipadx=0, pady=0)
         self.interactive_histogram.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
 
     def _calc_stats(self):
@@ -246,6 +251,8 @@ class Histogram:
         # determine the minimum bin size and which bin this occurs in
         self.min_bin_size = np.min(np.histogram(data, bins=bins)[0])
         self.min_bin = histogram_data[1][np.where(histogram_data[0] == self.min_bin_size)[0][0]]
+        percent = np.sum(np.array(data) < 0)/len(data)
+        self.percent_negative_value = round(percent, 1)
         self._build_stats()
 
     # Commands (Callbacks)
