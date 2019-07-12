@@ -224,11 +224,11 @@ class RecColour:
         value = self.get_save_wo_scale_checkbox_value()
         self.listener.update_saved(REC_IMAGE_WO_SCALE, value)
 
-    def __update_scale_upper(self):
+    def __update_scale_upper(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())
         self._build_recreated_image()
 
-    def __update_scale_lower(self):
+    def __update_scale_lower(self, event):
         self.lower_scale_value = float(self.lower_scale_input.get())
         self._build_recreated_image()
 

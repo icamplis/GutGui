@@ -95,8 +95,8 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
     else:
 
         image = axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
-                    vmin=max(0.0, float(lower_scale_value)),
-                    vmax=min(1.0, float(upper_scale_value)))
+                    vmin=float(lower_scale_value),
+                    vmax=float(upper_scale_value))
         image_array = image.get_array().flatten()
         # a = np.asarray(image_array)
         # N = 256
