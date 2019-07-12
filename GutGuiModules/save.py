@@ -87,7 +87,7 @@ class Save:
                 for i in range(100):
                     logging.debug("SAVING SLICE " + str(i))
                     big_path = direc + '/' + 'data_slice_' + str(i) + '.csv'
-                    np.savetxt(big_path, data[:,:,i], delimiter=",")
+                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
 
     def _save_specific(self):
         for path, _ in self.listener.get_results().items():
