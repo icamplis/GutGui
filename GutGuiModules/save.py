@@ -45,6 +45,8 @@ class Save:
             PT6: False,
             PT7: False, 
             PT8: False,
+            PT9: False, 
+            PT10: False,
         }
 
         # The current data cube whose data is being saved.
@@ -66,6 +68,7 @@ class Save:
         self._build_save_specific_button()
         self._build_save_all_button()
         self._build_data_cube_to_csv_button()
+        self._build_masked_data_cube_to_csv_button()
 
     def _build_save_specific_button(self):
         self.save_specific_button = make_button(self.root, text="Save Selected", command=self._save_specific, row=1, column=0, outer_pady=0, outer_padx=15, width=10)
@@ -74,7 +77,11 @@ class Save:
         self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=2, column=0, outer_pady=5, outer_padx=15, width=10)
 
     def _build_data_cube_to_csv_button(self):
-        self.save_data_cube_as_csv_button = make_button(self.root, text="Cube to CSV", command=self._cube_to_csv, row=3, column=0, outer_pady=(0, 15), outer_padx=15, width=10)
+        self.save_data_cube_as_csv_button = make_button(self.root, text="Cube to CSV", command=self._cube_to_csv, row=3, column=0, outer_pady=(0, 5), outer_padx=15, width=10)
+
+
+    def _build_masked_data_cube_to_csv_button(self):
+        self.save_data_cube_as_csv_button = make_button(self.root, text="Masked to CSV", command=self._masked_to_csv, row=4, column=0, outer_pady=(0, 15), outer_padx=15, width=10)
 
     # Callbacks
     def _cube_to_csv(self):
@@ -88,6 +95,19 @@ class Save:
                     num = i*5 + 500
                     logging.debug("SAVING SLICE " + str(i))
                     big_path = direc + '/' + 'data_slice_' + str(num) + '.csv'
+                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
+
+    def _masked_to_csv(self):
+        for path, _ in self.listener.get_results().items():
+            selected_paths = self.listener.get_selected_paths()
+            if path in selected_paths:
+                data = self.listener.data_cube(path)
+                direc = os.path.dirname(path) + '/masked_data_slices'
+                os.mkdir(direc)
+                for i in range(100):
+                    num = i*5 + 500
+                    logging.debug("SAVING MASKED SLICE " + str(i))
+                    big_path = direc + '/' + 'masked_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
 
     def _save_specific(self):
@@ -136,12 +156,13 @@ class Save:
 
         if self.saves[PT1] or self.saves[PT2] or self.saves[PT3] or \
                 self.saves[PT4] or self.saves[PT5] or self.saves[PT6] or \
-                self.saves[PT7] or self.saves[PT8]:
+                self.saves[PT7] or self.saves[PT8] or self.saves[PT9] or \
+                self.saves[PT10]:
             self.__save_points()
 
     # Module savers
     def __save_points(self):
-        point_bools = [self.saves[PT1], self.saves[PT2], self.saves[PT3], self.saves[PT4], self.saves[PT5], self.saves[PT6], self.saves[PT7], self.saves[PT8]]
+        point_bools = [self.saves[PT1], self.saves[PT2], self.saves[PT3], self.saves[PT4], self.saves[PT5], self.saves[PT6], self.saves[PT7], self.saves[PT8], self.saves[PT9], self.saves[PT10]]
         data = self.listener.get_coords(point_bools)
         self.__save_data(data, title="MASK_COORDINATES")
 

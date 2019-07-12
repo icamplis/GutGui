@@ -17,6 +17,8 @@ class Diagram:
 
         self.is_masked = False
 
+        self.info_button = None
+
         self._init_widget()
 
     def get_is_masked(self):
@@ -32,6 +34,7 @@ class Diagram:
     def _init_widget(self):
         self._build_whole_image()
         self._build_masked_region()
+        self._build_info_button()
 
     def _build_whole_image(self):
         self.whole_image_button = make_button(self.root, "Whole Image", row=1, column=0, command=self.__use_whole_image, inner_padx=15, inner_pady=5, outer_padx=15, outer_pady=(0, 10))
@@ -46,6 +49,15 @@ class Diagram:
         self.masked_region_checkbox = make_checkbox(self.root, "", row=2, column=0, var=self.masked_region_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
         self.masked_region_checkbox.deselect()
         self.masked_region_checkbox.bind('<Button-1>', self.__update_masked_region_check_status)
+
+    def _build_info_button(self):
+        self.info_button = make_button(self.root, text='?', width=1, command=self.__info, row=0, column=0, columnspan=1, inner_padx=3, inner_pady=0, highlightthickness=0, outer_padx=(150, 0))
+
+    # commands
+    def __info(self):
+        info = self.listener.get_diagram_info()
+        title = "Diagram Information"
+        make_info(title=title, info=info)
 
     def __use_whole_image(self):
         self.is_masked = False

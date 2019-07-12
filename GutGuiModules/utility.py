@@ -123,8 +123,16 @@ def make_popup_image(graph, graphsize=(8,8), interactive = False):
         return (window, image)
 
 def image_to_array(filename):
-
     return imageio.imread(filename)
+
+def make_info(title, info):
+    window = Toplevel()
+    window.title(title)
+    window.geometry("+0+0")
+    text = Text(window, height=20, width=50, wrap=WORD, highlightthickness=0) 
+    text.insert(END, info)
+    text.grid(padx=5, pady=5)
+    window.resizable(width=False, height=False)
 
 def rgb_to_rgba(rgb):
     r = rgb[0]/255

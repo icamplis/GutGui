@@ -32,6 +32,21 @@ class ModuleListener:
     def get_normal(self):
         return self.normal
 
+    def get_masked(self):
+        return self.is_masked
+
+    def get_wl(self):
+        if self.is_masked:
+            return self.get_result(self.current_rendered_result_path).get_wl_data_masked()
+        else:
+            return self.get_result(self.current_rendered_result_path).get_wl_data()
+
+    def get_idx(self):
+        if self.is_masked:
+            return self.get_result(self.current_rendered_result_path).get_index_masked()
+        else:
+            return self.get_result(self.current_rendered_result_path).get_index()
+
     def get_selected_paths(self):
         return self.selected_paths
 
@@ -64,6 +79,9 @@ class ModuleListener:
 
     def data_cube(self, path):
         return self.get_result(path).get_data_cube()
+
+    def masked_cube(self, path):
+        return self.get_result(path).get_masked_cube()
 
     def update_selected_paths(self, selected_paths):
         self.selected_paths = selected_paths
@@ -125,8 +143,26 @@ class ModuleListener:
 
     def get_coords(self, point_bools):
         point_coords = self.modules[ORIGINAL_COLOUR].get_coords()
-        data = [[point_coords[i][0], point_coords[i][1]] for i in range(8) if point_bools[i] and point_coords[i] != (None, None)]
+        data = [[point_coords[i][0], point_coords[i][1]] for i in range(10) if point_bools[i] and point_coords[i] != (None, None)]
         return data
+
+    def get_original_info(self):
+        return self.modules[INFO].get_original_info()
+
+    def get_recreated_info(self):
+        return self.modules[INFO].get_recreated_info()
+
+    def get_new_info(self):
+        return self.modules[INFO].get_new_info()
+
+    def get_diagram_info(self):
+        return self.modules[INFO].get_diagram_info()
+
+    def get_hist_info(self):
+        return self.modules[INFO].get_hist_info()
+
+    def get_abspec_info(self):
+        return self.modules[INFO].get_abspec_info()
 
     # Helpers
     def _broadcast_new_data(self):

@@ -44,6 +44,8 @@ class RecColour:
         self.recreated_colour_image_data = None
         self.image_array = None
 
+        self.info_button = None
+
         self._init_widget()
 
         self.displayed_image_mode = STO2  # STO2 by default
@@ -88,6 +90,7 @@ class RecColour:
         self._build_save_wo_scale()
         self._build_upper_scale()
         self._build_lower_scale()
+        self._build_info_button()
         self._build_recreated_image()
 
     def _build_sto2(self):
@@ -139,6 +142,9 @@ class RecColour:
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
         self.lower_scale_input.insert(END, str(self.lower_scale_value))
 
+    def _build_info_button(self):
+        self.info_button = make_button(self.root, text='?', width=1, command=self.__info, row=0, column=3, columnspan=1, inner_padx=3, outer_padx=(5,0), inner_pady=0, highlightthickness=0)
+
     def _build_recreated_image(self):
         if self.recreated_colour_image_data is None:
             # Placeholder
@@ -157,6 +163,11 @@ class RecColour:
 
 
     # Commands (Callbacks)
+    def __info(self):
+        info = self.listener.get_recreated_info()
+        title = "Recreated Image Information"
+        make_info(title=title, info=info)
+
     def __update_to_sto2(self):
         self.sto2_button.config(foreground="red")
         self.nir_button.config(foreground="black")

@@ -112,7 +112,10 @@ class Analysis:
         self.analysis()
 
     def get_data_cube(self):
-        return self.data_cube
+        return self.x1
+
+    def get_masked_cube(self):
+        return self.x_reflectance
 
     def get_x_absorbance(self):
         return self.x_absorbance
@@ -357,8 +360,10 @@ class Analysis:
             self.x1 = self.data_cube
 
     def __calc_x_reflectance(self):
-        self.x_reflectance = self.x1
-        self.x_reflectance = np.ma.array(self.x_reflectance, mask=self.data_cube < 0)
+        self.x_reflectance = np.ma.array(self.x1, mask=self.x1<0)
+        # if '--' in self.x_reflectance[:, 0, 0]:
+        #     print('yuh')
+        #     print(self.x_reflectance[:, 0, 0].where(self.x_reflectance[:, 0, 0] == '--'))
 
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(min(0, min(self.wavelength)), 0))
@@ -379,8 +384,8 @@ class Analysis:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
     def __calc_x2(self):
-        self.x1 = self.x1.clip(min=0)
-        self.x2 = -np.log(self.x1)
+        copy = self.x1.copy()
+        self.x2 = -np.log(copy.clip(min=0))
 
     def __calc_x_absorbance(self):
         self.x_absorbance = np.ma.array(self.x2, mask=~np.isfinite(self.x2))

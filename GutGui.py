@@ -26,9 +26,10 @@ def main():
     # info
     info_frame = frame_and_label(input_output, "Info", PASTEL_PINK_RGB, 1, 2, 1, 1, label=False)
     info_module = Info(info_frame, listener)
+    listener.attach_module(INFO, info_module)
 
     # original colour
-    (og_color_frame, ogc_label) = frame_and_label(image_diagram, "Original Image", PASTEL_PINK_RGB, 0, 0, 7, 5, labelspan=8)
+    (og_color_frame, ogc_label) = frame_and_label(image_diagram, "Original Image", PASTEL_PINK_RGB, 0, 0, 7, 6, labelspan=8)
     og_color_module = OGColour(og_color_frame, listener)
     listener.attach_module(ORIGINAL_COLOUR, og_color_module)
 
@@ -44,7 +45,7 @@ def main():
     listener.attach_module(RECREATED_COLOUR, recreated_color_module)
 
     # recreated colour data
-    (rec_color_data_frame, rec_data_label) = frame_and_label(image_diagram, "Recreated Image Data", PASTEL_ORANGE_RGB, 5, 12, 3, 2, labelspan=1)
+    (rec_color_data_frame, rec_data_label) = frame_and_label(image_diagram, "Recreated Image Data", PASTEL_ORANGE_RGB, 5, 12, 4, 2, labelspan=1)
     rec_color_data_module = RecreatedColourData(rec_color_data_frame, listener)
     listener.attach_module(RECREATED_COLOUR_DATA, rec_color_data_module)
     rec_data_label.grid(padx=15, pady=(15, 10))
@@ -55,7 +56,7 @@ def main():
     listener.attach_module(NEW_COLOUR, new_color_module)
 
     # new colour data
-    (new_color_data_frame, new_data_label) = frame_and_label(image_diagram, "New Image Data", PASTEL_BLUE_RGB, 8, 12, 3, 2, labelspan=1)
+    (new_color_data_frame, new_data_label) = frame_and_label(image_diagram, "New Image Data", PASTEL_BLUE_RGB, 9, 12, 3, 2, labelspan=1)
     new_color_data_module = NewColourData(new_color_data_frame, listener)
     listener.attach_module(NEW_COLOUR_DATA, new_color_data_module)
     new_data_label.grid(padx=15, pady=(15, 10))
@@ -66,17 +67,17 @@ def main():
     listener.attach_module(DIAGRAM, diagram_module)
 
     # histogram
-    (histogram_frame, histogram_label) = frame_and_label(image_diagram, "Histogram", PASTEL_BLUE_RGB, 0, 5, 7, 7, labelspan=5)
+    (histogram_frame, histogram_label) = frame_and_label(image_diagram, "Histogram", PASTEL_BLUE_RGB, 0, 6, 8, 6, labelspan=5)
     histogram_module = Histogram(histogram_frame, listener)
     listener.attach_module(HISTOGRAM, histogram_module)
 
     # absorption
-    (absorption_spec_frame, absorption_spec_label) = frame_and_label(image_diagram, "Absorption Spectrum", PASTEL_PINK_RGB, 7, 6, 7, 6, labelspan=5)
+    (absorption_spec_frame, absorption_spec_label) = frame_and_label(image_diagram, "Absorption Spectrum", PASTEL_PINK_RGB, 8, 6, 6, 6, labelspan=5)
     absorption_module = AbsorptionSpec(absorption_spec_frame, listener)
     listener.attach_module(ABSORPTION_SPEC, absorption_module)
 
     # colourbar
-    colour_frame = frame_and_label(image_diagram, "Colour", PASTEL_PINK_RGB, 11, 12, 3, 2, labelspan=5, label=False)
+    colour_frame = frame_and_label(image_diagram, "Colour", PASTEL_PINK_RGB, 12, 12, 2, 2, labelspan=5, label=False)
     colour_module = Colour(colour_frame, listener)
 
     window.mainloop()
