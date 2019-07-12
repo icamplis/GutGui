@@ -85,8 +85,9 @@ class Save:
                 direc = os.path.dirname(path) + '/data_slices'
                 os.mkdir(direc)
                 for i in range(100):
+                    num = i*5 + 500
                     logging.debug("SAVING SLICE " + str(i))
-                    big_path = direc + '/' + 'data_slice_' + str(i) + '.csv'
+                    big_path = direc + '/' + 'data_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
 
     def _save_specific(self):
