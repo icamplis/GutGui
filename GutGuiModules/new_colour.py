@@ -1,4 +1,5 @@
 from GutGuiModules.utility import *
+import numpy as np
 import logging
 
 class NewColour:
@@ -43,6 +44,7 @@ class NewColour:
 
     def update_new_colour_image(self, new_colour_image_data):
         self.new_colour_image_data = new_colour_image_data
+        self._scale()
         self._build_new_image()
 
     def get_displayed_image_mode(self):
@@ -99,15 +101,13 @@ class NewColour:
         self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
         self.upper_scale_input = make_entry(self.root, row=6, column=3, width=9, pady=(5,0), padx=(0,15))
         self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
-        self.upper_scale_input.insert(END, "1")
-        self.upper_scale_value = 1
+        self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=(15, 0))
         self.lower_scale_input = make_entry(self.root, row=7, column=3, width=9, pady=5, padx=(0,15))
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
-        self.lower_scale_input.insert(END, "0")
-        self.lower_scale_value = 0
+        self.lower_scale_input.insert(END, str(self.lower_scale_value))
 
     def _build_new_image(self):
         if self.new_colour_image_data is None:
@@ -118,6 +118,12 @@ class NewColour:
             (self.new_colour_image_graph, self.new_colour_image, self.image_array) = make_image(self.root, self.new_colour_image_data,row=2, column=0,columnspan=4, rowspan=4,lower_scale_value=self.lower_scale_value,upper_scale_value=self.upper_scale_value,color_rgb=PASTEL_ORANGE_RGB)
             self.listener._image_array_to_new_data(self.image_array)
             self.new_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
+
+    def _scale(self):
+        self.upper_scale_value = np.max(self.new_colour_image_data)
+        self.lower_scale_value = np.min(self.new_colour_image_data)
+        self._build_lower_scale()
+        self._build_upper_scale()
 
     # Commands (Callbacks)
     def __update_to_wl(self):

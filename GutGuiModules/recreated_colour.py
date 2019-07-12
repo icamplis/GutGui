@@ -51,6 +51,7 @@ class RecColour:
 
     def update_recreated_image(self, recreated_colour_image_data):
         self.recreated_colour_image_data = recreated_colour_image_data
+        self._scale()
         self._build_recreated_image()
 
     def get_displayed_image_mode(self):
@@ -130,15 +131,13 @@ class RecColour:
         self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=2, width=17, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=(15, 0))
         self.upper_scale_input = make_entry(self.root, row=6, column=2, width=11, pady=(5,0), padx=(0,15), columnspan=2)
         self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
-        self.upper_scale_input.insert(END, "1")
-        self.upper_scale_value = 1
+        self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=2, width=17, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=(15, 0))
         self.lower_scale_input = make_entry(self.root, row=7, column=2, width=11, pady=5, padx=(0,15), columnspan=2)
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
-        self.lower_scale_input.insert(END, "0")
-        self.lower_scale_value = 0
+        self.lower_scale_input.insert(END, str(self.lower_scale_value))
 
     def _build_recreated_image(self):
         if self.recreated_colour_image_data is None:
@@ -149,6 +148,13 @@ class RecColour:
             (self.recreated_colour_image_graph, self.recreated_colour_image, self.image_array) = make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value, color_rgb=PASTEL_BLUE_RGB)
             self.listener._image_array_to_rec_data(self.image_array)
             self.recreated_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
+
+    def _scale(self):
+        self.upper_scale_value = np.max(self.recreated_colour_image_data)
+        self.lower_scale_value = np.min(self.recreated_colour_image_data)
+        self._build_lower_scale()
+        self._build_upper_scale()
+
 
     # Commands (Callbacks)
     def __update_to_sto2(self):

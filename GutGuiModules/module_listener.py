@@ -29,6 +29,9 @@ class ModuleListener:
         # DIAGRAM
         self.is_masked = False
 
+    def get_normal(self):
+        return self.normal
+
     def get_selected_paths(self):
         return self.selected_paths
 
@@ -58,6 +61,9 @@ class ModuleListener:
         logging.debug("SELECTED DATA CUBE AT: " + dc_path)
         self.current_rendered_result_path = dc_path
         self._broadcast_new_data()
+
+    def data_cube(self, path):
+        return self.get_result(path).get_data_cube()
 
     def update_selected_paths(self, selected_paths):
         self.selected_paths = selected_paths

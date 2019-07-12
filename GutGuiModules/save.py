@@ -14,6 +14,7 @@ class Save:
 
         self.save_specific_button = None
         self.save_all_button = None
+        self.save_data_cube_as_csv_button = None
 
         # Saves
         # by default, nothing is saved
@@ -64,6 +65,7 @@ class Save:
     def _init_widgets(self):
         self._build_save_specific_button()
         self._build_save_all_button()
+        self._build_data_cube_to_csv_button()
 
     def _build_save_specific_button(self):
         self.save_specific_button = make_button(self.root, text="Save Selected", command=self._save_specific, row=1, column=0, outer_pady=0, outer_padx=15, width=10)
@@ -71,7 +73,22 @@ class Save:
     def _build_save_all_button(self):
         self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=2, column=0, outer_pady=5, outer_padx=15, width=10)
 
+    def _build_data_cube_to_csv_button(self):
+        self.save_data_cube_as_csv_button = make_button(self.root, text="Cube to CSV", command=self._cube_to_csv, row=3, column=0, outer_pady=(0, 15), outer_padx=15, width=10)
+
     # Callbacks
+    def _cube_to_csv(self):
+        for path, _ in self.listener.get_results().items():
+            selected_paths = self.listener.get_selected_paths()
+            if path in selected_paths:
+                data = self.listener.data_cube(path)
+                direc = os.path.dirname(path) + '/data_slices'
+                os.mkdir(direc)
+                for i in range(100):
+                    logging.debug("SAVING SLICE " + str(i))
+                    big_path = direc + '/' + 'data_slice_' + str(i) + '.csv'
+                    np.savetxt(big_path, data[:,:,i], delimiter=",")
+
     def _save_specific(self):
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()

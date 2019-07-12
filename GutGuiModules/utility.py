@@ -98,12 +98,12 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
                     vmin=max(0.0, float(lower_scale_value)),
                     vmax=min(1.0, float(upper_scale_value)))
         image_array = image.get_array().flatten()
-        a = np.asarray(image_array)
-        N = 256
-        bins = np.linspace(a.min(), a.max(), N+1)
-        dig = np.digitize(a, bins)-1
-        dig[dig == N] = N-1 
-        image_array = dig
+        # a = np.asarray(image_array)
+        # N = 256
+        # bins = np.linspace(a.min(), a.max(), N+1)
+        # dig = np.digitize(a, bins)-1
+        # dig[dig == N] = N-1 
+        # image_array = dig
 
     graph.patch.set_facecolor(rgb_to_rgba(color_rgb))
     graph.set_tight_layout('True')

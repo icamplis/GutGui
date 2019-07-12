@@ -28,13 +28,16 @@ class NewColourData:
         self._init_widget()
 
     def update_new_image_data(self, new_colour_image_data):
-        self.data = new_colour_image_data.flatten()
+        self.data = new_colour_image_data
         self._calc_data()
         self._build_data()
 
     def update_array(self, data):
-        self.stats_data = data
-        print(self.stats_data[:100])
+        # shift data above 0
+        minimum = abs(np.min(data))
+        maximum = np.max(data) + minimum
+        # normalise [0, 255]
+        self.stats_data = [(i+minimum)*255/maximum for i in data]
 
     # Helper
     def _init_widget(self):
