@@ -30,9 +30,8 @@ class Histogram:
         self.percent_negative_text = None
         self.percent_negative_value = None
 
-        self.og_data_button = None
-        self.wl_data_button = None
-        self.idx_data_button = None
+        self.drop_down_var = StringVar()
+        self.choices = {1, 2, 3}
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -106,7 +105,7 @@ class Histogram:
         self._build_save_as_excel()
         self._build_info_button()
         self._build_reset_button()
-        self._build_data_buttons()
+        self._build_drop_down()
         self._build_interactive_histogram()
         self._build_stats()
 
@@ -130,10 +129,9 @@ class Histogram:
         # percent negative
         self.percent_negative_text = make_text(self.root, content="% Negative Data = " + str(self.percent_negative_value) + '%', bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=0, row=12, width=25, columnspan=3, padx=0, state=NORMAL, pady=0)
 
-    def _build_data_buttons(self):
-        self.og_data_button = make_button(self.root, text='Original Data', width=12, command=self.__update_to_original_data, row=1, column=3, columnspan=2, inner_padx=3, inner_pady=2, outer_pady=2, highlightthickness=0)
-        self.wl_data_button = make_button(self.root, text='WL Data', width=12, command=self.__update_to_wl_data,  row=2, column=3, columnspan=2, inner_padx=3, inner_pady=2, outer_pady=2, highlightthickness=0)
-        self.idx_data_button = make_button(self.root, text='IDX Data', width=12, command=self.__update_to_idx_data,  row=3, column=3, columnspan=2, inner_padx=3, inner_pady=2, outer_pady=(2, 10), highlightthickness=0)
+    def _build_drop_down(self):
+        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices)
+
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=11, column=0,inner_padx=10, inner_pady=5, outer_padx=(15, 10), outer_pady=(0, 15))

@@ -1,5 +1,6 @@
 from AnalysisModules.analysis import Analysis
 from GutGuiModules.constants import *
+import numpy as np
 import logging
 
 class ModuleListener:
@@ -82,11 +83,16 @@ class ModuleListener:
 
     def ref_non_neg_cube(self, path):
         cube = self.get_result(path).get_data_cube()
-        return cube[cube > 0]
+        return np.ma.array(cube, mask=cube<0)
 
     def ref_norm_cube(self, path):
         cube = self.get_result(path).get_data_cube()
         return cube/cube.max()
+
+    def ref_norm_non_neg_cube(self, path):
+        cube = self.get_result(path).get_data_cube()
+        np.ma.array(cube, mask=cube<0)
+        return pos_cube/pos_cube.max()
 
     def ab_non_neg_cube(self, path):
         cube = self.get_result(path).get_x_absorbance()
