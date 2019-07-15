@@ -112,7 +112,7 @@ class Analysis:
         self.analysis()
 
     def get_data_cube(self):
-        return self.x1
+        return self.data_cube
 
     def get_masked_cube(self):
         return self.x_reflectance

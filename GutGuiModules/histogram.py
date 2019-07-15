@@ -251,7 +251,7 @@ class Histogram:
         # determine the minimum bin size and which bin this occurs in
         self.min_bin_size = np.min(np.histogram(data, bins=bins)[0])
         self.min_bin = histogram_data[1][np.where(histogram_data[0] == self.min_bin_size)[0][0]]
-        percent = np.sum(np.array(data) < 0)/len(data)
+        percent = np.sum(np.array(data) < 0)/len(data) *100
         print(percent)
         self.percent_negative_value = round(percent, 3)
         print(self.percent_negative_value)

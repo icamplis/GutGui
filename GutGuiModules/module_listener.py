@@ -77,11 +77,24 @@ class ModuleListener:
         self.current_rendered_result_path = dc_path
         self._broadcast_new_data()
 
-    def data_cube(self, path):
+    def ref_data_cube(self, path):
         return self.get_result(path).get_data_cube()
 
-    def masked_cube(self, path):
-        return self.get_result(path).get_masked_cube()
+    def ref_non_neg_cube(self, path):
+        cube = self.get_result(path).get_data_cube()
+        return cube[cube > 0]
+
+    def ref_norm_cube(self, path):
+        cube = self.get_result(path).get_data_cube()
+        return cube/cube.max()
+
+    def ab_non_neg_cube(self, path):
+        cube = self.get_result(path).get_x_absorbance()
+        return cube[cube > 0]
+
+    def ab_norm_cube(self, path):
+        cube = self.get_result(path).get_x_absorbance()
+        return cube/cube.max()
 
     def update_selected_paths(self, selected_paths):
         self.selected_paths = selected_paths

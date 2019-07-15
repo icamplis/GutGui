@@ -28,6 +28,11 @@ def main():
     info_module = Info(info_frame, listener)
     listener.attach_module(INFO, info_module)
 
+    # save csvs
+    (csv_frame, csv_label) = frame_and_label(input_output, "Data to CSV",PASTEL_PINK_RGB, 0, 3, 2, 1)
+    csv_module = CSVSaver(csv_frame, listener)
+    listener.attach_module(CSV, csv_module)
+
     # original colour
     (og_color_frame, ogc_label) = frame_and_label(image_diagram, "Original Image", PASTEL_PINK_RGB, 0, 0, 7, 6, labelspan=8)
     og_color_module = OGColour(og_color_frame, listener)

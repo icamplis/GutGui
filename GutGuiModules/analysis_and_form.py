@@ -122,12 +122,12 @@ class AnalysisAndForm:
 
     def _build_wavelength_upper_entry(self):
         self.wavelength_upper_entry = make_entry(self.root, row=3, column=4, width=15, pady=(10, 0), columnspan=4)
-        self.wavelength_upper_entry.insert(0, str(820))
+        self.wavelength_upper_entry.insert(0, str(500))
         self.wavelength_upper_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_wavelength_lower_entry(self):
         self.wavelength_lower_entry = make_entry(self.root, row=4, column=4, width=15, pady=(10, 0), columnspan=4)
-        self.wavelength_lower_entry.insert(0, str(820))
+        self.wavelength_lower_entry.insert(0, str(500))
         self.wavelength_lower_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):
