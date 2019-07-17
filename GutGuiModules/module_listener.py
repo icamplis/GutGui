@@ -83,6 +83,7 @@ class ModuleListener:
 
     def ref_non_neg_cube(self, path):
         cube = self.get_result(path).get_data_cube().tolist()
+        logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
@@ -98,10 +99,10 @@ class ModuleListener:
 
     def ref_norm_non_neg_cube(self, path):
         cube = self.get_result(path).get_data_cube()
+        logging.debug("REMOVING NEGATIVE VALUES...")
         cube = cube/cube.max()
         cube = cube.tolist()
         for i in range(len(cube)):
-            logging.debug("REMOVING NEGATIVE FROM SLICE " + str(i))
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] < 0:
@@ -112,6 +113,7 @@ class ModuleListener:
 
     def ab_non_neg_cube(self, path):
         cube = self.get_result(path).get_x_absorbance().tolist()
+        logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):

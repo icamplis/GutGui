@@ -52,6 +52,18 @@ class CSVSaver:
         self.reflectance_text = make_text(self.root, content="Reflectance:", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=12, pady=(0, 5))
         self.absorbance_text = make_text(self.root, content="Absorbance:", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=6, width=11, pady=(10, 5))
 
+    def _make_direc(self, direc):
+        if not os.path.isdir(direc):
+            os.mkdir(direc)
+
+    def _progress(self, val, total):
+        update = ['-', '\\', '|', '/']
+        if val != total-1:
+            print(update[val%4] + ' ' + str(val+1) + '%', end="\r", flush=True)
+        else:
+            print(update[val%4] + ' ' + str(val+1) + '%')
+
+
     # callbacks
 
     def __ogr_to_csv(self):
@@ -60,75 +72,80 @@ class CSVSaver:
             if path in selected_paths:
                 data = self.listener.ref_data_cube(path)
                 direc = os.path.dirname(path) + '/og_ref_data_slices'
-                os.mkdir(direc)
+                self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
-                    logging.debug("SAVING SLICE " + str(i))
+                    self._progress(i, 100)
                     big_path = direc + '/' + 'og_ref_data_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
 
     def __ogrp_to_csv(self):
+        update = ['-', '\\', '|', '/']
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.ref_non_neg_cube(path)
                 direc = os.path.dirname(path) + '/og_ref_positive_data_slices'
-                os.mkdir(direc)
+                self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
-                    logging.debug("SAVING SLICE " + str(i))
+                    self._progress(i, 100)
                     big_path = direc + '/' + 'og_ref_positive_data_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __normr_to_csv(self):
+        update = ['-', '\\', '|', '/']
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.ref_norm_cube(path)
                 direc = os.path.dirname(path) + '/norm_ref_data_slices'
-                os.mkdir(direc)
+                self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
-                    logging.debug("SAVING SLICE " + str(i))
+                    self._progress(i, 100)
                     big_path = direc + '/' + 'norm_ref_data_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
 
     def __normrp_to_csv(self):
+        update = ['-', '\\', '|', '/']
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.ref_norm_non_neg_cube(path)
                 direc = os.path.dirname(path) + '/norm_ref_data_slices'
-                os.mkdir(direc)
+                self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
-                    logging.debug("SAVING SLICE " + str(i))
+                    self._progress(i, 100)
                     big_path = direc + '/' + 'norm_ref_data_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __ogap_to_csv(self):
+        update = ['-', '\\', '|', '/']
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.ab_non_neg_cube(path)
                 direc = os.path.dirname(path) + '/og_abs_positive_data_slices'
-                os.mkdir(direc)
+                self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
-                    logging.debug("SAVING SLICE " + str(i))
+                    self._progress(i, 100)
                     big_path = direc + '/' + 'og_abs_data_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __norma_to_csv(self):
+        update = ['-', '\\', '|', '/']
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.ab_norm_cube(path)
                 direc = os.path.dirname(path) + '/norm_abs_data_slices'
-                os.mkdir(direc)
+                self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
-                    logging.debug("SAVING SLICE " + str(i))
+                    self._progress(i, 100)
                     big_path = direc + '/' + 'norm_abs_data_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
 
