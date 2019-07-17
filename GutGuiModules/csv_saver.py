@@ -78,7 +78,7 @@ class CSVSaver:
                     num = i*5 + 500
                     logging.debug("SAVING SLICE " + str(i))
                     big_path = direc + '/' + 'og_ref_positive_data_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
+                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __normr_to_csv(self):
         for path, _ in self.listener.get_results().items():
@@ -104,7 +104,7 @@ class CSVSaver:
                     num = i*5 + 500
                     logging.debug("SAVING SLICE " + str(i))
                     big_path = direc + '/' + 'norm_ref_data_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
+                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __ogap_to_csv(self):
         for path, _ in self.listener.get_results().items():
@@ -117,7 +117,7 @@ class CSVSaver:
                     num = i*5 + 500
                     logging.debug("SAVING SLICE " + str(i))
                     big_path = direc + '/' + 'og_abs_data_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
+                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __norma_to_csv(self):
         for path, _ in self.listener.get_results().items():

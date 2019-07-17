@@ -82,8 +82,15 @@ class ModuleListener:
         return self.get_result(path).get_data_cube()
 
     def ref_non_neg_cube(self, path):
-        cube = self.get_result(path).get_data_cube()
-        return np.ma.array(cube, mask=cube<0)
+        cube = self.get_result(path).get_data_cube().tolist()
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] < 0:
+                        cube[i][j][k] = ''
+                    else:
+                        cube[i][j][k] = str(float(cube[i][j][k]))
+        return np.asarray(cube)
 
     def ref_norm_cube(self, path):
         cube = self.get_result(path).get_data_cube()
@@ -91,12 +98,28 @@ class ModuleListener:
 
     def ref_norm_non_neg_cube(self, path):
         cube = self.get_result(path).get_data_cube()
-        np.ma.array(cube, mask=cube<0)
-        return pos_cube/pos_cube.max()
+        cube = cube/cube.max()
+        cube = cube.tolist()
+        for i in range(len(cube)):
+            logging.debug("REMOVING NEGATIVE FROM SLICE " + str(i))
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] < 0:
+                        cube[i][j][k] = ''
+                    else:
+                        cube[i][j][k] = str(float(cube[i][j][k]))
+        return np.asarray(cube)
 
     def ab_non_neg_cube(self, path):
-        cube = self.get_result(path).get_x_absorbance()
-        return cube[cube > 0]
+        cube = self.get_result(path).get_x_absorbance().tolist()
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] < 0:
+                        cube[i][j][k] = ''
+                    else:
+                        cube[i][j][k] = str(float(cube[i][j][k]))
+        return np.asarray(cube)
 
     def ab_norm_cube(self, path):
         cube = self.get_result(path).get_x_absorbance()
