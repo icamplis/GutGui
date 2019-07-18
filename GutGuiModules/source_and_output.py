@@ -21,6 +21,8 @@ class SourceAndOutput:
         self.output_dir_label = None
         self.delete_button = None
 
+        self.info_button = None
+
         # Data
         self.data_cubes = []
         self.data_cube_paths = []
@@ -54,27 +56,32 @@ class SourceAndOutput:
     def _init_widgets(self):
         self._build_select_superdir_button()
         self._build_select_dir_button()
-        # self._build_select_od_button()
         self._build_selection_box()
         self._build_delete_button()
+        self._build_info_button()
 
     def _build_select_superdir_button(self):
-        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory", command=self.__add_data_cube_dirs,
-                                                   inner_padx=10, inner_pady=10, outer_padx=15, row=1, column=0, width=15)
+        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory", command=self.__add_data_cube_dirs, inner_padx=10, inner_pady=10, outer_padx=15, row=1, column=0, width=15)
 
     def _build_select_dir_button(self):
-        self.select_data_cube_button = make_button(self.root, text=" Select Data Directory", command=self.__add_data_cube_dir,
-                                                   inner_padx=10, inner_pady=10, outer_padx=15, row=2, column=0, width=15)
+        self.select_data_cube_button = make_button(self.root, text=" Select Data Directory", command=self.__add_data_cube_dir, inner_padx=10, inner_pady=10, outer_padx=15, row=2, column=0, width=15)
 
     def _build_selection_box(self):
-        self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=3, padx=(0, 15))
+        self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=3, padx=(0, 15), pady=(0, 15))
         self.selection_listbox.bind('<<ListboxSelect>>', self.__update_selected_data_cube)
 
     def _build_delete_button(self):
-        self.delete_button = make_button(self.root, text="Remove Data Cube",command=self.__delete_selected_data_cube,
-                                         inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15)
+        self.delete_button = make_button(self.root, text="Remove Data Cube",command=self.__delete_selected_data_cube, inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15, outer_pady=(0, 15))
+
+    def _build_info_button(self):
+        self.info_button = make_button(self.root, text='?', width=1, command=self.__info, row=0, column=1, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=(220, 0), outer_pady=5, highlightthickness=0)
 
     # Commands (Callbacks)
+    def __info(self):
+        info = self.listener.get_source_output_info()
+        title = "Source & Output Information"
+        make_info(title=title, info=info)
+
     def __update_selected_data_cube(self, event):
         dc_path = self.get_selected_data_cube_path()
         selected_paths = self.get_selected_data_paths()

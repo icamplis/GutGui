@@ -34,14 +34,8 @@ class AnalysisAndForm:
         self.idx6_button = None
         self.idx7_button = None
         self.idx8_button = None
-        # self.stO2_text = None
-        # self.stO2_entry = None
-        # self.perf_text = None
-        # self.perf_entry = None
-        # self.hemo_text = None
-        # self.hemo = None
-        # self.tissue_text = None
-        # self.tissue_entry = None
+
+        self.info_button = None
 
         # State vars
         self.normal = True  # True by default
@@ -78,22 +72,12 @@ class AnalysisAndForm:
         self._build_OR_text(height=1, width=2, row=2, column=3, columnspan=2, pady=5)
         self._build_absorbance_button()
         self._build_wavelength_text()
-        # self._build_wavelength_entry()
         self._build_wavelength_upper_entry()
         self._build_wavelength_lower_entry()
-        # self._build_stO2_text()
-        # self._build_stO2()
-        # self._build_perf_text()
-        # self._build_perf()
-        # self._build_hemo_text()
-        # self._build_hemo()
-        # self._build_tissue_text()
-        # self._build_tissue()
+        self._build_info_button()
 
     def _build_normalisation_button(self):
-        self.normalisation_button = make_button(self.root, text='Normalisation',
-                                                command=self.__normal, row=1, column=0, outer_pady=(0,5),
-                                                outer_padx=(15, 0), columnspan=3)
+        self.normalisation_button = make_button(self.root, text='Normalisation',command=self.__normal, row=1, column=0, outer_pady=(0,5),outer_padx=(15, 0), columnspan=3)
         self.normalisation_button.config(foreground="red")
 
     def _build_original_button(self):
@@ -102,8 +86,7 @@ class AnalysisAndForm:
             outer_padx=(0, 15), columnspan=3)
 
     def _build_reflection_button(self):
-        self.reflection_button = make_button(self.root, text='Reflectance',
-                                             command=self.__reflect, row=2, column=0, outer_pady=(0,5),
+        self.reflection_button = make_button(self.root, text='Reflectance',command=self.__reflect, row=2, column=0, outer_pady=(0,5),
             outer_padx=(15, 0), columnspan=3)
 
     def _build_absorbance_button(self):
@@ -113,8 +96,7 @@ class AnalysisAndForm:
         self.absorbance_button.config(foreground="red")
 
     def _build_OR_text(self, height, width, row, column, columnspan, padx=0, pady=10):
-        self.OR_text = make_text(self.root, content="OR",
-            bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), height=height, width=width, row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
+        self.OR_text = make_text(self.root, content="OR", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), height=height, width=width, row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
 
     def _build_wavelength_text(self):
         self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=19, columnspan=4, pady=(10, 0))
@@ -131,58 +113,29 @@ class AnalysisAndForm:
         self.wavelength_lower_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):
-        self.idx_title = make_text(self.root, content="Individual Index:",
-                                   bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=17, columnspan=8, pady=(10, 0))
+        self.idx_title = make_text(self.root, content="Individual Index:",bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=17, columnspan=8, pady=(10, 0))
 
     def _build_idxs(self):
-        self.idx1_button = make_button(self.root, text='1', command=lambda:self.__idxn(1),
-                                       row=6, column=0, outer_pady=(5, 15), outer_padx=(15, 5), width=1)
-        self.idx2_button = make_button(self.root, text='2', command=lambda:self.__idxn(2),
-                                       row=6, column=1, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx3_button = make_button(self.root, text='3', command=lambda:self.__idxn(3),
-                                       row=6, column=2, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx4_button = make_button(self.root, text='4', command=lambda:self.__idxn(4),
-                                       row=6, column=3, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx5_button = make_button(self.root, text='5', command=lambda:self.__idxn(5),
-                                       row=6, column=4, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx6_button = make_button(self.root, text='6', command=lambda:self.__idxn(6),
-                                       row=6, column=5, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx7_button = make_button(self.root, text='7', command=lambda:self.__idxn(7),
-                                       row=6, column=6, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx8_button = make_button(self.root, text='8', command=lambda:self.__idxn(8),
-                                       row=6, column=7, outer_pady=(5, 15), outer_padx=(5, 15), width=1)
+        self.idx1_button = make_button(self.root, text='1', command=lambda:self.__idxn(1),row=6, column=0, outer_pady=(5, 15), outer_padx=(15, 5), width=1)
+        self.idx2_button = make_button(self.root, text='2', command=lambda:self.__idxn(2),row=6, column=1, outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx3_button = make_button(self.root, text='3', command=lambda:self.__idxn(3), row=6, column=2, outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx4_button = make_button(self.root, text='4', command=lambda:self.__idxn(4), row=6, column=3, outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx5_button = make_button(self.root, text='5', command=lambda:self.__idxn(5), row=6, column=4, outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx6_button = make_button(self.root, text='6', command=lambda:self.__idxn(6), row=6, column=5, outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx7_button = make_button(self.root, text='7', command=lambda:self.__idxn(7), row=6, column=6, outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx8_button = make_button(self.root, text='8', command=lambda:self.__idxn(8), row=6, column=7, outer_pady=(5, 15), outer_padx=(5, 15), width=1)
         self.idx1_button.config(foreground="red")
         self.index_selected = 1  # Use index no.1 by default
 
-    # def _build_stO2_text(self):
-    #     self.stO2_text = make_text(self.root, content="Saturation index: ", 
-    #         bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=6, width=18, columnspan=4, pady=(5,0))
-
-    # def _build_stO2(self):
-    #     self.stO2_entry = make_entry(self.root, row=6, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4, command=self.__update_st02)
-
-    # def _build_perf_text(self):
-    #     self.perf_text = make_text(self.root, content="Perfusion index: ", 
-    #         bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=7, width=17, columnspan=4, pady=(5,0))
-
-    # def _build_perf(self):
-    #     self.perf_entry = make_entry(self.root, row=7, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4, command=self.__update_perf)
-
-    # def _build_hemo_text(self):
-    #     self.hemo_text = make_text(self.root, content="Hemoglobin index: ", 
-    #         bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=8, width=18, columnspan=4, pady=(5,0))
-
-    # def _build_hemo(self):
-    #     self.hemo = make_entry(self.root, row=8, column=4, width=15, pady=(5,0), padx=(0, 20), columnspan=4, command=self.__update_hemo)
-
-    # def _build_tissue_text(self):
-    #     self.tissue_text = make_text(self.root, content="Tissue water index: ",
-    #         bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=9, width=20, columnspan=4, pady=(5, 15))
-
-    # def _build_tissue(self):
-    #     self.tissue_entry = make_entry(self.root, row=9, column=4, width=15, pady=(5, 15), padx=(0, 20), columnspan=4, command=self.__update_tissue)
+    def _build_info_button(self):
+        self.info_button = make_button(self.root, text='?', width=1, command=self.__info, row=0, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=5, outer_pady=5, highlightthickness=0)
 
     # Commands (Callbacks)
+    def __info(self):
+        info = self.listener.get_analysis_form_info()
+        title = "Analysis & Form Information"
+        make_info(title=title, info=info)
+
     def __normal(self):
         self.normalisation_button.config(foreground="red")
         self.original_button.config(foreground="black")

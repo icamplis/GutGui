@@ -31,7 +31,9 @@ class Histogram:
         self.percent_negative_value = None
 
         self.drop_down_var = StringVar()
-        self.choices = {1, 2, 3}
+        self.choices = ['ref og wl', 'ref norm wl', 'ref og idx', \
+            'ref norm idx', 'abs og wl', 'abs norm wl', 'abs og idx', \
+            'abs norm idx']
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -130,8 +132,13 @@ class Histogram:
         self.percent_negative_text = make_text(self.root, content="% Negative Data = " + str(self.percent_negative_value) + '%', bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=0, row=12, width=25, columnspan=3, padx=0, state=NORMAL, pady=0)
 
     def _build_drop_down(self):
-        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices)
-
+        self.drop_down_var.set(self.choices[0])
+        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
+        # for choice in self.choices:
+        #     self.drop_down_menu['menu'].add_command(label=choice, command=lambda:self.__update_data())
+        self.drop_down_menu.configure(highlightthickness=0)
+        self.drop_down_menu.configure(width=9)
+        self.drop_down_menu.grid(column=3, row=2, columnspan=2, padx=(0, 15))
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=11, column=0,inner_padx=10, inner_pady=5, outer_padx=(15, 10), outer_pady=(0, 15))
@@ -249,13 +256,31 @@ class Histogram:
         # determine the minimum bin size and which bin this occurs in
         self.min_bin_size = np.min(np.histogram(data, bins=bins)[0])
         self.min_bin = histogram_data[1][np.where(histogram_data[0] == self.min_bin_size)[0][0]]
-        percent = np.sum(np.array(data) < 0)/len(data) *100
-        print(percent)
+        percent = np.sum(np.array(data) < 0)/len(data) * 100
         self.percent_negative_value = round(percent, 3)
-        print(self.percent_negative_value)
         self._build_stats()
 
     # Commands (Callbacks)
+    def __update_data(self, event):
+        choice = self.drop_down_var.get()
+        if choice == 'ref og wl':
+            pass
+        elif choice == 'ref norm wl':
+            pass
+        elif choice == 'ref og idx':
+            pass
+        elif choice == 'ref norm idx':
+            pass
+        elif choice == 'abs og wl':
+            pass
+        elif choice == 'abs norm wl':
+            pass
+        elif choice == 'abs og idx':
+            pass
+        elif choice == 'abs norm idx':
+            pass
+        self.update_histogram(data)
+
     def __update_to_original_data(self):
         self.listener._broadcast_to_histogram()
 

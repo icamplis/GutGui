@@ -190,6 +190,18 @@ class ModuleListener:
         data = [[point_coords[i][0], point_coords[i][1]] for i in range(10) if point_bools[i] and point_coords[i] != (None, None)]
         return data
 
+    def get_source_output_info(self):
+        return self.modules[INFO].get_source_output_info()
+
+    def get_analysis_form_info(self):
+        return self.modules[INFO].get_analysis_form_info()
+
+    def get_csv_info(self):
+        return self.modules[INFO].get_csv_info()
+
+    def get_save_info(self):
+        return self.modules[INFO].get_save_info()
+
     def get_original_info(self):
         return self.modules[INFO].get_original_info()
 

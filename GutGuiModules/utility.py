@@ -68,7 +68,7 @@ def make_text(window, content, row, column, padx=0, pady=0, height=1, width=2,
 
 def make_listbox(window, row, column, padx=0, pady=0,
                  highlightthickness=0, columnspan=1,  rowspan=1):
-    listbox = Listbox(window, width=15, highlightthickness=highlightthickness, selectmode=EXTENDED)
+    listbox = Listbox(window, width=28, highlightthickness=highlightthickness, selectmode=EXTENDED)
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 
@@ -98,12 +98,6 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
                     vmin=float(lower_scale_value),
                     vmax=float(upper_scale_value))
         image_array = image.get_array().flatten()
-        # a = np.asarray(image_array)
-        # N = 256
-        # bins = np.linspace(a.min(), a.max(), N+1)
-        # dig = np.digitize(a, bins)-1
-        # dig[dig == N] = N-1 
-        # image_array = dig
 
     graph.patch.set_facecolor(rgb_to_rgba(color_rgb))
     graph.set_tight_layout('True')
@@ -139,6 +133,13 @@ def rgb_to_rgba(rgb):
     g = rgb[1]/255
     b = rgb[2]/255
     return r, g, b
+
+def progress(val, total):
+        update = ['-', '\\', '|', '/']
+        if val != total-1:
+            print(update[val%4] + ' ' + str(val+1) + '%', end="\r", flush=True)
+        else:
+            print(update[val%4] + ' ' + str(val+1) + '%')
 
 
 

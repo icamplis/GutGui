@@ -15,6 +15,8 @@ class Save:
         self.save_specific_button = None
         self.save_all_button = None
 
+        self.info_button = None
+
         # Saves
         # by default, nothing is saved
         self.saves = {
@@ -66,14 +68,22 @@ class Save:
     def _init_widgets(self):
         self._build_save_specific_button()
         self._build_save_all_button()
+        self._build_info_button()
 
     def _build_save_specific_button(self):
-        self.save_specific_button = make_button(self.root, text="Save Selected", command=self._save_specific, row=1, column=0, outer_pady=0, outer_padx=15, width=10)
+        self.save_specific_button = make_button(self.root, text="Save Selected", command=self._save_specific, row=1, column=0, outer_pady=(0, 15), outer_padx=(90, 0), width=10)
 
     def _build_save_all_button(self):
-        self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=2, column=0, outer_pady=5, outer_padx=15, width=10)
+        self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=1, column=1, outer_pady=(0, 15), outer_padx=15, width=10)
+
+    def _build_info_button(self):
+        self.info_button = make_button(self.root, text='?', width=1, command=self.__info, row=0, column=1, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=(222, 0), outer_pady=5, highlightthickness=0)
 
     # Callbacks
+    def __info(self):
+        info = self.listener.get_save_info()
+        title = "Save Information"
+        make_info(title=title, info=info)
 
     def _save_specific(self):
         for path, _ in self.listener.get_results().items():

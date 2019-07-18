@@ -354,8 +354,9 @@ class OGColour:
             y = int(point[0])
             x = int(point[1])
             for xi in range(-4, 5):
-                for yi in range(-4, 5):
-                    copy_data[(x+xi)%480, (y+yi)%640, :] = BRIGHT_GREEN_RGB
+                 copy_data[(x+xi)%480, y, :] = BRIGHT_GREEN_RGB
+            for yi in range(-4, 5):
+                copy_data[x, (y+yi)%640, :] = BRIGHT_GREEN_RGB
             idx = not_none.index(point)
             self._draw_a_line(not_none[idx-1], not_none[idx], copy_data)    
         self._build_original_image(copy_data)
