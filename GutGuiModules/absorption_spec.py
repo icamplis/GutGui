@@ -170,7 +170,7 @@ class AbsorptionSpec:
         self.interactive_absorption_spec = FigureCanvasTkAgg(self.interactive_absorption_spec_graph, master=self.root)
         self.interactive_absorption_spec.draw()
         self.interactive_absorption_spec.get_tk_widget().grid(column=0, row=2, columnspan=3, rowspan=6, ipady=5, ipadx=0)
-        self.interactive_absorption_spec.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
+        self.interactive_absorption_spec.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _calc_high_low(self):
         self.x_lower_scale_value = np.min(self.x_vals)

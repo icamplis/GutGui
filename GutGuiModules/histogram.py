@@ -233,7 +233,7 @@ class Histogram:
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
         self.interactive_histogram.get_tk_widget().grid(column=0, row=4, columnspan=3, rowspan=7, ipady=5, ipadx=0, pady=0)
-        self.interactive_histogram.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
+        self.interactive_histogram.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _calc_stats(self):
         # construct data list in proper range

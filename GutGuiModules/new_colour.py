@@ -124,7 +124,7 @@ class NewColour:
             (self.new_colour_image_graph, self.new_colour_image, self.image_array) = make_image(self.root, self.new_colour_image_data,row=2, column=0,columnspan=4, rowspan=4,lower_scale_value=self.lower_scale_value,upper_scale_value=self.upper_scale_value,color_rgb=PASTEL_ORANGE_RGB)
             # TODO: broadcast the ACTUAL data that it uses, not the original data array. Stats aren't updating because the original array is just gettting sent again.
             self.listener._image_array_to_new_data(self.image_array)
-            self.new_colour_image.get_tk_widget().bind('<Double-Button-1>', self.__pop_up_image)
+            self.new_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
         self.upper_scale_value = np.max(self.new_colour_image_data)

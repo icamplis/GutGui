@@ -98,7 +98,7 @@ class ModuleListener:
         return cube/cube.max()
 
     def ref_norm_non_neg_cube(self, path):
-        cube = self.get_result(path).get_data_cube()
+        cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         cube = cube/cube.max()
         cube = cube.tolist()
@@ -112,7 +112,7 @@ class ModuleListener:
         return np.asarray(cube)
 
     def ab_non_neg_cube(self, path):
-        cube = self.get_result(path).get_x_absorbance().tolist()
+        cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -120,12 +120,21 @@ class ModuleListener:
                     if cube[i][j][k] < 0:
                         cube[i][j][k] = ''
                     else:
-                        cube[i][j][k] = str(float(cube[i][j][k]))
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
         return np.asarray(cube)
 
     def ab_norm_cube(self, path):
-        cube = self.get_result(path).get_x_absorbance()
-        return cube/cube.max()
+        cube = self.get_result(path).get_data_cube().tolist()
+        cube = cube/cube.max()
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] < 0:
+                        cube[i][j][k] = ''
+                    else:
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+        return np.asarray(cube)
 
     def update_selected_paths(self, selected_paths):
         self.selected_paths = selected_paths
@@ -187,7 +196,7 @@ class ModuleListener:
 
     def get_coords(self, point_bools):
         point_coords = self.modules[ORIGINAL_COLOUR].get_coords()
-        data = [[point_coords[i][0], point_coords[i][1]] for i in range(10) if point_bools[i] and point_coords[i] != (None, None)]
+        data = [[float(point_coords[i][0]), float(point_coords[i][1])] for i in range(10) if point_bools[i] and point_coords[i] != (None, None)]
         return data
 
     def get_source_output_info(self):

@@ -30,9 +30,8 @@ class Colour:
         self.colourbar = cmap(np.arange(cmap.N))
 
         axes.imshow([self.colourbar], extent=[0, 255, 0, 100])
-        axes.set_xlim(left=0, right=255)
         axes.get_yaxis().set_visible(False)
-        axes.get_xaxis().set_ticks([0, 85, 170, 255])
+        axes.get_xaxis().set_visible(False)
         colour_fig.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
         colour_fig.set_tight_layout('True')
         image = FigureCanvasTkAgg(colour_fig, master=self.root)
