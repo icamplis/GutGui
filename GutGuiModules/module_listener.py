@@ -101,7 +101,6 @@ class ModuleListener:
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         cube = cube/np.max(cube)
-        cube = cube.tolist()
         for i in range(len(cube)):
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):

@@ -286,7 +286,7 @@ class Histogram:
         self.parametric = False
         self._build_interactive_histogram()
 
-    def __non_parametric(self):
+    def __none(self):
         self.non_parametric = False
         self.parametric = False
         self._build_interactive_histogram()
