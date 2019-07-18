@@ -11,12 +11,15 @@ class Histogram:
 
         self.flattened_data = None
 
-        self.parametric_title = None
+        self.parametric = False
+        self.non_parametric = False
+
+        self.parametric_button = None
         self.mean_text = None
         self.mean_value = None
         self.sd_text = None
         self.sd_value = None
-        self.non_parametric_title = None
+        self.non_parametric_button = None
         self.median_text = None
         self.median_value = None
         self.iqr_text = None
@@ -27,6 +30,7 @@ class Histogram:
         self.max_text = None
         self.max_bin = None
         self.max_bin_size = None
+        self.none_button = None
         self.percent_negative_text = None
         self.percent_negative_value = None
 
@@ -113,14 +117,13 @@ class Histogram:
 
     def _build_stats(self):
         # parametric
-        self.parametric_title = make_text(self.root, content="P: ", 
-            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=0, row=1, width=3, columnspan=1, padx=(15, 0))
+        self.parametric_button = make_button(self.root, text='P:', width=4, command=self.__parametric, column=0, row=1, columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3, inner_pady=0, outer_pady=(0, 3))
         # mean
         self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=1, width=12, columnspan=1, padx=0, state=NORMAL)
         # standard deviation
         self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=1, width=10, columnspan=1, padx=0, state=NORMAL)
         # non parametric
-        self.non_parametric_title = make_text(self.root, content="NP: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=0, row=2, width=4, columnspan=1, padx=(15, 0))
+        self.non_parametric_button = make_button(self.root, text='NP:', width=4, command=self.__non_parametric, column=0, row=2, columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3, inner_pady=0)
         # median
         self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=2, width=14, columnspan=1, padx=0, state=NORMAL)
         # IQR
@@ -128,6 +131,8 @@ class Histogram:
         # min and max
         self.min_text = make_text(self.root, content="Min bin = " + str(self.min_bin), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=3, width=15, columnspan=1, padx=0, state=NORMAL)
         self.max_text = make_text(self.root, content="Max bin = " + str(self.max_bin), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=3, width=15, columnspan=1, padx=0, state=NORMAL)
+        # none
+        self.none_button = make_button(self.root, text='None', width=4, command=self.__none, column=0, row=3, columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3, inner_pady=0)
         # percent negative
         self.percent_negative_text = make_text(self.root, content="% Negative Data = " + str(self.percent_negative_value) + '%', bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=0, row=12, width=25, columnspan=3, padx=0, state=NORMAL, pady=0)
 
@@ -220,10 +225,20 @@ class Histogram:
             bins = np.arange(start = np.min(self.flattened_data), stop = np.max(self.flattened_data) + self.step_size_value, step = self.step_size_value)
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins)
-            # plot boxplot
-            self.axes2 = self.axes.twinx()
-            self.axes2.boxplot(self.flattened_data, vert=False, sym='')
-            self.axes2.get_yaxis().set_visible(False)
+            if self.parametric == True:
+                # plot error bar
+                self.axes2 = self.axes.twinx()
+                self.axes2.plot([self.mean_value-self.sd_value, self.mean_value+self.sd_value], [1, 1], 'k-', lw=1)
+                self.axes2.plot([self.mean_value-self.sd_value, self.mean_value-self.sd_value], [0.9, 1.1], 'k-', lw=1)
+                self.axes2.plot([self.mean_value+self.sd_value, self.mean_value+self.sd_value], [0.9, 1.1], 'k-', lw=1)
+                self.axes2.plot([self.mean_value, self.mean_value], [0.9, 1.1], '#F17E3A', lw=1)
+                self.axes2.set_ylim(bottom=0, top=2)
+                self.axes2.get_yaxis().set_visible(False)
+            elif self.non_parametric == True:
+                # plot boxplot
+                self.axes2 = self.axes.twinx()
+                self.axes2.boxplot(self.flattened_data, vert=False, sym='')
+                self.axes2.get_yaxis().set_visible(False)
             # set axes
             self.interactive_histogram_graph.set_tight_layout(True)
             self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
@@ -261,6 +276,21 @@ class Histogram:
         self._build_stats()
 
     # Commands (Callbacks)
+    def __parametric(self):
+        self.parametric = True
+        self.non_parametric = False
+        self._build_interactive_histogram()
+
+    def __non_parametric(self):
+        self.non_parametric = True
+        self.parametric = False
+        self._build_interactive_histogram()
+
+    def __non_parametric(self):
+        self.non_parametric = False
+        self.parametric = False
+        self._build_interactive_histogram()
+
     def __update_data(self, event):
         choice = self.drop_down_var.get()
         if choice == 'ref og wl':
@@ -295,6 +325,8 @@ class Histogram:
     def __reset(self):
         self.upper_value = np.max(self.flattened_data)
         self.lower_value = np.min(self.flattened_data)
+        self.parametric = False
+        self.non_parametric = False
         self._calc_stats()
         self._build_scale()
         self._build_interactive_histogram()

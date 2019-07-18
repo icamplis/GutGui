@@ -95,12 +95,12 @@ class ModuleListener:
 
     def ref_norm_cube(self, path):
         cube = self.get_result(path).get_data_cube()
-        return cube/cube.max()
+        return cube/np.max(cube)
 
     def ref_norm_non_neg_cube(self, path):
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
-        cube = cube/cube.max()
+        cube = cube/np.max(cube)
         cube = cube.tolist()
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -125,7 +125,7 @@ class ModuleListener:
 
     def ab_norm_cube(self, path):
         cube = self.get_result(path).get_data_cube().tolist()
-        cube = cube/cube.max()
+        cube = cube/np.max(cube)
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
