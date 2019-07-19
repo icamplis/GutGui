@@ -249,10 +249,11 @@ class Save:
         plt.clf()
 
     def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale, format=".png", min=0, max=1):
+        step_size = self.listener.modules[HISTOGRAM].get_step_size()
         if is_hist_with_scale:
-            self.__save_histogram_with_scale(data, title + "_WITH_SCALE", format=format)
+            self.__save_histogram_with_scale(data, title + "_WITH_SCALE", format=format, step_size_value=step_size)
         if is_hist_wo_scale:
-            self.__save_histogram_wo_scale(data, title + "_WO_SCALE", format=format)
+            self.__save_histogram_wo_scale(data, title + "_WO_SCALE", format=format, step_size_value=step_size)
 
     def __save_histogram_with_scale(self, data, title, format=".png", step_size_value=0.01):
         output_path = self.current_output_path + "/" + title + format

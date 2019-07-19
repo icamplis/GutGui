@@ -82,6 +82,9 @@ class Histogram:
 
         self._init_widgets()
 
+    def get_step_size(self):
+        return self.step_size_value
+
     def get_save_checkbox_value(self):
         return not bool(self.save_checkbox_value.get())
 
