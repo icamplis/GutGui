@@ -207,7 +207,12 @@ class Save:
             self.__save_histogram_graph(data, "HISTOGRAM_MASKED_IMAGE", self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE])
         if self.saves[HISTOGRAM_EXCEL]:
             data = self.current_result.get_histogram_data(self.saves[MASKED_IMAGE_SAVE]).flatten()
-            self.__save_data(data, "HISTOGRAM_EXCEL")  # it's too slow to save it as an actual xlsx
+            start = np.min(data)
+            step = self.listener.modules[HISTOGRAM].get_step_size()
+            stop = np.max(data) + step
+            bins = np.arange(start=start, stop=stop, step=step)
+            counts, _, _ = plt.hist(data, bins=bins)
+            self.__save_data(counts, "HISTOGRAM_EXCEL")  # it's too slow to save it as an actual xlsx
 
     def __save_absorption_spec(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
