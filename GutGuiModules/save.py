@@ -263,6 +263,7 @@ class Save:
     def __save_histogram_with_scale(self, data, title, format=".png", step_size_value=0.01):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING HISTOGRAM WITH SCALE TO " + output_path)
+        plt.clf()
         axes = plt.subplot(111)
         # calc bins
         start = np.min(data)
@@ -287,6 +288,7 @@ class Save:
     def __save_histogram_wo_scale(self, data, title, format=".png", step_size_value=0.01):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING HISTOGRAM WO SCALE TO " + output_path)
+        plt.clf()
         axes = plt.subplot(111)
         # calc bins
         start = np.min(data)
@@ -319,6 +321,7 @@ class Save:
     def __save_absorption_spec_with_scale(self, data, title, format=".png"):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING ABSORPTION SPEC WO SCALE TO " + output_path)
+        plt.clf()
         axes = plt.subplot(111)
         x_vals = np.arange(500, 1000, 5)
         # plot absorption spec
@@ -331,6 +334,7 @@ class Save:
     def __save_absorption_spec_wo_scale(self, data, title, format=".png"):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING ABSORPTION SPEC WO SCALE TO " + output_path)
+        plt.clf()
         axes = plt.subplot(111)
         x_vals = np.arange(500, 1000, 5)
         # plot absorption spec
