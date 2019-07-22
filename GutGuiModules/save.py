@@ -212,7 +212,8 @@ class Save:
             stop = np.max(data) + step
             bins = np.arange(start=start, stop=stop, step=step)
             counts, _, _ = plt.hist(data, bins=bins)
-            self.__save_data(counts, "HISTOGRAM_EXCEL")  # it's too slow to save it as an actual xlsx
+            hist_data = np.stack((bins[1:], counts)).T
+            self.__save_data(hist_data, "HISTOGRAM_EXCEL", fmt="%.2f")  # it's too slow to save it as an actual xlsx
 
     def __save_absorption_spec(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
@@ -223,13 +224,13 @@ class Save:
             self.__save_absorption_spec_graph(data, "ABSORPTION_SPEC_MASKED_IMAGE", self.saves[ABSORPTION_SPEC_IMAGE], self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
         if self.saves[ABSORPTION_SPEC_EXCEL]:
             data = self.current_result.get_absorption_spec()
-            self.__save_data(data, "ABSORPTION_SPEC_EXCEL")
+            self.__save_data(data, "ABSORPTION_SPEC_EXCEL", fmt="%.5f")
 
     # Saving helpers
-    def __save_data(self, data, title, format=".csv"):
+    def __save_data(self, data, title, format=".csv", fmt="%.2f"):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING DATA TO " + output_path)
-        np.savetxt(self.current_output_path + "/" + title + format, data, delimiter=",", fmt='%f')
+        np.savetxt(self.current_output_path + "/" + title + format, data, delimiter=",", fmt=fmt)
 
     def __save_image(self, data, title, is_image_with_scale, is_image_wo_scale,
                      format=".png", vmin=0, vmax=1):
