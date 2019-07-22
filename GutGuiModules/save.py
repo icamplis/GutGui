@@ -229,7 +229,7 @@ class Save:
     def __save_data(self, data, title, format=".csv"):
         output_path = self.current_output_path + "/" + title + format
         logging.debug("SAVING DATA TO " + output_path)
-        np.savetxt(self.current_output_path + "/" + title + format, data, delimiter=",")
+        np.savetxt(self.current_output_path + "/" + title + format, data, delimiter=",", fmt='%f')
 
     def __save_image(self, data, title, is_image_with_scale, is_image_wo_scale,
                      format=".png", vmin=0, vmax=1):
