@@ -28,3 +28,5 @@ all the images will be re-rendered, which also takes time.
 You can see the progress of the calculations in the logs.
 
 **Currently, it's not advisable to run more than ~10 data cube directories at a time.**
+
+If the program hangs or bugs out, press `Ctrl-C` in the console to shut it down.
