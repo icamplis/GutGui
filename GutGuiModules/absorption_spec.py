@@ -8,6 +8,8 @@ class AbsorptionSpec:
         # Listener
         self.listener = listener
 
+        self.specs = (False, True, False)
+
         self.x_vals = np.arange(500, 1000, 5) 
         self.absorption_spec = [] 
 
@@ -52,11 +54,24 @@ class AbsorptionSpec:
         self.lower_input = None
         self.lower_value = 500
 
+        self.drop_down_var = StringVar()
+        self.choices = ['1. Reflectance - Original', 
+        '2. Reflectance - Original without Negative Values', 
+        '3. Reflectance - Normalised',
+        '4. Reflectance - Normalised without Negative Values', 
+        '5. Absorbance - Original', 
+        '6. Absorbance - Original without Negative Values', 
+        '7. Absorbance - Normalised',
+        '8. Absorbance - Normalised without Negative Values']
+
         self.reset_button = None
 
-        self.info_button = None
+        self.info_label = None
 
         self._init_widgets()
+
+    def get_specs(self):
+        return self.specs
 
     def get_save_checkbox_value(self):
         return not bool(self.save_checkbox_value.get())
@@ -80,8 +95,9 @@ class AbsorptionSpec:
         self._build_save()
         self._build_save_wo_scale()
         self._build_save_as_excel()
-        self._build_info_button()
+        self._build_info_label()
         self._build_reset_button()
+        self._build_drop_down()
         self._build_interactive_absorption_spec()
         self._build_extrema()
 
@@ -105,6 +121,13 @@ class AbsorptionSpec:
 
     def _build_reset_button(self):
         self.reset_button = make_button(self.root, "Reset", row=8, column=3, command=self.__reset, inner_padx=10, inner_pady=5, outer_padx=15, outer_pady=(0, 10), columnspan=2)
+
+    def _build_drop_down(self):
+        self.drop_down_var.set(self.choices[0])
+        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
+        self.drop_down_menu.configure(highlightthickness=0, width=6, 
+            anchor='w', padx=15)
+        self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(80,0))
 
     def _build_extrema(self):
         self.local_maximum_text = make_text(self.root, content="Local Max: " + str(self.local_maximum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=1, width=25, columnspan=2, pady=(0, 5), padx=5, state=NORMAL)
@@ -150,8 +173,9 @@ class AbsorptionSpec:
         self.y_upper_scale_input.bind('<Return>', self.__update_scale_y_upper)
         self.y_upper_scale_input.insert(END, str(self.y_upper_scale_value))
 
-    def _build_info_button(self):
-        self.info_button = make_button(self.root, text='?', width=1, command=self.__info, row=0, column=4, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=5, outer_pady=5, highlightthickness=0)
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Optical Spectrum', command=self.__info, width=13)
+        self.info_label.grid(columnspan=2, padx=(15, 120))
 
     def _build_interactive_absorption_spec(self):
         # create canvas
@@ -198,7 +222,7 @@ class AbsorptionSpec:
 
     def __info(self):
         info = self.listener.get_abspec_info()
-        title = "Absorption Spectrum Information"
+        title = "Optical Spectrum Information"
         make_info(title=title, info=info)
 
     def __update_upper(self, event):
@@ -224,6 +248,26 @@ class AbsorptionSpec:
     def __update_scale_y_lower(self, event):
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_absorption_spec()
+
+    def __update_data(self, event):
+        choice = self.drop_down_var.get()[:2]
+        if choice == '1.':
+            self.specs = (False, True, False)
+        elif choice == '2.':
+            self.specs = (False, True, True)
+        elif choice == '3.':
+            self.specs = (False, False, False)
+        elif choice == '4.':
+            self.specs = (False, False, True)
+        elif choice == '5.':
+            self.specs = (True, True, False)
+        elif choice == '6.':
+            self.specs = (True, True, True)
+        elif choice == '7.':
+            self.specs = (True, False, False)
+        elif choice == '8.':
+            self.specs = (True, False, True)
+        self.listener._update_abs_specs(self.specs)
 
     def __update_save_with_scale_check_status(self, event):
         value = self.get_save_checkbox_value()

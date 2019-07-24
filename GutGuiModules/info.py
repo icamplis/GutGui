@@ -6,6 +6,7 @@ class Info:
         self.root = info_frame
         self.listener = listener
         self.info_button = None
+        self.info_text = None
 
         # INFORMATION
         self.info = "This is filler text\nWrite whatever you want here\n\n:)"
@@ -15,11 +16,12 @@ class Info:
         self.csv_info = "Data to CSV Information"
         self.save_info = "Save Information"
         self.original_info = "Original Image Information"
+        self.input_info = "Here you can input coordinates manually. Make sure that your values are integers (they will be rounded if not), and that your x values are in the interval [0, 640] and your y values are in the interval [0, 480]. Press 'Go' when you are ready to upload your coordinates."
         self.recreated_info = "Recreated Image Information"
         self.new_info = "New Image Information"
         self.diagram_info = "Diagram Information"
         self.hist_info = "Histogram Information"
-        self.abspec_info = "Absorption Spec Information"
+        self.abspec_info = "Optical Spectrum Information"
 
         self._init_widget()
 
@@ -37,6 +39,9 @@ class Info:
 
     def get_original_info(self):
         return self.original_info
+
+    def get_input_info(self):
+        return self.input_info        
 
     def get_recreated_info(self):
         return self.recreated_info
@@ -56,9 +61,18 @@ class Info:
     # Helper
     def _init_widget(self):
         self._make_info_button()
+        self._make_info_text()
 
     def _make_info_button(self):
-        self.info_button = make_button(self.root, text="App Info", command=self._info, row=0, column=0, outer_pady=15, outer_padx=(120,0), width=10, columnspan=8)
+        self.info_label = make_label_button(self.root, text='App Info', command=self._info, width=8)
+        self.info_label.grid(padx=(0, 40))
+
+    def _make_info_text(self):
+        text = "*click on the section titles to find further information about that specific widget"
+        self.info_text = Text(self.root, height=6, width=19, highlightthickness=0, wrap=WORD, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB))
+        self.info_text.insert(END, text)
+        self.info_text.config(state="disabled")
+        self.info_text.grid(row=1, column=0, padx=15)
 
     def _info(self):
         make_info(title="App Information", info=self.info)

@@ -8,7 +8,6 @@ class OGColourData:
         # Listener
         self.listener = listener
 
-        self.data = None
         self.stats_data = None
 
         self.mean_text = None
@@ -24,21 +23,22 @@ class OGColourData:
         self.max_text = None
         self.max_value = None
 
+        self.info_label = None
+
         self._init_widget()
 
     def update_original_image_data(self, original_colour_image_data):
+        logging.debug("CONVERTING IMAGE TO JET...")
+        self.stats_data = rgb_image_to_jet_array(original_colour_image_data)
         logging.debug("CALCULATING IMAGE STATS...")
-        self.data = original_colour_image_data
         self._calc_data()
         self._build_data()
         logging.debug("DONE W STATS...")
 
-    def update_array(self, data):
-        self.stats_data = data
-
     # Helper
     def _init_widget(self):
         self._build_data()
+        self._build_info_label()
 
     def _calc_data(self):
         self.mean_value = np.round(np.mean(self.stats_data), 3)
@@ -61,3 +61,6 @@ class OGColourData:
         self.min_text = make_text(self.root, content="Min = " + str(self.min_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=5, width=12, columnspan=1, padx=(15, 15), state=NORMAL)
         # max
         self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=6, width=12, columnspan=1, padx=(15, 15), pady=(0, 15), state=NORMAL)
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Original Colour Data', command=None, width=16)

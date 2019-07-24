@@ -17,21 +17,25 @@ class ModuleListener:
 
         # NOTE: THE FOLLOWING ONLY CONTROLS WHAT TO RENDER, NOT WHAT IS SAVED
 
+        self.data_cube = None
+        self.dc_path = None
+
         # ANALYSIS AND FORM
         self.normal = None
         self.absorbance = None
         self.wavelength = None
         self.index = None
         self.index_number = None
+        self.histogram_specs = None
+        self.ab_spec_specs = None
+        self.recreated_specs = None
+        self.new_specs = None
 
         # ORIGINAL IMAGE
         self.mask = None
 
         # DIAGRAM
         self.is_masked = False
-
-    def get_normal(self):
-        return self.normal
 
     def get_masked(self):
         return self.is_masked
@@ -47,6 +51,12 @@ class ModuleListener:
             return self.get_result(self.current_rendered_result_path).get_index_masked()
         else:
             return self.get_result(self.current_rendered_result_path).get_index()
+
+    def get_current_rec_data(self):
+        return self.modules[RECREATED_COLOUR].get_current_data()
+
+    def get_current_new_data(self):
+        return self.modules[NEW_COLOUR].get_current_data()
 
     def get_selected_paths(self):
         return self.selected_paths
@@ -64,14 +74,27 @@ class ModuleListener:
     # Updaters
     def submit_data_cube(self, data_cube, dc_path):
         logging.debug("ANALYZING DATA CUBE AT " + dc_path)
+
+        self.data_cube = data_cube
+        self.dc_path = dc_path
+
         if self.modules[ANALYSIS_AND_FORM]:
-            self.normal = self.modules[ANALYSIS_AND_FORM].get_normal()
-            self.absorbance = self.modules[ANALYSIS_AND_FORM].get_absorbance()
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
             self.index = self.modules[ANALYSIS_AND_FORM].get_index()
             self.mask = self.modules[ORIGINAL_COLOUR].get_mask()
             self.is_masked = self.modules[DIAGRAM].get_is_masked()
-            self._make_new_analysis(dc_path, data_cube, self.normal, self.absorbance, self.wavelength, self.index, self.mask)
+
+            # specs = (absorbance/reflectance, original/norm, negatives yes/no)
+            self.histogram_specs = self.modules[HISTOGRAM].get_specs()
+            self.ab_spec_specs = self.modules[ABSORPTION_SPEC].get_specs()
+            self.recreated_specs = self.modules[RECREATED_COLOUR].get_specs()
+            self.new_specs = self.modules[NEW_COLOUR].get_specs()
+
+            # update each based on inputs
+            self._make_new_hist_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.histogram_specs)
+            self._make_new_abs_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.ab_spec_specs)
+            self._make_new_rec_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.recreated_specs)
+            self._make_new_new_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.new_specs)
 
     def set_data_cube(self, dc_path):
         logging.debug("SELECTED DATA CUBE AT: " + dc_path)
@@ -79,9 +102,12 @@ class ModuleListener:
         self._broadcast_new_data()
 
     def ref_data_cube(self, path):
+        # 1. Original reflectance
         return self.get_result(path).get_data_cube()
 
     def ref_non_neg_cube(self, path):
+        # 2. Original reflectance without negative values --> 1 with spaces for
+        # negative values
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
@@ -94,10 +120,13 @@ class ModuleListener:
         return np.asarray(cube)
 
     def ref_norm_cube(self, path):
+        # 3. Normalised reflectance --> 1 divded by max(1)
         cube = self.get_result(path).get_data_cube()
         return cube/np.max(cube)
 
     def ref_norm_non_neg_cube(self, path):
+        # 4. Normalised reflectance without negative values --> 3 with spaces
+        # for negative values
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         cube = cube/np.max(cube)
@@ -110,29 +139,62 @@ class ModuleListener:
                         cube[i][j][k] = str(float(cube[i][j][k]))
         return np.asarray(cube)
 
-    def ab_non_neg_cube(self, path):
+    def ab_cube(self, path):
+        # 5. Original absorbance --> -log() of 2
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
-                    if cube[i][j][k] < 0:
+                    if cube[i][j][k] <= 0:
+                        cube[i][j][k] = ''
+                    else:
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+        return np.asarray(cube)
+
+    def ab_non_neg_cube(self, path):
+        # 6. Original absorbanve without negative values --> 5 with spaces for
+        # negative values
+        cube = self.get_result(path).get_data_cube().tolist()
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
                         cube[i][j][k] = ''
                     else:
                         cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
         return np.asarray(cube)
 
     def ab_norm_cube(self, path):
+        # 7. Normalised absorbance --> 5 divided by max(5)
         cube = self.get_result(path).get_data_cube().tolist()
-        cube = cube/np.max(cube)
+        logging.debug("FINDING MAX...")
+        max5 = -np.log(np.min([i for i in cube if i > 0]))
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
-                    if cube[i][j][k] < 0:
+                    if cube[i][j][k] <= 0:
                         cube[i][j][k] = ''
                     else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
+        return np.asarray(cube)
+
+    def ab_norm_non_neg_cube(self, path):
+        # 8. Normalised absorbance without negative values --> 7 with spaces for
+        # negative values
+        cube = self.get_result(path).get_data_cube().tolist()
+        logging.debug("FINDING MAX...")
+        max5 = -np.log(np.min([i for i in cube if i > 0]))
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
+                        cube[i][j][k] = ''
+                    else:
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
         return np.asarray(cube)
 
     def update_selected_paths(self, selected_paths):
@@ -142,26 +204,12 @@ class ModuleListener:
         logging.debug("DELETING DATA CUBE: " + path)
         self.results[path] = None
 
-    def submit_normal(self, new_normal):
-        assert type(new_normal) == bool
-        logging.debug("NEW NORMAL: " + str(new_normal))
-        self.normal = new_normal
-        self._update_analysis(normal=self.normal)
-        self._broadcast_new_data()
-
     def submit_mask(self, new_mask):
         logging.debug("NEW MASK: [...]")
         self.mask = new_mask
         self._update_analysis(mask=self.mask)
         if self.is_masked:
             self._broadcast_new_data()
-
-    def submit_absorbance(self, new_absorbance):
-        logging.debug("NEW (USING) ABSORBANCE: " + str(new_absorbance))
-        assert type(new_absorbance) == bool
-        self.absorbance = new_absorbance
-        self._update_analysis(absorbance=self.absorbance)
-        self._broadcast_new_data()
 
     def submit_wavelength(self, new_wavelength):
         logging.debug("NEW WAVELENGTH: " + str(new_wavelength))
@@ -198,6 +246,11 @@ class ModuleListener:
         data = [[float(point_coords[i][0]), float(point_coords[i][1])] for i in range(10) if point_bools[i] and point_coords[i] != (None, None)]
         return data
 
+    def instant_save_points(self):
+        point_bools = self.modules[ORIGINAL_COLOUR].get_bools()
+        data = self.get_coords(point_bools)
+        self.modules[SAVE].instant_save_points(data, title="MASK_COORDINATES")
+
     def get_source_output_info(self):
         return self.modules[INFO].get_source_output_info()
 
@@ -212,6 +265,9 @@ class ModuleListener:
 
     def get_original_info(self):
         return self.modules[INFO].get_original_info()
+
+    def get_input_info(self):
+        return self.modules[INFO].get_input_info()
 
     def get_recreated_info(self):
         return self.modules[INFO].get_recreated_info()
@@ -323,17 +379,11 @@ class ModuleListener:
     def _image_array_to_rec_data(self, image_array):
         self.modules[RECREATED_COLOUR_DATA].update_array(image_array)
 
-    def _update_analysis(self, mask=None, normal=None, absorbance=None, wavelength=None, index_number=None):
+    def _update_analysis(self, mask=None, wavelength=None, index_number=None):
         for path, result in self.results.items():  # for each of the data cubes
             if mask is not None:
                 logging.debug("UPDATING MASK")
                 result.update_mask(mask)
-            if normal is not None:
-                logging.debug("UPDATING NORMAL TO: " + str(normal))
-                result.update_normal(normal)
-            if absorbance is not None:
-                logging.debug("UPDATING ABSORBANCE TO: " + str(absorbance))
-                result.update_absorbance(absorbance)
             if wavelength is not None:
                 logging.debug("UPDATING WAVELENGTH TO: " + str(wavelength))
                 result.update_wavelength(wavelength)
@@ -341,6 +391,36 @@ class ModuleListener:
                 logging.debug("UPDATING INDEX TO: " + str(index_number))
                 result.update_index(index_number)
 
+    def _update_histogram_specs(self, specs):
+        self.histogram_specs = specs
+        self._make_new_hist_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.histogram_specs)
+        self._broadcast_to_histogram()
+
+    def _update_abs_specs(self, specs):
+        self.ab_spec_specs = specs
+        self._make_new_abs_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.ab_spec_specs)
+        self._broadcast_to_absorption_spec()
+
+    def _update_recreated_specs(self, specs):
+        self.recreated_specs = specs
+        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.recreated_specs)
+        self._broadcast_to_recreated_image()
+
+    def _update_new_specs(self, specs):
+        self.new_specs= specs
+        self._make_new_new_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.new_specs)
+        self._broadcast_to_new_image()
+
     # Uses the path of the data cube as an identifier
-    def _make_new_analysis(self, path, data_cube, normal, absorbance, wavelength, index, mask=None):
-        self.results[path] = Analysis(path, data_cube, normal, absorbance, wavelength, index, mask)
+    def _make_new_hist_analysis(self, path, data_cube, wavelength, index, mask, specs):
+        self.results[path] = Analysis(path, data_cube, wavelength, index, specs, 'histogram', mask)
+
+    def _make_new_abs_analysis(self, path, data_cube, wavelength, index, mask, specs):
+        self.results[path] = Analysis(path, data_cube, wavelength, index, specs, 'abs', mask)
+
+    def _make_new_rec_analysis(self, path, data_cube, wavelength, index, mask, specs):
+        self.results[path] = Analysis(path, data_cube, wavelength, index, specs, 'rec', mask)
+
+    def _make_new_new_analysis(self, path, data_cube, wavelength, index, mask, specs):
+        self.results[path] = Analysis(path, data_cube, wavelength, index, specs, 'new', mask)
+

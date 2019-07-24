@@ -15,7 +15,7 @@ class Save:
         self.save_specific_button = None
         self.save_all_button = None
 
-        self.info_button = None
+        self.info_label = None
 
         # Saves
         # by default, nothing is saved
@@ -65,19 +65,28 @@ class Save:
         self.saves[key] = value
         # print(self.saves)
 
+    def instant_save_points(self, data, title):
+        for path, _ in self.listener.get_results().items():
+            selected_paths = self.listener.get_selected_paths()
+            if path in selected_paths:
+                output_path = path + "/" + title + '.csv'
+                logging.debug("SAVING DATA TO " + output_path)
+                np.savetxt(output_path, data, delimiter=",", fmt="%.2f")
+
     def _init_widgets(self):
         self._build_save_specific_button()
         self._build_save_all_button()
-        self._build_info_button()
+        self._build_info_label()
 
     def _build_save_specific_button(self):
-        self.save_specific_button = make_button(self.root, text="Save Selected", command=self._save_specific, row=1, column=0, outer_pady=(0, 15), outer_padx=(90, 0), width=10)
+        self.save_specific_button = make_button(self.root, text="Save for Selected Data Cubes", command=self._save_specific, row=1, column=0, outer_pady=(0, 5), outer_padx=15, width=13, wraplength=120, height=2)
 
     def _build_save_all_button(self):
-        self.save_all_button = make_button(self.root, text='Save All', command=self._save_all, row=1, column=1, outer_pady=(0, 15), outer_padx=15, width=10)
+        self.save_all_button = make_button(self.root, text='Save for All Data Cubes', command=self._save_all, row=2, column=0, outer_pady=(0, 15), outer_padx=15, width=13, wraplength=120, height=2)
 
-    def _build_info_button(self):
-        self.info_button = make_button(self.root, text='?', width=1, command=self.__info, row=0, column=1, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=(222, 0), outer_pady=5, highlightthickness=0)
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Save', command=self.__info, width=4)
+        self.info_label.grid(padx=(0, 90))
 
     # Callbacks
     def __info(self):

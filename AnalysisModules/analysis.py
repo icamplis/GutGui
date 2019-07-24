@@ -14,14 +14,17 @@ THI_FILE = "_THI.png"
 TWI_FILE = "_TWI.png"
 
 class Analysis:
-    def __init__(self, path, data_cube, normal, absorbance, wavelength, index_number, mask=None):
+    def __init__(self, path, data_cube, wavelength, index_number, specs, name, mask=None):
+
+        self.current_widget = name
 
         self.path = path
         self.data_cube = data_cube
         self.mask = mask
         self.wavelength = wavelength
-        self.normal = bool(normal)
-        self.absorbance = bool(absorbance)
+        self.absorbance = bool(specs[0])
+        self.normal = not bool(specs[1])
+        self.negative = bool(specs[2])
 
         self.index_number = index_number
         self.index = None

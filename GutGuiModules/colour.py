@@ -15,25 +15,41 @@ class Colour:
         self.listener = listener
 
         self.colourbar = None
+        self.high_low = None
+
+        self.info_label = None
 
         self._init_widget()
 
     # Helper
     def _init_widget(self):
         self._make_colourbar()
+        self._build_info_label()
+        self._build_high_low()
 
     def _make_colourbar(self):
-        colour_fig = Figure(figsize=(2, 1))
+        colour_fig = Figure(figsize=(2, 0.6))
         axes = colour_fig.add_subplot(111)
 
         cmap = cm.get_cmap('jet')
         self.colourbar = cmap(np.arange(cmap.N))
 
-        axes.imshow([self.colourbar], extent=[0, 255, 0, 100])
+        axes.imshow([self.colourbar], extent=[0, 300, 0, 50])
         axes.get_yaxis().set_visible(False)
         axes.get_xaxis().set_visible(False)
+
         colour_fig.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
         colour_fig.set_tight_layout('True')
         image = FigureCanvasTkAgg(colour_fig, master=self.root)
         image.draw()
-        image.get_tk_widget().grid(column=0, row=1, pady=(15,0))
+        image.get_tk_widget().grid(column=0, row=1, padx=0, pady=(0, 10))
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Colour Scale', command=None, width=11)
+        self.info_label.grid(pady=(15, 0))
+
+    def _build_high_low(self):
+        self.high_low = make_text(self.root, content="Low               High", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=22, columnspan=1, padx=(15, 15), pady=(35, 0))
+
+
+
