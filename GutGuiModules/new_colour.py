@@ -59,13 +59,13 @@ class NewColour:
     def get_specs(self):
         return self.specs
 
+    def get_current_data(self):
+        return self.new_colour_image_data
+
     def update_new_colour_image(self, new_colour_image_data):
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         self._build_new_image()
-
-    def get_current_data(self):
-        return self.new_colour_image_data
 
     def get_displayed_image_mode(self):
         return self.displayed_image_mode

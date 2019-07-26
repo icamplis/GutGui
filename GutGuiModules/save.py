@@ -69,7 +69,7 @@ class Save:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                output_path = path + "/" + title + '.csv'
+                output_path = os.path.dirname(path) + "/" + title + '.csv'
                 logging.debug("SAVING DATA TO " + output_path)
                 np.savetxt(output_path, data, delimiter=",", fmt="%.2f")
 

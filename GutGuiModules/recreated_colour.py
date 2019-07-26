@@ -139,13 +139,13 @@ class RecColour:
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, columnspan=1, outer_padx=(30,0), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
-        self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=0)
+        self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=0)
         self.save_checkbox.deselect()
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
         self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, columnspan=3, outer_padx=0, outer_pady=(10, 0), inner_padx=10, inner_pady=5)
-        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=2, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=0)
+        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=2, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=0)
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 

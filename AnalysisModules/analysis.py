@@ -171,22 +171,22 @@ class Analysis:
     def get_rgb_og(self):
         filename = str(self.path[:-13]) + RGB_FILE
         self.rgb_og = image_to_array(filename)
-        return self.rgb_og[24:504, 4:644, :]
+        return self.rgb_og[30:510, 3:643, :]
 
     def get_sto2_og(self):
         filename = str(self.path[:-13]) + STO2_FILE
         self.sto2_og = image_to_array(filename)
-        return self.sto2_og[24:504, 4:644, :]
+        return self.sto2_og[26:506, 4:644, :]
 
     def get_nir_og(self):
         filename = str(self.path[:-13]) + NIR_FILE
         self.nir_og = image_to_array(filename)
-        return self.nir_og[24:504, 4:644, :]
+        return self.nir_og[26:506, 4:644, :]
 
     def get_thi_og(self):
         filename = str(self.path[:-13]) + THI_FILE
         self.thi_og = image_to_array(filename)
-        return self.thi_og[24:504, 4:644, :]
+        return self.thi_og[26:506, 4:644, :]
 
     def get_twi_og(self):
         filename = str(self.path[:-13]) + TWI_FILE

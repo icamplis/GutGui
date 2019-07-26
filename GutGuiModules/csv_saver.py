@@ -187,7 +187,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + 'norm_abs_data_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
+                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __normap_to_csv(self):
         update = ['-', '\\', '|', '/']
@@ -201,7 +201,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + 'norm_abs_positive_data_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%f')
+                    np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
 
     def __rec_to_csv(self):
         for path, _ in self.listener.get_results().items():
@@ -211,7 +211,7 @@ class CSVSaver:
                 direc = os.path.dirname(path) + '/9. Recreated Image to CSV'
                 self._make_direc(direc)
                 big_path = direc + '/' + 'recreated_image_data.csv'
-                np.savetxt(big_path, data, delimiter=",", fmt='%f')
+                np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
 
     def __new_to_csv(self):
@@ -223,7 +223,7 @@ class CSVSaver:
                 direc = os.path.dirname(path) + '/10. New Image to CSV'
                 self._make_direc(direc)
                 big_path = direc + '/' + 'new_image_data.csv'
-                np.savetxt(big_path, data, delimiter=",", fmt='%f')
+                np.savetxt(big_path, data, delimiter=",", fmt='%s')
     
 
 

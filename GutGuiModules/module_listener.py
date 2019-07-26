@@ -127,9 +127,10 @@ class ModuleListener:
     def ref_norm_non_neg_cube(self, path):
         # 4. Normalised reflectance without negative values --> 3 with spaces
         # for negative values
-        cube = self.get_result(path).get_data_cube().tolist()
+        cube = self.get_result(path).get_data_cube()
         logging.debug("REMOVING NEGATIVE VALUES...")
         cube = cube/np.max(cube)
+        cube.tolist()
         for i in range(len(cube)):
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
@@ -139,7 +140,7 @@ class ModuleListener:
                         cube[i][j][k] = str(float(cube[i][j][k]))
         return np.asarray(cube)
 
-    def ab_cube(self, path):
+    def ab_data_cube(self, path):
         # 5. Original absorbance --> -log() of 2
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
@@ -170,7 +171,7 @@ class ModuleListener:
         # 7. Normalised absorbance --> 5 divided by max(5)
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("FINDING MAX...")
-        max5 = -np.log(np.min([i for i in cube if i > 0]))
+        max5 = -np.log(np.min(np.abs(cube)))
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -186,7 +187,7 @@ class ModuleListener:
         # negative values
         cube = self.get_result(path).get_data_cube().tolist()
         logging.debug("FINDING MAX...")
-        max5 = -np.log(np.min([i for i in cube if i > 0]))
+        max5 = -np.log(np.min(np.abs(cube)))
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):

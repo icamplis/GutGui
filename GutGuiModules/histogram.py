@@ -286,8 +286,8 @@ class Histogram:
         # generate numpy histogram data
         histogram_data = np.histogram(data, bins=bins)
         # determine the minimum y value and at which x this occurs
-        self.min_y = np.min(np.histogram(data, bins=bins)[0])
-        self.min_y_val = histogram_data[1][np.where(histogram_data[0] == self.min_y)[0][0]]
+        self.min_y = np.round(np.min(np.histogram(data, bins=bins)[0]), 3)
+        self.min_y_val = np.round(histogram_data[1][np.where(histogram_data[0] == self.min_y)[0][0]], 3)
         # determine the maximum y value and at which x this occurs
         self.max_y = np.round(np.max(histogram_data[0]), 3)
         self.max_y_val = np.round(histogram_data[1][np.where(histogram_data[0] == self.max_y)[0][0]], 3)
