@@ -115,7 +115,7 @@ class SourceAndOutput:
                 # Display the data cube
                 concat_path = os.path.basename(os.path.normpath(dc_path))
                 self.selection_listbox.insert(END, concat_path)
-                self.selection_listbox.config(width=0)
+                self.selection_listbox.config(width=16)
 
                 # Add data cube to listener for analysis
                 self.listener.submit_data_cube(data_cube, dc_path)

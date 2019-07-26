@@ -1,5 +1,6 @@
 from AnalysisModules.analysis import Analysis
 from GutGuiModules.constants import *
+from GutGuiModules.utility import *
 import numpy as np
 import logging
 
@@ -112,6 +113,7 @@ class ModuleListener:
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
+                progress(j+i*len(cube[i]), 307200)
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] < 0:
                         cube[i][j][k] = ''
@@ -130,9 +132,10 @@ class ModuleListener:
         cube = self.get_result(path).get_data_cube()
         logging.debug("REMOVING NEGATIVE VALUES...")
         cube = cube/np.max(cube)
-        cube.tolist()
+        cube = cube.tolist()
         for i in range(len(cube)):
             for j in range(len(cube[i])):
+                progress(j+i*len(cube[i]), 307200)
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] < 0:
                         cube[i][j][k] = ''
@@ -146,6 +149,7 @@ class ModuleListener:
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
+                progress(j+i*len(cube[i]), 307200)
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0:
                         cube[i][j][k] = ''
@@ -160,6 +164,7 @@ class ModuleListener:
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
+                progress(j+i*len(cube[i]), 307200)
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
                         cube[i][j][k] = ''
@@ -175,6 +180,7 @@ class ModuleListener:
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
+                progress(j+i*len(cube[i]), 307200)
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0:
                         cube[i][j][k] = ''
@@ -191,6 +197,7 @@ class ModuleListener:
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
+                progress(j+i*len(cube[i]), 307200)
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
                         cube[i][j][k] = ''
