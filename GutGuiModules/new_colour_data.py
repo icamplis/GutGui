@@ -9,7 +9,6 @@ class NewColourData:
         # Listener
         self.listener = listener
 
-        self.data = None
         self.stats_data = None
 
         self.mean_text = None
@@ -30,16 +29,10 @@ class NewColourData:
         self._init_widget()
 
     def update_new_image_data(self, new_colour_image_data):
-        self.data = new_colour_image_data
+        data = new_colour_image_data.flatten()
+        self.stats_data = [i for i in data if i != '--']
         self._calc_data()
         self._build_data()
-
-    def update_array(self, data):
-        # shift data above 0
-        minimum = abs(np.min(data))
-        maximum = np.max(data) + minimum
-        # normalise [0, 255]
-        self.stats_data = [(i+minimum)*255/maximum for i in data]
 
     # Helper
     def _init_widget(self):

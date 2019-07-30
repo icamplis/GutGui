@@ -119,17 +119,17 @@ class NewColour:
         self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 10))
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
-    def _build_upper_scale(self):
-        self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
-        self.upper_scale_input = make_entry(self.root, row=6, column=3, width=9, pady=(5,0), padx=(0,15))
-        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
-        self.upper_scale_input.insert(END, str(self.upper_scale_value))
-
     def _build_lower_scale(self):
-        self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=(15, 0))
-        self.lower_scale_input = make_entry(self.root, row=7, column=3, width=9, pady=5, padx=(0,15))
+        self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=(15, 0))
+        self.lower_scale_input = make_entry(self.root, row=6, column=3, width=9, pady=5, padx=(0,15))
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
         self.lower_scale_input.insert(END, str(self.lower_scale_value))
+
+    def _build_upper_scale(self):
+        self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=7, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
+        self.upper_scale_input = make_entry(self.root, row=7, column=3, width=9, pady=(5,0), padx=(0,15))
+        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
+        self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
     def _build_drop_down(self):
         self.drop_down_var.set(self.choices[0])
@@ -148,8 +148,7 @@ class NewColour:
         else:
             logging.debug("BUILDING NEW COLOUR IMAGE...")
             (self.new_colour_image_graph, self.new_colour_image, self.image_array) = make_image(self.root, self.new_colour_image_data,row=2, column=0,columnspan=4, rowspan=4,lower_scale_value=self.lower_scale_value,upper_scale_value=self.upper_scale_value,color_rgb=PASTEL_ORANGE_RGB)
-            # TODO: broadcast the ACTUAL data that it uses, not the original data array. Stats aren't updating because the original array is just gettting sent again.
-            self.listener._image_array_to_new_data(self.image_array)
+            self.listener._image_array_to_new_data(self.new_colour_image_data)
             self.new_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):

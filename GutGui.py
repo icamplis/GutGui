@@ -4,9 +4,12 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 def main():
-    (window, input_output, image_diagram) = init()
+    (window, introduction, input_output, image_diagram) = init()
 
     listener = ModuleListener()
+
+    # introduction
+    intro_module = Introduction(introduction)
 
     # source and output
     source_and_output_frame = frame(input_output, PASTEL_BLUE_RGB, 0, 0, 1, 2)

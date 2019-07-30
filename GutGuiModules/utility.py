@@ -21,6 +21,10 @@ def init():
 
     notebook = Notebook(root)
 
+    introduction = Frame(notebook, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB))
+    introduction.pack()
+    notebook.add(introduction, text="Introduction")
+
     input_output = Frame(notebook)
     input_output.pack()
     notebook.add(input_output, text="Input and Output")
@@ -31,7 +35,7 @@ def init():
 
     notebook.pack()
 
-    return root, input_output, image_diagram
+    return root, introduction, input_output, image_diagram
 
 def tkcolour_from_rgb(rgb):
     """translates an rgb tuple of int to a tkinter friendly color code"""

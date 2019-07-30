@@ -149,17 +149,17 @@ class RecColour:
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
-    def _build_upper_scale(self):
-        self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=6, column=0, columnspan=2, width=16, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=0)
-        self.upper_scale_input = make_entry(self.root, row=6, column=2, width=11, pady=(5,0), padx=0, columnspan=2)
-        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
-        self.upper_scale_input.insert(END, str(self.upper_scale_value))
-
     def _build_lower_scale(self):
-        self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=7, column=0, columnspan=2, width=16, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=0)
-        self.lower_scale_input = make_entry(self.root, row=7, column=2, width=11, pady=5, padx=0, columnspan=2)
+        self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=6, column=0, columnspan=2, width=16, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=0)
+        self.lower_scale_input = make_entry(self.root, row=6, column=2, width=11, pady=5, padx=0, columnspan=2)
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
         self.lower_scale_input.insert(END, str(self.lower_scale_value))
+
+    def _build_upper_scale(self):
+        self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=7, column=0, columnspan=2, width=16, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=0)
+        self.upper_scale_input = make_entry(self.root, row=7, column=2, width=11, pady=(5,0), padx=0, columnspan=2)
+        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
+        self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Recreated Colour', command=self.__info, width=14)
@@ -179,7 +179,7 @@ class RecColour:
         else:
             logging.debug("BUILDING RECREATED COLOUR IMAGE...")
             (self.recreated_colour_image_graph, self.recreated_colour_image, self.image_array) = make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value, color_rgb=PASTEL_BLUE_RGB)
-            self.listener._image_array_to_rec_data(self.image_array)
+            self.listener._image_array_to_rec_data(self.recreated_colour_image_data)
             self.recreated_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
