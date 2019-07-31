@@ -7,13 +7,6 @@ class AnalysisAndForm:
         # Listener
         self.listener = listener
 
-        # self.normalisation_button = None
-        # self.original_button = None
-        # self.reflection_button = None
-        # self.absorbance_button = None
-
-        # self.OR_text = None
-
         self.upper_wavelength_text = None
         self.lower_wavelength_text = None
         self.wavelength_entry = None
@@ -65,38 +58,10 @@ class AnalysisAndForm:
     def _init_widget(self):
         self._build_idx_title()
         self._build_idxs()
-        # self._build_normalisation_button()
-        # self._build_OR_text(height=1, width=2, row=1, column=3, columnspan=2, pady=0)
-        # self._build_original_button()
-        # self._build_reflection_button()
-        # self._build_OR_text(height=1, width=2, row=2, column=3, columnspan=2, pady=5)
-        # self._build_absorbance_button()
         self._build_wavelength_text()
         self._build_wavelength_upper_entry()
         self._build_wavelength_lower_entry()
         self._build_info_label()
-
-    # def _build_normalisation_button(self):
-    #     self.normalisation_button = make_button(self.root, text='Normalisation',command=self.__normal, row=1, column=0, outer_pady=(0,5),outer_padx=(15, 0), columnspan=3)
-    #     self.normalisation_button.config(foreground="red")
-
-    # def _build_original_button(self):
-    #     self.original_button = make_button(self.root, text='Original',
-    #         command=self.__original, row=1, column=5, outer_pady=(0,5),
-    #         outer_padx=(0, 15), columnspan=3)
-
-    # def _build_reflection_button(self):
-    #     self.reflection_button = make_button(self.root, text='Reflectance',command=self.__reflect, row=2, column=0, outer_pady=(0,5),
-    #         outer_padx=(15, 0), columnspan=3)
-
-    # def _build_absorbance_button(self):
-    #     self.absorbance_button = make_button(self.root, text='Absorbance',
-    #         command=self.__absorb,row=2, column=5, outer_pady=(0,5),
-    #         outer_padx=(0, 15), columnspan=3)
-    #     self.absorbance_button.config(foreground="red")
-
-    # def _build_OR_text(self, height, width, row, column, columnspan, padx=0, pady=10):
-    #     self.OR_text = make_text(self.root, content="OR", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), height=height, width=width, row=row, column=column, padx=padx, pady=pady, columnspan=columnspan)
 
     def _build_wavelength_text(self):
         self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=19, columnspan=4, pady=0)
@@ -113,7 +78,7 @@ class AnalysisAndForm:
         self.wavelength_upper_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):
-        self.idx_title = make_text(self.root, content="Individual Index:",bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=17, columnspan=8, pady=(10, 0))
+        self.idx_title = make_text(self.root, content="Individual Index:",bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=17, columnspan=8, pady=(10, 5))
 
     def _build_idxs(self):
         self.idx1_button = make_button(self.root, text='1', command=lambda:self.__idxn(1),row=6, column=0, outer_pady=(5, 15), outer_padx=(15, 5), width=1)
@@ -136,30 +101,6 @@ class AnalysisAndForm:
         info = self.listener.get_analysis_form_info()
         title = "Analysis & Form Information"
         make_info(title=title, info=info)
-
-    # def __normal(self):
-    #     self.normalisation_button.config(foreground="red")
-    #     self.original_button.config(foreground="black")
-    #     self.normal = True
-    #     self.listener.submit_normal(self.normal)
-
-    # def __original(self):
-    #     self.original_button.config(foreground="red")
-    #     self.normalisation_button.config(foreground="black")
-    #     self.normal = False
-    #     self.listener.submit_normal(self.normal)
-
-    # def __absorb(self):
-    #     self.absorbance_button.config(foreground="red")
-    #     self.reflection_button.config(foreground="black")
-    #     self.absorbance = True
-    #     self.listener.submit_absorbance(self.absorbance)
-
-    # def __reflect(self):
-    #     self.reflection_button.config(foreground="red")
-    #     self.absorbance_button.config(foreground="black")
-    #     self.absorbance = False
-    #     self.listener.submit_absorbance(self.absorbance)
 
     def __idxn(self, n):
         self.listener.submit_index(n)

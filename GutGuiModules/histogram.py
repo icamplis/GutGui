@@ -363,20 +363,18 @@ class Histogram:
         self.update_histogram(data)
 
     def __reset(self):
-        self.upper_value = np.max(self.flattened_data)
-        self.lower_value = np.min(self.flattened_data)
-        self.parametric = False
-        self.non_parametric = False
-        self._calc_stats()
-        self._build_scale()
-        self._build_interactive_histogram()
+        self.x_lower_scale_value = None
+        self.x_upper_scale_value = None
+        self.y_lower_scale_value = None
+        self.y_upper_scale_value = None
+        self.update_histogram(self.flattened_data)
 
     def __info(self):
         info = self.listener.get_hist_info()
         title = "Histogram Information"
         make_info(title=title, info=info)
 
-    def __update_upper(self):
+    def __update_upper(self, event):
         self.upper_value = float(self.upper_input.get())
         self._calc_stats()
 

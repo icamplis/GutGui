@@ -59,8 +59,16 @@ class ModuleListener:
     def get_current_rec_data(self):
         return self.modules[RECREATED_COLOUR].get_current_data()
 
+    def get_current_norm_rec_data(self):
+        image = self.modules[RECREATED_COLOUR].get_current_data()
+        return image/np.max(image)
+
     def get_current_new_data(self):
         return self.modules[NEW_COLOUR].get_current_data()
+        
+    def get_current_norm_new_data(self):
+        image = self.modules[NEW_COLOUR].get_current_data()
+        return image/np.max(image)
 
     def get_selected_paths(self):
         return self.selected_paths

@@ -19,7 +19,9 @@ class CSVSaver:
         self.norma_butt = None
         self.normap_butt = None
         self.rec_butt = None
+        self.norm_rec_butt = None
         self.new_butt = None
+        self.norm_new_butt = None
         self.reflectance_text = None
         self.absorbance_text = None
         self.image_text = None
@@ -39,7 +41,9 @@ class CSVSaver:
         self._build_norm_absorbance()
         self._build_norm_absorbance_positive()
         self._build_rec()
+        self._build_norm_rec()
         self._build_new()
+        self._build_norm_new()
         self._build_text()
         self._build_info_label()
 
@@ -70,8 +74,14 @@ class CSVSaver:
     def _build_rec(self):
         self.rec_butt = make_button(self.root, text="9. Recreated Image to CSV", command=self.__rec_to_csv, row=12, column=0, outer_pady=(0, 5), outer_padx=15, width=32)
 
+    def _build_norm_rec(self):
+        self.norm_rec_butt = make_button(self.root, text="10. Normalised Recreated Image to CSV", command=self.__norm_rec_to_csv, row=13, column=0, outer_pady=(0, 5), outer_padx=15, width=32)
+
     def _build_new(self):
-        self.new_butt = make_button(self.root, text="10. New Image to CSV", command=self.__new_to_csv, row=13, column=0, outer_pady=(0, 15), outer_padx=15, width=32)
+        self.new_butt = make_button(self.root, text="11. New Image to CSV", command=self.__new_to_csv, row=14, column=0, outer_pady=(0, 5), outer_padx=15, width=32)
+
+    def _build_norm_new(self):
+        self.norm_new_butt = make_button(self.root, text="12. Normalised New Image to CSV", command=self.__norm_new_to_csv, row=15, column=0, outer_pady=(0, 15), outer_padx=15, width=32)
 
     def _build_text(self):
         self.reflectance_text = make_text(self.root, content="Reflectance:", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=12, pady=(0, 5))
@@ -96,13 +106,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ref_data_cube(path)
-                direc = os.path.dirname(path) + '/1. Reflectance Original to CSV'
+                data = np.rot90(self.listener.ref_data_cube(path))
+                direc = os.path.dirname(path) + '/01_Reflectance_Original'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'og_ref_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '01_refl_og_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
 
     def __ogrp_to_csv(self):
@@ -110,13 +120,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ref_non_neg_cube(path)
-                direc = os.path.dirname(path) + '/2. Reflectance Original without Negative Values to CSV'
+                data = np.rot90(self.listener.ref_non_neg_cube(path))
+                direc = os.path.dirname(path) + '/02_Reflectance_Original_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'og_ref_positive_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '02_refl_og_wo_neg_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __normr_to_csv(self):
@@ -124,13 +134,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ref_norm_cube(path)
-                direc = os.path.dirname(path) + '/3. Reflectance Normalised to CSV'
+                data = np.rot90(self.listener.ref_norm_cube(path))
+                direc = os.path.dirname(path) + '/03_Reflectance_Normalised'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'norm_ref_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '03_refl_norm_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
 
     def __normrp_to_csv(self):
@@ -138,13 +148,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ref_norm_non_neg_cube(path)
-                direc = os.path.dirname(path) + '/4. Reflectance Normalised without Negative Values to CSV'
+                data = np.rot90(self.listener.ref_norm_non_neg_cube(path))
+                direc = os.path.dirname(path) + '/04_Reflectance_Normalised_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'norm_ref_positive_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '04_refl_norm_wo_neg_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __oga_to_csv(self):
@@ -152,13 +162,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ab_data_cube(path)
-                direc = os.path.dirname(path) + '/5. Absorbance Original to CSV'
+                data = np.rot90(self.listener.ab_data_cube(path))
+                direc = os.path.dirname(path) + '/05_Absorbance_Original'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'og_abs_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '05_abs_og_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __ogap_to_csv(self):
@@ -166,13 +176,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ab_non_neg_cube(path)
-                direc = os.path.dirname(path) + '/6. Absorbance Original without Negative Values to CSV'
+                data = np.rot90(self.listener.ab_non_neg_cube(path))
+                direc = os.path.dirname(path) + '/06_Absorbance_Original_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'og_abs_positive_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '06_abs_og_wo_neg_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __norma_to_csv(self):
@@ -180,13 +190,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ab_norm_cube(path)
-                direc = os.path.dirname(path) + '/7. Absorbance Normalised to CSV'
+                data = np.rot90(self.listener.ab_norm_cube(path))
+                direc = os.path.dirname(path) + '/07_Absorbance_Normalised'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'norm_abs_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '07_abs_norm_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
         
     def __normap_to_csv(self):
@@ -194,13 +204,13 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = self.listener.ab_norm_non_neg_cube(path)
-                direc = os.path.dirname(path) + '/8. Absorbance Normalised without Negative Values to CSV'
+                data = np.rot90(self.listener.ab_norm_non_neg_cube(path))
+                direc = os.path.dirname(path) + '/08_Absorbance_Normalised_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
                     num = i*5 + 500
                     progress(i, 100)
-                    big_path = direc + '/' + 'norm_abs_positive_data_slice_' + str(num) + '.csv'
+                    big_path = direc + '/' + '08_abs_norm_wo_neg_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, data[:,:,i], delimiter=",", fmt='%s')
 
     def __rec_to_csv(self):
@@ -208,11 +218,21 @@ class CSVSaver:
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.get_current_rec_data().T
-                direc = os.path.dirname(path) + '/9. Recreated Image to CSV'
+                direc = os.path.dirname(path) + '/09_Recreated_Image'
                 self._make_direc(direc)
-                big_path = direc + '/' + 'recreated_image_data.csv'
+                big_path = direc + '/' + '09_recreated_image_data.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
+
+    def __norm_rec_to_csv(self):
+        for path, _ in self.listener.get_results().items():
+            selected_paths = self.listener.get_selected_paths()
+            if path in selected_paths:
+                data = self.listener.get_current_norm_rec_data().T
+                direc = os.path.dirname(path) + '/10_Normalised_Recreated_Image'
+                self._make_direc(direc)
+                big_path = direc + '/' + '10_norm_recreated_image_data.csv'
+                np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __new_to_csv(self):
         update = ['-', '\\', '|', '/']
@@ -220,9 +240,20 @@ class CSVSaver:
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.get_current_new_data().T
-                direc = os.path.dirname(path) + '/10. New Image to CSV'
+                direc = os.path.dirname(path) + '/11_New_Image'
                 self._make_direc(direc)
-                big_path = direc + '/' + 'new_image_data.csv'
+                big_path = direc + '/' + '11_new_image_data.csv'
+                np.savetxt(big_path, data, delimiter=",", fmt='%s')
+
+    def __norm_new_to_csv(self):
+        update = ['-', '\\', '|', '/']
+        for path, _ in self.listener.get_results().items():
+            selected_paths = self.listener.get_selected_paths()
+            if path in selected_paths:
+                data = self.listener.get_current_norm_new_data().T
+                direc = os.path.dirname(path) + '/12_Normalised_New_Image'
+                self._make_direc(direc)
+                big_path = direc + '/' + '12_norm_new_image_data.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
     
 

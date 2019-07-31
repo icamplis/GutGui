@@ -75,7 +75,7 @@ def make_text(window, content, row, column, padx=0, pady=0, height=1, width=2,
 
 def make_listbox(window, row, column, padx=0, pady=0,
                  highlightthickness=0, columnspan=1,  rowspan=1):
-    listbox = Listbox(window, width=16, highlightthickness=highlightthickness, selectmode=EXTENDED, height=7)
+    listbox = Listbox(window, width=16, highlightthickness=highlightthickness, selectmode=EXTENDED, height=10)
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 

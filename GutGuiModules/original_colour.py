@@ -524,7 +524,7 @@ class OGColour:
         with open(path) as csvfile:
             readCSV = csv.reader(csvfile, delimiter=',')
             for row in readCSV:
-                coords.append((int(float(row[0])), (int(float(row[1])))))
+                coords.append((int(float(row[0]-1)), (int(float(row[1]-1)))))
         for i in range(10-len(coords)):
             coords.append((None, None))
         self.coords_list = coords
