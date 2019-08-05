@@ -344,8 +344,8 @@ class ModuleListener:
         elif display_mode == TWI:
             logging.debug("GETTING TWI IMAGE")
             new_data = self.get_result(self.current_rendered_result_path)[0].get_twi_og()
-        self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
         self.modules[ORIGINAL_COLOUR_DATA].update_original_image_data(new_data)
+        self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
 
     def _broadcast_to_recreated_image(self):
         display_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
@@ -401,8 +401,6 @@ class ModuleListener:
         else:
             new_absorption_spec = self.get_result(self.current_rendered_result_path)[1].get_absorption_spec()
         self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
-    def _image_array_to_og_data(self, image_array):
-        self.modules[ORIGINAL_COLOUR_DATA].update_original_image_data(image_array)
 
     def _image_array_to_new_data(self, image_array):
         self.modules[NEW_COLOUR_DATA].update_new_image_data(image_array)

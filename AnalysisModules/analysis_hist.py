@@ -99,15 +99,41 @@ class HistogramAnalysis:
 
     def get_histogram_data(self, is_masked):
         if is_masked:
+        # if there is a mask
             if self.absorbance:
-                data = self.x_absorbance_masked
+            # if absorbance
+                if self.negative:
+                # if there can be negatives
+                    data = self.x_absorbance_masked
+                else:
+                # if no negatives
+                    data = self.x_absorbance_masked[self.x_absorbance_masked>=0]
             else:
-                data = self.x_reflectance_masked
+            # if reflectance
+                if self.negative:
+                # if there can be negatives
+                    data = self.x_reflectance_masked
+                else:
+                # if no negatives
+                    data = self.x_reflectance_masked[self.x_reflectance_masked>=0]
         else:
+        # if there is no mask
             if self.absorbance:
-                data = self.x_absorbance
+            # if absorbance
+                if self.negative:
+                # if there can be negatives
+                    data = self.x_absorbance
+                else:
+                # if no negatives
+                    data = self.x_absorbance[self.x_absorbance>=0]
             else:
-                data = self.x_reflectance
+            # if reflectance
+                if self.negative:
+                # if there can be negatives
+                    data = self.x_reflectance
+                else:
+                # if no negatives
+                    data = self.x_reflectance[self.x_reflectance>=0]
         return data
 
     def _calc_general(self):

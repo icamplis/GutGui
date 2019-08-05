@@ -83,7 +83,7 @@ class AbsorptionSpec:
         return not bool(self.save_as_excel_checkbox_value.get())
 
     def update_absorption_spec(self, absorption_spec_data):
-        self.absorption_spec = absorption_spec_data[:, 1]
+        self.absorption_spec = absorption_spec_data
         self._calc_extrema()
         self._calc_high_low()
         self._build_scale()
@@ -253,21 +253,28 @@ class AbsorptionSpec:
         choice = self.drop_down_var.get()[:2]
         if choice == '1.':
             self.specs = (False, True, False)
+            self.listener._update_abs_specs(self.specs)
         elif choice == '2.':
             self.specs = (False, True, True)
+            self.listener._update_abs_specs(self.specs)
         elif choice == '3.':
             self.specs = (False, False, False)
+            self.listener._update_abs_specs(self.specs)
         elif choice == '4.':
             self.specs = (False, False, True)
+            self.listener._update_abs_specs(self.specs)
         elif choice == '5.':
             self.specs = (True, True, False)
+            self.listener._update_abs_specs(self.specs)
         elif choice == '6.':
             self.specs = (True, True, True)
+            self.listener._update_abs_specs(self.specs)
         elif choice == '7.':
             self.specs = (True, False, False)
+            self.listener._update_abs_specs(self.specs)
         elif choice == '8.':
             self.specs = (True, False, True)
-        self.listener._update_abs_specs(self.specs)
+            self.listener._update_abs_specs(self.specs)
 
     def __update_save_with_scale_check_status(self, event):
         value = self.get_save_checkbox_value()

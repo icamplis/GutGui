@@ -1,4 +1,5 @@
-def get_index_8(x_absorbance):
+def get_index_8(x):
     # TODO
-    index = -1
+    index = (x[:,:,60] +
+             x[:,:,61])/2
     return index

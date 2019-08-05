@@ -449,7 +449,6 @@ class OGColour:
         else:
             logging.debug("BUILDING ORIGINAL COLOUR IMAGE...")
             (self.original_image_graph, self.original_image, self.image_array) = make_image(self.root, data, row=2, column=0, columnspan=5, rowspan=10, lower_scale_value=None, upper_scale_value=None, color_rgb=PASTEL_PINK_RGB, original=True, figheight=2.5, figwidth=3.5)
-            self.listener._image_array_to_og_data(data)
             self.original_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
             self.original_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
             if self.pop_up == True:
@@ -811,12 +810,12 @@ class OGColour:
         (self.input_pt8_x.get(), self.input_pt8_y.get()), 
         (self.input_pt9_x.get(), self.input_pt9_y.get()), 
         (self.input_pt10_x.get(), self.input_pt10_y.get())]
-        coords = [(int(i[0]), int(i[1])) for i in coords if i[0] != '' and i[1] != '']
+        coords = [(int(i[0])-1, int(i[1])-1) for i in coords if i[0] != '' and i[1] != '']
         xs = [i[0] for i in coords]
         ys = [i[1] for i in coords]
         for i in range(10-len(coords)):
             coords.append((None, None))
-        if min(xs) > 0 and max(xs) <= 640 and min(ys) > 0 and max(ys) <= 480:
+        if min(xs) >= 0 and max(xs) < 640 and min(ys) >= 0 and max(ys) < 480:
             self.coords_list = coords
             self._build_points()
             self._draw_points()

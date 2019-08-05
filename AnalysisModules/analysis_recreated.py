@@ -96,28 +96,52 @@ class RecreatedAnalysis:
         self.analysis()
 
     def get_sto2(self):
-        return self.sto2
+        if self.negative:
+            return self.sto2
+        else:
+            return self.sto2
 
     def get_sto2_masked(self):
-        return self.sto2_masked
+        if self.negative:
+            return self.sto2_masked
+        else:
+            return self.sto2_masked
 
     def get_nir(self):
-        return self.nir
+        if self.negative:
+            return self.nir
+        else:
+            return self.nir
 
     def get_nir_masked(self):
-        return self.nir_masked
+        if self.negative:
+            return self.nir_masked
+        else:
+            return self.nir_masked
 
     def get_thi(self):
-        return self.thi
+        if self.negative:
+            return self.thi
+        else:
+            return self.thi
 
     def get_thi_masked(self):
-        return self.thi_masked
+        if self.negative:
+            return self.thi_masked
+        else:
+            return self.thi_masked
 
     def get_twi(self):
-        return self.twi
+        if self.negative:
+            return self.twi
+        else:
+            return self.twi
 
     def get_twi_masked(self):
-        return self.twi_masked
+        if self.negative:
+            return self.twi_masked
+        else:
+            return self.twi_masked
 
     def _calc_general(self):
         logging.debug("CALCULATING: RECREATED IMAGE...")

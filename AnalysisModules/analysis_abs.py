@@ -63,10 +63,18 @@ class AbsSpecAnalysis:
         self.analysis()
 
     def get_absorption_spec(self):
-        return self.absorption_roi
+        data = self.absorption_roi[:, 1]
+        if self.negative:
+            return data
+        else:
+            return data[data >= 0]
 
     def get_absorption_spec_masked(self):
-        return self.absorption_roi_masked
+        data = self.absorption_roi_masked[:, 1]
+        if self.negative:
+            return data
+        else:
+            return data[data >= 0]
 
     def _calc_general(self):
         logging.debug("CALCULATING: ABSORPTION SPECTRUM...")

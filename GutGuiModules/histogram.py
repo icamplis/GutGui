@@ -52,7 +52,9 @@ class Histogram:
         '7. Absorbance - Normalised',
         '8. Absorbance - Normalised without Negative Values', 
         '9. Recreated Image', 
-        '10. New Image']
+        '10. Recreated Image - Normalised',
+        '11. New Image',
+        '12. New Image - Normalised']
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -148,7 +150,7 @@ class Histogram:
         # median
         self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=3, width=14, columnspan=1, padx=0, state=NORMAL)
         # IQR
-        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=3, width=20, columnspan=1, padx=(0, 10), state=NORMAL)
+        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=3, width=22, columnspan=1, padx=(0, 10), state=NORMAL)
         # min and max
         first_line_text = "x min = " + str(self.min_x) + ', y val = ' + str(self.min_x_val) + '      y min = ' + str(self.min_y) + ', x val = ' + str(self.min_y_val)
         self.first_line = make_text(self.root, content=first_line_text, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=4, width=60, columnspan=4, state=NORMAL, pady=(10, 0))
@@ -278,28 +280,39 @@ class Histogram:
         # mean, sd, median, iqr
         logging.debug("CALCULATING STATS...")
         self.mean_value = np.round(np.mean(data), 3)
+        progress(0, 11)
         self.sd_value = np.round(np.std(data), 3)
+        progress(1, 11)
         self.median_value = np.round(np.ma.median(data), 3)
+        progress(2, 11)
         self.iqr_value = (np.round(np.quantile(data, 0.25), 3), round(np.quantile(data, 0.75), 3))
+        progress(3, 11)
         # generate bins
         bins = np.arange(start = self.lower_value, stop = self.upper_value + self.step_size_value, step = self.step_size_value)
+        progress(4, 11)
         # generate numpy histogram data
         histogram_data = np.histogram(data, bins=bins)
+        progress(5, 11)
         # determine the minimum y value and at which x this occurs
         self.min_y = np.round(np.min(np.histogram(data, bins=bins)[0]), 3)
         self.min_y_val = np.round(histogram_data[1][np.where(histogram_data[0] == self.min_y)[0][0]], 3)
+        progress(6, 11)
         # determine the maximum y value and at which x this occurs
         self.max_y = np.round(np.max(histogram_data[0]), 3)
         self.max_y_val = np.round(histogram_data[1][np.where(histogram_data[0] == self.max_y)[0][0]], 3)
+        progress(7, 11)
         # determine the minimum x (bin) value and its size
         self.min_x = np.round(histogram_data[1][0], 3)
         self.min_x_val = np.round(histogram_data[0][0], 3)
+        progress(8, 11)
         # determine the maximum x (bin) value and its size
         self.max_x = np.round(histogram_data[1][-1], 3)
         self.max_x_val = np.round(histogram_data[0][-1], 3)
+        progress(9, 11)
         # percent negative
         percent = np.sum(np.array(data) < 0)/len(data) * 100
         self.percent_negative_value = round(percent, 3)
+        progress(10, 11)
         self._build_stats()
 
     # Commands (Callbacks)
@@ -348,7 +361,13 @@ class Histogram:
             data = self.listener.get_current_rec_data()
             self.update_histogram(data)
         elif choice == '10':
+            data = self.listener.get_current_norm_rec_data()
+            self.update_histogram(data)
+        elif choice == '11':
             data = self.listener.get_current_new_data()
+            self.update_histogram(data)
+        elif choice == '12':
+            data = self.listener.get_current_norm_new_data()
             self.update_histogram(data)
 
     def __update_to_original_data(self):

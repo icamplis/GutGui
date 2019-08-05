@@ -64,23 +64,41 @@ class NewAnalysis:
         self.analysis()
 
     def get_index(self):
-        return self.index
+        if self.negative:
+            return self.index
+        else:
+            return self.index
 
     def get_index_masked(self):
-        return self.index_masked
+        if self.negative:
+            return self.index_masked
+        else:
+            return self.index_masked
 
     def get_wl_data(self):
         if self.absorbance:
-            new_data = self.x_absorbance_w
+            if self.negative:
+                new_data = self.x_absorbance_w
+            else:
+                new_data = self.x_absorbance_w
         else:
-            new_data = self.x_reflectance_w
+            if self.negative:
+                new_data = self.x_reflectance_w
+            else:
+                new_data = self.x_reflectance_w
         return new_data
 
     def get_wl_data_masked(self):
         if self.absorbance:
-            new_data = self.x_absorbance_masked_w
+            if self.negative:
+                new_data = self.x_absorbance_masked_w
+            else:
+                new_data = self.x_absorbance_masked_w
         else:
-            new_data = self.x_reflectance_masked_w
+            if self.negative:
+                new_data = self.x_reflectance_masked_w
+            else:
+                new_data = self.x_reflectance_masked_w
         return new_data
 
     def _calc_general(self):

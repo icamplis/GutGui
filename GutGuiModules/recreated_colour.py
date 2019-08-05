@@ -183,8 +183,8 @@ class RecColour:
             self.recreated_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
-        self.upper_scale_value = np.max(self.recreated_colour_image_data)
-        self.lower_scale_value = np.min(self.recreated_colour_image_data)
+        self.upper_scale_value = float(np.max(self.recreated_colour_image_data))
+        self.lower_scale_value = float(np.min(self.recreated_colour_image_data))
         self._build_lower_scale()
         self._build_upper_scale()
 

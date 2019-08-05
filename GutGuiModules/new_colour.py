@@ -147,13 +147,13 @@ class NewColour:
             self.new_colour_image = make_label(self.root, "new_colour image placeholder",row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING NEW COLOUR IMAGE...")
-            (self.new_colour_image_graph, self.new_colour_image, self.image_array) = make_image(self.root, self.new_colour_image_data,row=2, column=0,columnspan=4, rowspan=4,lower_scale_value=self.lower_scale_value,upper_scale_value=self.upper_scale_value,color_rgb=PASTEL_ORANGE_RGB)
+            (self.new_colour_image_graph, self.new_colour_image, self.image_array) = make_image(self.root, self.new_colour_image_data,row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value,color_rgb=PASTEL_ORANGE_RGB)
             self.listener._image_array_to_new_data(self.new_colour_image_data)
             self.new_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
-        self.upper_scale_value = np.max(self.new_colour_image_data)
-        self.lower_scale_value = np.min(self.new_colour_image_data)
+        self.upper_scale_value = float(np.max(self.new_colour_image_data))
+        self.lower_scale_value = float(np.min(self.new_colour_image_data))
         self._build_lower_scale()
         self._build_upper_scale()
 
