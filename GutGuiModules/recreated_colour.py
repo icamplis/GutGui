@@ -10,6 +10,8 @@ class RecColour:
 
         self.specs = (True, False, False)
 
+        self.initial_data = []
+
         self.sto2_button = None
         self.sto2_checkbox = None
         self.sto2_checkbox_value = IntVar()
@@ -41,6 +43,10 @@ class RecColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
+        self.reset_button = None
+        self.norm_button = None
+        self.og_button = None
+
         self.recreated_colour_image_graph = None
         self.recreated_colour_image = None
         self.recreated_colour_image_data = None
@@ -67,6 +73,8 @@ class RecColour:
         return self.specs
 
     def update_recreated_image(self, recreated_colour_image_data):
+        if len(self.initial_data) == 0:
+            self.initial_data = recreated_colour_image_data
         self.recreated_colour_image_data = recreated_colour_image_data
         self._scale()
         self._build_recreated_image()
@@ -110,6 +118,7 @@ class RecColour:
         self._build_lower_scale()
         self._build_info_label()
         self._build_drop_down()
+        self._build_reset_norm_og()
         self._build_recreated_image()
 
     def _build_sto2(self):
@@ -150,14 +159,14 @@ class RecColour:
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_lower_scale(self):
-        self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=6, column=0, columnspan=2, width=16, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=0)
-        self.lower_scale_input = make_entry(self.root, row=6, column=2, width=11, pady=5, padx=0, columnspan=2)
+        self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=0)
+        self.lower_scale_input = make_entry(self.root, row=6, column=1, width=8, pady=5, padx=0, columnspan=1)
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
         self.lower_scale_input.insert(END, str(self.lower_scale_value))
 
     def _build_upper_scale(self):
-        self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=7, column=0, columnspan=2, width=16, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=0)
-        self.upper_scale_input = make_entry(self.root, row=7, column=2, width=11, pady=(5,0), padx=0, columnspan=2)
+        self.upper_scale_text = make_text(self.root, content="Upper: ", row=7, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=0)
+        self.upper_scale_input = make_entry(self.root, row=7, column=1, width=8, pady=(5,0), padx=0, columnspan=1)
         self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
         self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
@@ -171,6 +180,11 @@ class RecColour:
         self.drop_down_menu.configure(highlightthickness=0, width=6, 
             anchor='w', padx=15)
         self.drop_down_menu.grid(column=2, row=0, columnspan=2, padx=(0, 15))
+
+    def _build_reset_norm_og(self):
+        self.reset_button = make_button(self.root, text="Reset", row=7, column=2, columnspan=2, command=self.__reset, inner_padx=10, inner_pady=5, outer_padx=(0, 5), outer_pady=(5, 0), width=9)
+        self.norm_button = make_button(self.root, text="NORM", row=6, column=2, columnspan=1, command=self.__norm, inner_padx=3, inner_pady=0, outer_padx=(15, 0), outer_pady=0, width=5)
+        self.og_button = make_button(self.root, text="OG", row=6, column=3, columnspan=1, command=self.__og, inner_padx=3, inner_pady=0, outer_padx=(3, 10), outer_pady=0, width=3)
 
     def _build_recreated_image(self):
         if self.recreated_colour_image_data is None:
@@ -190,6 +204,15 @@ class RecColour:
 
 
     # Commands (Callbacks)
+    def __reset(self):
+        self.update_recreated_image(self.inital_data)
+
+    def __norm(self):
+        self.update_recreated_image(self.initial_data/np.max(self.initial_data))
+
+    def __og(self):
+        self.update_recreated_image(self.inital_data)
+
     def __info(self):
         info = self.listener.get_recreated_info()
         title = "Recreated Image Information"
