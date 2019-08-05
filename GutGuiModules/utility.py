@@ -100,7 +100,6 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
         axes.axis('off')
         image_array = image.get_array().flatten()
     else:
-
         image = axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
                     vmin=float(lower_scale_value),
                     vmax=float(upper_scale_value))

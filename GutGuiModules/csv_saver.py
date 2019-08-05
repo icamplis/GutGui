@@ -106,7 +106,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ref_data_cube(path))
+                data = np.flipud(np.rot90(self.listener.ref_data_cube(path)))
                 direc = os.path.dirname(path) + '/01_Reflectance_Original'
                 self._make_direc(direc)
                 for i in range(100):
@@ -120,7 +120,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ref_non_neg_cube(path))
+                data = np.flipud(np.rot90(self.listener.ref_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/02_Reflectance_Original_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
@@ -134,7 +134,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ref_norm_cube(path))
+                data = np.flipud(np.rot90(self.listener.ref_norm_cube(path)))
                 direc = os.path.dirname(path) + '/03_Reflectance_Normalised'
                 self._make_direc(direc)
                 for i in range(100):
@@ -148,7 +148,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ref_norm_non_neg_cube(path))
+                data = np.flipud(np.rot90(self.listener.ref_norm_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/04_Reflectance_Normalised_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
@@ -162,7 +162,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ab_data_cube(path))
+                data = np.flipud(np.rot90(self.listener.ab_data_cube(path)))
                 direc = os.path.dirname(path) + '/05_Absorbance_Original'
                 self._make_direc(direc)
                 for i in range(100):
@@ -176,7 +176,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ab_non_neg_cube(path))
+                data = np.flipud(np.rot90(self.listener.ab_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/06_Absorbance_Original_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
@@ -190,7 +190,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ab_norm_cube(path))
+                data = np.flipud(np.rot90(self.listener.ab_norm_cube(path)))
                 direc = os.path.dirname(path) + '/07_Absorbance_Normalised'
                 self._make_direc(direc)
                 for i in range(100):
@@ -204,7 +204,7 @@ class CSVSaver:
         for path, _ in self.listener.get_results().items():
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
-                data = np.rot90(self.listener.ab_norm_non_neg_cube(path))
+                data = np.flipud(np.rot90(self.listener.ab_norm_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/08_Absorbance_Normalised_without_Negative_Values'
                 self._make_direc(direc)
                 for i in range(100):
