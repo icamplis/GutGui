@@ -9,6 +9,8 @@ class NewColour:
         # Listener
         self.listener = listener
 
+        self.initial_data = []
+
         self.specs = (False, True, False)
 
         self.wl_button = None
@@ -33,6 +35,10 @@ class NewColour:
         self.lower_scale_input = None
         self.upper_scale_value = None
         self.lower_scale_value = None
+
+        self.reset_button = None
+        self.norm_button = None
+        self.og_button = None
 
         self.new_colour_image_graph = None
         self.new_colour_image = None
@@ -63,6 +69,8 @@ class NewColour:
         return self.new_colour_image_data
 
     def update_new_colour_image(self, new_colour_image_data):
+        if len(self.initial_data) == 0:
+            self.initial_data = new_colour_image_data
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         self._build_new_image()
@@ -95,39 +103,40 @@ class NewColour:
         self._build_lower_scale()
         self._build_info_label()
         self._build_drop_down()
+        self._build_reset_norm_og()
         self._build_new_image()
 
     def _build_wl(self):
-        self.wl_button = make_button(self.root, text='WL', width=3, command=self.__update_to_wl, row=1, column=0, columnspan=2, inner_pady=5, outer_padx=(35, 0))
-        self.wl_checkbox = make_checkbox(self.root, "", row=1, column=0, columnspan=2, var=self.wl_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0)
+        self.wl_button = make_button(self.root, text='WL', width=3, command=self.__update_to_wl, row=1, column=0, inner_pady=5, outer_padx=0, columnspan=2)
+        self.wl_checkbox = make_checkbox(self.root, "", row=1, column=1, var=self.wl_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 50))
         self.wl_checkbox.deselect()
         self.wl_checkbox.bind('<Button-1>', self.__update_wl_check_status)
 
     def _build_idx(self):
-        self.idx_button = make_button(self.root, text="IDX", width=3, row=1, column=2, columnspan=2, command=self.__update_to_idx, inner_pady=5)
-        self.idx_checkbox = make_checkbox(self.root, "", row=1, column=2, columnspan=2,var=self.idx_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 40))
+        self.idx_button = make_button(self.root, text="IDX", width=3, row=1, column=2, command=self.__update_to_idx, inner_pady=5, columnspan=2, outer_padx=(0, 30))
+        self.idx_checkbox = make_checkbox(self.root, "", row=1, column=3, var=self.idx_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 50))
         self.idx_checkbox.deselect()
         self.idx_checkbox.bind('<Button-1>', self.__update_idx_check_status)
 
     def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=8, column=0, rowspan=2, outer_padx=(10, 0), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
-        self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 5))
+        self.save_label = make_label(self.root, "Save", row=8, column=0, outer_padx=(15, 0), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
+        self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(70, 0))
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=2, columnspan=2, outer_padx=(0, 15), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
-        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 10))
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, columnspan=3, outer_padx=(0, 15), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
+        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 43))
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_lower_scale(self):
-        self.lower_scale_text = make_text(self.root, content="Lower Scale End: ", row=6, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=(15, 0))
-        self.lower_scale_input = make_entry(self.root, row=6, column=3, width=9, pady=5, padx=(0,15))
+        self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=15)
+        self.lower_scale_input = make_entry(self.root, row=6, column=1, width=8, pady=5, padx=0)
         self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
         self.lower_scale_input.insert(END, str(self.lower_scale_value))
 
     def _build_upper_scale(self):
-        self.upper_scale_text = make_text(self.root, content="Upper Scale End: ", row=7, column=0, columnspan=3, width=17, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=(15, 0))
-        self.upper_scale_input = make_entry(self.root, row=7, column=3, width=9, pady=(5,0), padx=(0,15))
+        self.upper_scale_text = make_text(self.root, content="Upper:", row=7, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=15)
+        self.upper_scale_input = make_entry(self.root, row=7, column=1, width=8, pady=(5,0), padx=0)
         self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
         self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
@@ -140,6 +149,12 @@ class NewColour:
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='New Colour', command=self.__info, width=9)
+        self.info_label.grid(columnspan=2, padx=(0, 20))
+
+    def _build_reset_norm_og(self):
+        self.reset_button = make_button(self.root, text="Reset", row=7, column=2, columnspan=2, command=self.__reset, inner_padx=10, inner_pady=5, outer_padx=(13, 15), outer_pady=(5, 0), width=9)
+        self.norm_button = make_button(self.root, text="NORM", row=6, column=2, columnspan=1, command=self.__norm, inner_padx=3, inner_pady=0, outer_padx=(15, 0), outer_pady=0, width=5)
+        self.og_button = make_button(self.root, text="OG", row=6, column=3, columnspan=1, command=self.__og, inner_padx=3, inner_pady=0, outer_padx=(3, 10), outer_pady=0, width=3)
 
     def _build_new_image(self):
         if self.new_colour_image_data is None:
@@ -158,6 +173,15 @@ class NewColour:
         self._build_upper_scale()
 
     # Commands (Callbacks)
+    def __reset(self):
+        self.update_new_colour_image(self.initial_data)
+
+    def __norm(self):
+        self.update_new_colour_image(self.initial_data/np.max(self.initial_data))
+
+    def __og(self):
+        self.update_new_colour_image(self.initial_data)
+
     def __info(self):
         info = self.listener.get_new_info()
         title = "New Image Information"

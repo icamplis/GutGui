@@ -148,13 +148,13 @@ class RecColour:
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, columnspan=1, outer_padx=(30,0), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
-        self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=0)
+        self.save_checkbox = make_checkbox(self.root, text="", row=8, column=0,var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(80, 0))
         self.save_checkbox.deselect()
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
         self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, columnspan=3, outer_padx=0, outer_pady=(10, 0), inner_padx=10, inner_pady=5)
-        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=2, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=0)
+        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(0, 35))
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
@@ -205,13 +205,13 @@ class RecColour:
 
     # Commands (Callbacks)
     def __reset(self):
-        self.update_recreated_image(self.inital_data)
+        self.update_recreated_image(self.initial_data)
 
     def __norm(self):
         self.update_recreated_image(self.initial_data/np.max(self.initial_data))
 
     def __og(self):
-        self.update_recreated_image(self.inital_data)
+        self.update_recreated_image(self.initial_data)
 
     def __info(self):
         info = self.listener.get_recreated_info()
