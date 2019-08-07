@@ -15,6 +15,7 @@ class Info:
         self.analysis_form_info = "Analysis & Form Information"
         self.csv_info = "Data to CSV Information"
         self.save_info = "Save Information"
+        self.param_info = "Parameter Specification Information"
         self.original_info = "Original Image Information"
         self.input_info = "Here you can input coordinates manually. Make sure that your values are integers (they will be rounded if not), and that your x values are in the interval [0, 640] and your y values are in the interval [0, 480]. Press 'Go' when you are ready to upload your coordinates."
         self.recreated_info = "Recreated Image Information"
@@ -36,6 +37,9 @@ class Info:
 
     def get_save_info(self):
         return self.save_info
+
+    def get_parameter_info(self):
+        return self.param_info
 
     def get_original_info(self):
         return self.original_info

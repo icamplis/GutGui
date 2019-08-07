@@ -139,38 +139,38 @@ class AbsorptionSpec:
         self.lower_text = make_text(self.root, content="Lower: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=2, width=7, columnspan=1, pady=(0, 10))
         self.lower_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.lower_input.bind('<Return>', self.__update_lower)
+        self.lower_input.bind('<Return>', self.__update_upper_lower)
         self.lower_input.insert(END, str(self.lower_value))
 
         # upper
         self.upper_text = make_text(self.root, content="Upper: ", 
             bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=3, width=7, columnspan=1, pady=(0, 10))
         self.upper_input = make_entry(self.root, row=3, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.upper_input.bind('<Return>', self.__update_upper)
+        self.upper_input.bind('<Return>', self.__update_upper_lower)
         self.upper_input.insert(END, str(self.upper_value))
 
         # x lower
         self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=4, width=7, columnspan=1, pady=(0, 10))
         self.x_lower_scale_input = make_entry(self.root, row=4, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.x_lower_scale_input.bind('<Return>', self.__update_scale_x_lower)
+        self.x_lower_scale_input.bind('<Return>', self.__update_scales)
         self.x_lower_scale_input.insert(END, str(self.x_lower_scale_value))
 
         # x upper
         self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=5, width=7, columnspan=1, pady=(0, 10))
         self.x_upper_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.x_upper_scale_input.bind('<Return>', self.__update_scale_x_upper)
+        self.x_upper_scale_input.bind('<Return>', self.__update_scales)
         self.x_upper_scale_input.insert(END, str(self.x_upper_scale_value))
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=6, width=7, columnspan=1, pady=(0, 10))
         self.y_lower_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
+        self.y_lower_scale_input.bind('<Return>', self.__update_scales)
         self.y_lower_scale_input.insert(END, str(self.y_lower_scale_value))
 
         # y upper
         self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=7, width=7, columnspan=1, pady=(0, 10))
         self.y_upper_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.y_upper_scale_input.bind('<Return>', self.__update_scale_y_upper)
+        self.y_upper_scale_input.bind('<Return>', self.__update_scales)
         self.y_upper_scale_input.insert(END, str(self.y_upper_scale_value))
 
     def _build_info_label(self):
@@ -190,6 +190,7 @@ class AbsorptionSpec:
         self.interactive_absorption_spec_graph.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
         self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+        self.axes.ticklabel_format(style='plain')
         # draw figure
         self.interactive_absorption_spec = FigureCanvasTkAgg(self.interactive_absorption_spec_graph, master=self.root)
         self.interactive_absorption_spec.draw()
@@ -225,27 +226,15 @@ class AbsorptionSpec:
         title = "Optical Spectrum Information"
         make_info(title=title, info=info)
 
-    def __update_upper(self, event):
+    def __update_upper_lower(self, event):
         self.upper_value = int(self.upper_input.get())
-        self._calc_extrema()
-
-    def __update_lower(self, event):
         self.lower_value = int(self.lower_input.get())
         self._calc_extrema()
 
-    def __update_scale_x_upper(self, event):
+    def __update_scales(self, event):
         self.x_upper_scale_value = float(self.x_upper_scale_input.get())
-        self._build_interactive_absorption_spec()
-
-    def __update_scale_y_upper(self, event):
         self.y_upper_scale_value = float(self.y_upper_scale_input.get())
-        self._build_interactive_absorption_spec()
-
-    def __update_scale_x_lower(self, event):
         self.x_lower_scale_value = float(self.x_lower_scale_input.get())
-        self._build_interactive_absorption_spec()
-
-    def __update_scale_y_lower(self, event):
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_absorption_spec()
 

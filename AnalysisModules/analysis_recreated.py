@@ -9,7 +9,7 @@ import logging
 
 class RecreatedAnalysis:
     # performs analyses necessary for recreated image
-    def __init__(self, path, data_cube, wavelength, index_number, specs, mask=None):
+    def __init__(self, path, data_cube, wavelength, index_number, specs, params,mask=None):
 
         # inputs
         self.path = path
@@ -19,6 +19,16 @@ class RecreatedAnalysis:
         self.absorbance = bool(specs[0])
         self.normal = not bool(specs[1])
         self.negative = bool(specs[2])
+
+        # params
+        self.R1 = params[0]
+        self.R2 = params[1]
+        self.S1 = params[2]
+        self.S2 = params[3]
+        self.T1 = params[4]
+        self.T2 = params[5]
+        self.U1 = params[6]
+        self.U2 = params[7]
 
         # calculated generally
         self.x1 = None
@@ -152,18 +162,19 @@ class RecreatedAnalysis:
 
     def _calc_sto2(self):
         logging.debug("CALCULATING: STO2...")
+        print(self.R1)
         if self.absorbance:
             self._x_absorbance_gradient = np.gradient(self.x_absorbance, axis=2)
             self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
             self._x_absorbance_gradient_min_2 = self._x_absorbance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
-            temp1 = self._x_absorbance_gradient_min_1 / R1
-            temp2 = self._x_absorbance_gradient_min_2 / R2
+            temp1 = self._x_absorbance_gradient_min_1 / self.R1
+            temp2 = self._x_absorbance_gradient_min_2 / self.R2
         else:
             self._x_reflectance_gradient = np.gradient(self.x_reflectance, axis=2)
             self._x_reflectance_gradient_min_1 = self._x_reflectance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
             self._x_reflectance_gradient_min_2 = self._x_reflectance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
-            temp1 = self._x_reflectance_gradient_min_1 / R1
-            temp2 = self._x_reflectance_gradient_min_2 / R2
+            temp1 = self._x_reflectance_gradient_min_1 / self.R1
+            temp2 = self._x_reflectance_gradient_min_2 / self.R2
         self.sto2 = temp1 / (temp1 + temp2)
         logging.debug("Complete Sto2 Mean: " + str(self.sto2[:, :].mean()))
         if self.mask is not None:
@@ -180,7 +191,7 @@ class RecreatedAnalysis:
             self._x_reflectance_mean_825_925 = self.x_reflectance[:, :, 65:85].mean(axis=2)  # between (825nm : 925nm)
             self._x_reflectance_mean_655_735 = self.x_reflectance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
             temp1 = self._x_reflectance_mean_825_925 / self._x_reflectance_mean_655_735
-        self.nir = (temp1 - S1) / (S2 - S1)
+        self.nir = (temp1 - self.S1) / (self.S2 - self.S1)
         logging.debug("Complete NIR Mean: " + str(self.nir[:, :].mean()))
         if self.mask is not None:
             self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
@@ -196,7 +207,7 @@ class RecreatedAnalysis:
             self._x_reflectance_mean_530_590 = self.x_reflectance[:, :, 6:18].mean(axis=2)  # between (530nm : 590nm)
             self._x_reflectance_mean_785_825 = self.x_reflectance[:, :, 57:65].mean(axis=2)  # between (785nm : 825nm)
             temp1 = self._x_reflectance_mean_530_590 / self._x_reflectance_mean_785_825
-        self.thi = (temp1 - T1) / (T2 - T1)
+        self.thi = (temp1 - self.T1) / (self.T2 - self.T1)
         logging.debug("Complete THI Mean: " + str(self.thi[:, :].mean()))
         if self.mask is not None:
             self.thi_masked = np.ma.array(self.thi[:, :], mask=[self.mask])
@@ -212,7 +223,7 @@ class RecreatedAnalysis:
             self._x_reflectance_mean_880_900 = self.x_reflectance[:, :, 76:80].mean(axis=2)  # between (880nm : 900nm)
             self._x_reflectance_mean_955_980 = self.x_reflectance[:, :, 91:96].mean(axis=2)  # between (955nm : 980nm)
             temp1 = self._x_reflectance_mean_880_900 / self._x_reflectance_mean_955_980
-        self.twi = (temp1 - U1) / (U2 - U1)
+        self.twi = (temp1 - self.U1) / (self.U2 - self.U1)
         logging.debug("Complete TWI Mean: " + str(self.twi[:, :].mean()))
         if self.mask is not None:
             self.twi_masked = np.ma.array(self.twi[:, :], mask=[self.mask])

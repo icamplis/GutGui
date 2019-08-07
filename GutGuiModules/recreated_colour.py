@@ -161,13 +161,13 @@ class RecColour:
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=5, padx=0)
         self.lower_scale_input = make_entry(self.root, row=6, column=1, width=8, pady=5, padx=0, columnspan=1)
-        self.lower_scale_input.bind('<Return>', self.__update_scale_lower)
+        self.lower_scale_input.bind('<Return>', self.__update_upper_lower)
         self.lower_scale_input.insert(END, str(self.lower_scale_value))
 
     def _build_upper_scale(self):
         self.upper_scale_text = make_text(self.root, content="Upper: ", row=7, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), pady=(5, 0), padx=0)
         self.upper_scale_input = make_entry(self.root, row=7, column=1, width=8, pady=(5,0), padx=0, columnspan=1)
-        self.upper_scale_input.bind('<Return>', self.__update_scale_upper)
+        self.upper_scale_input.bind('<Return>', self.__update_upper_lower)
         self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
     def _build_info_label(self):
@@ -294,11 +294,8 @@ class RecColour:
         value = self.get_save_wo_scale_checkbox_value()
         self.listener.update_saved(REC_IMAGE_WO_SCALE, value)
 
-    def __update_scale_upper(self, event):
+    def __update_upper_lower(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())
-        self._build_recreated_image()
-
-    def __update_scale_lower(self, event):
         self.lower_scale_value = float(self.lower_scale_input.get())
         self._build_recreated_image()
 

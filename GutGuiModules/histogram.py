@@ -194,45 +194,45 @@ class Histogram:
         self.lower_text = make_text(self.root, content="Lower: ", 
             bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=7, width=7, columnspan=1, pady=(0, 10))
         self.lower_input = make_entry(self.root, row=7, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.lower_input.bind('<Return>', self.__update_lower)
+        self.lower_input.bind('<Return>', self.__update_upper_lower)
         self.lower_input.insert(END, str(self.min_x))
 
         # upper
         self.upper_text = make_text(self.root, content="Upper: ", 
             bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=8, width=7, columnspan=1, pady=(0, 10))
         self.upper_input = make_entry(self.root, row=8, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.upper_input.bind('<Return>', self.__update_upper)
+        self.upper_input.bind('<Return>', self.__update_upper_lower)
         self.upper_input.insert(END, str(self.max_x))
 
         # x lower
         self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=9, width=7, columnspan=1, pady=(0, 10))
         self.x_lower_scale_input = make_entry(self.root, row=9, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.x_lower_scale_input.bind('<Return>', self.__update_scale_x_lower)
+        self.x_lower_scale_input.bind('<Return>', self.__update_scales)
         self.x_lower_scale_input.insert(END, str(self.min_x))
 
          # x upper
         self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=10, width=7, columnspan=1, pady=(0, 10))
         self.x_upper_scale_input = make_entry(self.root, row=10, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.x_upper_scale_input.bind('<Return>', self.__update_scale_x_upper)
+        self.x_upper_scale_input.bind('<Return>', self.__update_scales)
         self.x_upper_scale_input.insert(END, str(self.max_x))
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),column=3, row=11, width=7, columnspan=1, pady=(0, 10))
         self.y_lower_scale_input = make_entry(self.root, row=11, column=4, width=7, pady=(0, 10), padx=(0, 15),columnspan=1)
-        self.y_lower_scale_input.bind('<Return>', self.__update_scale_y_lower)
+        self.y_lower_scale_input.bind('<Return>', self.__update_scales)
         self.y_lower_scale_input.insert(END, str(self.min_y))
 
         # y upper
         self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=12, width=7, columnspan=1, pady=(0, 10))
         self.y_upper_scale_input = make_entry(self.root, row=12, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.y_upper_scale_input.bind('<Return>', self.__update_scale_y_upper)
+        self.y_upper_scale_input.bind('<Return>', self.__update_scales)
         self.y_upper_scale_input.insert(END, str(self.max_y))
 
     def _build_step_size(self):
         self.step_size_text = make_text(self.root, content="Step: ", 
             bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=6, width=6, columnspan=1, pady=(0, 10))
         self.step_size_input = make_entry(self.root, row=6, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
-        self.step_size_input.bind('<Return>', self.__update_step_size)
+        self.step_size_input.bind('<Return>', self.__update_scales)
         self.step_size_input.insert(END, str(self.step_size_value))
 
     def _build_info_label(self):
@@ -266,6 +266,7 @@ class Histogram:
             self.interactive_histogram_graph.set_tight_layout(True)
             self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
             self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+            self.axes.ticklabel_format(style='plain')
         # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
@@ -393,31 +394,16 @@ class Histogram:
         title = "Histogram Information"
         make_info(title=title, info=info)
 
-    def __update_upper(self, event):
+    def __update_upper_lower(self, event):
         self.upper_value = float(self.upper_input.get())
-        self._calc_stats()
-
-    def __update_lower(self, event):
         self.lower_value = float(self.lower_input.get())
         self._calc_stats()
 
-    def __update_scale_x_upper(self, event):
+    def __update_scales(self, event):
         self.x_upper_scale_value = float(self.x_upper_scale_input.get())
-        self._build_interactive_histogram()
-
-    def __update_scale_y_upper(self, event):
         self.y_upper_scale_value = float(self.y_upper_scale_input.get())
-        self._build_interactive_histogram()
-
-    def __update_scale_x_lower(self, event):
         self.x_lower_scale_value = float(self.x_lower_scale_input.get())
-        self._build_interactive_histogram()
-
-    def __update_scale_y_lower(self, event):
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
-        self._build_interactive_histogram()
-
-    def __update_step_size(self, event):
         self.step_size_value = float(self.step_size_input.get())
         self._build_interactive_histogram()
 

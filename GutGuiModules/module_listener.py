@@ -34,6 +34,7 @@ class ModuleListener:
         self.ab_spec_specs = None
         self.recreated_specs = None
         self.new_specs = None
+        self.params = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 
         # ORIGINAL IMAGE
         self.mask = None
@@ -89,7 +90,7 @@ class ModuleListener:
 
         self.data_cube = data_cube
         self.dc_path = dc_path
-        self.results[dc_path] = ['hist', 'abs', 'rec', 'new']
+        self.results[dc_path] = ['hist', 'abs', 'rec', 'new', {}]
 
         if self.modules[ANALYSIS_AND_FORM]:
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
@@ -106,7 +107,7 @@ class ModuleListener:
             # update each based on inputs
             self._make_new_hist_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.histogram_specs)
             self._make_new_abs_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.ab_spec_specs)
-            self._make_new_rec_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.recreated_specs)
+            self._make_new_rec_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.recreated_specs, self.params)
             self._make_new_new_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.new_specs)
 
     def set_data_cube(self, dc_path):
@@ -117,118 +118,134 @@ class ModuleListener:
     def ref_data_cube(self, path):
         # 1. Original reflectance
         # Data cube is originally same for all, use hist because its the first in the list
-        cube = self.get_result(path)[0].get_data_cube().tolist()
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    cube[i][j][k] = str(float(cube[i][j][k]))
-        return np.asarray(cube)
+        if not '1' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube().tolist()
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        cube[i][j][k] = str(float(cube[i][j][k]))
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['1'] = np.asarray(cube)
+        return self.get_result(path)[4]['1']
 
     def ref_non_neg_cube(self, path):
         # 2. Original reflectance without negative values --> 1 with spaces for
         # negative values
-        cube = self.get_result(path)[0].get_data_cube().tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] < 0:
-                        cube[i][j][k] = ''
-                    else:
-                        cube[i][j][k] = str(float(cube[i][j][k]))
-        return np.asarray(cube)
+        if not '2' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube().tolist()
+            logging.debug("REMOVING NEGATIVE VALUES...")
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        if cube[i][j][k] < 0:
+                            cube[i][j][k] = float('NaN')
+                        else:
+                            cube[i][j][k] = str(float(cube[i][j][k]))
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['2'] = np.asarray(cube)
+        return self.get_result(path)[4]['2']
 
     def ref_norm_cube(self, path):
         # 3. Normalised reflectance --> 1 divded by max(1)
-        cube = self.get_result(path)[0].get_data_cube()
-        max_val = np.max(cube)
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    cube[i][j][k] = str(float(cube[i][j][k]/max_val))
-        return np.asarray(cube)
+        if not '3' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube()
+            max_val = np.max(cube)
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        cube[i][j][k] = str(float(cube[i][j][k]/max_val))
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['3'] = np.asarray(cube)
+        return self.get_result(path)[4]['3']
 
     def ref_norm_non_neg_cube(self, path):
         # 4. Normalised reflectance without negative values --> 3 with spaces
         # for negative values
-        cube = self.get_result(path)[0].get_data_cube()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        cube = cube/np.max(cube)
-        cube = cube.tolist()
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] < 0:
-                        cube[i][j][k] = ''
-                    else:
-                        cube[i][j][k] = str(float(cube[i][j][k]))
-        return np.asarray(cube)
+        if not '4' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube()
+            logging.debug("REMOVING NEGATIVE VALUES...")
+            cube = cube/np.max(cube)
+            cube = cube.tolist()
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        if cube[i][j][k] < 0:
+                            cube[i][j][k] = float('NaN')
+                        else:
+                            cube[i][j][k] = str(float(cube[i][j][k]))
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['4'] = np.asarray(cube)
+        return self.get_result(path)[4]['4']
 
     def ab_data_cube(self, path):
         # 5. Original absorbance --> -log() of 2
-        cube = self.get_result(path)[0].get_data_cube().tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0:
-                        cube[i][j][k] = ''
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
-        return np.asarray(cube)
+        if not '5' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube().tolist()
+            logging.debug("REMOVING NEGATIVE VALUES...")
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        if cube[i][j][k] <= 0:
+                            cube[i][j][k] = float('NaN')
+                        else:
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['5'] = np.asarray(cube)
+        return self.get_result(path)[4]['5']
 
     def ab_non_neg_cube(self, path):
         # 6. Original absorbanve without negative values --> 5 with spaces for
         # negative values
-        cube = self.get_result(path)[0].get_data_cube().tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                        cube[i][j][k] = ''
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
-        return np.asarray(cube)
+        if not '6' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube().tolist()
+            logging.debug("REMOVING NEGATIVE VALUES...")
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
+                            cube[i][j][k] = float('NaN')
+                        else:
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['6'] = np.asarray(cube)
+        return self.get_result(path)[4]['6']
 
     def ab_norm_cube(self, path):
         # 7. Normalised absorbance --> 5 divided by max(5)
-        cube = self.get_result(path)[0].get_data_cube().tolist()
-        logging.debug("FINDING MAX...")
-        max5 = -np.log(np.min(np.abs(cube)))
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0:
-                        cube[i][j][k] = ''
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
-        return np.asarray(cube)
+        if not '7' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube().tolist()
+            logging.debug("FINDING MAX...")
+            max5 = -np.log(np.min(np.abs(cube)))
+            logging.debug("REMOVING NEGATIVE VALUES...")
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        if cube[i][j][k] <= 0:
+                            cube[i][j][k] = float('NaN')
+                        else:
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['7'] = np.asarray(cube)
+        return self.get_result(path)[4]['7']
 
     def ab_norm_non_neg_cube(self, path):
         # 8. Normalised absorbance without negative values --> 7 with spaces for
         # negative values
-        cube = self.get_result(path)[0].get_data_cube().tolist()
-        logging.debug("FINDING MAX...")
-        max5 = -np.log(np.min(np.abs(cube)))
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                progress(j+i*len(cube[i]), 307200)
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                        cube[i][j][k] = ''
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
-        return np.asarray(cube)
+        if not '8' in self.get_result(path)[4].keys():
+            cube = self.get_result(path)[0].get_data_cube().tolist()
+            logging.debug("FINDING MAX...")
+            max5 = -np.log(np.min(np.abs(cube)))
+            logging.debug("REMOVING NEGATIVE VALUES...")
+            for i in range(len(cube)):
+                for j in range(len(cube[i])):
+                    for k in range(len(cube[i][j])):
+                        if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
+                            cube[i][j][k] = float('NaN')
+                        else:
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
+                    progress(j+i*len(cube[i]), 307200)
+            self.get_result(path)[4]['8'] = np.asarray(cube)
+        return self.get_result(path)[4]['8']
 
     def update_selected_paths(self, selected_paths):
         self.selected_paths = selected_paths
@@ -269,6 +286,11 @@ class ModuleListener:
 
     def render_new_new_image_data(self):
         self._broadcast_to_new_image()
+
+    def update_params(self):
+        self.params = self.modules[PARAMETER].get_params()
+        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.recreated_specs, self.params)
+        self._broadcast_to_recreated_image()
 
     def update_saved(self, saves_key, value):
         logging.debug("UPDATING " + saves_key + " TO " + str(value))
@@ -438,7 +460,7 @@ class ModuleListener:
 
     def _update_recreated_specs(self, specs):
         self.recreated_specs = specs
-        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.recreated_specs)
+        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.recreated_specs, self.params)
         self._broadcast_to_recreated_image()
 
     def _update_new_specs(self, specs):
@@ -454,8 +476,8 @@ class ModuleListener:
     def _make_new_abs_analysis(self, path, data_cube, wavelength, index, mask, specs):
         self.results[path][1] = AbsSpecAnalysis(path, data_cube, wavelength, index, specs, mask)
 
-    def _make_new_rec_analysis(self, path, data_cube, wavelength, index, mask, specs):
-        self.results[path][2] = RecreatedAnalysis(path, data_cube, wavelength, index, specs, mask)
+    def _make_new_rec_analysis(self, path, data_cube, wavelength, index, mask, specs, params):
+        self.results[path][2] = RecreatedAnalysis(path, data_cube, wavelength, index, specs, params, mask)
 
     def _make_new_new_analysis(self, path, data_cube, wavelength, index, mask, specs):
         self.results[path][3] = NewAnalysis(path, data_cube, wavelength, index, specs, mask)

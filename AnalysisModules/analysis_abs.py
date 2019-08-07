@@ -110,6 +110,22 @@ class AbsSpecAnalysis:
         else:
             self.x1 = self.data_cube
 
+        # if self.normal:
+        #     if self.absorbance:
+        #         if self.negative:
+        #             self.x1 = self.
+        #         else:
+
+        #     else:
+
+        # else:
+        #     if self.absorbance:
+        #         if self.negative:
+
+        #         else:
+
+        #     else:
+
     def __calc_x_reflectance(self):
         self.x_reflectance = np.ma.array(self.x1, mask=self.data_cube<0)
 

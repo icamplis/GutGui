@@ -17,3 +17,4 @@ from GutGuiModules.colour import Colour
 from GutGuiModules.info import Info
 from GutGuiModules.csv_saver import CSVSaver
 from GutGuiModules.intro import Introduction
+from GutGuiModules.parameters import Parameter

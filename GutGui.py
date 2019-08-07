@@ -36,6 +36,11 @@ def main():
     csv_module = CSVSaver(csv_frame, listener)
     listener.attach_module(CSV, csv_module)
 
+    # parameter specification
+    parameter_frame = frame(input_output, PASTEL_PINK_RGB, 0, 3, 1, 1)
+    parameter_module = Parameter(parameter_frame, listener)
+    listener.attach_module(PARAMETER, parameter_module)
+
     # original colour
     og_color_frame = frame(image_diagram, PASTEL_PINK_RGB, 0, 0, 7, 6)
     og_color_module = OGColour(og_color_frame, listener)
