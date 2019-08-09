@@ -40,12 +40,12 @@ class NewColourData:
         self._build_info_label()
 
     def _calc_data(self):
-        self.mean_value = np.round(np.mean(self.stats_data), 3)
-        self.sd_value = np.round(np.std(self.stats_data), 3)
-        self.median_value = np.round(np.median(self.stats_data), 3)
+        self.mean_value = np.round(np.ma.mean(self.stats_data), 3)
+        self.sd_value = np.round(np.ma.std(self.stats_data), 3)
+        self.median_value = np.round(np.ma.median(self.stats_data), 3)
         self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.stats_data, 0.75), 3))
-        self.min_value = np.round(np.min(self.stats_data), 3)
-        self.max_value = np.round(np.max(self.stats_data), 3)
+        self.min_value = np.round(np.ma.min(self.stats_data), 3)
+        self.max_value = np.round(np.ma.max(self.stats_data), 3)
 
     def _build_data(self):
         # mean

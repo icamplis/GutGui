@@ -44,8 +44,8 @@ class RecreatedColourData:
         self.sd_value = np.round(np.ma.std(self.stats_data), 3)
         self.median_value = np.round(np.ma.median(self.stats_data), 3)
         self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.stats_data, 0.75), 3))
-        self.min_value = np.round(np.min(self.stats_data), 3)
-        self.max_value = np.round(np.max(self.stats_data), 3)
+        self.min_value = np.round(np.ma.min(self.stats_data), 3)
+        self.max_value = np.round(np.ma.max(self.stats_data), 3)
 
     def _build_data(self):
         # mean

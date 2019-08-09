@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import os
 np.set_printoptions(threshold=sys.maxsize)
 from AnalysisModules.analysis_constant import *
 from AnalysisModules.Indices import Index
@@ -9,7 +10,9 @@ import logging
 
 class AbsSpecAnalysis:
     # performs analyses necessary for the absorption spectrum
-    def __init__(self, path, data_cube, wavelength, index_number, specs, mask=None):
+    def __init__(self, path, data_cube, wavelength, index_number, specs, listener, mask=None):
+
+        self.listener = listener
 
         # inputs
         self.path = path
@@ -35,6 +38,10 @@ class AbsSpecAnalysis:
         # specific to module
         self.absorption_roi = None
         self.absorption_roi_masked = None
+
+        # data cube 
+        self.key = None
+        self.value = None
 
         self.analysis()
 
@@ -63,18 +70,13 @@ class AbsSpecAnalysis:
         self.analysis()
 
     def get_absorption_spec(self):
-        data = self.absorption_roi[:, 1]
-        if self.negative:
-            return data
-        else:
-            return data[data >= 0]
+        return self.absorption_roi[:, 1]
 
     def get_absorption_spec_masked(self):
-        data = self.absorption_roi_masked[:, 1]
-        if self.negative:
-            return data
-        else:
-            return data[data >= 0]
+        return self.absorption_roi_masked[:, 1]
+
+    def get_key_value(self):
+        return (self.key, self.value)
 
     def _calc_general(self):
         logging.debug("CALCULATING: ABSORPTION SPECTRUM...")
@@ -105,29 +107,17 @@ class AbsSpecAnalysis:
         return np.array(absorption_roi)
 
     def __calc_x1(self):
+        # normalise
         if self.normal:
-            self.x1 = self.data_cube/self.data_cube.max()
+            self.x1 = self.data_cube/np.ma.max(self.data_cube)
         else:
             self.x1 = self.data_cube
-
-        # if self.normal:
-        #     if self.absorbance:
-        #         if self.negative:
-        #             self.x1 = self.
-        #         else:
-
-        #     else:
-
-        # else:
-        #     if self.absorbance:
-        #         if self.negative:
-
-        #         else:
-
-        #     else:
+        # mask negatives
+        if self.negative:
+            self.x1 = np.ma.array(self.x1, mask=self.x1<0)
 
     def __calc_x_reflectance(self):
-        self.x_reflectance = np.ma.array(self.x1, mask=self.data_cube<0)
+        self.x_reflectance = self.x1
 
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
@@ -148,14 +138,13 @@ class AbsSpecAnalysis:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
     def __calc_x2(self):
-        copy = self.x1.copy()
-        self.x2 = -np.log(copy.clip(min=0))
+        self.x2 = -np.ma.log(self.x1)
+        self.x2 = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
+        if self.negative:
+            self.x2 = np.ma.array(self.x2, mask=self.x2<0)
 
     def __calc_x_absorbance(self):
-        self.x_absorbance = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
-
-        if self.normal:
-            self.x_absorbance = self.x_absorbance / self.x_absorbance.max()
+        self.x_absorbance = self.x2
 
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))

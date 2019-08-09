@@ -50,47 +50,47 @@ class Parameter:
         # r1
         self.r1_text = make_text(self.root, content='r' + u'\u2081' + ' (StO2): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=11, padx=(15, 5), pady = (0, 3))
         self.r1_entry = make_entry(self.root, row=1, column=1, width=8, padx=(0, 15), pady = (0, 3))
-        self.r1_entry.insert(0, str(0.1))
+        self.r1_entry.insert(0, str(0.2))
         self.r1_entry.bind('<Return>', self.__update)
         # r2
         self.r2_text = make_text(self.root, content='r' + u'\u2082' + ' (StO2): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=2, width=11, padx=(15, 5), pady = (0, 3))
         self.r2_entry = make_entry(self.root, row=2, column=1, width=8, padx=(0, 15), pady = (0, 3))
-        self.r2_entry.insert(0, str(0.2))
+        self.r2_entry.insert(0, str(-0.03))
         self.r2_entry.bind('<Return>', self.__update)
         # s1
         self.s1_text = make_text(self.root, content='s' + u'\u2081' + ' (NIR): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=3, width=11, padx=(15, 5), pady = (0, 3))
         self.s1_entry = make_entry(self.root, row=3, column=1, width=8, padx=(0, 15), pady = (0, 3))
-        self.s1_entry.insert(0, str(0.3))
+        self.s1_entry.insert(0, str(-0.46))
         self.s1_entry.bind('<Return>', self.__update)
         # s2
         self.s2_text = make_text(self.root, content='s' + u'\u2082' + ' (NIR): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=4, width=11, padx=(15, 5), pady = (0, 3))
         self.s2_entry = make_entry(self.root, row=4, column=1, width=8, padx=(0, 15), pady = (0, 3))
-        self.s2_entry.insert(0, str(0.4))
+        self.s2_entry.insert(0, str(0.45))
         self.s2_entry.bind('<Return>', self.__update)
         # t1
         self.t1_text = make_text(self.root, content='t' + u'\u2081' + ' (THI): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=5, width=11, padx=(15, 5), pady = (0, 3))
         self.t1_entry = make_entry(self.root, row=5, column=1, width=8, padx=(0, 15), pady = (0, 3))
-        self.t1_entry.insert(0, str(0.5))
+        self.t1_entry.insert(0, str(0.4))
         self.t1_entry.bind('<Return>', self.__update)
         # t2
         self.t2_text = make_text(self.root, content='t' + u'\u2082' + ' (THI): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=6, width=11, padx=(15, 5), pady = (0, 3))
         self.t2_entry = make_entry(self.root, row=6, column=1, width=8, padx=(0, 15), pady = (0, 3))
-        self.t2_entry.insert(0, str(0.6))
+        self.t2_entry.insert(0, str(1.55))
         self.t2_entry.bind('<Return>', self.__update)
         # u1
         self.u1_text = make_text(self.root, content='u' + u'\u2081' + ' (TWI): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=7, width=11, padx=(15, 5), pady = (0, 3))
         self.u1_entry = make_entry(self.root, row=7, column=1, width=8, padx=(0, 15), pady = (0, 3))
-        self.u1_entry.insert(0, str(0.7))
+        self.u1_entry.insert(0, str(0.1))
         self.u1_entry.bind('<Return>', self.__update)
         # u2
         self.u2_text = make_text(self.root, content='u' + u'\u2082' + ' (TWI): ', bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=8, width=11, padx=(15, 5), pady = (0, 15))
         self.u2_entry = make_entry(self.root, row=8, column=1, width=8, padx=(0, 15), pady = (0, 15))
-        self.u2_entry.insert(0, str(0.8))
+        self.u2_entry.insert(0, str(-0.5))
         self.u2_entry.bind('<Return>', self.__update)
 
     def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Parameter\nSpecification', command=self.__info, width=10)
-        self.info_label.grid(columnspan=2, padx=(0, 60))
+        self.info_label = make_label_button(self.root, text='Parameter\nSpecification for\n"Recreated Image"', command=self.__info, width=14)
+        self.info_label.grid(columnspan=2, padx=(0, 20))
 
     # Commands (Callbacks)
     def __info(self):

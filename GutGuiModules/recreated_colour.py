@@ -75,6 +75,8 @@ class RecColour:
     def update_recreated_image(self, recreated_colour_image_data):
         if len(self.initial_data) == 0:
             self.initial_data = recreated_colour_image_data
+        # if not (self.initial_data == recreated_colour_image_data).all():
+        #     self.initial_data = recreated_colour_image_data
         self.recreated_colour_image_data = recreated_colour_image_data
         self._scale()
         self._build_recreated_image()
@@ -134,17 +136,17 @@ class RecColour:
         self.nir_checkbox.deselect()
         self.nir_checkbox.bind('<Button-1>', self.__update_nir_check_status)
 
-    def _build_twi(self):
-        self.twi_button = make_button(self.root, text="TWI", width=6, row=1, column=2, command=self.__update_to_twi, inner_padx=0, inner_pady=5, outer_padx=(0, 10))
-        self.twi_checkbox = make_checkbox(self.root, "", row=1, column=2,var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
-        self.twi_checkbox.deselect()
-        self.twi_checkbox.bind('<Button-1>', self.__update_twi_check_status)
-
     def _build_thi(self):
-        self.thi_button = make_button(self.root, text="THI", row=1, column=3, command=self.__update_to_thi, inner_padx=0, inner_pady=5, width=6, outer_padx=(0, 15))
-        self.thi_checkbox = make_checkbox(self.root, "", row=1, column=3, var=self.thi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 10))
+        self.thi_button = make_button(self.root, text="THI", row=1, column=2, command=self.__update_to_thi, inner_padx=0, inner_pady=5, width=6, outer_padx=(0, 10))
+        self.thi_checkbox = make_checkbox(self.root, "", row=1, column=2, var=self.thi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
         self.thi_checkbox.deselect()
         self.thi_checkbox.bind('<Button-1>', self.__update_thi_check_status)
+
+    def _build_twi(self):
+        self.twi_button = make_button(self.root, text="TWI", width=6, row=1, column=3, command=self.__update_to_twi, inner_padx=0, inner_pady=5, outer_padx=(0, 15))
+        self.twi_checkbox = make_checkbox(self.root, "", row=1, column=3, var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 10))
+        self.twi_checkbox.deselect()
+        self.twi_checkbox.bind('<Button-1>', self.__update_twi_check_status)
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, columnspan=1, outer_padx=(30,0), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
@@ -171,7 +173,7 @@ class RecColour:
         self.upper_scale_input.insert(END, str(self.upper_scale_value))
 
     def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Recreated Colour', command=self.__info, width=14)
+        self.info_label = make_label_button(self.root, text='Recreated Image', command=self.__info, width=14)
         self.info_label.grid(columnspan=3, padx=(0, 50))
 
     def _build_drop_down(self):
@@ -197,8 +199,8 @@ class RecColour:
             self.recreated_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
-        self.upper_scale_value = float(np.max(self.recreated_colour_image_data))
-        self.lower_scale_value = float(np.min(self.recreated_colour_image_data))
+        self.upper_scale_value = float(np.ma.max(self.recreated_colour_image_data))
+        self.lower_scale_value = float(np.ma.min(self.recreated_colour_image_data))
         self._build_lower_scale()
         self._build_upper_scale()
 
@@ -208,7 +210,7 @@ class RecColour:
         self.update_recreated_image(self.initial_data)
 
     def __norm(self):
-        self.update_recreated_image(self.initial_data/np.max(self.initial_data))
+        self.update_recreated_image(self.initial_data/np.ma.max(self.initial_data))
 
     def __og(self):
         self.update_recreated_image(self.initial_data)

@@ -12,7 +12,7 @@ class Info:
         self.info = "This is filler text\nWrite whatever you want here\n\n:)"
 
         self.source_output_info = "Source & Output Information"
-        self.analysis_form_info = "Analysis & Form Information"
+        self.analysis_form_info = "Analysis Settings Information"
         self.csv_info = "Data to CSV Information"
         self.save_info = "Save Information"
         self.param_info = "Parameter Specification Information"
@@ -20,7 +20,7 @@ class Info:
         self.input_info = "Here you can input coordinates manually. Make sure that your values are integers (they will be rounded if not), and that your x values are in the interval [0, 640] and your y values are in the interval [0, 480]. Press 'Go' when you are ready to upload your coordinates."
         self.recreated_info = "Recreated Image Information"
         self.new_info = "New Image Information"
-        self.diagram_info = "Diagram Information"
+        self.diagram_info = "Area Information"
         self.hist_info = "Histogram Information"
         self.abspec_info = "Optical Spectrum Information"
 

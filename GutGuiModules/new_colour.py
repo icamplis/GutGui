@@ -71,6 +71,8 @@ class NewColour:
     def update_new_colour_image(self, new_colour_image_data):
         if len(self.initial_data) == 0:
             self.initial_data = new_colour_image_data
+        # if not (self.initial_data == new_colour_image_data).all():
+        #     self.initial_data = new_colour_image_data
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         self._build_new_image()
@@ -148,7 +150,7 @@ class NewColour:
         self.drop_down_menu.grid(column=2, row=0, columnspan=2, padx=(0, 15))
 
     def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='New Colour', command=self.__info, width=9)
+        self.info_label = make_label_button(self.root, text='New Image', command=self.__info, width=9)
         self.info_label.grid(columnspan=2, padx=(0, 20))
 
     def _build_reset_norm_og(self):
@@ -167,8 +169,8 @@ class NewColour:
             self.new_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
-        self.upper_scale_value = float(np.max(self.new_colour_image_data))
-        self.lower_scale_value = float(np.min(self.new_colour_image_data))
+        self.upper_scale_value = float(np.ma.max(self.new_colour_image_data))
+        self.lower_scale_value = float(np.ma.min(self.new_colour_image_data))
         self._build_lower_scale()
         self._build_upper_scale()
 
@@ -177,7 +179,7 @@ class NewColour:
         self.update_new_colour_image(self.initial_data)
 
     def __norm(self):
-        self.update_new_colour_image(self.initial_data/np.max(self.initial_data))
+        self.update_new_colour_image(self.initial_data/np.ma.max(self.initial_data))
 
     def __og(self):
         self.update_new_colour_image(self.initial_data)

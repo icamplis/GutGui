@@ -198,18 +198,18 @@ class AbsorptionSpec:
         self.interactive_absorption_spec.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _calc_high_low(self):
-        self.x_lower_scale_value = np.min(self.x_vals)
-        self.x_upper_scale_value = np.max(self.x_vals)
-        self.y_lower_scale_value = round(np.min(self.absorption_spec), 3)
-        self.y_upper_scale_value = round(np.max(self.absorption_spec), 3)
+        self.x_lower_scale_value = np.ma.min(self.x_vals)
+        self.x_upper_scale_value = np.ma.max(self.x_vals)
+        self.y_lower_scale_value = round(np.ma.min(self.absorption_spec), 3)
+        self.y_upper_scale_value = round(np.ma.max(self.absorption_spec), 3)
 
     def _calc_extrema(self):
         abs_spec_list = list(self.absorption_spec)
         abs_range = abs_spec_list[int((self.lower_value-500)/5):int((self.upper_value-500)/5)]
-        maximum = np.max(abs_range)
+        maximum = np.ma.max(abs_range)
         maximum_x = abs_spec_list.index(maximum) * 5 + 500
         self.local_maximum_value = (maximum_x, round(maximum, 3))
-        minimum = np.min(abs_range)
+        minimum = np.ma.min(abs_range)
         minimum_x = abs_spec_list.index(minimum) * 5 + 500
         self.local_minimum_value = (minimum_x, round(minimum, 3))
         self._build_extrema()

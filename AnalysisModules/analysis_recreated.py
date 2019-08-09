@@ -9,7 +9,7 @@ import logging
 
 class RecreatedAnalysis:
     # performs analyses necessary for recreated image
-    def __init__(self, path, data_cube, wavelength, index_number, specs, params,mask=None):
+    def __init__(self, path, data_cube, wavelength, index_number, specs, params, listener, mask=None):
 
         # inputs
         self.path = path
@@ -106,52 +106,28 @@ class RecreatedAnalysis:
         self.analysis()
 
     def get_sto2(self):
-        if self.negative:
-            return self.sto2
-        else:
-            return self.sto2
+        return self.sto2
 
     def get_sto2_masked(self):
-        if self.negative:
-            return self.sto2_masked
-        else:
-            return self.sto2_masked
+        return self.sto2_masked
 
     def get_nir(self):
-        if self.negative:
-            return self.nir
-        else:
-            return self.nir
+        return self.nir
 
     def get_nir_masked(self):
-        if self.negative:
-            return self.nir_masked
-        else:
-            return self.nir_masked
+        return self.nir_masked
 
     def get_thi(self):
-        if self.negative:
-            return self.thi
-        else:
-            return self.thi
+        return self.thi
 
     def get_thi_masked(self):
-        if self.negative:
-            return self.thi_masked
-        else:
-            return self.thi_masked
+        return self.thi_masked
 
     def get_twi(self):
-        if self.negative:
-            return self.twi
-        else:
-            return self.twi
+        return self.twi
 
     def get_twi_masked(self):
-        if self.negative:
-            return self.twi_masked
-        else:
-            return self.twi_masked
+        return self.twi_masked
 
     def _calc_general(self):
         logging.debug("CALCULATING: RECREATED IMAGE...")
@@ -162,7 +138,6 @@ class RecreatedAnalysis:
 
     def _calc_sto2(self):
         logging.debug("CALCULATING: STO2...")
-        print(self.R1)
         if self.absorbance:
             self._x_absorbance_gradient = np.gradient(self.x_absorbance, axis=2)
             self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
@@ -231,13 +206,17 @@ class RecreatedAnalysis:
 
     @staticmethod
     def __calc_x1(self):
+        # normalise
         if self.normal:
-            self.x1 = self.data_cube/self.data_cube.max()
+            self.x1 = self.data_cube/np.ma.max(self.data_cube)
         else:
             self.x1 = self.data_cube
+        # mask negatives
+        if self.negative:
+            self.x1 = np.ma.array(self.x1, mask=self.x1<0)
 
     def __calc_x_reflectance(self):
-        self.x_reflectance = np.ma.array(self.x1, mask=self.data_cube<0)
+        self.x_reflectance = self.x1
 
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
@@ -258,14 +237,13 @@ class RecreatedAnalysis:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
     def __calc_x2(self):
-        copy = self.x1.copy()
-        self.x2 = -np.log(copy.clip(min=0))
+        self.x2 = -np.ma.log(self.x1)
+        self.x2 = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
+        if self.negative:
+            self.x2 = np.ma.array(self.x2, mask=self.x2<0)
 
     def __calc_x_absorbance(self):
-        self.x_absorbance = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
-
-        if self.normal:
-            self.x_absorbance = self.x_absorbance / self.x_absorbance.max()
+        self.x_absorbance = self.x2
 
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
@@ -286,3 +264,4 @@ class RecreatedAnalysis:
                                                          mask=self.mask)
             else:
                 self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength[0]], mask=self.mask)
+

@@ -34,7 +34,7 @@ class ModuleListener:
         self.ab_spec_specs = None
         self.recreated_specs = None
         self.new_specs = None
-        self.params = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+        self.params = [0.2, -0.03, -0.46, 0.45, 0.4, 1.55, 0.1, -0.5]
 
         # ORIGINAL IMAGE
         self.mask = None
@@ -62,14 +62,14 @@ class ModuleListener:
 
     def get_current_norm_rec_data(self):
         image = self.modules[RECREATED_COLOUR].get_current_data()
-        return image/np.max(image)
+        return image/np.ma.max(image)
 
     def get_current_new_data(self):
         return self.modules[NEW_COLOUR].get_current_data()
         
     def get_current_norm_new_data(self):
         image = self.modules[NEW_COLOUR].get_current_data()
-        return image/np.max(image)
+        return image/np.ma.max(image)
 
     def get_selected_paths(self):
         return self.selected_paths
@@ -120,6 +120,7 @@ class ModuleListener:
         # Data cube is originally same for all, use hist because its the first in the list
         if not '1' in self.get_result(path)[4].keys():
             cube = self.get_result(path)[0].get_data_cube().tolist()
+            logging.debug("REMOVING NEGATIVE VALUES...")
             for i in range(len(cube)):
                 for j in range(len(cube[i])):
                     for k in range(len(cube[i][j])):
@@ -149,7 +150,7 @@ class ModuleListener:
         # 3. Normalised reflectance --> 1 divded by max(1)
         if not '3' in self.get_result(path)[4].keys():
             cube = self.get_result(path)[0].get_data_cube()
-            max_val = np.max(cube)
+            max_val = np.ma.max(cube)
             for i in range(len(cube)):
                 for j in range(len(cube[i])):
                     for k in range(len(cube[i][j])):
@@ -164,7 +165,7 @@ class ModuleListener:
         if not '4' in self.get_result(path)[4].keys():
             cube = self.get_result(path)[0].get_data_cube()
             logging.debug("REMOVING NEGATIVE VALUES...")
-            cube = cube/np.max(cube)
+            cube = cube/np.ma.max(cube)
             cube = cube.tolist()
             for i in range(len(cube)):
                 for j in range(len(cube[i])):
@@ -188,7 +189,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k])))
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['5'] = np.asarray(cube)
         return self.get_result(path)[4]['5']
@@ -205,7 +206,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k])))
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['6'] = np.asarray(cube)
         return self.get_result(path)[4]['6']
@@ -215,7 +216,7 @@ class ModuleListener:
         if not '7' in self.get_result(path)[4].keys():
             cube = self.get_result(path)[0].get_data_cube().tolist()
             logging.debug("FINDING MAX...")
-            max5 = -np.log(np.min(np.abs(cube)))
+            max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
             logging.debug("REMOVING NEGATIVE VALUES...")
             for i in range(len(cube)):
                 for j in range(len(cube[i])):
@@ -223,7 +224,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
+                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k]))/max5)
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['7'] = np.asarray(cube)
         return self.get_result(path)[4]['7']
@@ -234,7 +235,7 @@ class ModuleListener:
         if not '8' in self.get_result(path)[4].keys():
             cube = self.get_result(path)[0].get_data_cube().tolist()
             logging.debug("FINDING MAX...")
-            max5 = -np.log(np.min(np.abs(cube)))
+            max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
             logging.debug("REMOVING NEGATIVE VALUES...")
             for i in range(len(cube)):
                 for j in range(len(cube[i])):
@@ -242,7 +243,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
+                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k]))/max5)
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['8'] = np.asarray(cube)
         return self.get_result(path)[4]['8']
@@ -471,14 +472,14 @@ class ModuleListener:
     # Uses the path of the data cube as an identifier
 
     def _make_new_hist_analysis(self, path, data_cube, wavelength, index, mask, specs):
-        self.results[path][0] = HistogramAnalysis(path, data_cube, wavelength, index, specs, mask)
+        self.results[path][0] = HistogramAnalysis(path, data_cube, wavelength, index, specs, ModuleListener(), mask)
 
     def _make_new_abs_analysis(self, path, data_cube, wavelength, index, mask, specs):
-        self.results[path][1] = AbsSpecAnalysis(path, data_cube, wavelength, index, specs, mask)
+        self.results[path][1] = AbsSpecAnalysis(path, data_cube, wavelength, index, specs, ModuleListener(), mask)
 
     def _make_new_rec_analysis(self, path, data_cube, wavelength, index, mask, specs, params):
-        self.results[path][2] = RecreatedAnalysis(path, data_cube, wavelength, index, specs, params, mask)
+        self.results[path][2] = RecreatedAnalysis(path, data_cube, wavelength, index, specs, params, ModuleListener(), mask)
 
     def _make_new_new_analysis(self, path, data_cube, wavelength, index, mask, specs):
-        self.results[path][3] = NewAnalysis(path, data_cube, wavelength, index, specs, mask)
+        self.results[path][3] = NewAnalysis(path, data_cube, wavelength, index, specs, ModuleListener(), mask)
 

@@ -93,13 +93,13 @@ class AnalysisAndForm:
         self.index_selected = 1  # Use index no.1 by default
 
     def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Analysis and Form', command=self.__info, width=14)
+        self.info_label = make_label_button(self.root, text='Analysis Settings\nfor "New Colour"', command=self.__info, width=14)
         self.info_label.grid(columnspan=4)
 
     # Commands (Callbacks)
     def __info(self):
         info = self.listener.get_analysis_form_info()
-        title = "Analysis & Form Information"
+        title = "Analysis Settings Information"
         make_info(title=title, info=info)
 
     def __idxn(self, n):

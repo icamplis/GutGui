@@ -118,8 +118,8 @@ class Histogram:
         logging.debug("BUILDING HISTOGRAM...")
         self.flattened_data = data.flatten()
         self.flattened_data = self.flattened_data[self.flattened_data != np.array(None)]
-        self.upper_value = np.max(self.flattened_data)
-        self.lower_value = np.min(self.flattened_data)
+        self.upper_value = np.ma.max(self.flattened_data)
+        self.lower_value = np.ma.min(self.flattened_data)
         self._calc_stats()
         self._build_scale()
         self._build_interactive_histogram()
@@ -245,7 +245,7 @@ class Histogram:
         self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
         if self.flattened_data is not None:
             # calc bins
-            bins = np.arange(start = np.min(self.flattened_data), stop = np.max(self.flattened_data) + self.step_size_value, step = self.step_size_value)
+            bins = np.arange(start = np.ma.min(self.flattened_data), stop = np.ma.max(self.flattened_data) + self.step_size_value, step = self.step_size_value)
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins)
             if self.parametric == True:
@@ -280,9 +280,9 @@ class Histogram:
         data = data[data <= self.upper_value]
         # mean, sd, median, iqr
         logging.debug("CALCULATING STATS...")
-        self.mean_value = np.round(np.mean(data), 3)
+        self.mean_value = np.round(np.ma.mean(data), 3)
         progress(0, 11)
-        self.sd_value = np.round(np.std(data), 3)
+        self.sd_value = np.round(np.ma.std(data), 3)
         progress(1, 11)
         self.median_value = np.round(np.ma.median(data), 3)
         progress(2, 11)
@@ -295,11 +295,11 @@ class Histogram:
         histogram_data = np.histogram(data, bins=bins)
         progress(5, 11)
         # determine the minimum y value and at which x this occurs
-        self.min_y = np.round(np.min(np.histogram(data, bins=bins)[0]), 3)
+        self.min_y = np.round(np.ma.min(np.histogram(data, bins=bins)[0]), 3)
         self.min_y_val = np.round(histogram_data[1][np.where(histogram_data[0] == self.min_y)[0][0]], 3)
         progress(6, 11)
         # determine the maximum y value and at which x this occurs
-        self.max_y = np.round(np.max(histogram_data[0]), 3)
+        self.max_y = np.round(np.ma.max(histogram_data[0]), 3)
         self.max_y_val = np.round(histogram_data[1][np.where(histogram_data[0] == self.max_y)[0][0]], 3)
         progress(7, 11)
         # determine the minimum x (bin) value and its size
@@ -311,7 +311,7 @@ class Histogram:
         self.max_x_val = np.round(histogram_data[0][-1], 3)
         progress(9, 11)
         # percent negative
-        percent = np.sum(np.array(data) < 0)/len(data) * 100
+        percent = np.ma.sum(data < 0)/len(data) * 100
         self.percent_negative_value = round(percent, 3)
         progress(10, 11)
         self._build_stats()

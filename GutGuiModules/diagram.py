@@ -51,12 +51,12 @@ class Diagram:
         self.masked_region_checkbox.bind('<Button-1>', self.__update_masked_region_check_status)
 
     def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Diagram', command=self.__info, width=7)
+        self.info_label = make_label_button(self.root, text='Area', command=self.__info, width=5)
 
     # commands
     def __info(self):
         info = self.listener.get_diagram_info()
-        title = "Diagram Information"
+        title = "Area Information"
         make_info(title=title, info=info)
 
     def __use_whole_image(self):
