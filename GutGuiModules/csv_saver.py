@@ -22,6 +22,7 @@ class CSVSaver:
         self.norm_rec_butt = None
         self.new_butt = None
         self.norm_new_butt = None
+        self.all_butt = None
         self.reflectance_text = None
         self.absorbance_text = None
         self.image_text = None
@@ -44,6 +45,7 @@ class CSVSaver:
         self._build_norm_rec()
         self._build_new()
         self._build_norm_new()
+        self._build_all()
         self._build_text()
         self._build_info_label()
 
@@ -82,6 +84,9 @@ class CSVSaver:
 
     def _build_norm_new(self):
         self.norm_new_butt = make_button(self.root, text="12. Normalised New Image to CSV", command=self.__norm_new_to_csv, row=15, column=0, outer_pady=(0, 15), outer_padx=15, width=32)
+
+    def _build_all(self):
+        self.all_butt = make_button(self.root, text="All to CSV", command=self.__all_to_csv, row=16, column=0, outer_pady=(10, 15), outer_padx=15, width=32)
 
     def _build_text(self):
         self.reflectance_text = make_text(self.root, content="Reflectance:", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=12, pady=(0, 5))
@@ -255,6 +260,21 @@ class CSVSaver:
                 self._make_direc(direc)
                 big_path = direc + '/' + '12_norm_new_image_data.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
+
+    def __all_to_csv(self):
+        self.__ogr_to_csv()
+        self.__ogrp_to_csv()
+        self.__oga_to_csv()
+        self.__ogap_to_csv()
+        self.__normr_to_csv()
+        self.__normrp_to_csv()
+        self.__norma_to_csv()
+        self.__normap_to_csv()
+        self.__rec_to_csv()
+        self.__norm_rec_to_csv()
+        self.__new_to_csv()
+        self.__norm_new_to_csv()
+
     
 
 
