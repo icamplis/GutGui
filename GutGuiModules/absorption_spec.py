@@ -9,6 +9,7 @@ class AbsorptionSpec:
         self.listener = listener
 
         self.specs = (False, True, False)
+        self.spec_number = 1
 
         self.x_vals = np.arange(500, 1000, 5) 
         self.absorption_spec = [] 
@@ -73,6 +74,9 @@ class AbsorptionSpec:
     def get_specs(self):
         return self.specs
 
+    def get_spec_number(self):
+        return self.spec_number
+
     def get_save_checkbox_value(self):
         return not bool(self.save_checkbox_value.get())
 
@@ -130,45 +134,45 @@ class AbsorptionSpec:
         self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(80,0))
 
     def _build_extrema(self):
-        self.local_maximum_text = make_text(self.root, content="Local Max: " + str(self.local_maximum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=0, row=1, width=25, columnspan=2, pady=(0, 5), padx=5, state=NORMAL)
+        self.local_maximum_text = make_text(self.root, content="Local Max: " + str(self.local_maximum_value), bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=25, columnspan=2, pady=(0, 5), padx=5, state=NORMAL)
 
-        self.local_minimum_text = make_text(self.root, content="Local Min: " + str(self.local_minimum_value), bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=2, row=1, width=25, columnspan=2, pady=(0, 5), padx=(0,5), state=NORMAL)
+        self.local_minimum_text = make_text(self.root, content="Local Min: " + str(self.local_minimum_value), bg=tkcolour_from_rgb(BACKGROUND), column=2, row=1, width=25, columnspan=2, pady=(0, 5), padx=(0,5), state=NORMAL)
 
     def _build_scale(self):
         # lower
         self.lower_text = make_text(self.root, content="Lower: ", 
-            bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=2, width=7, columnspan=1, pady=(0, 10))
+            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=2, width=7, columnspan=1, pady=(0, 10))
         self.lower_input = make_entry(self.root, row=2, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.lower_input.bind('<Return>', self.__update_upper_lower)
         self.lower_input.insert(END, str(self.lower_value))
 
         # upper
         self.upper_text = make_text(self.root, content="Upper: ", 
-            bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=3, width=7, columnspan=1, pady=(0, 10))
+            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=3, width=7, columnspan=1, pady=(0, 10))
         self.upper_input = make_entry(self.root, row=3, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.upper_input.bind('<Return>', self.__update_upper_lower)
         self.upper_input.insert(END, str(self.upper_value))
 
         # x lower
-        self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=4, width=7, columnspan=1, pady=(0, 10))
+        self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=4, width=7, columnspan=1, pady=(0, 10))
         self.x_lower_scale_input = make_entry(self.root, row=4, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_lower_scale_input.bind('<Return>', self.__update_scales)
         self.x_lower_scale_input.insert(END, str(self.x_lower_scale_value))
 
         # x upper
-        self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=5, width=7, columnspan=1, pady=(0, 10))
+        self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=5, width=7, columnspan=1, pady=(0, 10))
         self.x_upper_scale_input = make_entry(self.root, row=5, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_upper_scale_input.bind('<Return>', self.__update_scales)
         self.x_upper_scale_input.insert(END, str(self.x_upper_scale_value))
 
         # y lower
-        self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=6, width=7, columnspan=1, pady=(0, 10))
+        self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=6, width=7, columnspan=1, pady=(0, 10))
         self.y_lower_scale_input = make_entry(self.root, row=6, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scales)
         self.y_lower_scale_input.insert(END, str(self.y_lower_scale_value))
 
         # y upper
-        self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(PASTEL_PINK_RGB), column=3, row=7, width=7, columnspan=1, pady=(0, 10))
+        self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=7, width=7, columnspan=1, pady=(0, 10))
         self.y_upper_scale_input = make_entry(self.root, row=7, column=4, width=5, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.y_upper_scale_input.bind('<Return>', self.__update_scales)
         self.y_upper_scale_input.insert(END, str(self.y_upper_scale_value))
@@ -181,7 +185,7 @@ class AbsorptionSpec:
         # create canvas
         self.interactive_absorption_spec_graph = Figure(figsize=(3.5, 2))
         self.axes = self.interactive_absorption_spec_graph.add_subplot(111)
-        self.interactive_absorption_spec_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
+        self.interactive_absorption_spec_graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
         # plot absorption spec
         if len(self.absorption_spec) != 0:
             self.axes.plot(self.x_vals, self.absorption_spec, '-', lw=0.5)
@@ -190,7 +194,10 @@ class AbsorptionSpec:
         self.interactive_absorption_spec_graph.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
         self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+        # commas and non-scientific notation
         self.axes.ticklabel_format(style='plain')
+        self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',') if x%1==0 else format(round(x, 2))))
+        self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',') if x%1==0 else format(round(x, 2))))
         # draw figure
         self.interactive_absorption_spec = FigureCanvasTkAgg(self.interactive_absorption_spec_graph, master=self.root)
         self.interactive_absorption_spec.draw()
@@ -242,28 +249,22 @@ class AbsorptionSpec:
         choice = self.drop_down_var.get()[:2]
         if choice == '1.':
             self.specs = (False, True, False)
-            self.listener._update_abs_specs(self.specs)
         elif choice == '2.':
             self.specs = (False, True, True)
-            self.listener._update_abs_specs(self.specs)
         elif choice == '3.':
             self.specs = (False, False, False)
-            self.listener._update_abs_specs(self.specs)
         elif choice == '4.':
             self.specs = (False, False, True)
-            self.listener._update_abs_specs(self.specs)
         elif choice == '5.':
             self.specs = (True, True, False)
-            self.listener._update_abs_specs(self.specs)
         elif choice == '6.':
             self.specs = (True, True, True)
-            self.listener._update_abs_specs(self.specs)
         elif choice == '7.':
             self.specs = (True, False, False)
-            self.listener._update_abs_specs(self.specs)
         elif choice == '8.':
             self.specs = (True, False, True)
-            self.listener._update_abs_specs(self.specs)
+        self.spec_number = choice[0]
+        self.listener._update_abs_specs(self.specs)
 
     def __update_save_with_scale_check_status(self, event):
         value = self.get_save_checkbox_value()

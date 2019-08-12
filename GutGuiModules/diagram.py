@@ -52,6 +52,7 @@ class Diagram:
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Area', command=self.__info, width=5)
+        self.info_label.grid(padx=(0, 65))
 
     # commands
     def __info(self):

@@ -89,9 +89,9 @@ class CSVSaver:
         self.all_butt = make_button(self.root, text="All to CSV", command=self.__all_to_csv, row=16, column=0, outer_pady=(10, 15), outer_padx=15, width=32)
 
     def _build_text(self):
-        self.reflectance_text = make_text(self.root, content="Reflectance:", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=12, pady=(0, 5))
-        self.absorbance_text = make_text(self.root, content="Absorbance:", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=6, width=11, pady=(10, 5))
-        self.image_text = make_text(self.root, content="Images:", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=11, width=7, pady=(10, 5))
+        self.reflectance_text = make_text(self.root, content="Reflectance:", bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=12, pady=(0, 5))
+        self.absorbance_text = make_text(self.root, content="Absorbance:", bg=tkcolour_from_rgb(BACKGROUND), column=0, row=6, width=11, pady=(10, 5))
+        self.image_text = make_text(self.root, content="Images:", bg=tkcolour_from_rgb(BACKGROUND), column=0, row=11, width=7, pady=(10, 5))
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Data to CSV', command=self.__info, width=9)
@@ -223,9 +223,10 @@ class CSVSaver:
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.get_current_rec_data().T
-                direc = os.path.dirname(path) + '/09_Recreated_Image'
+                info = self.listener.get_current_rec_info()
+                direc = os.path.dirname(path) + '/09_Recreated_Image' 
                 self._make_direc(direc)
-                big_path = direc + '/' + '09_recreated_image_data.csv'
+                big_path = direc + '/' + '09_recreated_image_data' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
 
@@ -234,9 +235,10 @@ class CSVSaver:
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.get_current_norm_rec_data().T
+                info = self.listener.get_current_rec_info()
                 direc = os.path.dirname(path) + '/10_Normalised_Recreated_Image'
                 self._make_direc(direc)
-                big_path = direc + '/' + '10_norm_recreated_image_data.csv'
+                big_path = direc + '/' + '10_norm_recreated_image_data' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __new_to_csv(self):
@@ -245,9 +247,10 @@ class CSVSaver:
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.get_current_new_data().T
-                direc = os.path.dirname(path) + '/11_New_Image'
+                info = self.listener.get_current_new_info()
+                direc = os.path.dirname(path) + '/11_New_Image' 
                 self._make_direc(direc)
-                big_path = direc + '/' + '11_new_image_data.csv'
+                big_path = direc + '/' + '11_new_image_data' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __norm_new_to_csv(self):
@@ -256,9 +259,10 @@ class CSVSaver:
             selected_paths = self.listener.get_selected_paths()
             if path in selected_paths:
                 data = self.listener.get_current_norm_new_data().T
-                direc = os.path.dirname(path) + '/12_Normalised_New_Image'
+                info = self.listener.get_current_new_info()
+                direc = os.path.dirname(path) + '/12_Normalised_New_Image' 
                 self._make_direc(direc)
-                big_path = direc + '/' + '12_norm_new_image_data.csv'
+                big_path = direc + '/' + '12_norm_new_image_data' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __all_to_csv(self):

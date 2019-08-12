@@ -57,6 +57,9 @@ class ModuleListener:
         else:
             return self.get_result(self.current_rendered_result_path)[3].get_index()
 
+    def get_current_original_data(self):
+        return self.modules[ORIGINAL_COLOUR].get_current_data()
+
     def get_current_rec_data(self):
         return self.modules[RECREATED_COLOUR].get_current_data()
 
@@ -70,6 +73,43 @@ class ModuleListener:
     def get_current_norm_new_data(self):
         image = self.modules[NEW_COLOUR].get_current_data()
         return image/np.ma.max(image)
+
+    def get_current_rec_info(self, saves=False):
+        info = ''
+        spec_num = self.modules[RECREATED_COLOUR].get_spec_number()
+        image_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
+        if not saves:
+            info += '_' + str(image_mode)
+        info += '_fromCSV' + str(spec_num)
+        return info
+
+    def get_current_new_info(self, mode=None):
+        info = ''
+        spec_num = self.modules[NEW_COLOUR].get_spec_number()
+        image_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
+        if image_mode == WL or mode == 'WL':
+            mod = '_' + str(self.wavelength[0]*5+500) + '-' + str(self.wavelength[1]*5+500)
+        elif image_mode == IDX or mode == 'IDX':
+            mod = '_IDX' + self.index
+        info += str(mod)
+        info += '_fromCSV' + str(spec_num)
+        return info
+
+    def get_current_hist_info(self):
+        info = ''
+        spec_num = self.modules[HISTOGRAM].get_spec_number()
+        wl = '_' + str(self.wavelength[0]*5+500) + '-' + str(self.wavelength[1]*5+500)
+        info += wl
+        info += '_fromCSV' + str(spec_num)
+        return info
+
+    def get_current_abs_info(self):
+        info = ''
+        spec_num = self.modules[ABSORPTION_SPEC].get_spec_number()
+        wl = '_' + str(self.wavelength[0]*5+500) + '-' + str(self.wavelength[1]*5+500)
+        info += wl
+        info += '_fromCSV' + str(spec_num)
+        return info
 
     def get_selected_paths(self):
         return self.selected_paths
@@ -189,7 +229,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k])))
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['5'] = np.asarray(cube)
         return self.get_result(path)[4]['5']
@@ -206,7 +246,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k])))
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['6'] = np.asarray(cube)
         return self.get_result(path)[4]['6']
@@ -224,7 +264,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k]))/max5)
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['7'] = np.asarray(cube)
         return self.get_result(path)[4]['7']
@@ -243,7 +283,7 @@ class ModuleListener:
                         if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
                             cube[i][j][k] = float('NaN')
                         else:
-                            cube[i][j][k] = str(float(-np.ma.log(cube[i][j][k]))/max5)
+                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
                     progress(j+i*len(cube[i]), 307200)
             self.get_result(path)[4]['8'] = np.asarray(cube)
         return self.get_result(path)[4]['8']
@@ -319,17 +359,29 @@ class ModuleListener:
     def get_save_info(self):
         return self.modules[INFO].get_save_info()
 
+    def get_parameter_info(self):
+        return self.modules[INFO].get_parameter_info()
+
     def get_original_info(self):
         return self.modules[INFO].get_original_info()
 
     def get_input_info(self):
         return self.modules[INFO].get_input_info()
 
+    def get_original_data_info(self):
+        return self.modules[INFO].get_original_data_info()
+
     def get_recreated_info(self):
         return self.modules[INFO].get_recreated_info()
 
+    def get_recreated_data_info(self):
+        return self.modules[INFO].get_recreated_data_info()
+
     def get_new_info(self):
         return self.modules[INFO].get_new_info()
+
+    def get_new_data_info(self):
+        return self.modules[INFO].get_new_data_info()
 
     def get_diagram_info(self):
         return self.modules[INFO].get_diagram_info()
@@ -339,6 +391,9 @@ class ModuleListener:
 
     def get_abspec_info(self):
         return self.modules[INFO].get_abspec_info()
+
+    def get_colour_info(self):
+        return self.modules[INFO].get_colour_info()
 
     # Helpers
     def _broadcast_new_data(self):
@@ -367,7 +422,6 @@ class ModuleListener:
         elif display_mode == TWI:
             logging.debug("GETTING TWI IMAGE")
             new_data = self.get_result(self.current_rendered_result_path)[0].get_twi_og()
-        self.modules[ORIGINAL_COLOUR_DATA].update_original_image_data(new_data)
         self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
 
     def _broadcast_to_recreated_image(self):
@@ -383,18 +437,18 @@ class ModuleListener:
             new_data = self.get_result(self.current_rendered_result_path)[2].get_twi()
         self.modules[RECREATED_COLOUR].update_recreated_image(new_data)
         
-        if self.is_masked:
-            if display_mode == STO2:
-                masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_sto2_masked()
-            elif display_mode == NIR:
-                masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_nir_masked()
-            elif display_mode == THI:
-                masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_thi_masked()
-            elif display_mode == TWI:
-                masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_twi_masked()
-            self.modules[RECREATED_COLOUR_DATA].update_recreated_image_data(masked_new_data)
-        else:
-            self.modules[RECREATED_COLOUR_DATA].update_recreated_image_data(new_data) 
+        # if self.is_masked:
+        #     if display_mode == STO2:
+        #         masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_sto2_masked()
+        #     elif display_mode == NIR:
+        #         masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_nir_masked()
+        #     elif display_mode == THI:
+        #         masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_thi_masked()
+        #     elif display_mode == TWI:
+        #         masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_twi_masked()
+        #     self.modules[RECREATED_COLOUR_DATA].update_recreated_image_data(masked_new_data)
+        # else:
+        #     self.modules[RECREATED_COLOUR_DATA].update_recreated_image_data(new_data) 
 
     def _broadcast_to_new_image(self):
         display_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
@@ -405,14 +459,14 @@ class ModuleListener:
             new_data = self.get_result(self.current_rendered_result_path)[3].get_index()
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
-        if self.is_masked:
-            if display_mode == WL:
-                masked_new_data = self.get_result(self.current_rendered_result_path)[3].get_wl_data_masked()
-            elif display_mode == IDX:
-                masked_new_data = self.get_result(self.current_rendered_result_path)[3].get_index_masked()
-            self.modules[NEW_COLOUR_DATA].update_new_image_data(masked_new_data)
-        else:
-            self.modules[NEW_COLOUR_DATA].update_new_image_data(new_data)
+        # if self.is_masked:
+        #     if display_mode == WL:
+        #         masked_new_data = self.get_result(self.current_rendered_result_path)[3].get_wl_data_masked()
+        #     elif display_mode == IDX:
+        #         masked_new_data = self.get_result(self.current_rendered_result_path)[3].get_index_masked()
+        #     self.modules[NEW_COLOUR_DATA].update_new_image_data(masked_new_data)
+        # else:
+        #     self.modules[NEW_COLOUR_DATA].update_new_image_data(new_data)
 
     def _broadcast_to_histogram(self):
         data = self.get_result(self.current_rendered_result_path)[0].get_histogram_data(self.is_masked)
@@ -424,12 +478,6 @@ class ModuleListener:
         else:
             new_absorption_spec = self.get_result(self.current_rendered_result_path)[1].get_absorption_spec()
         self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
-
-    def _image_array_to_new_data(self, image_array):
-        self.modules[NEW_COLOUR_DATA].update_new_image_data(image_array)
-
-    def _image_array_to_rec_data(self, image_array):
-        self.modules[RECREATED_COLOUR_DATA].update_recreated_image_data(image_array)
 
     def _update_analysis(self, mask=None, wavelength=None, index_number=None):
         for path, result_list in self.results.items():  # for each of the cubes

@@ -12,6 +12,7 @@ class Histogram:
         self.flattened_data = None
 
         self.specs = (False, True, False)
+        self.spec_number = 1
 
         self.parametric = False
         self.non_parametric = False
@@ -102,6 +103,9 @@ class Histogram:
     def get_specs(self):
         return self.specs
 
+    def get_spec_number(self):
+        return self.spec_number
+
     def get_step_size(self):
         return self.step_size_value
 
@@ -142,24 +146,24 @@ class Histogram:
         # parametric
         self.parametric_button = make_button(self.root, text='P:', width=4, command=self.__parametric, column=0, row=2, columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3, inner_pady=0, outer_pady=(0, 3))
         # mean
-        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=2, width=12, columnspan=1, padx=0, state=NORMAL)
+        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value), bg=tkcolour_from_rgb(BACKGROUND), column=1, row=2, width=12, columnspan=1, padx=0, state=NORMAL)
         # standard deviation
-        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=2, width=10, columnspan=1, padx=0, state=NORMAL)
+        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(BACKGROUND), column=2, row=2, width=10, columnspan=1, padx=0, state=NORMAL)
         # non parametric
         self.non_parametric_button = make_button(self.root, text='NP:', width=4, command=self.__non_parametric, column=0, row=3, columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3, inner_pady=0)
         # median
-        self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=3, width=14, columnspan=1, padx=0, state=NORMAL)
+        self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(BACKGROUND), column=1, row=3, width=14, columnspan=1, padx=0, state=NORMAL)
         # IQR
-        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=2, row=3, width=22, columnspan=1, padx=(0, 10), state=NORMAL)
+        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(BACKGROUND), column=2, row=3, width=22, columnspan=1, padx=(0, 10), state=NORMAL)
         # min and max
         first_line_text = "x min = " + str(self.min_x) + ', y val = ' + str(self.min_x_val) + '      y min = ' + str(self.min_y) + ', x val = ' + str(self.min_y_val)
-        self.first_line = make_text(self.root, content=first_line_text, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=4, width=60, columnspan=4, state=NORMAL, pady=(10, 0))
+        self.first_line = make_text(self.root, content=first_line_text, bg=tkcolour_from_rgb(BACKGROUND), column=1, row=4, width=60, columnspan=4, state=NORMAL, pady=(10, 0))
         second_line_text = "x max = " + str(self.max_x) + ', y val = ' + str(self.max_x_val) + '      y max = ' + str(self.max_y) + ', x val = ' + str(self.max_y_val)
-        self.second_line = make_text(self.root, content=second_line_text, bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=1, row=5, width=60, columnspan=4, state=NORMAL, pady=(0, 20))
+        self.second_line = make_text(self.root, content=second_line_text, bg=tkcolour_from_rgb(BACKGROUND), column=1, row=5, width=60, columnspan=4, state=NORMAL, pady=(0, 20))
         # none
         self.none_button = make_button(self.root, text='None', width=4, command=self.__none, column=0, row=1, columnspan=1, outer_padx=(15, 0), outer_pady=(0,3), highlightthickness=0, inner_padx=3, inner_pady=0)
         # percent negative
-        self.percent_negative_text = make_text(self.root, content="% Negative = " + str(self.percent_negative_value) + '%', bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=2, width=25, columnspan=2, rowspan=2, padx=(10, 0), state=NORMAL, pady=0)
+        self.percent_negative_text = make_text(self.root, content="% Negative = " + str(self.percent_negative_value) + '%', bg=tkcolour_from_rgb(BACKGROUND), column=3, row=2, width=25, columnspan=2, rowspan=2, padx=(10, 0), state=NORMAL, pady=0)
 
     def _build_drop_down(self):
         self.drop_down_var.set(self.choices[0])
@@ -192,45 +196,45 @@ class Histogram:
     def _build_scale(self):
         # lower
         self.lower_text = make_text(self.root, content="Lower: ", 
-            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=7, width=7, columnspan=1, pady=(0, 10))
+            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=7, width=7, columnspan=1, pady=(0, 10))
         self.lower_input = make_entry(self.root, row=7, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.lower_input.bind('<Return>', self.__update_upper_lower)
         self.lower_input.insert(END, str(self.min_x))
 
         # upper
         self.upper_text = make_text(self.root, content="Upper: ", 
-            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=8, width=7, columnspan=1, pady=(0, 10))
+            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=8, width=7, columnspan=1, pady=(0, 10))
         self.upper_input = make_entry(self.root, row=8, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.upper_input.bind('<Return>', self.__update_upper_lower)
         self.upper_input.insert(END, str(self.max_x))
 
         # x lower
-        self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=9, width=7, columnspan=1, pady=(0, 10))
+        self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=9, width=7, columnspan=1, pady=(0, 10))
         self.x_lower_scale_input = make_entry(self.root, row=9, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_lower_scale_input.bind('<Return>', self.__update_scales)
         self.x_lower_scale_input.insert(END, str(self.min_x))
 
          # x upper
-        self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=10, width=7, columnspan=1, pady=(0, 10))
+        self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=10, width=7, columnspan=1, pady=(0, 10))
         self.x_upper_scale_input = make_entry(self.root, row=10, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.x_upper_scale_input.bind('<Return>', self.__update_scales)
         self.x_upper_scale_input.insert(END, str(self.max_x))
 
         # y lower
-        self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB),column=3, row=11, width=7, columnspan=1, pady=(0, 10))
+        self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(BACKGROUND),column=3, row=11, width=7, columnspan=1, pady=(0, 10))
         self.y_lower_scale_input = make_entry(self.root, row=11, column=4, width=7, pady=(0, 10), padx=(0, 15),columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scales)
         self.y_lower_scale_input.insert(END, str(self.min_y))
 
         # y upper
-        self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=12, width=7, columnspan=1, pady=(0, 10))
+        self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=12, width=7, columnspan=1, pady=(0, 10))
         self.y_upper_scale_input = make_entry(self.root, row=12, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.y_upper_scale_input.bind('<Return>', self.__update_scales)
         self.y_upper_scale_input.insert(END, str(self.max_y))
 
     def _build_step_size(self):
         self.step_size_text = make_text(self.root, content="Step: ", 
-            bg=tkcolour_from_rgb(PASTEL_BLUE_RGB), column=3, row=6, width=6, columnspan=1, pady=(0, 10))
+            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=6, width=6, columnspan=1, pady=(0, 10))
         self.step_size_input = make_entry(self.root, row=6, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.step_size_input.bind('<Return>', self.__update_scales)
         self.step_size_input.insert(END, str(self.step_size_value))
@@ -242,7 +246,7 @@ class Histogram:
         # create canvas
         self.interactive_histogram_graph = Figure(figsize=(3.5, 2))
         self.axes = self.interactive_histogram_graph.add_subplot(111)
-        self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(PASTEL_BLUE_RGB))
+        self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
         if self.flattened_data is not None:
             # calc bins
             bins = np.arange(start = np.ma.min(self.flattened_data), stop = np.ma.max(self.flattened_data) + self.step_size_value, step = self.step_size_value)
@@ -266,7 +270,11 @@ class Histogram:
             self.interactive_histogram_graph.set_tight_layout(True)
             self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
             self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+            # commas and non-scientific notation
             self.axes.ticklabel_format(style='plain')
+            self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',') if x%1==0 else format(float(x))))
+            self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',') if x%1==0 else format(float(x))))
+
         # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
@@ -370,6 +378,10 @@ class Histogram:
         elif choice == '12':
             data = self.listener.get_current_norm_new_data()
             self.update_histogram(data)
+        if choice[1] != '.':
+            self.spec_number = choice
+        else:
+            self.spec_number = choice[0]
 
     def __update_to_original_data(self):
         self.listener._broadcast_to_histogram()

@@ -12,6 +12,8 @@ class NewColour:
         self.initial_data = []
 
         self.specs = (False, True, False)
+        self.old_specs = ()
+        self.spec_number = 1
 
         self.wl_button = None
         self.wl_checkbox = None
@@ -36,7 +38,6 @@ class NewColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
-        self.reset_button = None
         self.norm_button = None
         self.og_button = None
 
@@ -65,14 +66,16 @@ class NewColour:
     def get_specs(self):
         return self.specs
 
+    def get_spec_number(self):
+        return self.spec_number
+
     def get_current_data(self):
         return self.new_colour_image_data
 
     def update_new_colour_image(self, new_colour_image_data):
-        if len(self.initial_data) == 0:
+        if self.old_specs != self.specs:
             self.initial_data = new_colour_image_data
-        # if not (self.initial_data == new_colour_image_data).all():
-        #     self.initial_data = new_colour_image_data
+            self.old_specs = self.specs
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         self._build_new_image()
@@ -105,7 +108,7 @@ class NewColour:
         self._build_lower_scale()
         self._build_info_label()
         self._build_drop_down()
-        self._build_reset_norm_og()
+        self._build_norm_og()
         self._build_new_image()
 
     def _build_wl(self):
@@ -115,8 +118,8 @@ class NewColour:
         self.wl_checkbox.bind('<Button-1>', self.__update_wl_check_status)
 
     def _build_idx(self):
-        self.idx_button = make_button(self.root, text="IDX", width=3, row=1, column=2, command=self.__update_to_idx, inner_pady=5, columnspan=2, outer_padx=(0, 30))
-        self.idx_checkbox = make_checkbox(self.root, "", row=1, column=3, var=self.idx_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 50))
+        self.idx_button = make_button(self.root, text="IDX", width=3, row=1, column=2, command=self.__update_to_idx, inner_pady=5, columnspan=2, outer_padx=(0, 40))
+        self.idx_checkbox = make_checkbox(self.root, "", row=1, column=3, var=self.idx_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 45))
         self.idx_checkbox.deselect()
         self.idx_checkbox.bind('<Button-1>', self.__update_idx_check_status)
 
@@ -127,20 +130,22 @@ class NewColour:
 
     def _build_save_wo_scale(self):
         self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, columnspan=3, outer_padx=(0, 15), outer_pady=(10, 15), inner_padx=10, inner_pady=5)
-        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 43))
+        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 37))
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_lower_scale(self):
-        self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=5, padx=15)
-        self.lower_scale_input = make_entry(self.root, row=6, column=1, width=8, pady=5, padx=0)
+        self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(BACKGROUND), pady=5, padx=15)
+        self.lower_scale_input = make_entry(self.root, row=6, column=1, width=12, pady=5, padx=0, columnspan=2)
         self.lower_scale_input.bind('<Return>', self.__update_upper_lower)
-        self.lower_scale_input.insert(END, str(self.lower_scale_value))
+        if self.lower_scale_value != None:
+            self.lower_scale_input.insert(END, str(round(self.lower_scale_value, 5)))
 
     def _build_upper_scale(self):
-        self.upper_scale_text = make_text(self.root, content="Upper:", row=7, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), pady=(5, 0), padx=15)
-        self.upper_scale_input = make_entry(self.root, row=7, column=1, width=8, pady=(5,0), padx=0)
+        self.upper_scale_text = make_text(self.root, content="Upper:", row=7, column=0, columnspan=1, width=6, bg=tkcolour_from_rgb(BACKGROUND), pady=(5, 0), padx=15)
+        self.upper_scale_input = make_entry(self.root, row=7, column=1, width=12, pady=(5,0), padx=0, columnspan=2)
         self.upper_scale_input.bind('<Return>', self.__update_upper_lower)
-        self.upper_scale_input.insert(END, str(self.upper_scale_value))
+        if self.upper_scale_value != None:
+            self.upper_scale_input.insert(END, str(round(self.upper_scale_value, 5)))
 
     def _build_drop_down(self):
         self.drop_down_var.set(self.choices[0])
@@ -153,10 +158,9 @@ class NewColour:
         self.info_label = make_label_button(self.root, text='New Image', command=self.__info, width=9)
         self.info_label.grid(columnspan=2, padx=(0, 20))
 
-    def _build_reset_norm_og(self):
-        self.reset_button = make_button(self.root, text="Reset", row=7, column=2, columnspan=2, command=self.__reset, inner_padx=10, inner_pady=5, outer_padx=(13, 15), outer_pady=(5, 0), width=9)
-        self.norm_button = make_button(self.root, text="NORM", row=6, column=2, columnspan=1, command=self.__norm, inner_padx=3, inner_pady=0, outer_padx=(15, 0), outer_pady=0, width=5)
-        self.og_button = make_button(self.root, text="OG", row=6, column=3, columnspan=1, command=self.__og, inner_padx=3, inner_pady=0, outer_padx=(3, 10), outer_pady=0, width=3)
+    def _build_norm_og(self):
+        self.norm_button = make_button(self.root, text="NORM", row=6, column=3, columnspan=1, command=self.__norm, inner_padx=3, inner_pady=0, outer_padx=(20, 15), outer_pady=5, width=5)
+        self.og_button = make_button(self.root, text="OG", row=7, column=3, columnspan=1, command=self.__og, inner_padx=3, inner_pady=0, outer_padx=(20, 15), outer_pady=(5, 0), width=5)
 
     def _build_new_image(self):
         if self.new_colour_image_data is None:
@@ -164,8 +168,7 @@ class NewColour:
             self.new_colour_image = make_label(self.root, "new_colour image placeholder",row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=15, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING NEW COLOUR IMAGE...")
-            (self.new_colour_image_graph, self.new_colour_image, self.image_array) = make_image(self.root, self.new_colour_image_data,row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value,color_rgb=PASTEL_ORANGE_RGB)
-            self.listener._image_array_to_new_data(self.new_colour_image_data)
+            (self.new_colour_image_graph, self.new_colour_image, self.image_array) = make_image(self.root, self.new_colour_image_data,row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value,color_rgb=BACKGROUND)
             self.new_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
@@ -175,8 +178,6 @@ class NewColour:
         self._build_upper_scale()
 
     # Commands (Callbacks)
-    def __reset(self):
-        self.update_new_colour_image(self.initial_data)
 
     def __norm(self):
         self.update_new_colour_image(self.initial_data/np.ma.max(self.initial_data))
@@ -219,6 +220,7 @@ class NewColour:
             self.specs = (True, False, False)
         elif choice == '8.':
             self.specs = (True, False, True)
+        self.spec_number = choice[0]
         self.listener._update_new_specs(self.specs)
 
     def __update_upper_lower(self, event):

@@ -28,28 +28,33 @@ class Colour:
         self._build_high_low()
 
     def _make_colourbar(self):
-        colour_fig = Figure(figsize=(2, 0.6))
+        colour_fig = Figure(figsize=(1.6, 0.7))
         axes = colour_fig.add_subplot(111)
 
         cmap = cm.get_cmap('jet')
         self.colourbar = cmap(np.arange(cmap.N))
 
-        axes.imshow([self.colourbar], extent=[0, 300, 0, 50])
+        axes.imshow([self.colourbar], extent=[0, 300, 0, 55])
         axes.get_yaxis().set_visible(False)
         axes.get_xaxis().set_visible(False)
 
-        colour_fig.patch.set_facecolor(rgb_to_rgba(PASTEL_PINK_RGB))
+        colour_fig.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
         colour_fig.set_tight_layout('True')
         image = FigureCanvasTkAgg(colour_fig, master=self.root)
         image.draw()
         image.get_tk_widget().grid(column=0, row=1, padx=0, pady=(0, 10))
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Colour Scale', command=None, width=11)
-        self.info_label.grid(pady=(15, 0))
-
     def _build_high_low(self):
-        self.high_low = make_text(self.root, content="Low               High", bg=tkcolour_from_rgb(PASTEL_ORANGE_RGB), column=0, row=1, width=22, columnspan=1, padx=(15, 15), pady=(35, 0))
+        self.high_low = make_text(self.root, content="Low           High", bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=18, columnspan=1, padx=(20, 15), pady=(35, 0))
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Colour Scale', command=self.__info, width=11)
+        self.info_label.grid(pady=(15, 0), padx=(0, 20))
+
+    def __info(self):
+        info = self.listener.get_colour_info()
+        title = "Colour Information"
+        make_info(title=title, info=info)
 
 
 
