@@ -58,21 +58,43 @@ class ModuleListener:
             return self.get_result(self.current_rendered_result_path)[3].get_index()
 
     def get_current_original_data(self):
-        return self.modules[ORIGINAL_COLOUR].get_current_data()
+        data = self.modules[ORIGINAL_COLOUR].get_current_data()
+        mask = np.logical_not(np.array([self.mask.T] * 3).T)
+        if not self.is_masked:
+            return data
+        else:
+            return np.ma.array(data, mask=mask)
+
 
     def get_current_rec_data(self):
-        return self.modules[RECREATED_COLOUR].get_current_data()
+        data = self.modules[RECREATED_COLOUR].get_current_data()
+        if not self.is_masked:
+            return data
+        else:
+            return np.ma.array(data, mask=np.logical_not(self.mask))
 
     def get_current_norm_rec_data(self):
         image = self.modules[RECREATED_COLOUR].get_current_data()
-        return image/np.ma.max(image)
+        data = image/np.ma.max(image)
+        if not self.is_masked:
+            return data
+        else:
+            return np.ma.array(data, mask=np.logical_not(self.mask))
 
     def get_current_new_data(self):
-        return self.modules[NEW_COLOUR].get_current_data()
+        data = self.modules[NEW_COLOUR].get_current_data()
+        if not self.is_masked:
+            return data
+        else:
+            return np.ma.array(data, mask=np.logical_not(self.mask))
         
     def get_current_norm_new_data(self):
         image = self.modules[NEW_COLOUR].get_current_data()
-        return image/np.ma.max(image)
+        data = image/np.ma.max(image)
+        if not self.is_masked:
+            return data
+        else:
+            return np.ma.array(data, mask=np.logical_not(self.mask))
 
     def get_current_rec_info(self, saves=False):
         info = ''
