@@ -7,6 +7,7 @@ from PIL import Image
 from matplotlib import cm
 import imageio
 from math import atan, pi
+import skimage.color
 
 import matplotlib
 matplotlib.use("TkAgg")
@@ -202,7 +203,7 @@ def make_checkbox(window, text, row, column, var, columnspan=1,
     return checkbox
 
 def make_image(window, image_data, row, column, columnspan, rowspan,
-               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=2, original=False):
+               lower_scale_value, upper_scale_value, color_rgb, figwidth=3, figheight=2, original=False, gs=False):
     '''
     Plots an image and grids it based on the input parameters. Image is plotted with origin="lower" and cmap="jet". Returns the Figure object (fig) that the image is plotted on, as well as the image itself.
     window : tk.Frame
@@ -217,20 +218,29 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
     figwidth : int or float (default 3, inches)
     figheight : int or float (default 2, inches)
     original : bool (default False, will not plot vmin, vmax, or axes if True)
+    gs : bool (default False, True would plot in greyscale)
     '''
 
     # create figure
     fig = Figure(figsize=(figwidth, figheight))
     # add axes
     axes = fig.add_subplot(111)
+    # determine cmap
+    if gs:
+        cmap='gray'
+    else:
+        cmap='jet'
+    # plot image
     if original:
         # plot image array without showing axes
-        image = axes.imshow(np.flipud(image_data[:,:,:]), origin='lower', cmap='jet')
+        if gs:
+            image_data = skimage.color.rgb2gray(image_data)
+        image = axes.imshow(np.flipud(image_data), origin='lower', cmap=cmap)
         axes.axis('off')
         image_array = image.get_array().flatten()
     else:
         # plot image array with vmin and vmax 
-        image = axes.imshow(image_data[:,:].T, origin='lower', cmap='jet',
+        image = axes.imshow(image_data[:,:].T, origin='lower', cmap=cmap,
                     vmin=float(lower_scale_value),
                     vmax=float(upper_scale_value))
         image_array = image.get_array().flatten()

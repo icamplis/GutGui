@@ -15,20 +15,14 @@ class OGColour:
         self.listener = listener
 
         self.rgb_button = None
-        self.rgb_checkbox = None
-        self.rgb_checkbox_value = IntVar()
-
         self.sto2_button = None
-        self.sto2_checkbox = None
-        self.sto2_checkbox_value = IntVar()
-
         self.nir_button = None
-        self.nir_checkbox = None
-        self.nir_checkbox_value = IntVar()
-
         self.thi_button = None
-        self.thi_checkbox = None
-        self.thi_checkbox_value = IntVar()
+
+        self.gs_button = None
+        self.gs = False
+        self.gs_checkbox = None
+        self.gs_checkbox_value = IntVar()
 
         self.twi_button = None
         self.twi_checkbox = None
@@ -202,20 +196,8 @@ class OGColour:
     def get_displayed_image_mode(self):
         return self.displayed_image_mode
 
-    def get_rgb_checkbox_value(self):
-        return not bool(self.rgb_checkbox_value.get())
-
-    def get_sto2_checkbox_value(self):
-        return not bool(self.sto2_checkbox_value.get())
-
-    def get_nir_checkbox_value(self):
-        return not bool(self.nir_checkbox_value.get())
-
-    def get_thi_checkbox_value(self):
-        return not bool(self.thi_checkbox_value.get())
-
-    def get_twi_checkbox_value(self):
-        return not bool(self.twi_checkbox_value.get())
+    def get_gs_checkbox_value(self):
+        return not bool(self.gs_checkbox_value.get())
 
     def get_all_points_checkbox_value(self):
         return not bool(self.all_points_checkbox_value.get())
@@ -257,6 +239,7 @@ class OGColour:
         self._build_nir()
         self._build_thi()
         self._build_twi()
+        self._build_gs()
         self._build_pt1()
         self._build_pt2()
         self._build_pt3()
@@ -273,185 +256,191 @@ class OGColour:
         self._build_edit_coords_button()
         self._build_upload_mask_button()
         self._build_info_label()
-        self._build_original_image(self.original_image_data)
+        self._build_original_image(self.original_image_data, self.gs)
 
     def _build_rgb(self):
-        self.rgb_button = make_button(self.root, text='RGB', width=3, command=self.__update_to_rgb, row=1, column=0, columnspan=1, inner_pady=5, outer_padx=(15, 10))
+        self.rgb_button = make_button(self.root, text='RGB', width=3, command=self.__update_to_rgb, row=1, column=0, columnspan=1, inner_pady=5, outer_padx=(15, 5))
 
     def _build_sto2(self):
-        self.sto2_button = make_button(self.root, text='StO2', width=4, command=self.__update_to_sto2, row=1, column=1, columnspan=1, inner_pady=5, outer_padx=(0, 10))
+        self.sto2_button = make_button(self.root, text='StO2', width=4, command=self.__update_to_sto2, row=1, column=1, columnspan=1, inner_pady=5, outer_padx=(0, 5))
 
     def _build_nir(self):
-        self.nir_button = make_button(self.root, text='NIR', width=3, command=self.__update_to_nir, row=1, column=2, columnspan=1, inner_pady=5, outer_padx=(0, 10))
+        self.nir_button = make_button(self.root, text='NIR', width=3, command=self.__update_to_nir, row=1, column=2, columnspan=1, inner_pady=5, outer_padx=(0, 5))
 
     def _build_thi(self):
-        self.thi_button = make_button(self.root, text='THI', width=3, command=self.__update_to_thi, row=1, column=3, columnspan=1, inner_pady=5, outer_padx=(0, 10))
+        self.thi_button = make_button(self.root, text='THI', width=3, command=self.__update_to_thi, row=1, column=3, columnspan=1, inner_pady=5, outer_padx=(0, 5))
 
     def _build_twi(self):
-        self.twi_button = make_button(self.root, text='TWI', width=3, command=self.__update_to_twi, row=1, column=4, columnspan=1, inner_pady=5, outer_padx=0)
+        self.twi_button = make_button(self.root, text='TWI', width=3, command=self.__update_to_twi, row=1, column=4, columnspan=1, inner_pady=5, outer_padx=(0, 5))
+
+    def _build_gs(self):
+        self.gs_button = make_button(self.root, text='GS', width=3, command=self.__update_to_gs, row=1, column=5, columnspan=1, inner_pady=5, outer_padx=(0, 10))
+        self.gs_checkbox = make_checkbox(self.root, "", row=1, column=5, var=self.gs_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 3))
+        self.gs_checkbox.deselect()
+        self.gs_checkbox.bind('<Button-1>', self.__update_gs_check_status)
 
     def _build_all_points(self):
         # remove
-        self.all_points_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt('all'), row=1, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.all_points_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt('all'), row=1, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.all_points_checkbox = make_checkbox(self.root, "", row=1, column=7, columnspan=1, var=self.all_points_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.all_points_checkbox = make_checkbox(self.root, "", row=1, column=8, columnspan=1, var=self.all_points_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.all_points_checkbox.deselect()
         self.all_points_checkbox.bind('<Button-1>', self.__update_all_points_checked)
 
     def _build_pt1(self):
         # text
-        # displat points on interval [1, max] because ??????
+        # display points on interval [1, max] because ??????
         if self.coords_list[0] == (None, None):
-            self.pt1_label = make_text(self.root, content="Pt 0: " + str(self.coords_list[0]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=2, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt1_label = make_text(self.root, content="Pt 0: " + str(self.coords_list[0]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=2, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt1_label = make_text(self.root, content="Pt 0: " + str(tuple(x+1 for x in self.coords_list[0])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=2, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt1_label = make_text(self.root, content="Pt 0: " + str(tuple(x+1 for x in self.coords_list[0])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=2, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt1_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(1), row=2, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt1_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(1), row=2, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt1_checkbox = make_checkbox(self.root, "", row=2, column=7, columnspan=1, var=self.pt1_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt1_checkbox = make_checkbox(self.root, "", row=2, column=8, columnspan=1, var=self.pt1_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt1_checkbox.deselect()
         self.pt1_checkbox.bind('<Button-1>', self.__update_pt1_checked)
 
     def _build_pt2(self):
         # text
         if self.coords_list[1] == (None, None):
-            self.pt2_label = make_text(self.root, content="Pt 1: " + str(self.coords_list[1]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=3, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt2_label = make_text(self.root, content="Pt 1: " + str(self.coords_list[1]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=3, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt2_label = make_text(self.root, content="Pt 1: " + str(tuple(x+1 for x in self.coords_list[1])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=3, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt2_label = make_text(self.root, content="Pt 1: " + str(tuple(x+1 for x in self.coords_list[1])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=3, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt2_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(2), row=3, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt2_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(2), row=3, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt2_checkbox = make_checkbox(self.root, "", row=3, column=7, columnspan=1, var=self.pt2_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt2_checkbox = make_checkbox(self.root, "", row=3, column=8, columnspan=1, var=self.pt2_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt2_checkbox.deselect()
         self.pt2_checkbox.bind('<Button-1>', self.__update_pt2_checked)
 
     def _build_pt3(self):
         # text
         if self.coords_list[2] == (None, None):
-            self.pt3_label = make_text(self.root, content="Pt 2: " + str(self.coords_list[2]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=4, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt3_label = make_text(self.root, content="Pt 2: " + str(self.coords_list[2]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=4, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt3_label = make_text(self.root, content="Pt 2: " + str(tuple(x+1 for x in self.coords_list[2])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=4, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt3_label = make_text(self.root, content="Pt 2: " + str(tuple(x+1 for x in self.coords_list[2])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=4, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt3_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(3), row=4, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt3_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(3), row=4, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt3_checkbox = make_checkbox(self.root, "", row=4, column=7, columnspan=1, var=self.pt3_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt3_checkbox = make_checkbox(self.root, "", row=4, column=8, columnspan=1, var=self.pt3_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt3_checkbox.deselect()
         self.pt3_checkbox.bind('<Button-1>', self.__update_pt3_checked)
 
     def _build_pt4(self):
         # text
         if self.coords_list[3] == (None, None):
-            self.pt4_label = make_text(self.root, content="Pt 3: " + str(self.coords_list[3]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=5, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt4_label = make_text(self.root, content="Pt 3: " + str(self.coords_list[3]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=5, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt4_label = make_text(self.root, content="Pt 3: " + str(tuple(x+1 for x in self.coords_list[3])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=5, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt4_label = make_text(self.root, content="Pt 3: " + str(tuple(x+1 for x in self.coords_list[3])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=5, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt4_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(4), row=5, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt4_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(4), row=5, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt4_checkbox = make_checkbox(self.root, "", row=5, column=7, columnspan=1, var=self.pt4_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt4_checkbox = make_checkbox(self.root, "", row=5, column=8, columnspan=1, var=self.pt4_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt4_checkbox.deselect()
         self.pt4_checkbox.bind('<Button-1>', self.__update_pt4_checked)
 
     def _build_pt5(self):
         # text
         if self.coords_list[4] == (None, None):
-            self.pt5_label = make_text(self.root, content="Pt 4: " + str(self.coords_list[4]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=6, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt5_label = make_text(self.root, content="Pt 4: " + str(self.coords_list[4]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=6, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt5_label = make_text(self.root, content="Pt 4: " + str(tuple(x+1 for x in self.coords_list[4])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=6, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt5_label = make_text(self.root, content="Pt 4: " + str(tuple(x+1 for x in self.coords_list[4])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=6, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt5_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(5), row=6, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt5_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(5), row=6, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt5_checkbox = make_checkbox(self.root, "", row=6, column=7, columnspan=1, var=self.pt5_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt5_checkbox = make_checkbox(self.root, "", row=6, column=8, columnspan=1, var=self.pt5_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt5_checkbox.deselect()
         self.pt5_checkbox.bind('<Button-1>', self.__update_pt5_checked)
 
     def _build_pt6(self):
         # text
         if self.coords_list[5] == (None, None):
-            self.pt6_label = make_text(self.root, content="Pt 5: " + str(self.coords_list[5]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=7, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt6_label = make_text(self.root, content="Pt 5: " + str(self.coords_list[5]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=7, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt6_label = make_text(self.root, content="Pt 5: " + str(tuple(x+1 for x in self.coords_list[5])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=7, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt6_label = make_text(self.root, content="Pt 5: " + str(tuple(x+1 for x in self.coords_list[5])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=7, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt6_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(6), row=7, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt6_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(6), row=7, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt6_checkbox = make_checkbox(self.root, "", row=7, column=7, columnspan=1, var=self.pt6_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt6_checkbox = make_checkbox(self.root, "", row=7, column=8, columnspan=1, var=self.pt6_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt6_checkbox.deselect()
         self.pt6_checkbox.bind('<Button-1>', self.__update_pt6_checked)
 
     def _build_pt7(self):
         # text
         if self.coords_list[6] == (None, None):
-            self.pt7_label = make_text(self.root, content="Pt 6: " + str(self.coords_list[6]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=8, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt7_label = make_text(self.root, content="Pt 6: " + str(self.coords_list[6]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=8, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt7_label = make_text(self.root, content="Pt 6: " + str(tuple(x+1 for x in self.coords_list[6])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=8, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt7_label = make_text(self.root, content="Pt 6: " + str(tuple(x+1 for x in self.coords_list[6])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=8, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt7_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(7), row=8, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt7_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(7), row=8, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt7_checkbox = make_checkbox(self.root, "", row=8, column=7, columnspan=1, var=self.pt7_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt7_checkbox = make_checkbox(self.root, "", row=8, column=8, columnspan=1, var=self.pt7_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt7_checkbox.deselect()
         self.pt7_checkbox.bind('<Button-1>', self.__update_pt7_checked)
 
     def _build_pt8(self):
         # text
         if self.coords_list[7] == (None, None):
-            self.pt8_label = make_text(self.root, content="Pt 7: " + str(self.coords_list[7]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=9, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt8_label = make_text(self.root, content="Pt 7: " + str(self.coords_list[7]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=9, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt8_label = make_text(self.root, content="Pt 7: " + str(tuple(x+1 for x in self.coords_list[7])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=9, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt8_label = make_text(self.root, content="Pt 7: " + str(tuple(x+1 for x in self.coords_list[7])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=9, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt8_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(8), row=9, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt8_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(8), row=9, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt8_checkbox = make_checkbox(self.root, "", row=9, column=7, columnspan=1, var=self.pt8_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt8_checkbox = make_checkbox(self.root, "", row=9, column=8, columnspan=1, var=self.pt8_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt8_checkbox.deselect()
         self.pt8_checkbox.bind('<Button-1>', self.__update_pt8_checked)
 
     def _build_pt9(self):
         # text
         if self.coords_list[8] == (None, None):
-            self.pt9_label = make_text(self.root, content="Pt 8: " + str(self.coords_list[8]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=10, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt9_label = make_text(self.root, content="Pt 8: " + str(self.coords_list[8]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=10, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt9_label = make_text(self.root, content="Pt 8: " + str(tuple(x+1 for x in self.coords_list[8])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=10, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt9_label = make_text(self.root, content="Pt 8: " + str(tuple(x+1 for x in self.coords_list[8])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=10, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt9_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(9), row=10, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt9_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(9), row=10, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt9_checkbox = make_checkbox(self.root, "", row=10, column=7, columnspan=1, var=self.pt9_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt9_checkbox = make_checkbox(self.root, "", row=10, column=8, columnspan=1, var=self.pt9_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt9_checkbox.deselect()
         self.pt9_checkbox.bind('<Button-1>', self.__update_pt9_checked)
 
     def _build_pt10(self):
         # text
         if self.coords_list[9] == (None, None):
-            self.pt10_label = make_text(self.root, content="Pt 9: " + str(self.coords_list[9]), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=11, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt10_label = make_text(self.root, content="Pt 9: " + str(self.coords_list[9]), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=11, width=18, columnspan=1, padx=0, state=NORMAL)
         else:
-            self.pt10_label = make_text(self.root, content="Pt 9: " + str(tuple(x+1 for x in self.coords_list[9])), bg=tkcolour_from_rgb(BACKGROUND), column=5, row=11, width=18, columnspan=1, padx=0, state=NORMAL)
+            self.pt10_label = make_text(self.root, content="Pt 9: " + str(tuple(x+1 for x in self.coords_list[9])), bg=tkcolour_from_rgb(BACKGROUND), column=6, row=11, width=18, columnspan=1, padx=0, state=NORMAL)
         # remove
-        self.pt10_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(10), row=11, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
+        self.pt10_remove = make_button(self.root, text='x', width=1, command=lambda:self.__remove_pt(10), row=11, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10, highlightthickness=0)
         # checkbox
-        self.pt10_checkbox = make_checkbox(self.root, "", row=11, column=7, columnspan=1, var=self.pt10_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt10_checkbox = make_checkbox(self.root, "", row=11, column=8, columnspan=1, var=self.pt10_checkbox_value, inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
         self.pt10_checkbox.deselect()
         self.pt10_checkbox.bind('<Button-1>', self.__update_pt10_checked)
 
-    def _build_use_mask_button(self):
-        self.use_mask_button = make_button(self.root, text='Use mask', width=8, command=self.__use_coords, row=12, column=5, columnspan=3, inner_pady=5, outer_padx=(100, 15), outer_pady=(10, 15))
+    def _build_upload_mask_button(self):
+        self.upload_mask_button = make_button(self.root, text='Upload mask', width=9, command=self.__upload_mask, row=12, column=0, columnspan=2, inner_pady=5, outer_padx=15, outer_pady=(10, 15))
 
     def _build_instant_save_button(self):
-        self.instant_save_button = make_button(self.root, text='Save coords', width=11, command=self.__save_coords, row=12, column=2, columnspan=2, inner_pady=5, outer_padx=(0, 15), outer_pady=(10, 15))
+        self.instant_save_button = make_button(self.root, text='Save coords', width=9, command=self.__save_coords, row=12, column=2, columnspan=2, inner_pady=5, outer_padx=(0, 15), outer_pady=(10, 15))
 
     def _build_edit_coords_button(self):
-        self.input_coords_button = make_button(self.root, text='Edit coords', width=12, command=self.__input_coords, row=12, column=4, columnspan=2, inner_pady=5, outer_padx=(0, 45), outer_pady=(10, 15))
+        self.input_coords_button = make_button(self.root, text='Edit coords', width=9, command=self.__input_coords, row=12, column=4, columnspan=2, inner_pady=5, outer_padx=(0, 15), outer_pady=(10, 15))
 
-    def _build_upload_mask_button(self):
-        self.upload_mask_button = make_button(self.root, text='Upload mask', width=11, command=self.__upload_mask, row=12, column=0, columnspan=2, inner_pady=5, outer_padx=15, outer_pady=(10, 15))
+    def _build_use_mask_button(self):
+        self.use_mask_button = make_button(self.root, text='Use mask', width=9, command=self.__use_coords, row=12, column=6, columnspan=3, inner_pady=5, outer_padx=0, outer_pady=(10, 15))
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Original Image', command=self.__info, width=12)
         self.info_label.grid(columnspan=2)
 
-    def _build_original_image(self, data):
+    def _build_original_image(self, data, gs):
         if data is None:
             # Placeholder
-            self.original_image = make_label(self.root, "original image placeholder", row=2, column=0, rowspan=10, columnspan=5, inner_pady=80, inner_padx=120, outer_padx=(15, 10), outer_pady=(15, 10))
+            self.original_image = make_label(self.root, "original image placeholder", row=2, column=0, rowspan=10, columnspan=6, inner_pady=80, inner_padx=120, outer_padx=(15, 10), outer_pady=(15, 10))
         else:
             logging.debug("BUILDING ORIGINAL COLOUR IMAGE...")
-            (self.original_image_graph, self.original_image, self.image_array) = make_image(self.root, data, row=2, column=0, columnspan=5, rowspan=10, lower_scale_value=None, upper_scale_value=None, color_rgb=BACKGROUND, original=True, figheight=2.5, figwidth=3.5)
+            (self.original_image_graph, self.original_image, self.image_array) = make_image(self.root, data, row=2, column=0, columnspan=6, rowspan=10, lower_scale_value=None, upper_scale_value=None, color_rgb=BACKGROUND, original=True, figheight=2.5, figwidth=3.5, gs=gs)
             self.original_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
             self.original_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
             if self.pop_up == True:
@@ -474,7 +463,7 @@ class OGColour:
                 copy_data[x, (y+yi)%640, :] = BRIGHT_GREEN_RGB
             idx = not_none.index(point)
             self._draw_a_line(not_none[idx-1], not_none[idx], copy_data)    
-        self._build_original_image(copy_data)
+        self._build_original_image(copy_data, self.gs)
 
     def _draw_a_line(self, point1, point2, image):
         r0, c0 = point1
@@ -615,6 +604,20 @@ class OGColour:
         self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
         self.listener.render_original_image_data()
+
+    def __update_to_gs(self):
+        if self.gs == False:
+            self.gs_button.config(foreground="red")
+            self.gs = True
+            self._build_original_image(self.original_image_data, self.gs)
+        else:
+            self.gs_button.config(foreground="black")
+            self.gs = False
+            self._build_original_image(self.original_image_data, self.gs)
+
+    def __update_gs_check_status(self, event):
+        value = self.get_gs_checkbox_value()
+        self.listener.update_saved(GS_ORIGINAL, value)
 
     def __update_all(self, value):
         for point in [PT1, PT2, PT3, PT4, PT5, PT6, PT7, PT8, PT9, PT10]:

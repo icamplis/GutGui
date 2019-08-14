@@ -37,13 +37,19 @@ class ModuleListener:
         self.params = [0.2, -0.03, -0.46, 0.45, 0.4, 1.55, 0.1, -0.5]
 
         # ORIGINAL IMAGE
-        self.mask = None
+        self.mask = []
 
         # DIAGRAM
         self.is_masked = False
 
     def get_masked(self):
         return self.is_masked
+
+    def get_mask(self):
+        if len(self.mask) != 0:
+            return self.mask
+        else:
+            return np.asarray([[False for i in range(640)] for j in range(480)])
 
     def get_wl(self):
         if self.is_masked:
@@ -59,10 +65,10 @@ class ModuleListener:
 
     def get_current_original_data(self):
         data = self.modules[ORIGINAL_COLOUR].get_current_data()
-        mask = np.logical_not(np.array([self.mask.T] * 3).T)
         if not self.is_masked:
             return data
         else:
+            mask = np.logical_not(np.array([self.mask.T] * 3).T)
             return np.ma.array(data, mask=mask)
 
 
@@ -112,7 +118,7 @@ class ModuleListener:
         if image_mode == WL or mode == 'WL':
             mod = '_' + str(self.wavelength[0]*5+500) + '-' + str(self.wavelength[1]*5+500)
         elif image_mode == IDX or mode == 'IDX':
-            mod = '_IDX' + self.index
+            mod = '_IDX' + str(self.index)
         info += str(mod)
         info += '_fromCSV' + str(spec_num)
         return info

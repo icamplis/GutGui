@@ -30,6 +30,11 @@ class RecColour:
         self.twi_checkbox = None
         self.twi_checkbox_value = IntVar()
 
+        self.gs_button = None
+        self.gs = False
+        self.gs_checkbox = None
+        self.gs_checkbox_value = IntVar()
+
         self.save_label = None
         self.save_checkbox = None
         self.save_checkbox_value = IntVar()
@@ -67,6 +72,7 @@ class RecColour:
 
         self._init_widget()
 
+        self.old_image_mode = STO2
         self.displayed_image_mode = STO2  # STO2 by default
         self.sto2_button.config(foreground="red")
 
@@ -77,9 +83,10 @@ class RecColour:
         return self.spec_number
 
     def update_recreated_image(self, recreated_colour_image_data):
-        if self.old_specs != self.specs:
+        if self.old_specs != self.specs or self.old_image_mode != self.displayed_image_mode:
             self.initial_data = recreated_colour_image_data
             self.old_specs = self.specs
+            self.old_image_mode = self.displayed_image_mode
         self.recreated_colour_image_data = recreated_colour_image_data
         self._scale()
         self._build_recreated_image()
@@ -102,6 +109,9 @@ class RecColour:
     def get_twi_checkbox_value(self):
         return not bool(self.twi_checkbox_value.get())
 
+    def get_gs_checkbox_value(self):
+        return not bool(self.gs_checkbox_value.get())
+
     def get_save_checkbox_value(self):
         return not bool(self.save_checkbox_value.get())
 
@@ -117,6 +127,7 @@ class RecColour:
         self._build_nir()
         self._build_thi()
         self._build_twi()
+        self._build_gs()
         self._build_save()
         self._build_save_wo_scale()
         self._build_upper_scale()
@@ -147,9 +158,15 @@ class RecColour:
 
     def _build_twi(self):
         self.twi_button = make_button(self.root, text="TWI", width=6, row=1, column=3, command=self.__update_to_twi, inner_padx=0, inner_pady=5, outer_padx=(0, 15))
-        self.twi_checkbox = make_checkbox(self.root, "", row=1, column=3, var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 10))
+        self.twi_checkbox = make_checkbox(self.root, "", row=1, column=3, var=self.twi_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
         self.twi_checkbox.deselect()
         self.twi_checkbox.bind('<Button-1>', self.__update_twi_check_status)
+
+    def _build_gs(self):
+        self.gs_button = make_button(self.root, text='GS', width=3, command=self.__update_to_gs, row=1, column=4, columnspan=1, inner_pady=5, outer_padx=(0, 20))
+        self.gs_checkbox = make_checkbox(self.root, "", row=1, column=4, var=self.gs_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 10))
+        self.gs_checkbox.deselect()
+        self.gs_checkbox.bind('<Button-1>', self.__update_gs_check_status)
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, columnspan=2, outer_padx=(0,30), outer_pady=(10, 0), inner_padx=10, inner_pady=5)
@@ -158,21 +175,21 @@ class RecColour:
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=1, columnspan=3, outer_padx=0, outer_pady=(10, 0), inner_padx=10, inner_pady=5)
-        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(0, 35))
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=8, column=2, columnspan=3, outer_padx=0, outer_pady=(10, 0), inner_padx=10, inner_pady=5)
+        self.save_wo_scale_checkbox = make_checkbox(self.root, text="", row=8, column=3, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=0)
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=2, width=6, bg=tkcolour_from_rgb(BACKGROUND), pady=5, padx=(0, 60))
-        self.lower_scale_input = make_entry(self.root, row=6, column=1, width=12, pady=5, padx=(0, 15), columnspan=2)
+        self.lower_scale_input = make_entry(self.root, row=6, column=1, width=17, pady=5, padx=(0, 15), columnspan=3)
         self.lower_scale_input.bind('<Return>', self.__update_upper_lower)
         if self.lower_scale_value != None:
             self.lower_scale_input.insert(END, str(round(self.lower_scale_value, 5)))
 
     def _build_upper_scale(self):
         self.upper_scale_text = make_text(self.root, content="Upper: ", row=7, column=0, columnspan=2, width=6, bg=tkcolour_from_rgb(BACKGROUND), pady=(5, 0), padx=(0, 60))
-        self.upper_scale_input = make_entry(self.root, row=7, column=1, width=12, pady=(5,0), padx=(0, 15), columnspan=2)
+        self.upper_scale_input = make_entry(self.root, row=7, column=1, width=17, pady=(5,0), padx=(0, 15), columnspan=3)
         self.upper_scale_input.bind('<Return>', self.__update_upper_lower)
         if self.upper_scale_value != None:
             self.upper_scale_input.insert(END, str(round(self.upper_scale_value, 5)))
@@ -186,19 +203,19 @@ class RecColour:
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
         self.drop_down_menu.configure(highlightthickness=0, width=6, 
             anchor='w', padx=15)
-        self.drop_down_menu.grid(column=2, row=0, columnspan=2, padx=(0, 15))
+        self.drop_down_menu.grid(column=2, row=0, columnspan=3, padx=(0, 15))
 
     def _build_norm_og(self):
-        self.norm_button = make_button(self.root, text="NORM", row=6, column=3, columnspan=1, command=self.__norm, inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=5, width=5)
-        self.og_button = make_button(self.root, text="OG", row=7, column=3, columnspan=1, command=self.__og, inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=(5, 0), width=5)
+        self.norm_button = make_button(self.root, text="NORM", row=6, column=4, columnspan=1, command=self.__norm, inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=5, width=5)
+        self.og_button = make_button(self.root, text="OG", row=7, column=4, columnspan=1, command=self.__og, inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=(5, 0), width=5)
 
     def _build_recreated_image(self):
         if self.recreated_colour_image_data is None:
             # Placeholder
-            self.recreated_colour_image = make_label(self.root, "recreated_colour image placeholder", row=2, column=0, rowspan=4, columnspan=4, inner_pady=50, inner_padx=50, outer_padx=0, outer_pady=(15, 10))
+            self.recreated_colour_image = make_label(self.root, "recreated_colour image placeholder", row=2, column=0, rowspan=4, columnspan=5, inner_pady=50, inner_padx=50, outer_padx=0, outer_pady=(15, 10))
         else:
             logging.debug("BUILDING RECREATED COLOUR IMAGE...")
-            (self.recreated_colour_image_graph, self.recreated_colour_image, self.image_array) = make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value, color_rgb=BACKGROUND)
+            (self.recreated_colour_image_graph, self.recreated_colour_image, self.image_array) = make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=5, rowspan=4, lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value, color_rgb=BACKGROUND, gs=self.gs)
             self.recreated_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _scale(self):
@@ -253,6 +270,16 @@ class RecColour:
         self.displayed_image_mode = TWI
         self.listener.render_new_recreated_image_data()
 
+    def __update_to_gs(self):
+        if self.gs == False:
+            self.gs_button.config(foreground="red")
+            self.gs = True
+            self._build_recreated_image()
+        else:
+            self.gs_button.config(foreground="black")
+            self.gs = False
+            self._build_recreated_image()
+
     def __update_data(self, event):
         choice = self.drop_down_var.get()[:2]
         if choice == '1.':
@@ -297,6 +324,11 @@ class RecColour:
     def __update_save_wo_scale_check_status(self, event):
         value = self.get_save_wo_scale_checkbox_value()
         self.listener.update_saved(REC_IMAGE_WO_SCALE, value)
+
+    def __update_gs_check_status(self, event):
+        value = self.get_gs_checkbox_value()
+        self.listener.update_saved(GS_RECREATED, value)
+        print(value)
 
     def __update_upper_lower(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())
