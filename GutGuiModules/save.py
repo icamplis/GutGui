@@ -169,16 +169,16 @@ class Save:
     def __save_gs_original_image(self):
         if self.saves[GS_ORIGINAL]:
             if self.saves[WHOLE_IMAGE_SAVE]:
-                rgb = np.flipud(skimage.color.rgb2gray(self.current_hist_result.get_rgb_og())).T
-                self.__save_image(rgb, "RGB_GREYSCALE", is_image_with_scale=False, is_image_wo_scale=True, cmap='gray')
-                sto2 = np.flipud(skimage.color.rgb2gray(self.current_hist_result.get_sto2_og())).T
-                self.__save_image(sto2, "STO2_GREYSCALE", is_image_with_scale=False, is_image_wo_scale=True, cmap='gray')
-                nir = np.flipud(skimage.color.rgb2gray(self.current_hist_result.get_nir_og())).T
-                self.__save_image(nir, "NIR_GREYSCALE", is_image_with_scale=False, is_image_wo_scale=True, cmap='gray')
-                thi = np.flipud(skimage.color.rgb2gray(self.current_hist_result.get_thi_og())).T
-                self.__save_image(thi, "THI_GREYSCALE", is_image_with_scale=False, is_image_wo_scale=True, cmap='gray')
-                twi = np.flipud(skimage.color.rgb2gray(self.current_hist_result.get_twi_og())).T
-                self.__save_image(twi, "TWI_GREYSCALE", is_image_with_scale=False, is_image_wo_scale=True, cmap='gray')
+                rgb = np.flipud(np.asarray(rgb_image_to_hsi_array(self.current_hist_result.get_rgb_og())).reshape((480, 640))).T
+                self.__save_image_wo_scale(rgb, "RGB_GREYSCALE", cmap='gray', vmin=None, vmax=None)
+                sto2 = np.flipud(np.asarray(rgb_image_to_hsi_array(self.current_hist_result.get_sto2_og())).reshape((480, 640))).T
+                self.__save_image_wo_scale(sto2, "STO2_GREYSCALE", cmap='gray', vmin=None, vmax=None)
+                nir = np.flipud(np.asarray(rgb_image_to_hsi_array(self.current_hist_result.get_nir_og())).reshape((480, 640))).T
+                self.__save_image_wo_scale(nir, "NIR_GREYSCALE", cmap='gray', vmin=None, vmax=None)
+                thi = np.flipud(np.asarray(rgb_image_to_hsi_array(self.current_hist_result.get_thi_og())).reshape((480, 640))).T
+                self.__save_image_wo_scale(thi, "THI_GREYSCALE", cmap='gray', vmin=None, vmax=None)
+                twi = np.flipud(np.asarray(rgb_image_to_hsi_array(self.current_hist_result.get_twi_og())).reshape((480, 640))).T
+                self.__save_image_wo_scale(twi, "TWI_GREYSCALE", cmap='gray', vmin=None, vmax=None)
             if self.saves[MASKED_IMAGE_SAVE]:
                 mask = np.logical_not(self.listener.get_mask())
                 rgb = np.ma.array(np.flipud(skimage.color.rgb2gray(self.current_hist_result.get_rgb_og())).T, mask=mask)
@@ -313,7 +313,6 @@ class Save:
         np.savetxt(self.current_output_path + "/" + title + format, data, delimiter=",", fmt=fmt)
 
     def __save_image(self, data, title, is_image_with_scale, is_image_wo_scale, cmap='jet', format=".png", vmin=0, vmax=1):
-        print(cmap)
         if is_image_with_scale:
             self.__save_image_with_scale(data, title + "_WITH_SCALE", cmap, format, vmin, vmax)
         if is_image_wo_scale:

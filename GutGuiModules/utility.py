@@ -233,8 +233,6 @@ def make_image(window, image_data, row, column, columnspan, rowspan,
     # plot image
     if original:
         # plot image array without showing axes
-        if gs:
-            image_data = skimage.color.rgb2gray(image_data)
         image = axes.imshow(np.flipud(image_data), origin='lower', cmap=cmap)
         axes.axis('off')
         image_array = image.get_array().flatten()

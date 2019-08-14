@@ -439,6 +439,8 @@ class OGColour:
             # Placeholder
             self.original_image = make_label(self.root, "original image placeholder", row=2, column=0, rowspan=10, columnspan=6, inner_pady=80, inner_padx=120, outer_padx=(15, 10), outer_pady=(15, 10))
         else:
+            if self.gs:
+                data = np.asarray(rgb_image_to_hsi_array(self.original_image_data)).reshape((480, 640))
             logging.debug("BUILDING ORIGINAL COLOUR IMAGE...")
             (self.original_image_graph, self.original_image, self.image_array) = make_image(self.root, data, row=2, column=0, columnspan=6, rowspan=10, lower_scale_value=None, upper_scale_value=None, color_rgb=BACKGROUND, original=True, figheight=2.5, figwidth=3.5, gs=gs)
             self.original_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
