@@ -1,6 +1,6 @@
 from GutGuiModules.utility import *
 import numpy as np
-import logging
+
 
 class NewColourData:
     def __init__(self, new_color_data_frame, listener):
@@ -52,20 +52,29 @@ class NewColourData:
 
     def _build_data(self):
         # mean
-        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value), bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
+        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value),
+                                   bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=22, columnspan=2,
+                                   padx=(20, 15), state=NORMAL)
         # standard deviation
-        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(BACKGROUND), column=0, row=2, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
+        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(BACKGROUND),
+                                 column=0, row=2, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
         # median
-        self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(BACKGROUND), column=0, row=3, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
+        self.median_text = make_text(self.root, content="Median = " + str(self.median_value),
+                                     bg=tkcolour_from_rgb(BACKGROUND), column=0, row=3, width=22, columnspan=2,
+                                     padx=(20, 15), state=NORMAL)
         # IQR
-        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(BACKGROUND), column=0, row=4, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
+        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(BACKGROUND),
+                                  column=0, row=4, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
         # min
-        self.min_text = make_text(self.root, content="Min = " + str(self.min_value), bg=tkcolour_from_rgb(BACKGROUND), column=0, row=5, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
+        self.min_text = make_text(self.root, content="Min = " + str(self.min_value), bg=tkcolour_from_rgb(BACKGROUND),
+                                  column=0, row=5, width=22, columnspan=2, padx=(20, 15), state=NORMAL)
         # max
-        self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(BACKGROUND), column=0, row=6, width=22, columnspan=2, padx=(20, 15), pady=(0, 15), state=NORMAL)
+        self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(BACKGROUND),
+                                  column=0, row=6, width=22, columnspan=2, padx=(20, 15), pady=(0, 15), state=NORMAL)
 
     def _build_calc_button(self):
-        self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1, command=self.update_calc, inner_padx=3, inner_pady=0, outer_padx=(0, 25), outer_pady=15, width=5)
+        self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1, command=self.update_calc,
+                                       inner_padx=3, inner_pady=0, outer_padx=(0, 25), outer_pady=15, width=5)
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='New Data', command=self.__info, width=8)

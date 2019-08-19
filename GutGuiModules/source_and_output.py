@@ -4,7 +4,7 @@ from copy import deepcopy
 from tkinter import filedialog, messagebox
 import os
 
-# Manages the source and output directory
+
 class SourceAndOutput:
     def __init__(self, source_and_output_frame, listener):
         # Root
@@ -61,17 +61,23 @@ class SourceAndOutput:
         self._build_info_label()
 
     def _build_select_superdir_button(self):
-        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory", command=self.__add_data_cube_dirs, inner_padx=10, inner_pady=10, outer_padx=15, row=1, column=0, width=15, outer_pady=(0, 5))
+        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory",
+                                                   command=self.__add_data_cube_dirs, inner_padx=10, inner_pady=10,
+                                                   outer_padx=15, row=1, column=0, width=15, outer_pady=(0, 5))
 
     def _build_select_dir_button(self):
-        self.select_data_cube_button = make_button(self.root, text=" Select Data Directory", command=self.__add_data_cube_dir, inner_padx=10, inner_pady=10, outer_padx=15, row=2, column=0, width=15, outer_pady=(0, 5))
+        self.select_data_cube_button = make_button(self.root, text=" Select Data Directory",
+                                                   command=self.__add_data_cube_dir, inner_padx=10, inner_pady=10,
+                                                   outer_padx=15, row=2, column=0, width=15, outer_pady=(0, 5))
 
     def _build_selection_box(self):
         self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=3, padx=(0, 15), pady=(0, 15))
         self.selection_listbox.bind('<<ListboxSelect>>', self.__update_selected_data_cube)
 
     def _build_delete_button(self):
-        self.delete_button = make_button(self.root, text="Remove Data Cube",command=self.__delete_selected_data_cube, inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15, outer_pady=(0, 15))
+        self.delete_button = make_button(self.root, text="Remove Data Cube", command=self.__delete_selected_data_cube,
+                                         inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15,
+                                         outer_pady=(0, 15))
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Source and Output', command=self.__info, width=15)

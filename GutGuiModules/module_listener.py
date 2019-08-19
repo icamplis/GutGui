@@ -2,10 +2,10 @@ from AnalysisModules.analysis_abs import AbsSpecAnalysis
 from AnalysisModules.analysis_hist import HistogramAnalysis
 from AnalysisModules.analysis_new import NewAnalysis
 from AnalysisModules.analysis_recreated import RecreatedAnalysis
-from GutGuiModules.constants import *
 from GutGuiModules.utility import *
 import numpy as np
 import logging
+
 
 class ModuleListener:
     def __init__(self):
@@ -42,14 +42,11 @@ class ModuleListener:
         # DIAGRAM
         self.is_masked = False
 
-    def get_masked(self):
-        return self.is_masked
-
     def get_mask(self):
         if len(self.mask) != 0:
             return self.mask
         else:
-            return np.asarray([[False for i in range(640)] for j in range(480)])
+            return np.asarray([[False for _ in range(640)] for _ in range(480)])
 
     def get_wl(self):
         if self.is_masked:
@@ -71,7 +68,6 @@ class ModuleListener:
             mask = np.logical_not(np.array([self.mask.T] * 3).T)
             return np.ma.array(data, mask=mask)
 
-
     def get_current_rec_data(self):
         data = self.modules[RECREATED_COLOUR].get_current_data()
         if not self.is_masked:
@@ -81,7 +77,7 @@ class ModuleListener:
 
     def get_current_norm_rec_data(self):
         image = self.modules[RECREATED_COLOUR].get_current_data()
-        data = image/np.ma.max(image)
+        data = image / np.ma.max(image)
         if not self.is_masked:
             return data
         else:
@@ -93,10 +89,10 @@ class ModuleListener:
             return data
         else:
             return np.ma.array(data, mask=np.logical_not(self.mask))
-        
+
     def get_current_norm_new_data(self):
         image = self.modules[NEW_COLOUR].get_current_data()
-        data = image/np.ma.max(image)
+        data = image / np.ma.max(image)
         if not self.is_masked:
             return data
         else:
@@ -116,7 +112,7 @@ class ModuleListener:
         spec_num = self.modules[NEW_COLOUR].get_spec_number()
         image_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
         if image_mode == WL or mode == 'WL':
-            mod = '_' + str(self.wavelength[0]*5+500) + '-' + str(self.wavelength[1]*5+500)
+            mod = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif image_mode == IDX or mode == 'IDX':
             mod = '_IDX' + str(self.index)
         info += str(mod)
@@ -126,7 +122,7 @@ class ModuleListener:
     def get_current_hist_info(self):
         info = ''
         spec_num = self.modules[HISTOGRAM].get_spec_number()
-        wl = '_' + str(self.wavelength[0]*5+500) + '-' + str(self.wavelength[1]*5+500)
+        wl = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         info += wl
         info += '_fromCSV' + str(spec_num)
         return info
@@ -134,7 +130,7 @@ class ModuleListener:
     def get_current_abs_info(self):
         info = ''
         spec_num = self.modules[ABSORPTION_SPEC].get_spec_number()
-        wl = '_' + str(self.wavelength[0]*5+500) + '-' + str(self.wavelength[1]*5+500)
+        wl = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         info += wl
         info += '_fromCSV' + str(spec_num)
         return info
@@ -158,7 +154,7 @@ class ModuleListener:
 
         self.data_cube = data_cube
         self.dc_path = dc_path
-        self.results[dc_path] = ['hist', 'abs', 'rec', 'new', {}]
+        self.results[dc_path] = ['hist', 'abs', 'rec', 'new']
 
         if self.modules[ANALYSIS_AND_FORM]:
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
@@ -173,148 +169,134 @@ class ModuleListener:
             self.new_specs = self.modules[NEW_COLOUR].get_specs()
 
             # update each based on inputs
-            self._make_new_hist_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.histogram_specs)
-            self._make_new_abs_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.ab_spec_specs)
-            self._make_new_rec_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.recreated_specs, self.params)
+            self._make_new_hist_analysis(dc_path, data_cube, self.wavelength, self.mask,
+                                         self.histogram_specs)
+            self._make_new_abs_analysis(dc_path, data_cube, self.wavelength, self.mask, self.ab_spec_specs)
+            self._make_new_rec_analysis(dc_path, data_cube, self.wavelength, self.mask,
+                                        self.recreated_specs, self.params)
             self._make_new_new_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.new_specs)
 
     def set_data_cube(self, dc_path):
         logging.debug("SELECTED DATA CUBE AT: " + dc_path)
         self.current_rendered_result_path = dc_path
-        self._broadcast_new_data()
+        self.broadcast_new_data()
 
     def ref_data_cube(self, path):
         # 1. Original reflectance
         # Data cube is originally same for all, use hist because its the first in the list
-        if not '1' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube().tolist()
-            logging.debug("REMOVING NEGATIVE VALUES...")
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        cube[i][j][k] = str(float(cube[i][j][k]))
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['1'] = np.asarray(cube)
-        return self.get_result(path)[4]['1']
+        cube = self.get_result(path)[0].get_data_cube().tolist()
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    cube[i][j][k] = str(float(cube[i][j][k]))
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def ref_non_neg_cube(self, path):
         # 2. Original reflectance without negative values --> 1 with spaces for
         # negative values
-        if not '2' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube().tolist()
-            logging.debug("REMOVING NEGATIVE VALUES...")
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        if cube[i][j][k] < 0:
-                            cube[i][j][k] = float('NaN')
-                        else:
-                            cube[i][j][k] = str(float(cube[i][j][k]))
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['2'] = np.asarray(cube)
-        return self.get_result(path)[4]['2']
+        cube = self.get_result(path)[0].get_data_cube().tolist()
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] < 0:
+                        cube[i][j][k] = float('NaN')
+                    else:
+                        cube[i][j][k] = str(float(cube[i][j][k]))
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def ref_norm_cube(self, path):
         # 3. Normalised reflectance --> 1 divded by max(1)
-        if not '3' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube()
-            max_val = np.ma.max(cube)
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        cube[i][j][k] = str(float(cube[i][j][k]/max_val))
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['3'] = np.asarray(cube)
-        return self.get_result(path)[4]['3']
+        cube = self.get_result(path)[0].get_data_cube()
+        max_val = np.ma.max(cube)
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    cube[i][j][k] = str(float(cube[i][j][k] / max_val))
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def ref_norm_non_neg_cube(self, path):
         # 4. Normalised reflectance without negative values --> 3 with spaces
         # for negative values
-        if not '4' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube()
-            logging.debug("REMOVING NEGATIVE VALUES...")
-            cube = cube/np.ma.max(cube)
-            cube = cube.tolist()
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        if cube[i][j][k] < 0:
-                            cube[i][j][k] = float('NaN')
-                        else:
-                            cube[i][j][k] = str(float(cube[i][j][k]))
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['4'] = np.asarray(cube)
-        return self.get_result(path)[4]['4']
+        cube = self.get_result(path)[0].get_data_cube()
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        cube = cube / np.ma.max(cube)
+        cube = cube.tolist()
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] < 0:
+                        cube[i][j][k] = float('NaN')
+                    else:
+                        cube[i][j][k] = str(float(cube[i][j][k]))
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def ab_data_cube(self, path):
         # 5. Original absorbance --> -log() of 2
-        if not '5' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube().tolist()
-            logging.debug("REMOVING NEGATIVE VALUES...")
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        if cube[i][j][k] <= 0:
-                            cube[i][j][k] = float('NaN')
-                        else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['5'] = np.asarray(cube)
-        return self.get_result(path)[4]['5']
+        cube = self.get_result(path)[0].get_data_cube().tolist()
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] <= 0:
+                        cube[i][j][k] = float('NaN')
+                    else:
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def ab_non_neg_cube(self, path):
         # 6. Original absorbanve without negative values --> 5 with spaces for
         # negative values
-        if not '6' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube().tolist()
-            logging.debug("REMOVING NEGATIVE VALUES...")
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                            cube[i][j][k] = float('NaN')
-                        else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['6'] = np.asarray(cube)
-        return self.get_result(path)[4]['6']
+        cube = self.get_result(path)[0].get_data_cube().tolist()
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
+                        cube[i][j][k] = float('NaN')
+                    else:
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def ab_norm_cube(self, path):
         # 7. Normalised absorbance --> 5 divided by max(5)
-        if not '7' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube().tolist()
-            logging.debug("FINDING MAX...")
-            max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
-            logging.debug("REMOVING NEGATIVE VALUES...")
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        if cube[i][j][k] <= 0:
-                            cube[i][j][k] = float('NaN')
-                        else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['7'] = np.asarray(cube)
-        return self.get_result(path)[4]['7']
+        cube = self.get_result(path)[0].get_data_cube().tolist()
+        logging.debug("FINDING MAX...")
+        max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] <= 0:
+                        cube[i][j][k] = float('NaN')
+                    else:
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])) / max5)
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def ab_norm_non_neg_cube(self, path):
         # 8. Normalised absorbance without negative values --> 7 with spaces for
         # negative values
-        if not '8' in self.get_result(path)[4].keys():
-            cube = self.get_result(path)[0].get_data_cube().tolist()
-            logging.debug("FINDING MAX...")
-            max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
-            logging.debug("REMOVING NEGATIVE VALUES...")
-            for i in range(len(cube)):
-                for j in range(len(cube[i])):
-                    for k in range(len(cube[i][j])):
-                        if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                            cube[i][j][k] = float('NaN')
-                        else:
-                            cube[i][j][k] = str(float(-np.log(cube[i][j][k]))/max5)
-                    progress(j+i*len(cube[i]), 307200)
-            self.get_result(path)[4]['8'] = np.asarray(cube)
-        return self.get_result(path)[4]['8']
+        cube = self.get_result(path)[0].get_data_cube().tolist()
+        logging.debug("FINDING MAX...")
+        max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
+        logging.debug("REMOVING NEGATIVE VALUES...")
+        for i in range(len(cube)):
+            for j in range(len(cube[i])):
+                for k in range(len(cube[i][j])):
+                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
+                        cube[i][j][k] = float('NaN')
+                    else:
+                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])) / max5)
+                progress(j + i * len(cube[i]), 307200)
+        return cube
 
     def update_selected_paths(self, selected_paths):
         self.selected_paths = selected_paths
@@ -328,38 +310,39 @@ class ModuleListener:
         self.mask = new_mask
         self._update_analysis(mask=self.mask)
         if self.is_masked:
-            self._broadcast_new_data()
+            self.broadcast_new_data()
 
     def submit_wavelength(self, new_wavelength):
         logging.debug("NEW WAVELENGTH: " + str(new_wavelength))
         self.wavelength = new_wavelength
         self._update_analysis(wavelength=self.wavelength)
-        self._broadcast_new_data()
+        self.broadcast_new_data()
 
     def submit_index(self, new_index_number):
         logging.debug("SETTING NEW INDEX: [...]")
         self.index_number = new_index_number
         self._update_analysis(index_number=self.index_number)
-        self._broadcast_new_data()
+        self.broadcast_new_data()
 
     def submit_is_masked(self, new_is_masked):
         logging.debug("USING WHOLE IMAGE? " + str(new_is_masked))
         self.is_masked = new_is_masked
-        self._broadcast_new_data()
+        self.broadcast_new_data()
 
     def render_original_image_data(self):
-        self._broadcast_to_original_image()
+        self.broadcast_to_original_image()
 
     def render_new_recreated_image_data(self):
-        self._broadcast_to_recreated_image()
+        self.broadcast_to_recreated_image()
 
     def render_new_new_image_data(self):
-        self._broadcast_to_new_image()
+        self.broadcast_to_new_image()
 
     def update_params(self):
         self.params = self.modules[PARAMETER].get_params()
-        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.recreated_specs, self.params)
-        self._broadcast_to_recreated_image()
+        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask,
+                                    self.recreated_specs, self.params)
+        self.broadcast_to_recreated_image()
 
     def update_saved(self, saves_key, value):
         logging.debug("UPDATING " + saves_key + " TO " + str(value))
@@ -367,7 +350,8 @@ class ModuleListener:
 
     def get_coords(self, point_bools):
         point_coords = self.modules[ORIGINAL_COLOUR].get_coords()
-        data = [[float(point_coords[i][0]+1), float(point_coords[i][1]+1)] for i in range(10) if point_bools[i] and point_coords[i] != (None, None)]
+        data = [[float(point_coords[i][0] + 1), float(point_coords[i][1] + 1)] for i in range(10) if
+                point_bools[i] and point_coords[i] != (None, None)]
         return data
 
     def instant_save_points(self):
@@ -424,14 +408,14 @@ class ModuleListener:
         return self.modules[INFO].get_colour_info()
 
     # Helpers
-    def _broadcast_new_data(self):
-        self._broadcast_to_original_image()
-        self._broadcast_to_recreated_image()
-        self._broadcast_to_new_image()
-        self._broadcast_to_histogram()
-        self._broadcast_to_absorption_spec()
+    def broadcast_new_data(self):
+        self.broadcast_to_original_image()
+        self.broadcast_to_recreated_image()
+        self.broadcast_to_new_image()
+        self.broadcast_to_histogram()
+        self.broadcast_to_absorption_spec()
 
-    def _broadcast_to_original_image(self):
+    def broadcast_to_original_image(self):
         # Use hist to get new images from the file as its the first in analysis list
         display_mode = self.modules[ORIGINAL_COLOUR].get_displayed_image_mode()
         new_data = None
@@ -452,7 +436,7 @@ class ModuleListener:
             new_data = self.get_result(self.current_rendered_result_path)[0].get_twi_og()
         self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
 
-    def _broadcast_to_recreated_image(self):
+    def broadcast_to_recreated_image(self):
         display_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
         new_data = None
         if display_mode == STO2:
@@ -464,7 +448,7 @@ class ModuleListener:
         elif display_mode == TWI:
             new_data = self.get_result(self.current_rendered_result_path)[2].get_twi()
         self.modules[RECREATED_COLOUR].update_recreated_image(new_data)
-        
+
         # if self.is_masked:
         #     if display_mode == STO2:
         #         masked_new_data = self.get_result(self.current_rendered_result_path)[2].get_sto2_masked()
@@ -478,7 +462,7 @@ class ModuleListener:
         # else:
         #     self.modules[RECREATED_COLOUR_DATA].update_recreated_image_data(new_data) 
 
-    def _broadcast_to_new_image(self):
+    def broadcast_to_new_image(self):
         display_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
         new_data = None
         if display_mode == WL:
@@ -496,11 +480,11 @@ class ModuleListener:
         # else:
         #     self.modules[NEW_COLOUR_DATA].update_new_image_data(new_data)
 
-    def _broadcast_to_histogram(self):
+    def broadcast_to_histogram(self):
         data = self.get_result(self.current_rendered_result_path)[0].get_histogram_data(self.is_masked)
         self.modules[HISTOGRAM].update_histogram(data)
 
-    def _broadcast_to_absorption_spec(self):
+    def broadcast_to_absorption_spec(self):
         if self.is_masked:
             new_absorption_spec = self.get_result(self.current_rendered_result_path)[1].get_absorption_spec_masked()
         else:
@@ -521,41 +505,43 @@ class ModuleListener:
                     result_list[i].update_wavelength(wavelength)
             if index_number is not None:
                 logging.debug("UPDATING INDEX TO: " + str(index_number))
-                for i in range(4):
-                    # for each affected module
-                    result_list[i].update_index(index_number)
+                result_list[3].update_index(index_number)
 
-    def _update_histogram_specs(self, specs):
+    def update_histogram_specs(self, specs):
         self.histogram_specs = specs
-        self._make_new_hist_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.histogram_specs)
-        self._broadcast_to_histogram()
+        self._make_new_hist_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask,
+                                     self.histogram_specs)
+        self.broadcast_to_histogram()
 
-    def _update_abs_specs(self, specs):
+    def update_abs_specs(self, specs):
         self.ab_spec_specs = specs
-        self._make_new_abs_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.ab_spec_specs)
-        self._broadcast_to_absorption_spec()
+        self._make_new_abs_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask,
+                                    self.ab_spec_specs)
+        self.broadcast_to_absorption_spec()
 
-    def _update_recreated_specs(self, specs):
+    def update_recreated_specs(self, specs):
         self.recreated_specs = specs
-        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.recreated_specs, self.params)
-        self._broadcast_to_recreated_image()
+        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask,
+                                    self.recreated_specs, self.params)
+        self.broadcast_to_recreated_image()
 
-    def _update_new_specs(self, specs):
-        self.new_specs= specs
-        self._make_new_new_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask, self.new_specs)
-        self._broadcast_to_new_image()
+    def update_new_specs(self, specs):
+        self.new_specs = specs
+        self._make_new_new_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask,
+                                    self.new_specs)
+        self.broadcast_to_new_image()
 
     # Uses the path of the data cube as an identifier
 
-    def _make_new_hist_analysis(self, path, data_cube, wavelength, index, mask, specs):
-        self.results[path][0] = HistogramAnalysis(path, data_cube, wavelength, index, specs, ModuleListener(), mask)
+    def _make_new_hist_analysis(self, path, data_cube, wavelength, mask, specs):
+        self.results[path][0] = HistogramAnalysis(path, data_cube, wavelength, specs, ModuleListener(), mask)
 
-    def _make_new_abs_analysis(self, path, data_cube, wavelength, index, mask, specs):
-        self.results[path][1] = AbsSpecAnalysis(path, data_cube, wavelength, index, specs, ModuleListener(), mask)
+    def _make_new_abs_analysis(self, path, data_cube, wavelength, mask, specs):
+        self.results[path][1] = AbsSpecAnalysis(path, data_cube, wavelength, specs, ModuleListener(), mask)
 
-    def _make_new_rec_analysis(self, path, data_cube, wavelength, index, mask, specs, params):
-        self.results[path][2] = RecreatedAnalysis(path, data_cube, wavelength, index, specs, params, ModuleListener(), mask)
+    def _make_new_rec_analysis(self, path, data_cube, wavelength, mask, specs, params):
+        self.results[path][2] = RecreatedAnalysis(path, data_cube, wavelength, specs, params, ModuleListener(),
+                                                  mask)
 
     def _make_new_new_analysis(self, path, data_cube, wavelength, index, mask, specs):
         self.results[path][3] = NewAnalysis(path, data_cube, wavelength, index, specs, ModuleListener(), mask)
-

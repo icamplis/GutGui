@@ -1,5 +1,6 @@
 from GutGuiModules.utility import *
 
+
 class AnalysisAndForm:
     def __init__(self, analysis_and_form_frame, listener):
         self.root = analysis_and_form_frame
@@ -49,7 +50,7 @@ class AnalysisAndForm:
         return int(self.wavelength_lower_entry.get())
 
     def get_wavelength(self):
-        return (int((self.get_wavelength_lower()-500)/5), int((self.get_wavelength_upper()-500)/5))
+        return int((self.get_wavelength_lower()-500)/5), int((self.get_wavelength_upper()-500)/5)
 
     def get_index(self):
         return self.index_selected
@@ -64,8 +65,12 @@ class AnalysisAndForm:
         self._build_info_label()
 
     def _build_wavelength_text(self):
-        self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ", bg=tkcolour_from_rgb(BACKGROUND), column=0, row=3, width=19, columnspan=4, pady=0)
-        self.upper_wavelength_text = make_text(self.root, content="Upper Wavelength: ", bg=tkcolour_from_rgb(BACKGROUND), column=0, row=4, width=19, columnspan=4, pady=(5, 0))
+        self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ",
+                                               bg=tkcolour_from_rgb(BACKGROUND), column=0, row=3, width=19,
+                                               columnspan=4, pady=0)
+        self.upper_wavelength_text = make_text(self.root, content="Upper Wavelength: ",
+                                               bg=tkcolour_from_rgb(BACKGROUND), column=0, row=4, width=19,
+                                               columnspan=4, pady=(5, 0))
 
     def _build_wavelength_lower_entry(self):
         self.wavelength_lower_entry = make_entry(self.root, row=3, column=4, width=15, pady=0, columnspan=4)
@@ -78,22 +83,32 @@ class AnalysisAndForm:
         self.wavelength_upper_entry.bind('<Return>', self.__update_wavelength)
 
     def _build_idx_title(self):
-        self.idx_title = make_text(self.root, content="Individual Index:",bg=tkcolour_from_rgb(BACKGROUND), column=0, row=5, width=17, columnspan=8, pady=(10, 5))
+        self.idx_title = make_text(self.root, content="Individual Index:", bg=tkcolour_from_rgb(BACKGROUND), column=0,
+                                   row=5, width=17, columnspan=8, pady=(10, 5))
 
     def _build_idxs(self):
-        self.idx1_button = make_button(self.root, text='1', command=lambda:self.__idxn(1),row=6, column=0, outer_pady=(5, 15), outer_padx=(15, 5), width=1)
-        self.idx2_button = make_button(self.root, text='2', command=lambda:self.__idxn(2),row=6, column=1, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx3_button = make_button(self.root, text='3', command=lambda:self.__idxn(3), row=6, column=2, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx4_button = make_button(self.root, text='4', command=lambda:self.__idxn(4), row=6, column=3, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx5_button = make_button(self.root, text='5', command=lambda:self.__idxn(5), row=6, column=4, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx6_button = make_button(self.root, text='6', command=lambda:self.__idxn(6), row=6, column=5, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx7_button = make_button(self.root, text='7', command=lambda:self.__idxn(7), row=6, column=6, outer_pady=(5, 15), outer_padx=5, width=1)
-        self.idx8_button = make_button(self.root, text='8', command=lambda:self.__idxn(8), row=6, column=7, outer_pady=(5, 15), outer_padx=(5, 15), width=1)
+        self.idx1_button = make_button(self.root, text='1', command=lambda: self.__idxn(1), row=6, column=0,
+                                       outer_pady=(5, 15), outer_padx=(15, 5), width=1)
+        self.idx2_button = make_button(self.root, text='2', command=lambda: self.__idxn(2), row=6, column=1,
+                                       outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx3_button = make_button(self.root, text='3', command=lambda: self.__idxn(3), row=6, column=2,
+                                       outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx4_button = make_button(self.root, text='4', command=lambda: self.__idxn(4), row=6, column=3,
+                                       outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx5_button = make_button(self.root, text='5', command=lambda: self.__idxn(5), row=6, column=4,
+                                       outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx6_button = make_button(self.root, text='6', command=lambda: self.__idxn(6), row=6, column=5,
+                                       outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx7_button = make_button(self.root, text='7', command=lambda: self.__idxn(7), row=6, column=6,
+                                       outer_pady=(5, 15), outer_padx=5, width=1)
+        self.idx8_button = make_button(self.root, text='8', command=lambda: self.__idxn(8), row=6, column=7,
+                                       outer_pady=(5, 15), outer_padx=(5, 15), width=1)
         self.idx1_button.config(foreground="red")
         self.index_selected = 1  # Use index no.1 by default
 
     def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Analysis Settings\nfor "New Image"', command=self.__info, width=14)
+        self.info_label = make_label_button(self.root, text='Analysis Settings\nfor "New Image"', command=self.__info,
+                                            width=14)
         self.info_label.grid(columnspan=4)
 
     # Commands (Callbacks)

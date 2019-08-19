@@ -1,11 +1,8 @@
+from GutGuiModules.utility import *
+from matplotlib.pyplot import cm
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
-from matplotlib.colorbar import ColorbarBase
-from GutGuiModules.utility import *
-from matplotlib import colors
-from matplotlib.pyplot import cm
+
 
 class Colour:
     def __init__(self, colour_frame, listener):
@@ -45,7 +42,8 @@ class Colour:
         image.get_tk_widget().grid(column=0, row=1, padx=0, pady=(0, 10))
 
     def _build_high_low(self):
-        self.high_low = make_text(self.root, content="Low           High", bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=18, columnspan=1, padx=(20, 15), pady=(35, 0))
+        self.high_low = make_text(self.root, content="Low           High", bg=tkcolour_from_rgb(BACKGROUND), column=0,
+                                  row=1, width=18, columnspan=1, padx=(20, 15), pady=(35, 0))
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Colour Scale', command=self.__info, width=11)
@@ -55,6 +53,3 @@ class Colour:
         info = self.listener.get_colour_info()
         title = "Colour Information"
         make_info(title=title, info=info)
-
-
-

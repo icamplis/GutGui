@@ -1,8 +1,7 @@
 from GutGuiModules.utility import *
 import numpy as np
-from matplotlib.offsetbox import AnchoredText
-from decimal import Decimal
 import logging
+
 
 class Histogram:
     def __init__(self, histogram_frame, listener):
@@ -45,17 +44,17 @@ class Histogram:
 
         self.drop_down_var = StringVar()
         self.choices = ['1. Reflectance - Original', 
-        '2. Reflectance - Original without Negative Values', 
-        '3. Reflectance - Normalised',
-        '4. Reflectance - Normalised without Negative Values', 
-        '5. Absorbance - Original', 
-        '6. Absorbance - Original without Negative Values', 
-        '7. Absorbance - Normalised',
-        '8. Absorbance - Normalised without Negative Values', 
-        '9. Recreated Image', 
-        '10. Recreated Image - Normalised',
-        '11. New Image',
-        '12. New Image - Normalised']
+                        '2. Reflectance - Original without Negative Values',
+                        '3. Reflectance - Normalised',
+                        '4. Reflectance - Normalised without Negative Values',
+                        '5. Absorbance - Original',
+                        '6. Absorbance - Original without Negative Values',
+                        '7. Absorbance - Normalised',
+                        '8. Absorbance - Normalised without Negative Values',
+                        '9. Recreated Image',
+                        '10. Recreated Image - Normalised',
+                        '11. New Image',
+                        '12. New Image - Normalised']
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -144,97 +143,136 @@ class Histogram:
 
     def _build_stats(self):
         # parametric
-        self.parametric_button = make_button(self.root, text='P:', width=4, command=self.__parametric, column=0, row=2, columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3, inner_pady=0, outer_pady=(0, 3))
+        self.parametric_button = make_button(self.root, text='P:', width=4, command=self.__parametric, column=0, row=2,
+                                             columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3,
+                                             inner_pady=0, outer_pady=(0, 3))
         # mean
-        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value), bg=tkcolour_from_rgb(BACKGROUND), column=1, row=2, width=12, columnspan=1, padx=0, state=NORMAL)
+        self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value),
+                                   bg=tkcolour_from_rgb(BACKGROUND), column=1, row=2, width=12, columnspan=1, padx=0,
+                                   state=NORMAL)
         # standard deviation
-        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(BACKGROUND), column=2, row=2, width=10, columnspan=1, padx=0, state=NORMAL)
+        self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(BACKGROUND),
+                                 column=2, row=2, width=10, columnspan=1, padx=0, state=NORMAL)
         # non parametric
-        self.non_parametric_button = make_button(self.root, text='NP:', width=4, command=self.__non_parametric, column=0, row=3, columnspan=1, outer_padx=(15, 0), highlightthickness=0, inner_padx=3, inner_pady=0)
+        self.non_parametric_button = make_button(self.root, text='NP:', width=4, command=self.__non_parametric,
+                                                 column=0, row=3, columnspan=1, outer_padx=(15, 0),
+                                                 highlightthickness=0, inner_padx=3, inner_pady=0)
         # median
-        self.median_text = make_text(self.root, content="Median = " + str(self.median_value), bg=tkcolour_from_rgb(BACKGROUND), column=1, row=3, width=14, columnspan=1, padx=0, state=NORMAL)
+        self.median_text = make_text(self.root, content="Median = " + str(self.median_value),
+                                     bg=tkcolour_from_rgb(BACKGROUND), column=1, row=3, width=14, columnspan=1, padx=0,
+                                     state=NORMAL)
         # IQR
-        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(BACKGROUND), column=2, row=3, width=22, columnspan=1, padx=(0, 10), state=NORMAL)
+        self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(BACKGROUND),
+                                  column=2, row=3, width=22, columnspan=1, padx=(0, 10), state=NORMAL)
         # min and max
-        first_line_text = "x min = " + str(self.min_x) + ', y val = ' + str(self.min_x_val) + '      y min = ' + str(self.min_y) + ', x val = ' + str(self.min_y_val)
-        self.first_line = make_text(self.root, content=first_line_text, bg=tkcolour_from_rgb(BACKGROUND), column=1, row=4, width=60, columnspan=4, state=NORMAL, pady=(10, 0))
-        second_line_text = "x max = " + str(self.max_x) + ', y val = ' + str(self.max_x_val) + '      y max = ' + str(self.max_y) + ', x val = ' + str(self.max_y_val)
-        self.second_line = make_text(self.root, content=second_line_text, bg=tkcolour_from_rgb(BACKGROUND), column=1, row=5, width=60, columnspan=4, state=NORMAL, pady=(0, 20))
+        first_line_text = "x min = " + str(self.min_x) + ', y val = ' + str(self.min_x_val) + '      y min = ' + \
+                          str(self.min_y) + ', x val = ' + str(self.min_y_val)
+        self.first_line = make_text(self.root, content=first_line_text, bg=tkcolour_from_rgb(BACKGROUND), column=1,
+                                    row=4, width=60, columnspan=4, state=NORMAL, pady=(10, 0))
+        second_line_text = "x max = " + str(self.max_x) + ', y val = ' + str(self.max_x_val) + '      y max = ' + \
+                           str(self.max_y) + ', x val = ' + str(self.max_y_val)
+        self.second_line = make_text(self.root, content=second_line_text, bg=tkcolour_from_rgb(BACKGROUND), column=1,
+                                     row=5, width=60, columnspan=4, state=NORMAL, pady=(0, 20))
         # none
-        self.none_button = make_button(self.root, text='None', width=4, command=self.__none, column=0, row=1, columnspan=1, outer_padx=(15, 0), outer_pady=(0,3), highlightthickness=0, inner_padx=3, inner_pady=0)
+        self.none_button = make_button(self.root, text='None', width=4, command=self.__none, column=0, row=1,
+                                       columnspan=1, outer_padx=(15, 0), outer_pady=(0, 3), highlightthickness=0,
+                                       inner_padx=3, inner_pady=0)
         # percent negative
-        self.percent_negative_text = make_text(self.root, content="% Negative = " + str(self.percent_negative_value) + '%', bg=tkcolour_from_rgb(BACKGROUND), column=3, row=2, width=25, columnspan=2, rowspan=2, padx=(10, 0), state=NORMAL, pady=0)
+        self.percent_negative_text = make_text(self.root, content="% Negative = " + str(self.percent_negative_value) +
+                                                                  '%', bg=tkcolour_from_rgb(BACKGROUND), column=3,
+                                               row=2, width=25, columnspan=2, rowspan=2, padx=(10, 0), state=NORMAL,
+                                               pady=0)
 
     def _build_drop_down(self):
         self.drop_down_var.set(self.choices[0])
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
         self.drop_down_menu.configure(highlightthickness=0, width=6, 
-            anchor='w', padx=15)
+                                      anchor='w', padx=15)
         self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(0, 15))
 
     def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=13, column=0,inner_padx=10, inner_pady=5, outer_padx=(15, 10), outer_pady=(0, 15))
-        self.save_checkbox = make_checkbox(self.root, "", row=13, column=0, var=self.save_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 5))
+        self.save_label = make_label(self.root, "Save", row=13, column=0, inner_padx=10, inner_pady=5,
+                                     outer_padx=(15, 10), outer_pady=(0, 15))
+        self.save_checkbox = make_checkbox(self.root, "", row=13, column=0, var=self.save_checkbox_value, sticky=NE,
+                                           inner_padx=0, inner_pady=0, outer_padx=(0, 5))
         self.save_checkbox.deselect()
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 
     def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=13, column=1, inner_padx=10, inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 15))
-        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=13, column=1, var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0,12))
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=13, column=1, inner_padx=10,
+                                              inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 15))
+        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=13, column=1,
+                                                    var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0,
+                                                    inner_pady=0, outer_padx=(0, 12))
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 
     def _build_save_as_excel(self):
-        self.save_as_excel_label = make_label(self.root, "Save as CSV", row=13, column=2, inner_padx=10, inner_pady=5, outer_padx=(5, 15), outer_pady=(0, 15))
-        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=13, column=2,var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0, inner_pady=0, outer_padx=(0, 9))
+        self.save_as_excel_label = make_label(self.root, "Save as CSV", row=13, column=2, inner_padx=10, inner_pady=5,
+                                              outer_padx=(5, 15), outer_pady=(0, 15))
+        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=13, column=2,
+                                                    var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0,
+                                                    inner_pady=0, outer_padx=(0, 9))
         self.save_as_excel_checkbox.deselect()
         self.save_as_excel_checkbox.bind('<Button-1>', self.__update_save_as_excel_check_status)
 
     def _build_reset_button(self):
-        self.reset_button = make_button(self.root, "Reset", row=13, column=3, command=self.__reset, inner_padx=10, inner_pady=5, outer_padx=15, outer_pady=(0, 10), columnspan=2)
+        self.reset_button = make_button(self.root, "Reset", row=13, column=3, command=self.__reset, inner_padx=10,
+                                        inner_pady=5, outer_padx=15, outer_pady=(0, 10), columnspan=2)
 
     def _build_scale(self):
         # lower
         self.lower_text = make_text(self.root, content="Lower: ", 
-            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=7, width=7, columnspan=1, pady=(0, 10))
+                                    bg=tkcolour_from_rgb(BACKGROUND), column=3, row=7, width=7, columnspan=1,
+                                    pady=(0, 10))
         self.lower_input = make_entry(self.root, row=7, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.lower_input.bind('<Return>', self.__update_upper_lower)
         self.lower_input.insert(END, str(self.min_x))
 
         # upper
         self.upper_text = make_text(self.root, content="Upper: ", 
-            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=8, width=7, columnspan=1, pady=(0, 10))
+                                    bg=tkcolour_from_rgb(BACKGROUND), column=3, row=8, width=7, columnspan=1,
+                                    pady=(0, 10))
         self.upper_input = make_entry(self.root, row=8, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.upper_input.bind('<Return>', self.__update_upper_lower)
         self.upper_input.insert(END, str(self.max_x))
 
         # x lower
-        self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=9, width=7, columnspan=1, pady=(0, 10))
-        self.x_lower_scale_input = make_entry(self.root, row=9, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.x_lower_scale_text = make_text(self.root, content="Min x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3,
+                                            row=9, width=7, columnspan=1, pady=(0, 10))
+        self.x_lower_scale_input = make_entry(self.root, row=9, column=4, width=7, pady=(0, 10), padx=(0, 15),
+                                              columnspan=1)
         self.x_lower_scale_input.bind('<Return>', self.__update_scales)
         self.x_lower_scale_input.insert(END, str(self.min_x))
 
-         # x upper
-        self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=10, width=7, columnspan=1, pady=(0, 10))
-        self.x_upper_scale_input = make_entry(self.root, row=10, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
+        # x upper
+        self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3,
+                                            row=10, width=7, columnspan=1, pady=(0, 10))
+        self.x_upper_scale_input = make_entry(self.root, row=10, column=4, width=7, pady=(0, 10), padx=(0, 15),
+                                              columnspan=1)
         self.x_upper_scale_input.bind('<Return>', self.__update_scales)
         self.x_upper_scale_input.insert(END, str(self.max_x))
 
         # y lower
-        self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(BACKGROUND),column=3, row=11, width=7, columnspan=1, pady=(0, 10))
-        self.y_lower_scale_input = make_entry(self.root, row=11, column=4, width=7, pady=(0, 10), padx=(0, 15),columnspan=1)
+        self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3,
+                                            row=11, width=7, columnspan=1, pady=(0, 10))
+        self.y_lower_scale_input = make_entry(self.root, row=11, column=4, width=7, pady=(0, 10), padx=(0, 15),
+                                              columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scales)
         self.y_lower_scale_input.insert(END, str(self.min_y))
 
         # y upper
-        self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=12, width=7, columnspan=1, pady=(0, 10))
-        self.y_upper_scale_input = make_entry(self.root, row=12, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
+        self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3,
+                                            row=12, width=7, columnspan=1, pady=(0, 10))
+        self.y_upper_scale_input = make_entry(self.root, row=12, column=4, width=7, pady=(0, 10), padx=(0, 15),
+                                              columnspan=1)
         self.y_upper_scale_input.bind('<Return>', self.__update_scales)
         self.y_upper_scale_input.insert(END, str(self.max_y))
 
     def _build_step_size(self):
         self.step_size_text = make_text(self.root, content="Step: ", 
-            bg=tkcolour_from_rgb(BACKGROUND), column=3, row=6, width=6, columnspan=1, pady=(0, 10))
+                                        bg=tkcolour_from_rgb(BACKGROUND), column=3, row=6, width=6, columnspan=1,
+                                        pady=(0, 10))
         self.step_size_input = make_entry(self.root, row=6, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.step_size_input.bind('<Return>', self.__update_scales)
         self.step_size_input.insert(END, str(self.step_size_value))
@@ -249,10 +287,11 @@ class Histogram:
         self.interactive_histogram_graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
         if self.flattened_data is not None:
             # calc bins
-            bins = np.arange(start = np.ma.min(self.flattened_data), stop = np.ma.max(self.flattened_data) + self.step_size_value, step = self.step_size_value)
+            bins = np.arange(start=np.ma.min(self.flattened_data),
+                             stop=np.ma.max(self.flattened_data) + self.step_size_value, step=self.step_size_value)
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins)
-            if self.parametric == True:
+            if self.parametric:
                 # plot error bar
                 self.axes2 = self.axes.twinx()
                 self.axes2.plot([self.mean_value-self.sd_value, self.mean_value+self.sd_value], [1, 1], 'k-', lw=1)
@@ -261,7 +300,7 @@ class Histogram:
                 self.axes2.plot([self.mean_value, self.mean_value], [0.9, 1.1], '#F17E3A', lw=1)
                 self.axes2.set_ylim(bottom=0, top=2)
                 self.axes2.get_yaxis().set_visible(False)
-            elif self.non_parametric == True:
+            elif self.non_parametric:
                 # plot boxplot
                 self.axes2 = self.axes.twinx()
                 self.axes2.boxplot(self.flattened_data, vert=False, sym='')
@@ -272,14 +311,21 @@ class Histogram:
             self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
             # commas and non-scientific notation
             self.axes.ticklabel_format(style='plain')
-            self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',') if x%1==0 else format(float(x))))
-            self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, p: format(int(x), ',') if x%1==0 else format(float(x))))
+            self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
+            self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
 
         # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
         self.interactive_histogram.draw()
-        self.interactive_histogram.get_tk_widget().grid(column=0, row=6, columnspan=3, rowspan=7, ipady=5, ipadx=0, pady=0)
+        self.interactive_histogram.get_tk_widget().grid(column=0, row=6, columnspan=3, rowspan=7, ipady=5, ipadx=0,
+                                                        pady=0)
         self.interactive_histogram.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
+
+    def _format_axis(self, x, p):
+        if x % 1 == 0:
+            return format(int(x), ',')
+        else:
+            return format(round(x, 2))
 
     def _calc_stats(self):
         # construct data list in proper range
@@ -297,7 +343,8 @@ class Histogram:
         self.iqr_value = (np.round(np.quantile(data, 0.25), 3), round(np.quantile(data, 0.75), 3))
         progress(3, 11)
         # generate bins
-        bins = np.arange(start = self.lower_value, stop = self.upper_value + self.step_size_value, step = self.step_size_value)
+        bins = np.arange(start=self.lower_value, stop=self.upper_value + self.step_size_value,
+                         step=self.step_size_value)
         progress(4, 11)
         # generate numpy histogram data
         histogram_data = np.histogram(data, bins=bins)
@@ -344,28 +391,28 @@ class Histogram:
         choice = self.drop_down_var.get()[:2]
         if choice == '1.':
             self.specs = (False, True, False)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '2.':
             self.specs = (False, True, True)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '3.':
             self.specs = (False, False, False)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '4.':
             self.specs = (False, False, True)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '5.':
             self.specs = (True, True, False)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '6.':
             self.specs = (True, True, True)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '7.':
             self.specs = (True, False, False)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '8.':
             self.specs = (True, False, True)
-            self.listener._update_histogram_specs(self.specs)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '9.':
             data = self.listener.get_current_rec_data()
             self.update_histogram(data)
@@ -384,7 +431,7 @@ class Histogram:
             self.spec_number = choice[0]
 
     def __update_to_original_data(self):
-        self.listener._broadcast_to_histogram()
+        self.listener.broadcast_to_histogram()
 
     def __update_to_wl_data(self):
         data = self.listener.get_wl()

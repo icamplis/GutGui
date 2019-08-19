@@ -1,11 +1,8 @@
-import numpy as np
-import sys
-np.set_printoptions(threshold=sys.maxsize)
-from AnalysisModules.analysis_constant import *
-from AnalysisModules.Indices import Index
 from GutGuiModules.utility import *
 from GutGuiModules.constants import *
 import logging
+
+np.set_printoptions(threshold=sys.maxsize)
 
 RGB_FILE = "_RGB-Image.png"
 STO2_FILE = "_Oxygenation.png"
@@ -13,8 +10,11 @@ NIR_FILE = "_NIR-Perfusion.png"
 THI_FILE = "_THI.png"
 TWI_FILE = "_TWI.png"
 
+
 class HistogramAnalysis:
-    def __init__(self, path, data_cube, wavelength, index_number, specs, listener, mask=None):
+    def __init__(self, path, data_cube, wavelength, specs, listener, mask=None):
+
+        self.listener = listener
 
         # inputs
         self.path = path
@@ -65,10 +65,6 @@ class HistogramAnalysis:
         self.absorbance = new_absorbance
         self.analysis()
 
-    def update_index(self, new_index_number):
-        self.index_number = new_index_number
-        self.analysis()
-
     def get_data_cube(self):
         return self.data_cube
 
@@ -99,40 +95,39 @@ class HistogramAnalysis:
 
     def get_histogram_data(self, is_masked):
         if is_masked:
-        # if there is a mask
+            # if there is a mask
             if self.absorbance:
-            # if absorbance
+                # if absorbance
                 data = self.x_absorbance_masked
             else:
-            # if reflectance
+                # if reflectance
                 data = self.x_reflectance_masked
         else:
-        # if there is no mask
+            # if there is no mask
             if self.absorbance:
-            # if absorbance
+                # if absorbance
                 data = self.x_absorbance
             else:
-            # if reflectance
-                    data = self.x_reflectance
+                # if reflectance
+                data = self.x_reflectance
         return data
 
     def _calc_general(self):
         logging.debug("CALCULATING: HISTOGRAM...")
-        self.__calc_x1(self)
+        self.__calc_x1()
         self.__calc_x_reflectance()
         self.__calc_x2()
         self.__calc_x_absorbance()
 
-    @staticmethod
     def __calc_x1(self):
         # normalise
         if self.normal:
-            self.x1 = self.data_cube/np.ma.max(self.data_cube)
+            self.x1 = self.data_cube / np.ma.max(self.data_cube)
         else:
             self.x1 = self.data_cube
         # mask negatives
         if self.negative:
-            self.x1 = np.ma.array(self.x1, mask=self.x1<0)
+            self.x1 = np.ma.array(self.x1, mask=self.x1 < 0)
 
     def __calc_x_reflectance(self):
         self.x_reflectance = self.x1
@@ -140,7 +135,7 @@ class HistogramAnalysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower : wav_upper+1], axis=2)
+            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower: wav_upper + 1], axis=2)
         else:
             self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength[0]]
 
@@ -151,7 +146,8 @@ class HistogramAnalysis:
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(max(0, min(self.wavelength)), 0))
                 wav_upper = int(round(min(max(self.wavelength), 99), 0))
-                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper+1], axis=2), mask=self.mask)
+                self.x_reflectance_masked_w = np.ma.array(
+                    np.mean(self.x_reflectance[:, :, wav_lower: wav_upper + 1], axis=2), mask=self.mask)
             else:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
@@ -159,7 +155,7 @@ class HistogramAnalysis:
         self.x2 = -np.ma.log(self.x1)
         self.x2 = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
         if self.negative:
-            self.x2 = np.ma.array(self.x2, mask=self.x2<0)
+            self.x2 = np.ma.array(self.x2, mask=self.x2 < 0)
 
     def __calc_x_absorbance(self):
         self.x_absorbance = self.x2
@@ -167,7 +163,7 @@ class HistogramAnalysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower : wav_upper+1], axis=2)
+            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower: wav_upper + 1], axis=2)
         else:
             self.x_absorbance_w = self.x_absorbance[:, :, self.wavelength[0]]
 
@@ -179,7 +175,8 @@ class HistogramAnalysis:
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
                 wav_upper = int(round(max(max(self.wavelength), 99), 0))
-                self.x_absorbance_masked_w = np.ma.array(np.mean(self.x_absorbance[:, :, wav_lower: wav_upper+1], axis=2),
-                                                         mask=self.mask)
+                self.x_absorbance_masked_w = np.ma.array(
+                    np.mean(self.x_absorbance[:, :, wav_lower: wav_upper + 1], axis=2),
+                    mask=self.mask)
             else:
                 self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength[0]], mask=self.mask)

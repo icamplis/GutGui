@@ -1,5 +1,5 @@
 from GutGuiModules.utility import *
-from tkinter import messagebox
+
 
 class Info:
     def __init__(self, info_frame, listener):
@@ -17,7 +17,10 @@ class Info:
         self.save_info = "Save Information"
         self.param_info = "Parameter Specification Information"
         self.original_info = "Original Image Information"
-        self.input_info = "Here you can input coordinates manually. Make sure that your values are integers (they will be rounded if not), and that your x values are in the interval [0, 640] and your y values are in the interval [0, 480]. Press 'Go' when you are ready to upload your coordinates."
+        self.input_info = "Here you can input coordinates manually. Make sure that your values are integers " \
+                          "(they will be rounded if not), and that your x values are in the interval [0, 640] " \
+                          "and your y values are in the interval [0, 480]. Press 'Go' when you are ready to upload " \
+                          "your coordinates."
         self.original_data_info = "Original Data Information"
         self.recreated_info = "Recreated Image Information"
         self.recreated_data_info = "Recreated Data Information"
@@ -89,7 +92,8 @@ class Info:
 
     def _make_info_text(self):
         text = "*click on the section titles to find further information about that specific widget"
-        self.info_text = Text(self.root, height=6, width=19, highlightthickness=0, wrap=WORD, bg=tkcolour_from_rgb(BACKGROUND))
+        self.info_text = Text(self.root, height=6, width=19, highlightthickness=0, wrap=WORD,
+                              bg=tkcolour_from_rgb(BACKGROUND))
         self.info_text.insert(END, text)
         self.info_text.config(state="disabled")
         self.info_text.grid(row=1, column=0, padx=15)

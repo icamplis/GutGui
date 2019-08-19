@@ -77,6 +77,3 @@ STO2_FILE = "_Oxygenation.png"
 NIR_FILE = "_NIR-Perfusion.png"
 THI_FILE = "_THI.png"
 TWI_FILE = "_TWI.png"
-
-
-

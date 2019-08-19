@@ -3,6 +3,7 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 def main():
     (window, introduction, input_output, image_diagram) = init()
 
@@ -91,6 +92,7 @@ def main():
     colour_module = Colour(colour_frame, listener)
 
     window.mainloop()
+
 
 if __name__ == '__main__':
     main()

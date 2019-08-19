@@ -1,17 +1,17 @@
-import numpy as np
-import sys
-np.set_printoptions(threshold=sys.maxsize)
+import logging
 from AnalysisModules.analysis_constant import *
 from AnalysisModules.Indices import Index
 from GutGuiModules.utility import *
 from GutGuiModules.constants import *
-import logging
+
+np.set_printoptions(threshold=sys.maxsize)
 
 RGB_FILE = "_RGB-Image.png"
 STO2_FILE = "_Oxygenation.png"
 NIR_FILE = "_NIR-Perfusion.png"
 THI_FILE = "_THI.png"
 TWI_FILE = "_TWI.png"
+
 
 class Analysis:
     def __init__(self, path, data_cube, wavelength, index_number, specs, name, mask=None):
@@ -251,14 +251,18 @@ class Analysis:
         logging.debug("CALCULATING: STO2...")
         if self.absorbance:
             self._x_absorbance_gradient = np.gradient(self.x_absorbance, axis=2)
-            self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
-            self._x_absorbance_gradient_min_2 = self._x_absorbance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
+            self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(
+                axis=2)  # between 570nm and 590nm
+            self._x_absorbance_gradient_min_2 = self._x_absorbance_gradient[:, :, 48:56].min(
+                axis=2)  # between 740nm and 780nm
             temp1 = self._x_absorbance_gradient_min_1 / R1
             temp2 = self._x_absorbance_gradient_min_2 / R2
         else:
             self._x_reflectance_gradient = np.gradient(self.x_reflectance, axis=2)
-            self._x_reflectance_gradient_min_1 = self._x_reflectance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
-            self._x_reflectance_gradient_min_2 = self._x_reflectance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
+            self._x_reflectance_gradient_min_1 = self._x_reflectance_gradient[:, :, 14:18].min(
+                axis=2)  # between 570nm and 590nm
+            self._x_reflectance_gradient_min_2 = self._x_reflectance_gradient[:, :, 48:56].min(
+                axis=2)  # between 740nm and 780nm
             temp1 = self._x_reflectance_gradient_min_1 / R1
             temp2 = self._x_reflectance_gradient_min_2 / R2
         self.sto2 = temp1 / (temp1 + temp2)
@@ -354,17 +358,17 @@ class Analysis:
 
     def __calc_x1(self):
         if self.normal:
-            self.x1 = self.data_cube/self.data_cube.max()
+            self.x1 = self.data_cube / self.data_cube.max()
         else:
             self.x1 = self.data_cube
 
     def __calc_x_reflectance(self):
-        self.x_reflectance = np.ma.array(self.x1, mask=self.data_cube<0)
+        self.x_reflectance = np.ma.array(self.x1, mask=self.data_cube < 0)
 
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower : wav_upper], axis=2)
+            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower: wav_upper], axis=2)
         else:
             self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength[0]]
 
@@ -375,7 +379,8 @@ class Analysis:
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(max(0, min(self.wavelength)), 0))
                 wav_upper = int(round(min(max(self.wavelength), 99), 0))
-                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper], axis=2), mask=self.mask)
+                self.x_reflectance_masked_w = np.ma.array(
+                    np.mean(self.x_reflectance[:, :, wav_lower: wav_upper], axis=2), mask=self.mask)
             else:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
@@ -392,7 +397,7 @@ class Analysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower : wav_upper], axis=2)
+            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower: wav_upper], axis=2)
         else:
             self.x_absorbance_w = self.x_absorbance[:, :, self.wavelength[0]]
 

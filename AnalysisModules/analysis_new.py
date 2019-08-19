@@ -1,15 +1,16 @@
 import numpy as np
 import sys
-np.set_printoptions(threshold=sys.maxsize)
-from AnalysisModules.analysis_constant import *
 from AnalysisModules.Indices import Index
 from GutGuiModules.utility import *
-from GutGuiModules.constants import *
 import logging
+np.set_printoptions(threshold=sys.maxsize)
+
 
 class NewAnalysis:
     # performs analyses necessary for new image
     def __init__(self, path, data_cube, wavelength, index_number, specs, listener, mask=None):
+
+        self.listener = listener
 
         # inputs
         self.path = path
@@ -85,7 +86,7 @@ class NewAnalysis:
 
     def _calc_general(self):
         logging.debug("CALCULATING: NEW IMAGE...")
-        self.__calc_x1(self)
+        self.__calc_x1()
         self.__calc_x_reflectance()
         self.__calc_x2()
         self.__calc_x_absorbance()
@@ -105,7 +106,6 @@ class NewAnalysis:
                 masked_index_module = Index(index_number, self.x_reflectance_masked, wavelength=self.wavelength)
                 self.index_masked = masked_index_module.get_index()
 
-    @staticmethod
     def __calc_x1(self):
         # normalise
         if self.normal:
@@ -114,7 +114,7 @@ class NewAnalysis:
             self.x1 = self.data_cube
         # mask negatives
         if self.negative:
-            self.x1 = np.ma.array(self.x1, mask=self.x1<0)
+            self.x1 = np.ma.array(self.x1, mask=self.x1 < 0)
 
     def __calc_x_reflectance(self):
         self.x_reflectance = self.x1
@@ -122,7 +122,7 @@ class NewAnalysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower : wav_upper+1], axis=2)
+            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower:wav_upper+1], axis=2)
         else:
             self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength[0]]
 
@@ -133,7 +133,8 @@ class NewAnalysis:
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(max(0, min(self.wavelength)), 0))
                 wav_upper = int(round(min(max(self.wavelength), 99), 0))
-                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper+1], axis=2), mask=self.mask)
+                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper+1],
+                                                                  axis=2), mask=self.mask)
             else:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
@@ -141,7 +142,7 @@ class NewAnalysis:
         self.x2 = -np.ma.log(self.x1)
         self.x2 = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
         if self.negative:
-            self.x2 = np.ma.array(self.x2, mask=self.x2<0)
+            self.x2 = np.ma.array(self.x2, mask=self.x2 < 0)
 
     def __calc_x_absorbance(self):
         self.x_absorbance = self.x2
@@ -149,7 +150,7 @@ class NewAnalysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower : wav_upper+1], axis=2)
+            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower:wav_upper+1], axis=2)
         else:
             self.x_absorbance_w = self.x_absorbance[:, :, self.wavelength[0]]
 
@@ -161,7 +162,7 @@ class NewAnalysis:
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
                 wav_upper = int(round(max(max(self.wavelength), 99), 0))
-                self.x_absorbance_masked_w = np.ma.array(np.mean(self.x_absorbance[:, :, wav_lower: wav_upper+1], axis=2),
-                                                         mask=self.mask)
+                self.x_absorbance_masked_w = np.ma.array(np.mean(self.x_absorbance[:, :, wav_lower:wav_upper+1],
+                                                                 axis=2), mask=self.mask)
             else:
                 self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength[0]], mask=self.mask)
