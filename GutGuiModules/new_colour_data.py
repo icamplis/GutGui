@@ -30,17 +30,20 @@ class NewColourData:
 
         self._init_widget()
 
+    # ----------------------------------------------- INITIALIZATION -------------------------------------------------
+
     def update_calc(self):
         data = self.listener.get_current_new_data().flatten()
         self.stats_data = [i for i in data if i != '--']
         self._calc_data()
         self._build_data()
 
-    # Helper
     def _init_widget(self):
         self._build_data()
         self._build_calc_button()
         self._build_info_label()
+
+    # ------------------------------------------------- CALCULATOR ---------------------------------------------------
 
     def _calc_data(self):
         self.mean_value = np.round(np.ma.mean(self.stats_data), 3)
@@ -49,6 +52,13 @@ class NewColourData:
         self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.stats_data, 0.75), 3))
         self.min_value = np.round(np.ma.min(self.stats_data), 3)
         self.max_value = np.round(np.ma.max(self.stats_data), 3)
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='New Data', command=self.__info, width=8)
+        self.info_label.grid(padx=(8, 0))
+
 
     def _build_data(self):
         # mean
@@ -76,11 +86,9 @@ class NewColourData:
         self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1, command=self.update_calc,
                                        inner_padx=3, inner_pady=0, outer_padx=(0, 25), outer_pady=15, width=5)
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='New Data', command=self.__info, width=8)
-        self.info_label.grid(padx=(8, 0))
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
     def __info(self):
-        info = self.listener.get_new_data_info()
+        info = self.listener.modules[INFO].new_data_info
         title = "New Data Information"
         make_info(title=title, info=info)

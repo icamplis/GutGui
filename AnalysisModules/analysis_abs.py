@@ -5,7 +5,7 @@ np.set_printoptions(threshold=sys.maxsize)
 
 class AbsSpecAnalysis:
     # performs analyses necessary for the absorption spectrum
-    def __init__(self, path, data_cube, wavelength, specs, listener, mask=None):
+    def __init__(self, path, data_cube, wavelength, spec_tup, listener, mask=None):
 
         self.listener = listener
 
@@ -14,9 +14,9 @@ class AbsSpecAnalysis:
         self.data_cube = data_cube
         self.mask = mask
         self.wavelength = wavelength
-        self.absorbance = bool(specs[0])
-        self.normal = not bool(specs[1])
-        self.negative = bool(specs[2])
+        self.absorbance = bool(spec_tup[0])
+        self.normal = not bool(spec_tup[1])
+        self.negative = bool(spec_tup[2])
 
         # calculated generally
         self.x1 = None
@@ -44,6 +44,8 @@ class AbsSpecAnalysis:
         self._calc_general()
         self._calc_absorption_spec()
 
+    # --------------------------------------------------- UPDATERS ----------------------------------------------------
+
     def update_mask(self, new_mask):
         self.mask = new_mask
         self.analysis()
@@ -60,12 +62,7 @@ class AbsSpecAnalysis:
         self.absorbance = new_absorbance
         self.analysis()
 
-    def _calc_general(self):
-        logging.debug("CALCULATING: ABSORPTION SPECTRUM...")
-        self.__calc_x1()
-        self.__calc_x_reflectance()
-        self.__calc_x2()
-        self.__calc_x_absorbance()
+    # ------------------------------------------------- CALCULATORS --------------------------------------------------
 
     def _calc_absorption_spec(self):
         if self.absorbance:
@@ -77,7 +74,8 @@ class AbsSpecAnalysis:
             if self.mask is not None:
                 self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_reflectance_masked)
 
-    def _calc_absorption_spec_roi(self, data):
+    @staticmethod
+    def _calc_absorption_spec_roi(data):
         absorption_roi = []
         wavelengths = np.arange(500, 1000, 5)
 
@@ -86,6 +84,15 @@ class AbsSpecAnalysis:
             absorption_roi.append((int(wavelengths[i]), tmp))
 
         return np.array(absorption_roi)
+
+    # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
+
+    def _calc_general(self):
+        logging.debug("CALCULATING: ABSORPTION SPECTRUM...")
+        self.__calc_x1()
+        self.__calc_x_reflectance()
+        self.__calc_x2()
+        self.__calc_x_absorbance()
 
     def __calc_x1(self):
         # normalise

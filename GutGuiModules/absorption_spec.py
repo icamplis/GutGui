@@ -70,6 +70,8 @@ class AbsorptionSpec:
         self.info_label = None
         self._init_widgets()
 
+    # ----------------------------------------------- INITIALIZATION -------------------------------------------------
+
     def update_absorption_spec(self, absorption_spec_data):
         self.absorption_spec = absorption_spec_data
         self._calc_extrema()
@@ -77,7 +79,6 @@ class AbsorptionSpec:
         self._build_scale()
         self._build_interactive_absorption_spec()
 
-    # Helper
     def _init_widgets(self):
         self._build_scale()
         self._build_save()
@@ -88,6 +89,12 @@ class AbsorptionSpec:
         self._build_drop_down()
         self._build_interactive_absorption_spec()
         self._build_extrema()
+
+    # ----------------------------------------------- BUILDERS (MISC) -------------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Optical Spectrum', command=self.__info, width=13)
+        self.info_label.grid(columnspan=2, padx=(15, 120))
 
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, inner_padx=10, inner_pady=5, outer_padx=15,
@@ -124,6 +131,8 @@ class AbsorptionSpec:
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
         self.drop_down_menu.configure(highlightthickness=0, width=6, anchor='w', padx=15)
         self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(80, 0))
+
+    # ----------------------------------------------- BUILDERS (DATA) -------------------------------------------------
 
     def _build_extrema(self):
         self.local_maximum_text = make_text(self.root, content="Local Max: " + str(self.local_maximum_value),
@@ -181,9 +190,7 @@ class AbsorptionSpec:
         self.y_upper_scale_input.bind('<Return>', self.__update_scales)
         self.y_upper_scale_input.insert(END, str(self.y_upper_scale_value))
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Optical Spectrum', command=self.__info, width=13)
-        self.info_label.grid(columnspan=2, padx=(15, 120))
+    # ---------------------------------------------- BUILDERS (GRAPH) ------------------------------------------------
 
     def _build_interactive_absorption_spec(self):
         # create canvas
@@ -209,11 +216,14 @@ class AbsorptionSpec:
                                                               ipadx=0)
         self.interactive_absorption_spec.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
-    def _format_axis(self, x, p):
+    @staticmethod
+    def _format_axis(x, _):
         if x % 1 == 0:
             return format(int(x), ',')
         else:
             return format(round(x, 2))
+
+    # ------------------------------------------------- CALCULATORS --------------------------------------------------
 
     def _calc_high_low(self):
         self.x_lower_scale_value = np.ma.min(self.x_vals)
@@ -232,17 +242,23 @@ class AbsorptionSpec:
         self.local_minimum_value = (minimum_x, round(minimum, 3))
         self._build_extrema()
 
-    # Commands (Callbacks)
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
+
+    def __info(self):
+        info = self.listener.modules[INFO].abspec_info
+        title = "Optical Spectrum Information"
+        make_info(title=title, info=info)
+
     def __reset(self):
         self._calc_extrema()
         self._calc_high_low()
         self._build_scale()
         self._build_interactive_absorption_spec()
 
-    def __info(self):
-        info = self.listener.get_abspec_info()
-        title = "Optical Spectrum Information"
-        make_info(title=title, info=info)
+    def __update_data(self, event):
+        choice = self.drop_down_var.get()[:2]
+        self.specs, self.spec_number = specs(choice=choice)
+        self.listener.update_abs_specs(self.specs)
 
     def __update_upper_lower(self, event):
         self.upper_value = int(self.upper_input.get())
@@ -255,27 +271,6 @@ class AbsorptionSpec:
         self.x_lower_scale_value = float(self.x_lower_scale_input.get())
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         self._build_interactive_absorption_spec()
-
-    def __update_data(self, event):
-        choice = self.drop_down_var.get()[:2]
-        if choice == '1.':
-            self.specs = (False, True, False)
-        elif choice == '2.':
-            self.specs = (False, True, True)
-        elif choice == '3.':
-            self.specs = (False, False, False)
-        elif choice == '4.':
-            self.specs = (False, False, True)
-        elif choice == '5.':
-            self.specs = (True, True, False)
-        elif choice == '6.':
-            self.specs = (True, True, True)
-        elif choice == '7.':
-            self.specs = (True, False, False)
-        elif choice == '8.':
-            self.specs = (True, False, True)
-        self.spec_number = choice[0]
-        self.listener.update_abs_specs(self.specs)
 
     def __update_save_with_scale_check_status(self, event):
         value = not bool(self.save_checkbox_value.get())

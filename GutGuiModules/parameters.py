@@ -39,6 +39,8 @@ class Parameter:
 
         self._init_widget()
 
+    # --------------------------------------------------- GETTERS ----------------------------------------------------
+
     def get_params(self):
         """
         Returns a list of parameters for the recreated image calculations in
@@ -47,13 +49,25 @@ class Parameter:
         return [self.r1_value, self.r2_value, self.s1_value, self.s2_value, self.t1_value, self.t2_value, self.u1_value,
                 self.u2_value]
 
-    # Helpers
+    # ----------------------------------------------- INITIALIZATION -------------------------------------------------
+
     def _init_widget(self):
         """
         Initialises the parameter widget by running _build_params() and _build_info_label
         """
         self._build_params()
         self._build_info_label()
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_info_label(self):
+        """
+        Builds the information label/button for the widget, placing it in the top left of the widget frame and binding
+        it to the __info function.
+        """
+        self.info_label = make_label_button(self.root, text='Parameter\nSpecification for\n"Recreated Image"',
+                                            command=self.__info, width=14)
+        self.info_label.grid(columnspan=2, padx=(0, 20))
 
     def _build_params(self):
         """
@@ -110,22 +124,14 @@ class Parameter:
         self.u2_entry.insert(0, str(-0.5))
         self.u2_entry.bind('<Return>', self.__update)
 
-    def _build_info_label(self):
-        """
-        Builds the information label/button for the widget, placing it in the top left of the widget frame and binding
-        it to the __info function.
-        """
-        self.info_label = make_label_button(self.root, text='Parameter\nSpecification for\n"Recreated Image"',
-                                            command=self.__info, width=14)
-        self.info_label.grid(columnspan=2, padx=(0, 20))
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
-    # Commands (Callbacks)
     def __info(self):
         """
         Gets the widget information stored in the Info module through listener and creates a pop-up window containing
         'info' and titled 'title'
         """
-        info = self.listener.get_parameter_info()
+        info = self.listener.modules[INFO].parameter_info
         title = "Parameter Specification Information"
         make_info(title=title, info=info)
 
@@ -142,4 +148,4 @@ class Parameter:
         self.t2_value = float(self.t2_entry.get())
         self.u1_value = float(self.u1_entry.get())
         self.u2_value = float(self.u2_entry.get())
-        self.listener.update_params()
+        self.listener.submit_params()

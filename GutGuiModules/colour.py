@@ -18,13 +18,16 @@ class Colour:
 
         self._init_widget()
 
-    # Helper
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def _init_widget(self):
-        self._make_colourbar()
+        self._build_colourbar()
         self._build_info_label()
         self._build_high_low()
 
-    def _make_colourbar(self):
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_colourbar(self):
         colour_fig = Figure(figsize=(1.6, 0.7))
         axes = colour_fig.add_subplot(111)
 
@@ -49,7 +52,9 @@ class Colour:
         self.info_label = make_label_button(self.root, text='Colour Scale', command=self.__info, width=11)
         self.info_label.grid(pady=(15, 0), padx=(0, 20))
 
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
+
     def __info(self):
-        info = self.listener.get_colour_info()
+        info = self.listener.modules[INFO].colour_info
         title = "Colour Information"
         make_info(title=title, info=info)

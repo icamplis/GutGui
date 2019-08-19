@@ -323,6 +323,27 @@ def make_info(title, info):
     window.resizable(width=False, height=False)
 
 
+def specs(choice):
+    if choice == '1.':
+        specs_tup = (False, True, False)
+    elif choice == '2.':
+        specs_tup = (False, True, True)
+    elif choice == '3.':
+        specs_tup = (False, False, False)
+    elif choice == '4.':
+        specs_tup = (False, False, True)
+    elif choice == '5.':
+        specs_tup = (True, True, False)
+    elif choice == '6.':
+        specs_tup = (True, True, True)
+    elif choice == '7.':
+        specs_tup = (True, False, False)
+    elif choice == '8.':
+        specs_tup = (True, False, True)
+    spec_number = choice[0]
+    return specs_tup, spec_number
+
+
 def rgb_to_rgba(rgb):
     """
     Convert a tuple or list containing an rgb value to a tuple containing an rgba value.

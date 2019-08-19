@@ -164,7 +164,7 @@ class OGColour:
 
         self.info_label = None
 
-        # coords in dimensions of image, i.e. xrange=[0, 640], yrange=[0, 480]
+        # coords in dimensions of image, i.e. xrange=[1, 640], yrange=[1, 480]
         self.coords_list = [(None, None) for _ in range(10)]
         self.mask_raw = None
 
@@ -172,6 +172,12 @@ class OGColour:
 
         self.displayed_image_mode = RGB  # RGB by default
         self.rgb_button.config(foreground="red")
+
+    # ---------------------------------------------- UPDATER AND GETTERS ----------------------------------------------
+
+    def update_original_image(self, original_image_data):
+        self.original_image_data = original_image_data
+        self._draw_points()
 
     def get_mask(self):
         return self.mask_raw
@@ -184,10 +190,6 @@ class OGColour:
                 self.get_pt4_checkbox_value(), self.get_pt5_checkbox_value(), self.get_pt6_checkbox_value(),
                 self.get_pt7_checkbox_value(), self.get_pt8_checkbox_value(), self.get_pt9_checkbox_value(),
                 self.get_pt10_checkbox_value()]
-
-    def update_original_image(self, original_image_data):
-        self.original_image_data = original_image_data
-        self._draw_points()
 
     def get_pt1_checkbox_value(self):
         return not bool(self.pt1_checkbox_value.get())
@@ -219,7 +221,8 @@ class OGColour:
     def get_pt10_checkbox_value(self):
         return not bool(self.pt8_checkbox_value.get())
 
-    # Helper
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def _init_widget(self):
         self._build_rgb()
         self._build_sto2()
@@ -235,6 +238,8 @@ class OGColour:
         self._build_upload_mask_button()
         self._build_info_label()
         self._build_original_image(self.original_image_data, self.gs)
+
+    # ---------------------------------------------- BUILDERS (DISPLAY) -----------------------------------------------
 
     def _build_rgb(self):
         self.rgb_button = make_button(self.root, text='RGB', width=3, command=self.__update_to_rgb, row=1, column=0,
@@ -262,7 +267,9 @@ class OGColour:
         self.gs_checkbox = make_checkbox(self.root, "", row=1, column=5, var=self.gs_checkbox_value, sticky=NE,
                                          inner_padx=0, inner_pady=0, outer_padx=(0, 3))
         self.gs_checkbox.deselect()
-        self.gs_checkbox.bind('<Button-1>', self.__update_gs_check_status)
+        self.gs_checkbox.bind('<Button-1>', self.__update_gs_checked)
+
+    # ----------------------------------------------- BUILDERS (POINTS) -----------------------------------------------
 
     def _build_all_points(self):
         # remove
@@ -276,206 +283,99 @@ class OGColour:
         self.all_points_checkbox.deselect()
         self.all_points_checkbox.bind('<Button-1>', self.__update_all_points_checked)
 
+    def _build_points(self):
+        self._build_pt1()
+        self._build_pt2()
+        self._build_pt3()
+        self._build_pt4()
+        self._build_pt5()
+        self._build_pt6()
+        self._build_pt7()
+        self._build_pt8()
+        self._build_pt9()
+        self._build_pt10()
+
+    def _build_ptn(self, num, var):
+        # label
+        # display points on interval [1, max] because ??????
+        if self.coords_list[num] == (None, None):
+            label = make_text(self.root, content="Pt " + str(num) + ': ' + str(self.coords_list[num]),
+                              bg=tkcolour_from_rgb(BACKGROUND), column=6, row=num + 2, width=18, columnspan=1,
+                              padx=0, state=NORMAL)
+        else:
+            label = make_text(self.root,
+                              content="Pt " + str(num) + ': ' + str(tuple(x + 1 for x in self.coords_list[num])),
+                              bg=tkcolour_from_rgb(BACKGROUND), column=6, row=num + 2, width=18, columnspan=1, padx=0,
+                              state=NORMAL)
+        # remove
+        remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(num + 1), row=num + 2,
+                             column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
+                             highlightthickness=0)
+        # checkbox
+        checkbox = make_checkbox(self.root, "", row=num + 2, column=8, columnspan=1, var=var, inner_padx=0,
+                                 inner_pady=0,
+                                 outer_padx=(0, 15), sticky=W)
+        return label, remove, checkbox
+
     def _build_pt1(self):
         # text
-        # display points on interval [1, max] because ??????
-        if self.coords_list[0] == (None, None):
-            self.pt1_label = make_text(self.root, content="Pt 0: " + str(self.coords_list[0]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=2, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt1_label = make_text(self.root, content="Pt 0: " + str(tuple(x + 1 for x in self.coords_list[0])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=2, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt1_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(1), row=2,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt1_checkbox = make_checkbox(self.root, "", row=2, column=8, columnspan=1, var=self.pt1_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt1_label, self.pt1_remove, self.pt1_checkbox = self._build_ptn(0, self.pt1_checkbox_value)
         self.pt1_checkbox.deselect()
         self.pt1_checkbox.bind('<Button-1>', self.__update_pt1_checked)
 
     def _build_pt2(self):
         # text
-        if self.coords_list[1] == (None, None):
-            self.pt2_label = make_text(self.root, content="Pt 1: " + str(self.coords_list[1]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=3, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt2_label = make_text(self.root, content="Pt 1: " + str(tuple(x + 1 for x in self.coords_list[1])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=3, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt2_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(2), row=3,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt2_checkbox = make_checkbox(self.root, "", row=3, column=8, columnspan=1, var=self.pt2_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt2_label, self.pt2_remove, self.pt2_checkbox = self._build_ptn(1, self.pt2_checkbox_value)
         self.pt2_checkbox.deselect()
         self.pt2_checkbox.bind('<Button-1>', self.__update_pt2_checked)
 
     def _build_pt3(self):
         # text
-        if self.coords_list[2] == (None, None):
-            self.pt3_label = make_text(self.root, content="Pt 2: " + str(self.coords_list[2]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=4, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt3_label = make_text(self.root, content="Pt 2: " + str(tuple(x + 1 for x in self.coords_list[2])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=4, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt3_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(3), row=4,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt3_checkbox = make_checkbox(self.root, "", row=4, column=8, columnspan=1, var=self.pt3_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt3_label, self.pt3_remove, self.pt3_checkbox = self._build_ptn(2, self.pt3_checkbox_value)
         self.pt3_checkbox.deselect()
         self.pt3_checkbox.bind('<Button-1>', self.__update_pt3_checked)
 
     def _build_pt4(self):
         # text
-        if self.coords_list[3] == (None, None):
-            self.pt4_label = make_text(self.root, content="Pt 3: " + str(self.coords_list[3]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=5, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt4_label = make_text(self.root, content="Pt 3: " + str(tuple(x + 1 for x in self.coords_list[3])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=5, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt4_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(4), row=5,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt4_checkbox = make_checkbox(self.root, "", row=5, column=8, columnspan=1, var=self.pt4_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt4_label, self.pt4_remove, self.pt4_checkbox = self._build_ptn(3, self.pt4_checkbox_value)
         self.pt4_checkbox.deselect()
         self.pt4_checkbox.bind('<Button-1>', self.__update_pt4_checked)
 
     def _build_pt5(self):
-        # text
-        if self.coords_list[4] == (None, None):
-            self.pt5_label = make_text(self.root, content="Pt 4: " + str(self.coords_list[4]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=6, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt5_label = make_text(self.root, content="Pt 4: " + str(tuple(x + 1 for x in self.coords_list[4])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=6, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt5_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(5), row=6,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt5_checkbox = make_checkbox(self.root, "", row=6, column=8, columnspan=1, var=self.pt5_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt5_label, self.pt5_remove, self.pt5_checkbox = self._build_ptn(4, self.pt5_checkbox_value)
         self.pt5_checkbox.deselect()
         self.pt5_checkbox.bind('<Button-1>', self.__update_pt5_checked)
 
     def _build_pt6(self):
-        # text
-        if self.coords_list[5] == (None, None):
-            self.pt6_label = make_text(self.root, content="Pt 5: " + str(self.coords_list[5]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=7, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt6_label = make_text(self.root, content="Pt 5: " + str(tuple(x + 1 for x in self.coords_list[5])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=7, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt6_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(6), row=7,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt6_checkbox = make_checkbox(self.root, "", row=7, column=8, columnspan=1, var=self.pt6_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt6_label, self.pt6_remove, self.pt6_checkbox = self._build_ptn(5, self.pt6_checkbox_value)
         self.pt6_checkbox.deselect()
         self.pt6_checkbox.bind('<Button-1>', self.__update_pt6_checked)
 
     def _build_pt7(self):
-        # text
-        if self.coords_list[6] == (None, None):
-            self.pt7_label = make_text(self.root, content="Pt 6: " + str(self.coords_list[6]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=8, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt7_label = make_text(self.root, content="Pt 6: " + str(tuple(x + 1 for x in self.coords_list[6])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=8, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt7_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(7), row=8,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt7_checkbox = make_checkbox(self.root, "", row=8, column=8, columnspan=1, var=self.pt7_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt7_label, self.pt7_remove, self.pt7_checkbox = self._build_ptn(6, self.pt7_checkbox_value)
         self.pt7_checkbox.deselect()
         self.pt7_checkbox.bind('<Button-1>', self.__update_pt7_checked)
 
     def _build_pt8(self):
-        # text
-        if self.coords_list[7] == (None, None):
-            self.pt8_label = make_text(self.root, content="Pt 7: " + str(self.coords_list[7]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=9, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt8_label = make_text(self.root, content="Pt 7: " + str(tuple(x + 1 for x in self.coords_list[7])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=9, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt8_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(8), row=9,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt8_checkbox = make_checkbox(self.root, "", row=9, column=8, columnspan=1, var=self.pt8_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt8_label, self.pt8_remove, self.pt8_checkbox = self._build_ptn(7, self.pt8_checkbox_value)
         self.pt8_checkbox.deselect()
         self.pt8_checkbox.bind('<Button-1>', self.__update_pt8_checked)
 
     def _build_pt9(self):
-        # text
-        if self.coords_list[8] == (None, None):
-            self.pt9_label = make_text(self.root, content="Pt 8: " + str(self.coords_list[8]),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=10, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        else:
-            self.pt9_label = make_text(self.root, content="Pt 8: " + str(tuple(x + 1 for x in self.coords_list[8])),
-                                       bg=tkcolour_from_rgb(BACKGROUND), column=6, row=10, width=18, columnspan=1,
-                                       padx=0, state=NORMAL)
-        # remove
-        self.pt9_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(9), row=10,
-                                      column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                      highlightthickness=0)
-        # checkbox
-        self.pt9_checkbox = make_checkbox(self.root, "", row=10, column=8, columnspan=1, var=self.pt9_checkbox_value,
-                                          inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt9_label, self.pt9_remove, self.pt9_checkbox = self._build_ptn(8, self.pt9_checkbox_value)
         self.pt9_checkbox.deselect()
         self.pt9_checkbox.bind('<Button-1>', self.__update_pt9_checked)
 
     def _build_pt10(self):
-        # text
-        if self.coords_list[9] == (None, None):
-            self.pt10_label = make_text(self.root, content="Pt 9: " + str(self.coords_list[9]),
-                                        bg=tkcolour_from_rgb(BACKGROUND), column=6, row=11, width=18, columnspan=1,
-                                        padx=0, state=NORMAL)
-        else:
-            self.pt10_label = make_text(self.root, content="Pt 9: " + str(tuple(x + 1 for x in self.coords_list[9])),
-                                        bg=tkcolour_from_rgb(BACKGROUND), column=6, row=11, width=18, columnspan=1,
-                                        padx=0, state=NORMAL)
-        # remove
-        self.pt10_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(10), row=11,
-                                       column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
-                                       highlightthickness=0)
-        # checkbox
-        self.pt10_checkbox = make_checkbox(self.root, "", row=11, column=8, columnspan=1, var=self.pt10_checkbox_value,
-                                           inner_padx=0, inner_pady=0, outer_padx=(0, 15), sticky=W)
+        self.pt10_label, self.pt10_remove, self.pt10_checkbox = self._build_ptn(9, self.pt10_checkbox_value)
         self.pt10_checkbox.deselect()
         self.pt10_checkbox.bind('<Button-1>', self.__update_pt10_checked)
+
+    # ----------------------------------------------- BUILDERS (MISC) -----------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Original Image', command=self.__info, width=12)
+        self.info_label.grid(columnspan=2)
 
     def _build_upload_mask_button(self):
         self.upload_mask_button = make_button(self.root, text='Upload mask', width=9, command=self.__upload_mask,
@@ -496,9 +396,7 @@ class OGColour:
         self.use_mask_button = make_button(self.root, text='Use mask', width=9, command=self.__use_coords, row=12,
                                            column=6, columnspan=3, inner_pady=5, outer_padx=0, outer_pady=(10, 15))
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Original Image', command=self.__info, width=12)
-        self.info_label.grid(columnspan=2)
+    # ---------------------------------------------- BUILDERS (IMAGE) -----------------------------------------------
 
     def _build_original_image(self, data, gs):
         if data is None:
@@ -524,6 +422,8 @@ class OGColour:
                 self.pop_up_image.get_tk_widget().grid(column=0, row=0)
                 self.pop_up_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
 
+    # --------------------------------------------------- DRAWING -----------------------------------------------------
+
     def _draw_points(self):
         copy_data = self.original_image_data.copy()
         not_none = [i for i in self.coords_list if i != (None, None)]
@@ -538,6 +438,7 @@ class OGColour:
             self._draw_a_line(not_none[idx - 1], not_none[idx], copy_data)
         self._build_original_image(copy_data, self.gs)
 
+    @staticmethod
     def _draw_a_line(self, point1, point2, image):
         r0, c0 = point1
         r1, c1 = point2
@@ -546,35 +447,14 @@ class OGColour:
             image[rr[i] % 480, cc[i] % 640] = (int(113 * val[i]), int(255 * val[i]), int(66 * val[i]))
         return image
 
-    def _build_points(self):
-        self._build_pt1()
-        self._build_pt2()
-        self._build_pt3()
-        self._build_pt4()
-        self._build_pt5()
-        self._build_pt6()
-        self._build_pt7()
-        self._build_pt8()
-        self._build_pt9()
-        self._build_pt10()
+    # --------------------------------------------------- CALLBACKS ---------------------------------------------------
 
-    # Commands (Callbacks)
     def __info(self):
-        info = self.listener.get_original_info()
+        info = self.listener.modules[INFO].original_info
         title = "Original Image Information"
         make_info(title=title, info=info)
 
-    def __use_coords(self):
-        # produces a 640x480 8-bit mask
-        polygon = [point for point in self.coords_list if point != (None, None)]
-        img = Image.new('L', (640, 480), 0)
-        ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
-        self.mask_raw = np.array(img)
-        self.mask_raw = np.fliplr(self.mask_raw.T)
-        self.listener.submit_mask(self.mask_raw)
-
-    def __save_coords(self):
-        self.listener.instant_save_points()
+    # ------------------------------------------------------ MASK -----------------------------------------------------
 
     def __upload_mask(self):
         mask_dir_path = filedialog.askopenfilename(parent=self.root, title="Please select a .csv file "
@@ -596,6 +476,32 @@ class OGColour:
         self._build_points()
         self._draw_points()
 
+    def __use_coords(self):
+        # produces a 640x480 8-bit mask
+        polygon = [point for point in self.coords_list if point != (None, None)]
+        img = Image.new('L', (640, 480), 0)
+        ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
+        self.mask_raw = np.array(img)
+        self.mask_raw = np.fliplr(self.mask_raw.T)
+        self.listener.submit_mask(self.mask_raw)
+
+    # --------------------------------------------- ADDING/REMOVING COORDS --------------------------------------------
+
+    def __save_coords(self):
+        self.listener.instant_save_points()
+
+    def __get_coords(self, eventorigin):
+        if not self.pop_up:
+            x = int((eventorigin.x - 30) * 640 / 296)
+            y = int((eventorigin.y - 18) * 480 / 221)
+            if 0 <= x < 640 and 0 <= y < 480:
+                self.__add_pt((x, y))
+        else:
+            x = int((eventorigin.x - 17) * 640 / 770)
+            y = int((eventorigin.y - 114) * 480 / 578)
+            if 0 <= x < 640 and 0 <= y < 480:
+                self.__add_pt((x, y))
+
     def __remove_pt(self, index):
         if index == 'all':
             self.coords_list = [(None, None) for _ in range(10)]
@@ -611,28 +517,7 @@ class OGColour:
             self._build_points()
             self._draw_points()
 
-    def __get_coords(self, eventorigin):
-        if not self.pop_up:
-            x = int((eventorigin.x - 30) * 640 / 296)
-            y = int((eventorigin.y - 18) * 480 / 221)
-            if 0 <= x < 640 and 0 <= y < 480:
-                self.__add_pt((x, y))
-        else:
-            x = int((eventorigin.x - 17) * 640 / 770)
-            y = int((eventorigin.y - 114) * 480 / 578)
-            if 0 <= x < 640 and 0 <= y < 480:
-                self.__add_pt((x, y))
-
-    def __pop_up_image(self, event):
-        (self.pop_up_window, self.pop_up_image) = make_popup_image(self.original_image_graph, interactive=True)
-        self.pop_up = True
-        self.pop_up_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
-        self.pop_up_window.protocol("WM_DELETE_WINDOW", func=self.__close_pop_up)
-        self.pop_up_window.attributes("-topmost", True)
-
-    def __close_pop_up(self):
-        self.pop_up = False
-        self.pop_up_window.destroy()
+    # ----------------------------------------------- UPDATERS (IMAGE) ------------------------------------------------
 
     def __update_to_rgb(self):
         self.rgb_button.config(foreground="red")
@@ -689,9 +574,11 @@ class OGColour:
             self.gs = False
             self._build_original_image(self.original_image_data, self.gs)
 
-    def __update_gs_check_status(self, event):
+    def __update_gs_checked(self, event):
         value = not bool(self.gs_checkbox_value.get())
         self.listener.update_saved(GS_ORIGINAL, value)
+
+    # ---------------------------------------------- UPDATERS (POINTS) ------------------------------------------------
 
     def __update_all(self, value):
         for point in [PT1, PT2, PT3, PT4, PT5, PT6, PT7, PT8, PT9, PT10]:
@@ -725,6 +612,7 @@ class OGColour:
 
     def __update_pt1_checked(self, event):
         value = self.get_pt1_checkbox_value()
+        print(value)
         self.listener.update_saved(PT1, value)
 
     def __update_pt2_checked(self, event):
@@ -763,163 +651,75 @@ class OGColour:
         value = self.get_pt10_checkbox_value()
         self.listener.update_saved(PT10, value)
 
+    # ------------------------------------------------- IMAGE POP-UP --------------------------------------------------
+
+    def __pop_up_image(self, event):
+        (self.pop_up_window, self.pop_up_image) = make_popup_image(self.original_image_graph, interactive=True)
+        self.pop_up = True
+        self.pop_up_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
+        self.pop_up_window.protocol("WM_DELETE_WINDOW", func=self.__close_pop_up)
+        self.pop_up_window.attributes("-topmost", True)
+
+    def __close_pop_up(self):
+        self.pop_up = False
+        self.pop_up_window.destroy()
+
+    # ------------------------------------------------- INPUT POP-UP --------------------------------------------------
+
+    def __input_info(self):
+        info = self.listener.modules[INFO].input_info
+        title = "Coordinate Input Information"
+        make_info(title=title, info=info)
+
+    def __input_coord_n(self, num):
+        title = make_text(self.coords_window, content="Pt " + str(num) + ': ', bg=tkcolour_from_rgb(BACKGROUND),
+                          column=0, row=num+1, width=6, pady=(0, 3), padx=(15, 0))
+        title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND), column=1, row=num+1,
+                            width=4, pady=(0, 3))
+        title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=num+1,
+                            width=4, pady=(0, 3), padx=(5, 0))
+        input_x = make_entry(self.coords_window, row=num+1, column=2, width=5, columnspan=1, pady=(0, 3))
+        input_y = make_entry(self.coords_window, row=num+1, column=4, width=5, columnspan=1, padx=(0, 15), pady=(0, 3))
+        if self.coords_list[num] != (None, None):
+            input_x.insert(END, str(self.coords_list[num][0] + 1))
+            input_y.insert(END, str(self.coords_list[num][1] + 1))
+        return title, title_x, title_y, input_x, input_y
+
     def __input_coords(self):
         self.coords_window = Toplevel()
         self.coords_window.geometry("+0+0")
         self.coords_window.configure(bg=tkcolour_from_rgb(BACKGROUND))
+
         # title
         self.input_points_title = make_label_button(self.coords_window, text='Coordinate Input',
                                                     command=self.__input_info, width=14)
         self.input_points_title.grid(columnspan=3)
 
-        # point 1
-        self.input_pt1_title = make_text(self.coords_window, content="Pt 0: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=1, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt1_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=1, width=4, pady=(0, 3))
-        self.input_pt1_x = make_entry(self.coords_window, row=1, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt1_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=1, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt1_y = make_entry(self.coords_window, row=1, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[0] != (None, None):
-            self.input_pt1_x.insert(END, str(self.coords_list[0][0] + 1))
-            self.input_pt1_y.insert(END, str(self.coords_list[0][1] + 1))
-
-        # point 2
-        self.input_pt2_title = make_text(self.coords_window, content="Pt 1: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=2, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt2_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=2, width=4, pady=(0, 3))
-        self.input_pt2_x = make_entry(self.coords_window, row=2, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt2_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=2, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt2_y = make_entry(self.coords_window, row=2, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[1] != (None, None):
-            self.input_pt2_x.insert(END, str(self.coords_list[1][0] + 1))
-            self.input_pt2_y.insert(END, str(self.coords_list[1][1] + 1))
-
-        # point 3
-        self.input_pt3_title = make_text(self.coords_window, content="Pt 2: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=3, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt3_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=3, width=4, pady=(0, 3))
-        self.input_pt3_x = make_entry(self.coords_window, row=3, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt3_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=3, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt3_y = make_entry(self.coords_window, row=3, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[2] != (None, None):
-            self.input_pt3_x.insert(END, str(self.coords_list[2][0] + 1))
-            self.input_pt3_y.insert(END, str(self.coords_list[2][1] + 1))
-
-        # point 4
-        self.input_pt4_title = make_text(self.coords_window, content="Pt 3: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=4, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt4_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=4, width=4, pady=(0, 3))
-        self.input_pt4_x = make_entry(self.coords_window, row=4, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt4_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=4, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt4_y = make_entry(self.coords_window, row=4, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[3] != (None, None):
-            self.input_pt4_x.insert(END, str(self.coords_list[3][0] + 1))
-            self.input_pt4_y.insert(END, str(self.coords_list[3][1] + 1))
-
-        # point 5
-        self.input_pt5_title = make_text(self.coords_window, content="Pt 4: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=5, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt5_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=5, width=4, pady=(0, 3))
-        self.input_pt5_x = make_entry(self.coords_window, row=5, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt5_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=5, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt5_y = make_entry(self.coords_window, row=5, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[4] != (None, None):
-            self.input_pt5_x.insert(END, str(self.coords_list[4][0] + 1))
-            self.input_pt5_y.insert(END, str(self.coords_list[4][1] + 1))
-
-        # point 6
-        self.input_pt6_title = make_text(self.coords_window, content="Pt 5: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=6, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt6_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=6, width=4, pady=(0, 3))
-        self.input_pt6_x = make_entry(self.coords_window, row=6, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt6_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=6, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt6_y = make_entry(self.coords_window, row=6, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[5] != (None, None):
-            self.input_pt6_x.insert(END, str(self.coords_list[5][0] + 1))
-            self.input_pt6_y.insert(END, str(self.coords_list[5][1] + 1))
-
-        # point 7
-        self.input_pt7_title = make_text(self.coords_window, content="Pt 6: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=7, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt7_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=7, width=4, pady=(0, 3))
-        self.input_pt7_x = make_entry(self.coords_window, row=7, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt7_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=7, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt7_y = make_entry(self.coords_window, row=7, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[6] != (None, None):
-            self.input_pt7_x.insert(END, str(self.coords_list[6][0] + 1))
-            self.input_pt7_y.insert(END, str(self.coords_list[6][1] + 1))
-
-        # point 8
-        self.input_pt8_title = make_text(self.coords_window, content="Pt 7: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=8, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt8_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=8, width=4, pady=(0, 3))
-        self.input_pt8_x = make_entry(self.coords_window, row=8, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt8_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=8, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt8_y = make_entry(self.coords_window, row=8, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[7] != (None, None):
-            self.input_pt8_x.insert(END, str(self.coords_list[7][0] + 1))
-            self.input_pt8_y.insert(END, str(self.coords_list[7][1] + 1))
-
-        # point 9
-        self.input_pt9_title = make_text(self.coords_window, content="Pt 8: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                         column=0, row=9, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt9_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=1, row=9, width=4, pady=(0, 3))
-        self.input_pt9_x = make_entry(self.coords_window, row=9, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt9_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                           column=3, row=9, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt9_y = make_entry(self.coords_window, row=9, column=4, width=5, columnspan=1, padx=(0, 15),
-                                      pady=(0, 3))
-        if self.coords_list[8] != (None, None):
-            self.input_pt9_x.insert(END, str(self.coords_list[8][0] + 1))
-            self.input_pt9_y.insert(END, str(self.coords_list[8][1] + 1))
-
-        # point 10
-        self.input_pt10_title = make_text(self.coords_window, content="Pt 9: ", bg=tkcolour_from_rgb(BACKGROUND),
-                                          column=0, row=10, width=6, pady=(0, 3), padx=(15, 0))
-        self.input_pt10_title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                            column=1, row=10, width=4, pady=(0, 3))
-        self.input_pt10_x = make_entry(self.coords_window, row=10, column=2, width=5, columnspan=1, pady=(0, 3))
-        self.input_pt10_title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND),
-                                            column=3, row=10, width=4, pady=(0, 3), padx=(5, 0))
-        self.input_pt10_y = make_entry(self.coords_window, row=10, column=4, width=5, columnspan=1, padx=(0, 15),
-                                       pady=(0, 3))
-        if self.coords_list[9] != (None, None):
-            self.input_pt10_x.insert(END, str(self.coords_list[9][0] + 1))
-            self.input_pt10_y.insert(END, str(self.coords_list[9][1] + 1))
+        # points
+        self.input_pt1_title, self.input_pt1_title_x, self.input_pt1_title_y, self.input_pt1_x, self.input_pt1_y = \
+            self.__input_coord_n(0)
+        self.input_pt2_title, self.input_pt2_title_x, self.input_pt2_title_y, self.input_pt2_x, self.input_pt2_y = \
+            self.__input_coord_n(1)
+        self.input_pt3_title, self.input_pt3_title_x, self.input_pt3_title_y, self.input_pt3_x, self.input_pt3_y = \
+            self.__input_coord_n(2)
+        self.input_pt4_title, self.input_pt4_title_x, self.input_pt4_title_y, self.input_pt4_x, self.input_pt4_y = \
+            self.__input_coord_n(3)
+        self.input_pt5_title, self.input_pt5_title_x, self.input_pt5_title_y, self.input_pt5_x, self.input_pt5_y = \
+            self.__input_coord_n(4)
+        self.input_pt6_title, self.input_pt6_title_x, self.input_pt6_title_y, self.input_pt6_x, self.input_pt6_y = \
+            self.__input_coord_n(5)
+        self.input_pt7_title, self.input_pt7_title_x, self.input_pt7_title_y, self.input_pt7_x, self.input_pt7_y = \
+            self.__input_coord_n(6)
+        self.input_pt8_title, self.input_pt8_title_x, self.input_pt8_title_y, self.input_pt8_x, self.input_pt8_y = \
+            self.__input_coord_n(7)
+        self.input_pt9_title, self.input_pt9_title_x, self.input_pt9_title_y, self.input_pt9_x, self.input_pt9_y = \
+            self.__input_coord_n(8)
+        self.input_pt10_title, self.input_pt10_title_x, self.input_pt10_title_y, self.input_pt10_x, self.input_pt10_y =\
+            self.__input_coord_n(9)
 
         # go button
         self.go_button = make_button(self.coords_window, text='Go', width=2, command=self.__use_inputted_coords, row=11,
                                      column=0, columnspan=5, inner_pady=5, outer_padx=(15, 15), outer_pady=(7, 15))
-
-    def __input_info(self):
-        info = self.listener.get_input_info()
-        title = "Coordinate Input Information"
-        make_info(title=title, info=info)
 
     def __use_inputted_coords(self):
         coords = [(self.input_pt1_x.get(), self.input_pt1_y.get()),

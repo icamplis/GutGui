@@ -31,7 +31,8 @@ class CSVSaver:
 
         self._init_widget()
 
-    # Helper
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def _init_widget(self):
         self._build_og_reflectance()
         self._build_og_reflectance_positive()
@@ -48,6 +49,8 @@ class CSVSaver:
         self._build_all()
         self._build_text()
         self._build_info_label()
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
     def _build_og_reflectance(self):
         self.ogr_butt = make_button(self.root, text="1. Original to CSV (Original Data Cube)",
@@ -120,15 +123,33 @@ class CSVSaver:
         self.info_label = make_label_button(self.root, text='Data to CSV', command=self.__info, width=9)
         self.info_label.grid(padx=(0, 200))
 
-    def _make_direc(self, direc):
+    # ----------------------------------------------------- MISC -----------------------------------------------------
+
+    @staticmethod
+    def _make_direc(direc):
         if not os.path.isdir(direc):
             os.mkdir(direc)
 
-    # callbacks
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
+
     def __info(self):
-        info = self.listener.get_csv_info()
+        info = self.listener.modules[INFO].csv_info
         title = "Data to CSV Information"
         make_info(title=title, info=info)
+
+    def __all_to_csv(self):
+        self.__ogr_to_csv()
+        self.__ogrp_to_csv()
+        self.__oga_to_csv()
+        self.__ogap_to_csv()
+        self.__normr_to_csv()
+        self.__normrp_to_csv()
+        self.__norma_to_csv()
+        self.__normap_to_csv()
+        self.__rec_to_csv()
+        self.__norm_rec_to_csv()
+        self.__new_to_csv()
+        self.__norm_new_to_csv()
 
     def __ogr_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -277,17 +298,3 @@ class CSVSaver:
                 self._make_direc(direc)
                 big_path = direc + '/' + '12_norm_new_image_data' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
-
-    def __all_to_csv(self):
-        self.__ogr_to_csv()
-        self.__ogrp_to_csv()
-        self.__oga_to_csv()
-        self.__ogap_to_csv()
-        self.__normr_to_csv()
-        self.__normrp_to_csv()
-        self.__norma_to_csv()
-        self.__normap_to_csv()
-        self.__rec_to_csv()
-        self.__norm_rec_to_csv()
-        self.__new_to_csv()
-        self.__norm_new_to_csv()

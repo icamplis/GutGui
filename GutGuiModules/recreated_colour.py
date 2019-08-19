@@ -77,6 +77,8 @@ class RecColour:
         self.displayed_image_mode = STO2  # STO2 by default
         self.sto2_button.config(foreground="red")
 
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def update_recreated_image(self, recreated_colour_image_data):
         if self.old_specs != self.specs:
             self.initial_data = recreated_colour_image_data
@@ -88,7 +90,6 @@ class RecColour:
         self._scale()
         self._build_recreated_image()
 
-    # Helper
     def _init_widget(self):
         self._build_sto2()
         self._build_nir()
@@ -103,6 +104,21 @@ class RecColour:
         self._build_drop_down()
         self._build_norm_og()
         self._build_recreated_image()
+
+    # ------------------------------------------------ BUILDERS (MISC) -----------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Recreated Image', command=self.__info, width=14)
+        self.info_label.grid(columnspan=3, padx=(0, 50))
+
+    def _build_drop_down(self):
+        self.drop_down_var.set(self.choices[6])
+        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
+        self.drop_down_menu.configure(highlightthickness=0, width=6,
+                                      anchor='w', padx=15)
+        self.drop_down_menu.grid(column=2, row=0, columnspan=3, padx=(0, 15))
+
+    # ---------------------------------------------- BUILDERS (DISPLAY) ----------------------------------------------
 
     def _build_sto2(self):
         self.sto2_button = make_button(self.root, text='St02', width=4, command=self.__update_to_sto2, row=1, column=0,
@@ -145,6 +161,8 @@ class RecColour:
         self.gs_checkbox.deselect()
         self.gs_checkbox.bind('<Button-1>', self.__update_gs_check_status)
 
+    # ------------------------------------------------ BUILDERS (SAVE) -----------------------------------------------
+
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, columnspan=2, outer_padx=(0, 30),
                                      outer_pady=(10, 0), inner_padx=10, inner_pady=5)
@@ -161,6 +179,14 @@ class RecColour:
                                                     inner_pady=0, outer_pady=(10, 15), outer_padx=0)
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
+
+    # ------------------------------------------------ BUILDERS (DATA) -----------------------------------------------
+
+    def _scale(self):
+        self.upper_scale_value = float(np.ma.max(self.recreated_colour_image_data))
+        self.lower_scale_value = float(np.ma.min(self.recreated_colour_image_data))
+        self._build_lower_scale()
+        self._build_upper_scale()
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=2, width=6,
@@ -179,22 +205,13 @@ class RecColour:
         if self.upper_scale_value is not None:
             self.upper_scale_input.insert(END, str(round(self.upper_scale_value, 5)))
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Recreated Image', command=self.__info, width=14)
-        self.info_label.grid(columnspan=3, padx=(0, 50))
-
-    def _build_drop_down(self):
-        self.drop_down_var.set(self.choices[6])
-        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
-        self.drop_down_menu.configure(highlightthickness=0, width=6,
-                                      anchor='w', padx=15)
-        self.drop_down_menu.grid(column=2, row=0, columnspan=3, padx=(0, 15))
-
     def _build_norm_og(self):
         self.norm_button = make_button(self.root, text="NORM", row=6, column=4, columnspan=1, command=self.__norm,
                                        inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=5, width=5)
         self.og_button = make_button(self.root, text="OG", row=7, column=4, columnspan=1, command=self.__og,
                                      inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=(5, 0), width=5)
+
+    # ----------------------------------------------- BUILDERS (IMAGE) -----------------------------------------------
 
     def _build_recreated_image(self):
         if self.recreated_colour_image_data is None:
@@ -210,13 +227,15 @@ class RecColour:
                            color_rgb=BACKGROUND, gs=self.gs)
             self.recreated_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
-    def _scale(self):
-        self.upper_scale_value = float(np.ma.max(self.recreated_colour_image_data))
-        self.lower_scale_value = float(np.ma.min(self.recreated_colour_image_data))
-        self._build_lower_scale()
-        self._build_upper_scale()
+    # --------------------------------------------------- CALLBACKS --------------------------------------------------
 
-    # Commands (Callbacks)
+    def __info(self):
+        info = self.listener.modules[INFO].recreated_info
+        title = "Recreated Image Information"
+        make_info(title=title, info=info)
+
+    def __pop_up_image(self, event):
+        make_popup_image(self.recreated_colour_image_graph)
 
     def __norm(self):
         self.update_recreated_image(self.initial_data / np.ma.max(self.initial_data))
@@ -224,10 +243,10 @@ class RecColour:
     def __og(self):
         self.update_recreated_image(self.initial_data)
 
-    def __info(self):
-        info = self.listener.get_recreated_info()
-        title = "Recreated Image Information"
-        make_info(title=title, info=info)
+    def __update_data(self, event):
+        choice = self.drop_down_var.get()[:2]
+        self.specs, self.spec_number = specs(choice=choice)
+        self.listener.update_recreated_specs(self.specs)
 
     def __update_to_sto2(self):
         self.sto2_button.config(foreground="red")
@@ -271,26 +290,10 @@ class RecColour:
             self.gs = False
             self._build_recreated_image()
 
-    def __update_data(self, event):
-        choice = self.drop_down_var.get()[:2]
-        if choice == '1.':
-            self.specs = (False, True, False)
-        elif choice == '2.':
-            self.specs = (False, True, True)
-        elif choice == '3.':
-            self.specs = (False, False, False)
-        elif choice == '4.':
-            self.specs = (False, False, True)
-        elif choice == '5.':
-            self.specs = (True, True, False)
-        elif choice == '6.':
-            self.specs = (True, True, True)
-        elif choice == '7.':
-            self.specs = (True, False, False)
-        elif choice == '8.':
-            self.specs = (True, False, True)
-        self.spec_number = choice[0]
-        self.listener.update_recreated_specs(self.specs)
+    def __update_upper_lower(self, event):
+        self.upper_scale_value = float(self.upper_scale_input.get())
+        self.lower_scale_value = float(self.lower_scale_input.get())
+        self._build_recreated_image()
 
     def __update_sto2_check_status(self, event):
         value = not bool(self.sto2_checkbox_value.get())
@@ -320,11 +323,3 @@ class RecColour:
         value = not bool(self.gs_checkbox_value.get())
         self.listener.update_saved(GS_RECREATED, value)
         print(value)
-
-    def __update_upper_lower(self, event):
-        self.upper_scale_value = float(self.upper_scale_input.get())
-        self.lower_scale_value = float(self.lower_scale_input.get())
-        self._build_recreated_image()
-
-    def __pop_up_image(self, event):
-        make_popup_image(self.recreated_colour_image_graph)

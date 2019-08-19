@@ -20,11 +20,14 @@ class Diagram:
         self.info_label = None
         self._init_widget()
 
-    # Helper
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def _init_widget(self):
         self._build_whole_image()
         self._build_masked_region()
         self._build_info_label()
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
     def _build_whole_image(self):
         self.whole_image_button = make_button(self.root, "Whole Image", row=1, column=0,
@@ -51,9 +54,10 @@ class Diagram:
         self.info_label = make_label_button(self.root, text='Area', command=self.__info, width=5)
         self.info_label.grid(padx=(0, 65))
 
-    # commands
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
+
     def __info(self):
-        info = self.listener.get_diagram_info()
+        info = self.listener.modules[INFO].diagram_info
         title = "Area Information"
         make_info(title=title, info=info)
 

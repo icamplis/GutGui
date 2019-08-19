@@ -1,5 +1,3 @@
-import numpy as np
-import sys
 from AnalysisModules.Indices import Index
 from GutGuiModules.utility import *
 import logging
@@ -44,6 +42,8 @@ class NewAnalysis:
         self._calc_general()
         self._calc_index(self.index_number)
 
+    # --------------------------------------------------- UPDATERS ----------------------------------------------------
+
     def update_mask(self, new_mask):
         self.mask = new_mask
         self.analysis()
@@ -64,6 +64,8 @@ class NewAnalysis:
         self.index_number = new_index_number
         self.analysis()
 
+    # --------------------------------------------------- GETTERS ----------------------------------------------------
+
     def get_wl_data(self):
         if self.absorbance:
             new_data = self.x_absorbance_w
@@ -78,12 +80,7 @@ class NewAnalysis:
             new_data = self.x_reflectance_masked_w
         return new_data
 
-    def _calc_general(self):
-        logging.debug("CALCULATING: NEW IMAGE...")
-        self.__calc_x1()
-        self.__calc_x_reflectance()
-        self.__calc_x2()
-        self.__calc_x_absorbance()
+    # ------------------------------------------------- CALCULATORS --------------------------------------------------
 
     def _calc_index(self, index_number):
         logging.debug("CALCULATING: INDEX...")
@@ -99,6 +96,15 @@ class NewAnalysis:
             if self.mask is not None:
                 masked_index_module = Index(index_number, self.x_reflectance_masked, wavelength=self.wavelength)
                 self.index_masked = masked_index_module.get_index()
+
+    # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
+
+    def _calc_general(self):
+        logging.debug("CALCULATING: NEW IMAGE...")
+        self.__calc_x1()
+        self.__calc_x_reflectance()
+        self.__calc_x2()
+        self.__calc_x_absorbance()
 
     def __calc_x1(self):
         # normalise

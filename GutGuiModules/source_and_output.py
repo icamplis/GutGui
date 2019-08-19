@@ -32,7 +32,7 @@ class SourceAndOutput:
         # Widget Initialization
         self._init_widgets()
 
-    # Makes a deep copy of the original data cubes
+    # ---------------------------------------------------- GETTERS ---------------------------------------------------
 
     def get_selected_data_cube_path(self):
         index = self.selection_listbox.curselection()[0]
@@ -43,13 +43,19 @@ class SourceAndOutput:
         selected_data_paths = [self.data_cube_paths[i] for i in selection]
         return selected_data_paths
 
-    # Helpers
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def _init_widgets(self):
         self._build_select_superdir_button()
         self._build_select_dir_button()
         self._build_selection_box()
         self._build_delete_button()
         self._build_info_label()
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Source and Output', command=self.__info, width=15)
 
     def _build_select_superdir_button(self):
         self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory",
@@ -70,12 +76,10 @@ class SourceAndOutput:
                                          inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15,
                                          outer_pady=(0, 15))
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Source and Output', command=self.__info, width=15)
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
-    # Commands (Callbacks)
     def __info(self):
-        info = self.listener.get_source_output_info()
+        info = self.listener.modules[INFO].source_output_info
         title = "Source & Output Information"
         make_info(title=title, info=info)
 
@@ -117,7 +121,24 @@ class SourceAndOutput:
                 # Add data cube to listener for analysis
                 self.listener.submit_data_cube(data_cube, dc_path)
 
-    def __process_data_cube(self, path):
+    def __delete_selected_data_cube(self):
+        if self.selection_listbox.size() > 0 and self.selection_listbox.curselection():
+            index = self.selection_listbox.curselection()[0]
+            self.selection_listbox.delete(index)
+            self.listener.delete_analysis_result(self.data_cube_paths[index])
+            self.data_cube_paths.pop(index)
+            self.data_cubes.pop(index)
+
+    def __get_path_to_file(self, title):
+        path = filedialog.askopenfilename(parent=self.root, title=title)
+        return path
+
+    def __get_path_to_dir(self, title):
+        path = filedialog.askdirectory(parent=self.root, title=title)
+        return path
+
+    @staticmethod
+    def __process_data_cube(path):
         if path == '' or path is None:
             return None
         if path[-4:] != ".dat":
@@ -128,23 +149,8 @@ class SourceAndOutput:
             data_cube = data[3:].reshape(640, 480, 100)  # reshape to data cube and ignore first 3 values
             return data_cube
 
-    def __get_path_to_file(self, title):
-        path = filedialog.askopenfilename(parent=self.root, title=title)
-        return path
-
-    def __get_path_to_dir(self, title):
-        path = filedialog.askdirectory(parent=self.root, title=title)
-        return path
-
-    def __delete_selected_data_cube(self):
-        if self.selection_listbox.size() > 0 and self.selection_listbox.curselection():
-            index = self.selection_listbox.curselection()[0]
-            self.selection_listbox.delete(index)
-            self.listener.delete_analysis_result(self.data_cube_paths[index])
-            self.data_cube_paths.pop(index)
-            self.data_cubes.pop(index)
-
-    def __get_sub_folder_paths(self, path_to_main_folder):
+    @staticmethod
+    def __get_sub_folder_paths(path_to_main_folder):
         contents = os.listdir(path_to_main_folder)
         # Adds the path to the main folder in front for traversal
         sub_folders = [path_to_main_folder + "/" + i for i in contents if bool(re.match('[\d/-_]+$', i))]

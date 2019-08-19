@@ -102,7 +102,7 @@ class Save:
 
     # Callbacks
     def __info(self):
-        info = self.listener.get_save_info()
+        info = self.listener.modules[INFO].save_info
         title = "Save Information"
         make_info(title=title, info=info)
 

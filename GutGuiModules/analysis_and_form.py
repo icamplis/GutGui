@@ -37,12 +37,15 @@ class AnalysisAndForm:
 
         self._init_widget()
 
+    # --------------------------------------------------- GETTERS ----------------------------------------------------
+
     def get_wavelength(self):
         lower = self.wavelength_lower_entry.get()
         upper = self.wavelength_upper_entry.get()
         return int((float(lower)-500)/5), int((float(upper)-500)/5)
 
-    # Helpers
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def _init_widget(self):
         self._build_idx_title()
         self._build_idxs()
@@ -50,6 +53,13 @@ class AnalysisAndForm:
         self._build_wavelength_upper_entry()
         self._build_wavelength_lower_entry()
         self._build_info_label()
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Analysis Settings\nfor "New Image"', command=self.__info,
+                                            width=14)
+        self.info_label.grid(columnspan=4)
 
     def _build_wavelength_text(self):
         self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ",
@@ -93,14 +103,10 @@ class AnalysisAndForm:
         self.idx1_button.config(foreground="red")
         self.index_selected = 1  # Use index no.1 by default
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Analysis Settings\nfor "New Image"', command=self.__info,
-                                            width=14)
-        self.info_label.grid(columnspan=4)
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
-    # Commands (Callbacks)
     def __info(self):
-        info = self.listener.get_analysis_form_info()
+        info = self.listener.modules[INFO].analysis_form_info
         title = "Analysis Settings Information"
         make_info(title=title, info=info)
 

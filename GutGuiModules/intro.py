@@ -24,10 +24,12 @@ class Introduction:
         self.image12 = None
         self.image13 = None
 
-        self.build_canvas()
-        self.build_images()
+        self._build_canvas()
+        self._build_images()
 
-    def build_canvas(self):
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_canvas(self):
         self.canvas = Canvas(self.root)
         self.frame = Frame(self.canvas)
         self.scrollbar = Scrollbar(self.canvas, orient='vertical', command=self.canvas.yview)
@@ -36,7 +38,7 @@ class Introduction:
         self.canvas.pack(side=LEFT, expand=TRUE, fill=BOTH)
         self.canvas.create_window(4, 4, window=self.frame, anchor='nw')
 
-    def build_images(self):
+    def _build_images(self):
         # image 1
         image1_data = image_to_array('./image1.png')
         self.image1 = make_image(self.frame, image1_data, row=0, column=0, columnspan=1, rowspan=1, lower_scale_value=0,

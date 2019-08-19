@@ -49,6 +49,8 @@ class HistogramAnalysis:
     def analysis(self):
         self._calc_general()
 
+    # --------------------------------------------------- UPDATERS ----------------------------------------------------
+
     def update_mask(self, new_mask):
         self.mask = new_mask
         self.analysis()
@@ -64,6 +66,8 @@ class HistogramAnalysis:
     def update_absorbance(self, new_absorbance):
         self.absorbance = new_absorbance
         self.analysis()
+
+    # --------------------------------------------------- GETTERS ----------------------------------------------------
 
     def get_rgb_og(self):
         filename = str(self.path[:-13]) + RGB_FILE
@@ -108,6 +112,8 @@ class HistogramAnalysis:
                 # if reflectance
                 data = self.x_reflectance
         return data
+
+    # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
 
     def _calc_general(self):
         logging.debug("CALCULATING: HISTOGRAM...")

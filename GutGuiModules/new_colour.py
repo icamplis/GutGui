@@ -70,6 +70,8 @@ class NewColour:
         self.displayed_image_mode = IDX
         self.idx_button.config(foreground="red")
 
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def update_new_colour_image(self, new_colour_image_data):
         if self.old_specs != self.specs:
             self.initial_data = new_colour_image_data
@@ -81,7 +83,6 @@ class NewColour:
         self._scale()
         self._build_new_image()
 
-    # Helper
     def _init_widget(self):
         self._build_wl()
         self._build_idx()
@@ -94,6 +95,21 @@ class NewColour:
         self._build_drop_down()
         self._build_norm_og()
         self._build_new_image()
+
+    # ------------------------------------------------ BUILDERS (MISC) -----------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='New Image', command=self.__info, width=9)
+        self.info_label.grid(columnspan=2, padx=(0, 40))
+
+    def _build_drop_down(self):
+        self.drop_down_var.set(self.choices[0])
+        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
+        self.drop_down_menu.configure(highlightthickness=0, width=6,
+                                      anchor='w', padx=15)
+        self.drop_down_menu.grid(column=1, row=0, columnspan=2, padx=(20, 0))
+
+    # ---------------------------------------------- BUILDERS (DISPLAY) ----------------------------------------------
 
     def _build_wl(self):
         self.wl_button = make_button(self.root, text='WL', width=3, command=self.__update_to_wl, row=1, column=0,
@@ -119,6 +135,8 @@ class NewColour:
         self.gs_checkbox.deselect()
         self.gs_checkbox.bind('<Button-1>', self.__update_gs_check_status)
 
+    # ------------------------------------------------ BUILDERS (SAVE) -----------------------------------------------
+
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=8, column=0, outer_padx=(15, 0), outer_pady=(10, 15),
                                      inner_padx=10, inner_pady=5)
@@ -133,6 +151,14 @@ class NewColour:
                                                     var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0,
                                                     inner_pady=0, outer_pady=(10, 0), outer_padx=(0, 37))
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
+
+    # ------------------------------------------------ BUILDERS (DATA) -----------------------------------------------
+
+    def _scale(self):
+        self.upper_scale_value = float(np.ma.max(self.new_colour_image_data))
+        self.lower_scale_value = float(np.ma.min(self.new_colour_image_data))
+        self._build_lower_scale()
+        self._build_upper_scale()
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=1, width=6,
@@ -150,22 +176,13 @@ class NewColour:
         if self.upper_scale_value is not None:
             self.upper_scale_input.insert(END, str(round(self.upper_scale_value, 5)))
 
-    def _build_drop_down(self):
-        self.drop_down_var.set(self.choices[0])
-        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
-        self.drop_down_menu.configure(highlightthickness=0, width=6,
-                                      anchor='w', padx=15)
-        self.drop_down_menu.grid(column=1, row=0, columnspan=2, padx=(20, 0))
-
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='New Image', command=self.__info, width=9)
-        self.info_label.grid(columnspan=2, padx=(0, 40))
-
     def _build_norm_og(self):
         self.norm_button = make_button(self.root, text="NORM", row=6, column=2, columnspan=1, command=self.__norm,
                                        inner_padx=3, inner_pady=0, outer_padx=(20, 15), outer_pady=5, width=5)
         self.og_button = make_button(self.root, text="OG", row=7, column=2, columnspan=1, command=self.__og,
                                      inner_padx=3, inner_pady=0, outer_padx=(20, 15), outer_pady=(5, 0), width=5)
+
+    # ----------------------------------------------- BUILDERS (IMAGE) -----------------------------------------------
 
     def _build_new_image(self):
         if self.new_colour_image_data is None:
@@ -181,13 +198,15 @@ class NewColour:
                            color_rgb=BACKGROUND, gs=self.gs)
             self.new_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
-    def _scale(self):
-        self.upper_scale_value = float(np.ma.max(self.new_colour_image_data))
-        self.lower_scale_value = float(np.ma.min(self.new_colour_image_data))
-        self._build_lower_scale()
-        self._build_upper_scale()
+    # --------------------------------------------------- CALLBACKS --------------------------------------------------
 
-    # Commands (Callbacks)
+    def __info(self):
+        info = self.listener.modules[INFO].new_info
+        title = "New Image Information"
+        make_info(title=title, info=info)
+
+    def __pop_up_image(self, event):
+        make_popup_image(self.new_colour_image_graph)
 
     def __norm(self):
         self.update_new_colour_image(self.initial_data / np.ma.max(self.initial_data))
@@ -195,10 +214,10 @@ class NewColour:
     def __og(self):
         self.update_new_colour_image(self.initial_data)
 
-    def __info(self):
-        info = self.listener.get_new_info()
-        title = "New Image Information"
-        make_info(title=title, info=info)
+    def __update_data(self, event):
+        choice = self.drop_down_var.get()[:2]
+        self.specs, self.spec_number = specs(choice=choice)
+        self.listener.update_new_specs(self.specs)
 
     def __update_to_wl(self):
         self.wl_button.config(foreground="red")
@@ -221,27 +240,6 @@ class NewColour:
             self.gs_button.config(foreground="black")
             self.gs = False
             self._build_new_image()
-
-    def __update_data(self, event):
-        choice = self.drop_down_var.get()[:2]
-        if choice == '1.':
-            self.specs = (False, True, False)
-        elif choice == '2.':
-            self.specs = (False, True, True)
-        elif choice == '3.':
-            self.specs = (False, False, False)
-        elif choice == '4.':
-            self.specs = (False, False, True)
-        elif choice == '5.':
-            self.specs = (True, True, False)
-        elif choice == '6.':
-            self.specs = (True, True, True)
-        elif choice == '7.':
-            self.specs = (True, False, False)
-        elif choice == '8.':
-            self.specs = (True, False, True)
-        self.spec_number = choice[0]
-        self.listener.update_new_specs(self.specs)
 
     def __update_upper_lower(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())
@@ -267,6 +265,3 @@ class NewColour:
     def __update_save_wo_scale_check_status(self, event):
         value = not bool(self.save_wo_scale_checkbox_value.get())
         self.listener.update_saved(NEW_IMAGE_WO_SCALE, value)
-
-    def __pop_up_image(self, event):
-        make_popup_image(self.new_colour_image_graph)

@@ -98,6 +98,8 @@ class Histogram:
 
         self._init_widgets()
 
+    # ------------------------------------------------ INITIALIZATION ------------------------------------------------
+
     def update_histogram(self, data):
         logging.debug("BUILDING HISTOGRAM...")
         self.flattened_data = data.flatten()
@@ -107,8 +109,6 @@ class Histogram:
         self._calc_stats()
         self._build_scale()
         self._build_interactive_histogram()
-
-    # Helper
 
     def _init_widgets(self):
         self._build_scale()
@@ -121,6 +121,50 @@ class Histogram:
         self._build_drop_down()
         self._build_interactive_histogram()
         self._build_stats()
+
+    # ----------------------------------------------- BUILDERS (MISC) -------------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Histogram', command=self.__info, width=8)
+
+    def _build_save(self):
+        self.save_label = make_label(self.root, "Save", row=13, column=0, inner_padx=10, inner_pady=5,
+                                     outer_padx=(15, 10), outer_pady=(0, 15))
+        self.save_checkbox = make_checkbox(self.root, "", row=13, column=0, var=self.save_checkbox_value, sticky=NE,
+                                           inner_padx=0, inner_pady=0, outer_padx=(0, 5))
+        self.save_checkbox.deselect()
+        self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
+
+    def _build_save_wo_scale(self):
+        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=13, column=1, inner_padx=10,
+                                              inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 15))
+        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=13, column=1,
+                                                    var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0,
+                                                    inner_pady=0, outer_padx=(0, 12))
+        self.save_wo_scale_checkbox.deselect()
+        self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
+
+    def _build_save_as_excel(self):
+        self.save_as_excel_label = make_label(self.root, "Save as CSV", row=13, column=2, inner_padx=10, inner_pady=5,
+                                              outer_padx=(5, 15), outer_pady=(0, 15))
+        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=13, column=2,
+                                                    var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0,
+                                                    inner_pady=0, outer_padx=(0, 9))
+        self.save_as_excel_checkbox.deselect()
+        self.save_as_excel_checkbox.bind('<Button-1>', self.__update_save_as_excel_check_status)
+
+    def _build_reset_button(self):
+        self.reset_button = make_button(self.root, "Reset", row=13, column=3, command=self.__reset, inner_padx=10,
+                                        inner_pady=5, outer_padx=15, outer_pady=(0, 10), columnspan=2)
+
+    def _build_drop_down(self):
+        self.drop_down_var.set(self.choices[0])
+        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
+        self.drop_down_menu.configure(highlightthickness=0, width=6,
+                                      anchor='w', padx=15)
+        self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(0, 15))
+
+    # ----------------------------------------------- BUILDERS (DATA) -------------------------------------------------
 
     def _build_stats(self):
         # parametric
@@ -160,43 +204,6 @@ class Histogram:
                                                                   '%', bg=tkcolour_from_rgb(BACKGROUND), column=3,
                                                row=2, width=25, columnspan=2, rowspan=2, padx=(10, 0), state=NORMAL,
                                                pady=0)
-
-    def _build_drop_down(self):
-        self.drop_down_var.set(self.choices[0])
-        self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
-        self.drop_down_menu.configure(highlightthickness=0, width=6, 
-                                      anchor='w', padx=15)
-        self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(0, 15))
-
-    def _build_save(self):
-        self.save_label = make_label(self.root, "Save", row=13, column=0, inner_padx=10, inner_pady=5,
-                                     outer_padx=(15, 10), outer_pady=(0, 15))
-        self.save_checkbox = make_checkbox(self.root, "", row=13, column=0, var=self.save_checkbox_value, sticky=NE,
-                                           inner_padx=0, inner_pady=0, outer_padx=(0, 5))
-        self.save_checkbox.deselect()
-        self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
-
-    def _build_save_wo_scale(self):
-        self.save_wo_scale_label = make_label(self.root, "Save W/O Scale", row=13, column=1, inner_padx=10,
-                                              inner_pady=5, outer_padx=(10, 16), outer_pady=(0, 15))
-        self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=13, column=1,
-                                                    var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0,
-                                                    inner_pady=0, outer_padx=(0, 12))
-        self.save_wo_scale_checkbox.deselect()
-        self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
-
-    def _build_save_as_excel(self):
-        self.save_as_excel_label = make_label(self.root, "Save as CSV", row=13, column=2, inner_padx=10, inner_pady=5,
-                                              outer_padx=(5, 15), outer_pady=(0, 15))
-        self.save_as_excel_checkbox = make_checkbox(self.root, "", row=13, column=2,
-                                                    var=self.save_as_excel_checkbox_value, sticky=NE, inner_padx=0,
-                                                    inner_pady=0, outer_padx=(0, 9))
-        self.save_as_excel_checkbox.deselect()
-        self.save_as_excel_checkbox.bind('<Button-1>', self.__update_save_as_excel_check_status)
-
-    def _build_reset_button(self):
-        self.reset_button = make_button(self.root, "Reset", row=13, column=3, command=self.__reset, inner_padx=10,
-                                        inner_pady=5, outer_padx=15, outer_pady=(0, 10), columnspan=2)
 
     def _build_scale(self):
         # lower
@@ -255,8 +262,7 @@ class Histogram:
         self.step_size_input.bind('<Return>', self.__update_scales)
         self.step_size_input.insert(END, str(self.step_size_value))
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Histogram', command=self.__info, width=8)
+    # ---------------------------------------------- BUILDERS (GRAPH) ------------------------------------------------
 
     def _build_interactive_histogram(self):
         # create canvas
@@ -299,11 +305,14 @@ class Histogram:
                                                         pady=0)
         self.interactive_histogram.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
-    def _format_axis(self, x, p):
+    @staticmethod
+    def _format_axis(x, p):
         if x % 1 == 0:
             return format(int(x), ',')
         else:
             return format(round(x, 2))
+
+    # ------------------------------------------------- CALCULATORS --------------------------------------------------
 
     def _calc_stats(self):
         # construct data list in proper range
@@ -349,7 +358,37 @@ class Histogram:
         progress(10, 11)
         self._build_stats()
 
-    # Commands (Callbacks)
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
+
+    def __info(self):
+        info = self.listener.modules[INFO].hist_info
+        title = "Histogram Information"
+        make_info(title=title, info=info)
+
+    def __update_data(self, event):
+        choice = self.drop_down_var.get()[:2]
+        if choice in ['1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.']:
+            self.specs, self.spec_number = specs(choice=choice)
+        elif choice == '9.':
+            data = self.listener.get_current_rec_data()
+            self.update_histogram(data)
+            self.spec_number = 9
+        elif choice == '10':
+            data = self.listener.get_current_norm_rec_data()
+            self.update_histogram(data)
+            self.spec_number = 10
+        elif choice == '11':
+            data = self.listener.get_current_new_data()
+            self.update_histogram(data)
+            self.spec_number = 11
+        elif choice == '12':
+            data = self.listener.get_current_norm_new_data()
+            self.update_histogram(data)
+            self.spec_number = 12
+
+    def __pop_up_image(self, event):
+        make_popup_image(self.interactive_histogram_graph)
+
     def __parametric(self):
         if self.parametric:
             self.parametric = False
@@ -372,71 +411,12 @@ class Histogram:
             self.parametric_button.config(foreground="black")
         self._build_interactive_histogram()
 
-    def __update_data(self, event):
-        choice = self.drop_down_var.get()[:2]
-        if choice == '1.':
-            self.specs = (False, True, False)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '2.':
-            self.specs = (False, True, True)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '3.':
-            self.specs = (False, False, False)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '4.':
-            self.specs = (False, False, True)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '5.':
-            self.specs = (True, True, False)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '6.':
-            self.specs = (True, True, True)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '7.':
-            self.specs = (True, False, False)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '8.':
-            self.specs = (True, False, True)
-            self.listener.update_histogram_specs(self.specs)
-        elif choice == '9.':
-            data = self.listener.get_current_rec_data()
-            self.update_histogram(data)
-        elif choice == '10':
-            data = self.listener.get_current_norm_rec_data()
-            self.update_histogram(data)
-        elif choice == '11':
-            data = self.listener.get_current_new_data()
-            self.update_histogram(data)
-        elif choice == '12':
-            data = self.listener.get_current_norm_new_data()
-            self.update_histogram(data)
-        if choice[1] != '.':
-            self.spec_number = choice
-        else:
-            self.spec_number = choice[0]
-
-    def __update_to_original_data(self):
-        self.listener.broadcast_to_histogram()
-
-    def __update_to_wl_data(self):
-        data = self.listener.get_wl()
-        self.update_histogram(data)
-        
-    def __update_to_idx_data(self):
-        data = self.listener.get_idx()
-        self.update_histogram(data)
-
     def __reset(self):
         self.x_lower_scale_value = None
         self.x_upper_scale_value = None
         self.y_lower_scale_value = None
         self.y_upper_scale_value = None
         self.update_histogram(self.flattened_data)
-
-    def __info(self):
-        info = self.listener.get_hist_info()
-        title = "Histogram Information"
-        make_info(title=title, info=info)
 
     def __update_upper_lower(self, event):
         self.upper_value = float(self.upper_input.get())
@@ -451,8 +431,16 @@ class Histogram:
         self.step_size_value = float(self.step_size_input.get())
         self._build_interactive_histogram()
 
-    def __pop_up_image(self, event):
-        make_popup_image(self.interactive_histogram_graph)
+    def __update_to_original_data(self):
+        self.listener.broadcast_to_histogram()
+
+    def __update_to_wl_data(self):
+        data = self.listener.get_wl()
+        self.update_histogram(data)
+        
+    def __update_to_idx_data(self):
+        data = self.listener.get_idx()
+        self.update_histogram(data)
 
     def __update_save_with_scale_check_status(self, event):
         value = not bool(self.save_checkbox_value.get())

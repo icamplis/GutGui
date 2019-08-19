@@ -34,6 +34,8 @@ class OGColourData:
 
         self._init_widget()
 
+    # ----------------------------------------------- INITIALIZATION -------------------------------------------------
+
     def update_calc(self):
         self.stats_data = self.listener.get_current_original_data()
         if self.c1:
@@ -47,11 +49,12 @@ class OGColourData:
         self._build_data()
         logging.debug("DONE W STATS...")
 
-    # Helper
     def _init_widget(self):
         self._build_data()
         self._build_info_label()
         self._build_calc_button()
+
+    # ------------------------------------------------- CALCULATOR ---------------------------------------------------
 
     def _calc_data(self):
         self.mean_value = np.round(np.ma.mean(self.stats_data), 3)
@@ -60,6 +63,11 @@ class OGColourData:
         self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.stats_data, 0.75), 3))
         self.min_value = np.round(np.ma.min(self.stats_data), 3)
         self.max_value = np.round(np.ma.max(self.stats_data), 3)
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Original Data', command=self.__info, width=11)
 
     def _build_data(self):
         # mean
@@ -84,27 +92,26 @@ class OGColourData:
                                   column=0, row=6, width=22, columnspan=3, padx=(10, 15), pady=(0, 15), state=NORMAL)
 
     def _build_calc_button(self):
-        self.c1_button = make_button(self.root, text="C1", row=0, column=1, columnspan=1, command=self._update_c1,
+        self.c1_button = make_button(self.root, text="C1", row=0, column=1, columnspan=1, command=self.__update_c1,
                                      inner_padx=3, inner_pady=0, outer_padx=(10, 5), outer_pady=15, width=2)
-        self.c2_button = make_button(self.root, text="C2", row=0, column=2, columnspan=1, command=self._update_c2,
+        self.c2_button = make_button(self.root, text="C2", row=0, column=2, columnspan=1, command=self.__update_c2,
                                      inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=15, width=2)
         # self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1,
         # command=self.update_calc, inner_padx=3, inner_pady=0, outer_padx=(10, 15), outer_pady=15, width=5)
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Original Data', command=self.__info, width=11)
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
-    def _update_c1(self):
+    def __info(self):
+        info = self.listener.modules[INFO].original_data_info
+        title = "Original Data Information"
+        make_info(title=title, info=info)
+
+    def __update_c1(self):
         self.c1 = True
         self.c2 = False
         self.update_calc()
 
-    def _update_c2(self):
+    def __update_c2(self):
         self.c1 = False
         self.c2 = True
         self.update_calc()
-
-    def __info(self):
-        info = self.listener.get_original_data_info()
-        title = "Original Data Information"
-        make_info(title=title, info=info)

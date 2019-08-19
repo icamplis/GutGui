@@ -30,17 +30,20 @@ class RecreatedColourData:
 
         self._init_widget()
 
+    # ----------------------------------------------- INITIALIZATION -------------------------------------------------
+
     def update_calc(self):
         data = self.listener.get_current_rec_data().flatten()
         self.stats_data = [i for i in data if i != '--']
         self._calc_data()
         self._build_data()
 
-    # Helper
     def _init_widget(self):
         self._build_data()
         self._build_calc_button()
         self._build_info_label()
+
+    # ------------------------------------------------- CALCULATOR ---------------------------------------------------
 
     def _calc_data(self):
         self.mean_value = np.round(np.ma.mean(self.stats_data), 3)
@@ -49,6 +52,11 @@ class RecreatedColourData:
         self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.stats_data, 0.75), 3))
         self.min_value = np.round(np.ma.min(self.stats_data), 3)
         self.max_value = np.round(np.ma.max(self.stats_data), 3)
+
+    # --------------------------------------------------- BUILDERS ---------------------------------------------------
+
+    def _build_info_label(self):
+        self.info_label = make_label_button(self.root, text='Recreated Data', command=self.__info, width=12)
 
     def _build_data(self):
         # mean
@@ -76,10 +84,9 @@ class RecreatedColourData:
         self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1, command=self.update_calc,
                                        inner_padx=3, inner_pady=0, outer_padx=(10, 15), outer_pady=15, width=5)
 
-    def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Recreated Data', command=self.__info, width=12)
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
     def __info(self):
-        info = self.listener.get_recreated_data_info()
+        info = self.listener.modules[INFO].recreated_data_info
         title = "Recreated Data Information"
         make_info(title=title, info=info)

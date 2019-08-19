@@ -83,6 +83,8 @@ class RecreatedAnalysis:
         self._calc_thi()
         self._calc_twi()
 
+    # --------------------------------------------------- UPDATERS ----------------------------------------------------
+
     def update_mask(self, new_mask):
         self.mask = new_mask
         self.analysis()
@@ -99,12 +101,7 @@ class RecreatedAnalysis:
         self.absorbance = new_absorbance
         self.analysis()
 
-    def _calc_general(self):
-        logging.debug("CALCULATING: RECREATED IMAGE...")
-        self.__calc_x1()
-        self.__calc_x_reflectance()
-        self.__calc_x2()
-        self.__calc_x_absorbance()
+    # ------------------------------------------------- CALCULATORS --------------------------------------------------
 
     def _calc_sto2(self):
         logging.debug("CALCULATING: STO2...")
@@ -177,6 +174,15 @@ class RecreatedAnalysis:
         if self.mask is not None:
             self.twi_masked = np.ma.array(self.twi[:, :], mask=[self.mask])
             logging.debug("Masked TWI Mean: " + str(self.twi_masked.mean()))
+
+    # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
+
+    def _calc_general(self):
+        logging.debug("CALCULATING: RECREATED IMAGE...")
+        self.__calc_x1()
+        self.__calc_x_reflectance()
+        self.__calc_x2()
+        self.__calc_x_absorbance()
 
     def __calc_x1(self):
         # normalise
