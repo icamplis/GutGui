@@ -33,23 +33,14 @@ class SourceAndOutput:
         self._init_widgets()
 
     # Makes a deep copy of the original data cubes
-    def get_data_cubes(self):
-        return deepcopy(self.data_cubes)
-
-    def get_selected_data_cube(self):
-        index = self.selection_listbox.curselection()[0]
-        return self._get_data_cube_by_index(index)
 
     def get_selected_data_cube_path(self):
         index = self.selection_listbox.curselection()[0]
         return self.data_cube_paths[index]
 
-    def _get_data_cube_by_index(self, index):
-        return deepcopy(self.data_cubes[index])
-
     def get_selected_data_paths(self):
-        selecteds = self.selection_listbox.curselection()
-        selected_data_paths = [self.data_cube_paths[i] for i in selecteds]
+        selection = self.selection_listbox.curselection()
+        selected_data_paths = [self.data_cube_paths[i] for i in selection]
         return selected_data_paths
 
     # Helpers

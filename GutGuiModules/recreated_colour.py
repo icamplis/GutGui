@@ -77,12 +77,6 @@ class RecColour:
         self.displayed_image_mode = STO2  # STO2 by default
         self.sto2_button.config(foreground="red")
 
-    def get_specs(self):
-        return self.specs
-
-    def get_spec_number(self):
-        return self.spec_number
-
     def update_recreated_image(self, recreated_colour_image_data):
         if self.old_specs != self.specs:
             self.initial_data = recreated_colour_image_data
@@ -93,36 +87,6 @@ class RecColour:
         self.recreated_colour_image_data = recreated_colour_image_data
         self._scale()
         self._build_recreated_image()
-
-    def get_current_data(self):
-        return self.recreated_colour_image_data
-
-    def get_displayed_image_mode(self):
-        return self.displayed_image_mode
-
-    def get_sto2_checkbox_value(self):
-        return not bool(self.sto2_checkbox_value.get())
-
-    def get_nir_checkbox_value(self):
-        return not bool(self.nir_checkbox_value.get())
-
-    def get_thi_checkbox_value(self):
-        return not bool(self.thi_checkbox_value.get())
-
-    def get_twi_checkbox_value(self):
-        return not bool(self.twi_checkbox_value.get())
-
-    def get_gs_checkbox_value(self):
-        return not bool(self.gs_checkbox_value.get())
-
-    def get_save_checkbox_value(self):
-        return not bool(self.save_checkbox_value.get())
-
-    def get_save_wo_scale_checkbox_value(self):
-        return not bool(self.save_wo_scale_checkbox_value.get())
-
-    def get_upper_scale_value(self):
-        return self.upper_scale_input.get()
 
     # Helper
     def _init_widget(self):
@@ -271,7 +235,7 @@ class RecColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = STO2
-        self.listener.render_new_recreated_image_data()
+        self.listener.broadcast_to_recreated_image()
 
     def __update_to_nir(self):
         self.sto2_button.config(foreground="black")
@@ -279,7 +243,7 @@ class RecColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = NIR
-        self.listener.render_new_recreated_image_data()
+        self.listener.broadcast_to_recreated_image()
 
     def __update_to_thi(self):
         self.sto2_button.config(foreground="black")
@@ -287,7 +251,7 @@ class RecColour:
         self.thi_button.config(foreground="red")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = THI
-        self.listener.render_new_recreated_image_data()
+        self.listener.broadcast_to_recreated_image()
 
     def __update_to_twi(self):
         self.sto2_button.config(foreground="black")
@@ -295,7 +259,7 @@ class RecColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
-        self.listener.render_new_recreated_image_data()
+        self.listener.broadcast_to_recreated_image()
 
     def __update_to_gs(self):
         if not self.gs:
@@ -329,31 +293,31 @@ class RecColour:
         self.listener.update_recreated_specs(self.specs)
 
     def __update_sto2_check_status(self, event):
-        value = self.get_sto2_checkbox_value()
+        value = not bool(self.sto2_checkbox_value.get())
         self.listener.update_saved(STO2_DATA, value)
 
     def __update_nir_check_status(self, event):
-        value = self.get_nir_checkbox_value()
+        value = not bool(self.nir_checkbox_value.get())
         self.listener.update_saved(NIR_DATA, value)
 
     def __update_twi_check_status(self, event):
-        value = self.get_twi_checkbox_value()
+        value = not bool(self.twi_checkbox_value.get())
         self.listener.update_saved(TWI_DATA, value)
 
     def __update_thi_check_status(self, event):
-        value = self.get_thi_checkbox_value()
+        value = not bool(self.thi_checkbox_value.get())
         self.listener.update_saved(THI_DATA, value)
 
     def __update_save_with_scale_check_status(self, event):
-        value = self.get_save_checkbox_value()
+        value = not bool(self.save_checkbox_value.get())
         self.listener.update_saved(REC_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
-        value = self.get_save_wo_scale_checkbox_value()
+        value = not bool(self.save_wo_scale_checkbox_value.get())
         self.listener.update_saved(REC_IMAGE_WO_SCALE, value)
 
     def __update_gs_check_status(self, event):
-        value = self.get_gs_checkbox_value()
+        value = not bool(self.gs_checkbox_value.get())
         self.listener.update_saved(GS_RECREATED, value)
         print(value)
 

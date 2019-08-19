@@ -17,19 +17,8 @@ class Diagram:
         self.masked_region_checkbox_value = IntVar()
 
         self.is_masked = False
-
         self.info_label = None
-
         self._init_widget()
-
-    def get_is_masked(self):
-        return self.is_masked
-
-    def get_whole_image_checkbox_value(self):
-        return not bool(self.whole_image_checkbox_value.get())
-
-    def get_masked_region_checkbox_value(self):
-        return not bool(self.masked_region_checkbox_value.get())
 
     # Helper
     def _init_widget(self):
@@ -81,9 +70,9 @@ class Diagram:
         self.listener.submit_is_masked(self.is_masked)
 
     def __update_whole_image_check_status(self, event):
-        value = self.get_whole_image_checkbox_value()
+        value = not bool(self.whole_image_checkbox_value.get())
         self.listener.update_saved(WHOLE_IMAGE_SAVE, value)
 
     def __update_masked_region_check_status(self, event):
-        value = self.get_masked_region_checkbox_value()
+        value = not bool(self.masked_region_checkbox_value.get())
         self.listener.update_saved(MASKED_IMAGE_SAVE, value)

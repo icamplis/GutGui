@@ -60,15 +60,6 @@ class AbsSpecAnalysis:
         self.absorbance = new_absorbance
         self.analysis()
 
-    def get_absorption_spec(self):
-        return self.absorption_roi[:, 1]
-
-    def get_absorption_spec_masked(self):
-        return self.absorption_roi_masked[:, 1]
-
-    def get_key_value(self):
-        return self.key, self.value
-
     def _calc_general(self):
         logging.debug("CALCULATING: ABSORPTION SPECTRUM...")
         self.__calc_x1()

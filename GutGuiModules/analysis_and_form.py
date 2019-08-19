@@ -37,23 +37,10 @@ class AnalysisAndForm:
 
         self._init_widget()
 
-    def get_normal(self):
-        return self.normal
-
-    def get_absorbance(self):
-        return self.absorbance
-
-    def get_wavelength_upper(self):
-        return int(self.wavelength_upper_entry.get())
-
-    def get_wavelength_lower(self):
-        return int(self.wavelength_lower_entry.get())
-
     def get_wavelength(self):
-        return int((self.get_wavelength_lower()-500)/5), int((self.get_wavelength_upper()-500)/5)
-
-    def get_index(self):
-        return self.index_selected
+        lower = self.wavelength_lower_entry.get()
+        upper = self.wavelength_upper_entry.get()
+        return int((float(lower)-500)/5), int((float(upper)-500)/5)
 
     # Helpers
     def _init_widget(self):

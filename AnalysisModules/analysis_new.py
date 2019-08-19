@@ -64,12 +64,6 @@ class NewAnalysis:
         self.index_number = new_index_number
         self.analysis()
 
-    def get_index(self):
-        return self.index
-
-    def get_index_masked(self):
-        return self.index_masked
-
     def get_wl_data(self):
         if self.absorbance:
             new_data = self.x_absorbance_w

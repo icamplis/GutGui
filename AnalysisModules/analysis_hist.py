@@ -65,9 +65,6 @@ class HistogramAnalysis:
         self.absorbance = new_absorbance
         self.analysis()
 
-    def get_data_cube(self):
-        return self.data_cube
-
     def get_rgb_og(self):
         filename = str(self.path[:-13]) + RGB_FILE
         self.rgb_og = image_to_array(filename)

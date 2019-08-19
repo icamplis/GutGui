@@ -74,8 +74,8 @@ class Save:
         # print(self.saves)
 
     def instant_save_points(self, data, title):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 output_path = os.path.dirname(path) + "/" + title + '.csv'
                 logging.debug("SAVING DATA TO " + output_path)
@@ -107,13 +107,13 @@ class Save:
         make_info(title=title, info=info)
 
     def _save_specific(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 self._save_to_path(path)
 
     def _save_all(self):
-        for path, _ in self.listener.get_results().items():
+        for path, _ in self.listener.results.items():
             self._save_to_path(path)
 
     # Callback helper
@@ -210,72 +210,72 @@ class Save:
         name = self.listener.get_current_rec_info(saves=True)
         if self.saves[STO2_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_sto2(), "STO2_DATA" + name)
-                self.__save_image(self.current_rec_result.get_sto2(), "STO2_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
+                self.__save_data(self.current_rec_result.sto2, "STO2_DATA" + name)
+                self.__save_image(self.current_rec_result.sto2, "STO2_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
                                   self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_sto2(), "STO2_WHOLE_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.sto2, "STO2_WHOLE_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
             if self.saves[MASKED_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_sto2_masked(), "STO2_DATA_MASKED" + name)
-                self.__save_image(self.current_rec_result.get_sto2_masked(), "STO2_MASKED_IMAGE" + name,
+                self.__save_data(self.current_rec_result.sto2_masked, "STO2_DATA_MASKED" + name)
+                self.__save_image(self.current_rec_result.sto2_masked, "STO2_MASKED_IMAGE" + name,
                                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_sto2_masked(), "STO2_MASKED_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.sto2_masked, "STO2_MASKED_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
 
     def __save_nir_data_and_image(self):
         name = self.listener.get_current_rec_info(saves=True)
         if self.saves[NIR_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_nir(), "NIR_DATA" + name)
-                self.__save_image(self.current_rec_result.get_nir(), "NIR_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
+                self.__save_data(self.current_rec_result.nir, "NIR_DATA" + name)
+                self.__save_image(self.current_rec_result.nir, "NIR_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
                                   self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_nir(), "NIR_WHOLE_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.nir, "NIR_WHOLE_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
             if self.saves[MASKED_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_nir_masked(), "NIR_DATA_MASKED" + name)
-                self.__save_image(self.current_rec_result.get_nir_masked(), "NIR_MASKED_IMAGE" + name,
+                self.__save_data(self.current_rec_result.nir_masked, "NIR_DATA_MASKED" + name)
+                self.__save_image(self.current_rec_result.nir_masked, "NIR_MASKED_IMAGE" + name,
                                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_nir_masked(), "NIR_MASKED_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.nir_masked, "NIR_MASKED_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
 
     def __save_twi_data_and_image(self):
         name = self.listener.get_current_rec_info(saves=True)
         if self.saves[TWI_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_twi(), "TWI_DATA" + name)
-                self.__save_image(self.current_rec_result.get_twi(), "TWI_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
+                self.__save_data(self.current_rec_result.twi, "TWI_DATA" + name)
+                self.__save_image(self.current_rec_result.twi, "TWI_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
                                   self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_twi(), "TWI_WHOLE_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.twi, "TWI_WHOLE_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
             if self.saves[MASKED_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_twi_masked(), "TWI_DATA_MASKED" + name)
-                self.__save_image(self.current_rec_result.get_twi_masked(), "TWI_MASKED_IMAGE" + name,
+                self.__save_data(self.current_rec_result.twi_masked, "TWI_DATA_MASKED" + name)
+                self.__save_image(self.current_rec_result.twi_masked, "TWI_MASKED_IMAGE" + name,
                                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_twi_masked(), "TWI_MASKED_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.twi_masked, "TWI_MASKED_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
 
     def __save_thi_data_and_image(self):
         name = self.listener.get_current_rec_info(saves=True)
         if self.saves[THI_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_thi(), "THI_DATA" + name)
-                self.__save_image(self.current_rec_result.get_thi(), "THI_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
+                self.__save_data(self.current_rec_result.thi, "THI_DATA" + name)
+                self.__save_image(self.current_rec_result.thi, "THI_WHOLE_IMAGE" + name, self.saves[REC_IMAGE],
                                   self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_thi(), "THI_WHOLE_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.thi, "THI_WHOLE_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
             if self.saves[MASKED_IMAGE_SAVE]:
-                self.__save_data(self.current_rec_result.get_thi_masked(), "THI_DATA_MASKED" + name)
-                self.__save_image(self.current_rec_result.get_thi_masked(), "THI_MASKED_IMAGE" + name,
+                self.__save_data(self.current_rec_result.thi_masked, "THI_DATA_MASKED" + name)
+                self.__save_image(self.current_rec_result.thi_masked, "THI_MASKED_IMAGE" + name,
                                   self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE])
                 if self.saves[GS_RECREATED]:
-                    self.__save_image(self.current_rec_result.get_thi_masked(), "THI_MASKED_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_rec_result.thi_masked, "THI_MASKED_IMAGE_GREYSCALE" + name,
                                       self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap='gray')
 
     def __save_wl_data_and_image(self):
@@ -300,23 +300,23 @@ class Save:
         name = self.listener.get_current_new_info(mode='IDX')
         if self.saves[IDX_DATA]:
             if self.saves[WHOLE_IMAGE_SAVE]:
-                self.__save_data(self.current_new_result.get_index(), "INDEX_DATA" + name)
-                self.__save_image(self.current_new_result.get_index(), "INDEX_WHOLE_IMAGE" + name,
+                self.__save_data(self.current_new_result.index, "INDEX_DATA" + name)
+                self.__save_image(self.current_new_result.index, "INDEX_WHOLE_IMAGE" + name,
                                   self.saves[NEW_IMAGE],
                                   self.saves[NEW_IMAGE_WO_SCALE])
                 if self.saves[GS_NEW]:
-                    self.__save_image(self.current_new_result.get_index(), "INDEX_WHOLE_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_new_result.index, "INDEX_WHOLE_IMAGE_GREYSCALE" + name,
                                       self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE], cmap='gray')
             if self.saves[MASKED_IMAGE_SAVE]:
-                self.__save_data(self.current_new_result.get_index_masked(), "INDEX_DATA_MASKED" + name)
-                self.__save_image(self.current_new_result.get_index_masked(), "INDEX_MASKED_IMAGE" + name,
+                self.__save_data(self.current_new_result.index_masked, "INDEX_DATA_MASKED" + name)
+                self.__save_image(self.current_new_result.index_masked, "INDEX_MASKED_IMAGE" + name,
                                   self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE])
                 if self.saves[GS_NEW]:
-                    self.__save_image(self.current_new_result.get_index_masked(), "INDEX_MASKED_IMAGE_GREYSCALE" + name,
+                    self.__save_image(self.current_new_result.index_masked, "INDEX_MASKED_IMAGE_GREYSCALE" + name,
                                       self.saves[NEW_IMAGE], self.saves[NEW_IMAGE_WO_SCALE], cmap='gray')
 
     def __save_histogram(self):
-        name = self.listener.get_current_hist_info()
+        name = self.listener.get_current_hist_abs_info(hist_or_abs='hist')
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_hist_result.get_histogram_data(is_masked=False).flatten()
             self.__save_histogram_graph(data, "HISTOGRAM_WHOLE_IMAGE" + name, self.saves[HISTOGRAM_IMAGE],
@@ -328,7 +328,7 @@ class Save:
         if self.saves[HISTOGRAM_EXCEL]:
             data = self.current_hist_result.get_histogram_data(self.saves[MASKED_IMAGE_SAVE]).flatten()
             start = np.min(data)
-            step = self.listener.modules[HISTOGRAM].get_step_size()
+            step = self.listener.modules[HISTOGRAM].step_size_value
             stop = np.max(data) + step
             bins = np.arange(start=start, stop=stop, step=step)
             counts, _, _ = plt.hist(data, bins=bins)
@@ -336,19 +336,19 @@ class Save:
             self.__save_data(hist_data, "HISTOGRAM_EXCEL" + name, fmt="%.2f")  # too slow to save it as an actual xlsx
 
     def __save_absorption_spec(self):
-        name = self.listener.get_current_abs_info()
+        name = self.listener.get_current_hist_abs_info(hist_or_abs='abs')
         if self.saves[WHOLE_IMAGE_SAVE]:
-            data = self.current_abs_result.get_absorption_spec()
+            data = self.current_abs_result.absorption_roi[:, 1]
             self.__save_absorption_spec_graph(data, "ABSORPTION_SPEC_WHOLE_IMAGE" + name,
                                               self.saves[ABSORPTION_SPEC_IMAGE],
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
         if self.saves[MASKED_IMAGE_SAVE]:
-            data = self.current_abs_result.get_absorption_spec_masked()
+            data = self.current_abs_result.absorption_roi_masked[:, 1]
             self.__save_absorption_spec_graph(data, "ABSORPTION_SPEC_MASKED_IMAGE" + name,
                                               self.saves[ABSORPTION_SPEC_IMAGE],
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
         if self.saves[ABSORPTION_SPEC_EXCEL]:
-            data = self.current_abs_result.get_absorption_spec()
+            data = self.current_abs_result.absorption_roi[:, 1]
             self.__save_data(data, "ABSORPTION_SPEC_EXCEL" + name, fmt="%.5f")
 
     # Saving helpers
@@ -382,7 +382,7 @@ class Save:
 
     def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale, fmt=".png", min_val=0,
                                max_val=1):
-        step_size = self.listener.modules[HISTOGRAM].get_step_size()
+        step_size = self.listener.modules[HISTOGRAM].step_size_value
         if is_hist_with_scale:
             self.__save_histogram_diagram(data, title + "_WITH_SCALE", True, fmt=fmt, step_size_value=step_size)
         if is_hist_wo_scale:

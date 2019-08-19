@@ -67,25 +67,8 @@ class AbsorptionSpec:
                         '8. Absorbance - Normalised without Negative Values']
 
         self.reset_button = None
-
         self.info_label = None
-
         self._init_widgets()
-
-    def get_specs(self):
-        return self.specs
-
-    def get_spec_number(self):
-        return self.spec_number
-
-    def get_save_checkbox_value(self):
-        return not bool(self.save_checkbox_value.get())
-
-    def get_save_wo_scale_checkbox_value(self):
-        return not bool(self.save_wo_scale_checkbox_value.get())
-
-    def get_save_as_excel_checkbox_value(self):
-        return not bool(self.save_as_excel_checkbox_value.get())
 
     def update_absorption_spec(self, absorption_spec_data):
         self.absorption_spec = absorption_spec_data
@@ -295,15 +278,15 @@ class AbsorptionSpec:
         self.listener.update_abs_specs(self.specs)
 
     def __update_save_with_scale_check_status(self, event):
-        value = self.get_save_checkbox_value()
+        value = not bool(self.save_checkbox_value.get())
         self.listener.update_saved(ABSORPTION_SPEC_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
-        value = self.get_save_wo_scale_checkbox_value()
+        value = not bool(self.save_wo_scale_checkbox_value.get())
         self.listener.update_saved(ABSORPTION_SPEC_IMAGE_WO_SCALE, value)
 
     def __update_save_as_excel_check_status(self, event):
-        value = self.get_save_as_excel_checkbox_value()
+        value = not bool(self.save_as_excel_checkbox_value.get())
         self.listener.update_saved(ABSORPTION_SPEC_EXCEL, value)
 
     def __pop_up_image(self, event):

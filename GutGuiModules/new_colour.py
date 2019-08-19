@@ -70,15 +70,6 @@ class NewColour:
         self.displayed_image_mode = IDX
         self.idx_button.config(foreground="red")
 
-    def get_specs(self):
-        return self.specs
-
-    def get_spec_number(self):
-        return self.spec_number
-
-    def get_current_data(self):
-        return self.new_colour_image_data
-
     def update_new_colour_image(self, new_colour_image_data):
         if self.old_specs != self.specs:
             self.initial_data = new_colour_image_data
@@ -89,27 +80,6 @@ class NewColour:
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         self._build_new_image()
-
-    def get_displayed_image_mode(self):
-        return self.displayed_image_mode
-
-    def get_wl_checkbox_value(self):
-        return not bool(self.wl_checkbox_value.get())
-
-    def get_idx_checkbox_value(self):
-        return not bool(self.idx_checkbox_value.get())
-
-    def get_gs_checkbox_value(self):
-        return not bool(self.gs_checkbox_value.get())
-
-    def get_save_checkbox_value(self):
-        return not bool(self.save_checkbox_value.get())
-
-    def get_save_wo_scale_checkbox_value(self):
-        return not bool(self.save_wo_scale_checkbox_value.get())
-
-    def get_upper_scale_input(self):
-        return self.upper_scale_input.get()
 
     # Helper
     def _init_widget(self):
@@ -234,13 +204,13 @@ class NewColour:
         self.wl_button.config(foreground="red")
         self.idx_button.config(foreground="black")
         self.displayed_image_mode = WL
-        self.listener.render_new_new_image_data()
+        self.listener.broadcast_to_new_image()
 
     def __update_to_idx(self):
         self.wl_button.config(foreground="black")
         self.idx_button.config(foreground="red")
         self.displayed_image_mode = IDX
-        self.listener.render_new_new_image_data()
+        self.listener.broadcast_to_new_image()
 
     def __update_to_gs(self):
         if not self.gs:
@@ -279,23 +249,23 @@ class NewColour:
         self._build_new_image()
 
     def __update_wl_check_status(self, event):
-        value = self.get_wl_checkbox_value()
+        value = not bool(self.wl_checkbox_value.get())
         self.listener.update_saved(WL_DATA, value)
 
     def __update_idx_check_status(self, event):
-        value = self.get_idx_checkbox_value()
+        value = not bool(self.idx_checkbox_value.get())
         self.listener.update_saved(IDX_DATA, value)
 
     def __update_gs_check_status(self, event):
-        value = self.get_gs_checkbox_value()
+        value = not bool(self.gs_checkbox_value.get())
         self.listener.update_saved(GS_NEW, value)
 
     def __update_save_with_scale_check_status(self, event):
-        value = self.get_save_checkbox_value()
+        value = not bool(self.save_checkbox_value.get())
         self.listener.update_saved(NEW_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
-        value = self.get_save_wo_scale_checkbox_value()
+        value = not bool(self.save_wo_scale_checkbox_value.get())
         self.listener.update_saved(NEW_IMAGE_WO_SCALE, value)
 
     def __pop_up_image(self, event):

@@ -185,21 +185,9 @@ class OGColour:
                 self.get_pt7_checkbox_value(), self.get_pt8_checkbox_value(), self.get_pt9_checkbox_value(),
                 self.get_pt10_checkbox_value()]
 
-    def get_current_data(self):
-        return self.original_image_data
-
     def update_original_image(self, original_image_data):
         self.original_image_data = original_image_data
         self._draw_points()
-
-    def get_displayed_image_mode(self):
-        return self.displayed_image_mode
-
-    def get_gs_checkbox_value(self):
-        return not bool(self.gs_checkbox_value.get())
-
-    def get_all_points_checkbox_value(self):
-        return not bool(self.all_points_checkbox_value.get())
 
     def get_pt1_checkbox_value(self):
         return not bool(self.pt1_checkbox_value.get())
@@ -653,7 +641,7 @@ class OGColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = RGB
-        self.listener.render_original_image_data()
+        self.listener.broadcast_to_original_image()
 
     def __update_to_sto2(self):
         self.rgb_button.config(foreground="black")
@@ -662,7 +650,7 @@ class OGColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = STO2
-        self.listener.render_original_image_data()
+        self.listener.broadcast_to_original_image()
 
     def __update_to_nir(self):
         self.rgb_button.config(foreground="black")
@@ -671,7 +659,7 @@ class OGColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = NIR
-        self.listener.render_original_image_data()
+        self.listener.broadcast_to_original_image()
 
     def __update_to_thi(self):
         self.rgb_button.config(foreground="black")
@@ -680,7 +668,7 @@ class OGColour:
         self.thi_button.config(foreground="red")
         self.twi_button.config(foreground="black")
         self.displayed_image_mode = THI
-        self.listener.render_original_image_data()
+        self.listener.broadcast_to_original_image()
 
     def __update_to_twi(self):
         self.rgb_button.config(foreground="black")
@@ -689,7 +677,7 @@ class OGColour:
         self.thi_button.config(foreground="black")
         self.twi_button.config(foreground="red")
         self.displayed_image_mode = TWI
-        self.listener.render_original_image_data()
+        self.listener.broadcast_to_original_image()
 
     def __update_to_gs(self):
         if not self.gs:
@@ -702,7 +690,7 @@ class OGColour:
             self._build_original_image(self.original_image_data, self.gs)
 
     def __update_gs_check_status(self, event):
-        value = self.get_gs_checkbox_value()
+        value = not bool(self.gs_checkbox_value.get())
         self.listener.update_saved(GS_ORIGINAL, value)
 
     def __update_all(self, value):
@@ -710,7 +698,7 @@ class OGColour:
             self.listener.update_saved(point, value)
 
     def __update_all_points_checked(self, event):
-        value = self.get_all_points_checkbox_value()
+        value = not bool(self.all_points_checkbox_value.get())
         if value:
             self.pt1_checkbox.select()
             self.pt2_checkbox.select()

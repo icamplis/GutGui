@@ -56,12 +56,12 @@ class ModuleListener:
 
     def get_idx(self):
         if self.is_masked:
-            return self.get_result(self.current_rendered_result_path)[3].get_index_masked()
+            return self.get_result(self.current_rendered_result_path)[3].index_masked
         else:
-            return self.get_result(self.current_rendered_result_path)[3].get_index()
+            return self.get_result(self.current_rendered_result_path)[3].index
 
     def get_current_original_data(self):
-        data = self.modules[ORIGINAL_COLOUR].get_current_data()
+        data = self.modules[ORIGINAL_COLOUR].original_image_data
         if not self.is_masked:
             return data
         else:
@@ -69,14 +69,14 @@ class ModuleListener:
             return np.ma.array(data, mask=mask)
 
     def get_current_rec_data(self):
-        data = self.modules[RECREATED_COLOUR].get_current_data()
+        data = self.modules[RECREATED_COLOUR].recreated_colour_image_data
         if not self.is_masked:
             return data
         else:
             return np.ma.array(data, mask=np.logical_not(self.mask))
 
     def get_current_norm_rec_data(self):
-        image = self.modules[RECREATED_COLOUR].get_current_data()
+        image = self.modules[RECREATED_COLOUR].recreated_colour_image_data
         data = image / np.ma.max(image)
         if not self.is_masked:
             return data
@@ -84,14 +84,14 @@ class ModuleListener:
             return np.ma.array(data, mask=np.logical_not(self.mask))
 
     def get_current_new_data(self):
-        data = self.modules[NEW_COLOUR].get_current_data()
+        data = self.modules[NEW_COLOUR].new_colour_image_data
         if not self.is_masked:
             return data
         else:
             return np.ma.array(data, mask=np.logical_not(self.mask))
 
     def get_current_norm_new_data(self):
-        image = self.modules[NEW_COLOUR].get_current_data()
+        image = self.modules[NEW_COLOUR].new_colour_image_data
         data = image / np.ma.max(image)
         if not self.is_masked:
             return data
@@ -100,8 +100,8 @@ class ModuleListener:
 
     def get_current_rec_info(self, saves=False):
         info = ''
-        spec_num = self.modules[RECREATED_COLOUR].get_spec_number()
-        image_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
+        spec_num = self.modules[RECREATED_COLOUR].spec_number
+        image_mode = self.modules[RECREATED_COLOUR].displayed_image_mode
         if not saves:
             info += '_' + str(image_mode)
         info += '_fromCSV' + str(spec_num)
@@ -109,8 +109,8 @@ class ModuleListener:
 
     def get_current_new_info(self, mode=None):
         info = ''
-        spec_num = self.modules[NEW_COLOUR].get_spec_number()
-        image_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
+        spec_num = self.modules[NEW_COLOUR].spec_number
+        image_mode = self.modules[NEW_COLOUR].displayed_image_mode
         if image_mode == WL or mode == 'WL':
             mod = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif image_mode == IDX or mode == 'IDX':
@@ -119,27 +119,16 @@ class ModuleListener:
         info += '_fromCSV' + str(spec_num)
         return info
 
-    def get_current_hist_info(self):
+    def get_current_hist_abs_info(self, hist_or_abs):
         info = ''
-        spec_num = self.modules[HISTOGRAM].get_spec_number()
+        if hist_or_abs == 'hist':
+            spec_num = self.modules[HISTOGRAM].spec_number
+        elif hist_or_abs == 'abs':
+            spec_num = self.modules[ABSORPTION_SPEC].spec_number
         wl = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         info += wl
         info += '_fromCSV' + str(spec_num)
         return info
-
-    def get_current_abs_info(self):
-        info = ''
-        spec_num = self.modules[ABSORPTION_SPEC].get_spec_number()
-        wl = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
-        info += wl
-        info += '_fromCSV' + str(spec_num)
-        return info
-
-    def get_selected_paths(self):
-        return self.selected_paths
-
-    def get_results(self):
-        return self.results
 
     def get_result(self, path):
         if self.results[path] is not None:
@@ -158,15 +147,15 @@ class ModuleListener:
 
         if self.modules[ANALYSIS_AND_FORM]:
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
-            self.index = self.modules[ANALYSIS_AND_FORM].get_index()
-            self.mask = self.modules[ORIGINAL_COLOUR].get_mask()
-            self.is_masked = self.modules[DIAGRAM].get_is_masked()
+            self.index = self.modules[ANALYSIS_AND_FORM].index_selected
+            self.mask = self.modules[ORIGINAL_COLOUR].mask_raw
+            self.is_masked = self.modules[DIAGRAM].is_masked
 
             # specs = (absorbance/reflectance, original/norm, negatives yes/no)
-            self.histogram_specs = self.modules[HISTOGRAM].get_specs()
-            self.ab_spec_specs = self.modules[ABSORPTION_SPEC].get_specs()
-            self.recreated_specs = self.modules[RECREATED_COLOUR].get_specs()
-            self.new_specs = self.modules[NEW_COLOUR].get_specs()
+            self.histogram_specs = self.modules[HISTOGRAM].specs
+            self.ab_spec_specs = self.modules[ABSORPTION_SPEC].specs
+            self.recreated_specs = self.modules[RECREATED_COLOUR].specs
+            self.new_specs = self.modules[NEW_COLOUR].specs
 
             # update each based on inputs
             self._make_new_hist_analysis(dc_path, data_cube, self.wavelength, self.mask,
@@ -184,7 +173,7 @@ class ModuleListener:
     def ref_data_cube(self, path):
         # 1. Original reflectance
         # Data cube is originally same for all, use hist because its the first in the list
-        cube = self.get_result(path)[0].get_data_cube().tolist()
+        cube = self.get_result(path)[0].data_cube.tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -196,7 +185,7 @@ class ModuleListener:
     def ref_non_neg_cube(self, path):
         # 2. Original reflectance without negative values --> 1 with spaces for
         # negative values
-        cube = self.get_result(path)[0].get_data_cube().tolist()
+        cube = self.get_result(path)[0].data_cube.tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -210,7 +199,7 @@ class ModuleListener:
 
     def ref_norm_cube(self, path):
         # 3. Normalised reflectance --> 1 divded by max(1)
-        cube = self.get_result(path)[0].get_data_cube()
+        cube = self.get_result(path)[0].data_cube
         max_val = np.ma.max(cube)
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -222,7 +211,7 @@ class ModuleListener:
     def ref_norm_non_neg_cube(self, path):
         # 4. Normalised reflectance without negative values --> 3 with spaces
         # for negative values
-        cube = self.get_result(path)[0].get_data_cube()
+        cube = self.get_result(path)[0].data_cube
         logging.debug("REMOVING NEGATIVE VALUES...")
         cube = cube / np.ma.max(cube)
         cube = cube.tolist()
@@ -238,7 +227,7 @@ class ModuleListener:
 
     def ab_data_cube(self, path):
         # 5. Original absorbance --> -log() of 2
-        cube = self.get_result(path)[0].get_data_cube().tolist()
+        cube = self.get_result(path)[0].data_cube.tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -253,7 +242,7 @@ class ModuleListener:
     def ab_non_neg_cube(self, path):
         # 6. Original absorbanve without negative values --> 5 with spaces for
         # negative values
-        cube = self.get_result(path)[0].get_data_cube().tolist()
+        cube = self.get_result(path)[0].data_cube.tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -267,7 +256,7 @@ class ModuleListener:
 
     def ab_norm_cube(self, path):
         # 7. Normalised absorbance --> 5 divided by max(5)
-        cube = self.get_result(path)[0].get_data_cube().tolist()
+        cube = self.get_result(path)[0].data_cube.tolist()
         logging.debug("FINDING MAX...")
         max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
         logging.debug("REMOVING NEGATIVE VALUES...")
@@ -284,7 +273,7 @@ class ModuleListener:
     def ab_norm_non_neg_cube(self, path):
         # 8. Normalised absorbance without negative values --> 7 with spaces for
         # negative values
-        cube = self.get_result(path)[0].get_data_cube().tolist()
+        cube = self.get_result(path)[0].data_cube.tolist()
         logging.debug("FINDING MAX...")
         max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
         logging.debug("REMOVING NEGATIVE VALUES...")
@@ -329,15 +318,6 @@ class ModuleListener:
         self.is_masked = new_is_masked
         self.broadcast_new_data()
 
-    def render_original_image_data(self):
-        self.broadcast_to_original_image()
-
-    def render_new_recreated_image_data(self):
-        self.broadcast_to_recreated_image()
-
-    def render_new_new_image_data(self):
-        self.broadcast_to_new_image()
-
     def update_params(self):
         self.params = self.modules[PARAMETER].get_params()
         self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask,
@@ -349,7 +329,7 @@ class ModuleListener:
         self.modules[SAVE].update_saves(saves_key, value)
 
     def get_coords(self, point_bools):
-        point_coords = self.modules[ORIGINAL_COLOUR].get_coords()
+        point_coords = self.modules[ORIGINAL_COLOUR].coords_list
         data = [[float(point_coords[i][0] + 1), float(point_coords[i][1] + 1)] for i in range(10) if
                 point_bools[i] and point_coords[i] != (None, None)]
         return data
@@ -360,52 +340,52 @@ class ModuleListener:
         self.modules[SAVE].instant_save_points(data, title="MASK_COORDINATES")
 
     def get_source_output_info(self):
-        return self.modules[INFO].get_source_output_info()
+        return self.modules[INFO].source_output_info
 
     def get_analysis_form_info(self):
-        return self.modules[INFO].get_analysis_form_info()
+        return self.modules[INFO].analysis_form_info
 
     def get_csv_info(self):
-        return self.modules[INFO].get_csv_info()
+        return self.modules[INFO].csv_info
 
     def get_save_info(self):
-        return self.modules[INFO].get_save_info()
+        return self.modules[INFO].save_info
 
     def get_parameter_info(self):
-        return self.modules[INFO].get_parameter_info()
+        return self.modules[INFO].parameter_info
 
     def get_original_info(self):
-        return self.modules[INFO].get_original_info()
+        return self.modules[INFO].original_info
 
     def get_input_info(self):
-        return self.modules[INFO].get_input_info()
+        return self.modules[INFO].input_info
 
     def get_original_data_info(self):
-        return self.modules[INFO].get_original_data_info()
+        return self.modules[INFO].original_data_info
 
     def get_recreated_info(self):
-        return self.modules[INFO].get_recreated_info()
+        return self.modules[INFO].recreated_info
 
     def get_recreated_data_info(self):
-        return self.modules[INFO].get_recreated_data_info()
+        return self.modules[INFO].recreated_data_info
 
     def get_new_info(self):
-        return self.modules[INFO].get_new_info()
+        return self.modules[INFO].new_info
 
     def get_new_data_info(self):
-        return self.modules[INFO].get_new_data_info()
+        return self.modules[INFO].new_data_info
 
     def get_diagram_info(self):
-        return self.modules[INFO].get_diagram_info()
+        return self.modules[INFO].diagram_info
 
     def get_hist_info(self):
-        return self.modules[INFO].get_hist_info()
+        return self.modules[INFO].hist_info
 
     def get_abspec_info(self):
-        return self.modules[INFO].get_abspec_info()
+        return self.modules[INFO].abspec_info
 
     def get_colour_info(self):
-        return self.modules[INFO].get_colour_info()
+        return self.modules[INFO].colour_info
 
     # Helpers
     def broadcast_new_data(self):
@@ -417,7 +397,7 @@ class ModuleListener:
 
     def broadcast_to_original_image(self):
         # Use hist to get new images from the file as its the first in analysis list
-        display_mode = self.modules[ORIGINAL_COLOUR].get_displayed_image_mode()
+        display_mode = self.modules[ORIGINAL_COLOUR].displayed_image_mode
         new_data = None
         if display_mode == RGB:
             logging.debug("GETTING RGB IMAGE")
@@ -437,16 +417,16 @@ class ModuleListener:
         self.modules[ORIGINAL_COLOUR].update_original_image(new_data)
 
     def broadcast_to_recreated_image(self):
-        display_mode = self.modules[RECREATED_COLOUR].get_displayed_image_mode()
+        display_mode = self.modules[RECREATED_COLOUR].displayed_image_mode
         new_data = None
         if display_mode == STO2:
-            new_data = self.get_result(self.current_rendered_result_path)[2].get_sto2()
+            new_data = self.get_result(self.current_rendered_result_path)[2].sto2
         elif display_mode == NIR:
-            new_data = self.get_result(self.current_rendered_result_path)[2].get_nir()
+            new_data = self.get_result(self.current_rendered_result_path)[2].nir
         elif display_mode == THI:
-            new_data = self.get_result(self.current_rendered_result_path)[2].get_thi()
+            new_data = self.get_result(self.current_rendered_result_path)[2].thi
         elif display_mode == TWI:
-            new_data = self.get_result(self.current_rendered_result_path)[2].get_twi()
+            new_data = self.get_result(self.current_rendered_result_path)[2].twi
         self.modules[RECREATED_COLOUR].update_recreated_image(new_data)
 
         # if self.is_masked:
@@ -463,12 +443,12 @@ class ModuleListener:
         #     self.modules[RECREATED_COLOUR_DATA].update_recreated_image_data(new_data) 
 
     def broadcast_to_new_image(self):
-        display_mode = self.modules[NEW_COLOUR].get_displayed_image_mode()
+        display_mode = self.modules[NEW_COLOUR].displayed_image_mode
         new_data = None
         if display_mode == WL:
             new_data = self.get_result(self.current_rendered_result_path)[3].get_wl_data()
         elif display_mode == IDX:
-            new_data = self.get_result(self.current_rendered_result_path)[3].get_index()
+            new_data = self.get_result(self.current_rendered_result_path)[3].index
         self.modules[NEW_COLOUR].update_new_colour_image(new_data)
 
         # if self.is_masked:
@@ -486,9 +466,9 @@ class ModuleListener:
 
     def broadcast_to_absorption_spec(self):
         if self.is_masked:
-            new_absorption_spec = self.get_result(self.current_rendered_result_path)[1].get_absorption_spec_masked()
+            new_absorption_spec = self.get_result(self.current_rendered_result_path)[1].absorption_roi_masked[:, 1]
         else:
-            new_absorption_spec = self.get_result(self.current_rendered_result_path)[1].get_absorption_spec()
+            new_absorption_spec = self.get_result(self.current_rendered_result_path)[1].absorption_roi[:, 1]
         self.modules[ABSORPTION_SPEC].update_absorption_spec(new_absorption_spec)
 
     def _update_analysis(self, mask=None, wavelength=None, index_number=None):

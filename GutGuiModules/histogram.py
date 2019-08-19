@@ -38,7 +38,6 @@ class Histogram:
         self.max_y = None
         self.max_y_val = None
 
-        self.none_button = None
         self.percent_negative_text = None
         self.percent_negative_value = None
 
@@ -99,24 +98,6 @@ class Histogram:
 
         self._init_widgets()
 
-    def get_specs(self):
-        return self.specs
-
-    def get_spec_number(self):
-        return self.spec_number
-
-    def get_step_size(self):
-        return self.step_size_value
-
-    def get_save_checkbox_value(self):
-        return not bool(self.save_checkbox_value.get())
-
-    def get_save_wo_scale_checkbox_value(self):
-        return not bool(self.save_wo_scale_checkbox_value.get())
-
-    def get_save_as_excel_checkbox_value(self):
-        return not bool(self.save_as_excel_checkbox_value.get())
-
     def update_histogram(self, data):
         logging.debug("BUILDING HISTOGRAM...")
         self.flattened_data = data.flatten()
@@ -173,10 +154,7 @@ class Histogram:
                            str(self.max_y) + ', x val = ' + str(self.max_y_val)
         self.second_line = make_text(self.root, content=second_line_text, bg=tkcolour_from_rgb(BACKGROUND), column=1,
                                      row=5, width=60, columnspan=4, state=NORMAL, pady=(0, 20))
-        # none
-        self.none_button = make_button(self.root, text='None', width=4, command=self.__none, column=0, row=1,
-                                       columnspan=1, outer_padx=(15, 0), outer_pady=(0, 3), highlightthickness=0,
-                                       inner_padx=3, inner_pady=0)
+
         # percent negative
         self.percent_negative_text = make_text(self.root, content="% Negative = " + str(self.percent_negative_value) +
                                                                   '%', bg=tkcolour_from_rgb(BACKGROUND), column=3,
@@ -373,18 +351,25 @@ class Histogram:
 
     # Commands (Callbacks)
     def __parametric(self):
-        self.parametric = True
-        self.non_parametric = False
+        if self.parametric:
+            self.parametric = False
+            self.parametric_button.config(foreground="black")
+        else:
+            self.parametric = True
+            self.parametric_button.config(foreground="red")
+            self.non_parametric = False
+            self.non_parametric_button.config(foreground="black")
         self._build_interactive_histogram()
 
     def __non_parametric(self):
-        self.non_parametric = True
-        self.parametric = False
-        self._build_interactive_histogram()
-
-    def __none(self):
-        self.non_parametric = False
-        self.parametric = False
+        if self.non_parametric:
+            self.non_parametric = False
+            self.non_parametric_button.config(foreground="black")
+        else:
+            self.non_parametric = True
+            self.parametric = False
+            self.non_parametric_button.config(foreground="red")
+            self.parametric_button.config(foreground="black")
         self._build_interactive_histogram()
 
     def __update_data(self, event):
@@ -470,13 +455,13 @@ class Histogram:
         make_popup_image(self.interactive_histogram_graph)
 
     def __update_save_with_scale_check_status(self, event):
-        value = self.get_save_checkbox_value()
+        value = not bool(self.save_checkbox_value.get())
         self.listener.update_saved(HISTOGRAM_IMAGE, value)
 
     def __update_save_wo_scale_check_status(self, event):
-        value = self.get_save_wo_scale_checkbox_value()
+        value = not bool(self.save_wo_scale_checkbox_value.get())
         self.listener.update_saved(HISTOGRAM_IMAGE_WO_SCALE, value)
 
     def __update_save_as_excel_check_status(self, event):
-        value = self.get_save_as_excel_checkbox_value()
+        value = not bool(self.save_as_excel_checkbox_value.get())
         self.listener.update_saved(HISTOGRAM_EXCEL, value)

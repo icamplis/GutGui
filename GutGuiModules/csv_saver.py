@@ -131,8 +131,8 @@ class CSVSaver:
         make_info(title=title, info=info)
 
     def __ogr_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ref_data_cube(path)))
                 direc = os.path.dirname(path) + '/01_Reflectance_Original'
@@ -144,8 +144,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
 
     def __ogrp_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ref_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/02_Reflectance_Original_without_Negative_Values'
@@ -157,8 +157,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
         
     def __normr_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ref_norm_cube(path)))
                 direc = os.path.dirname(path) + '/03_Reflectance_Normalised'
@@ -170,8 +170,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
 
     def __normrp_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ref_norm_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/04_Reflectance_Normalised_without_Negative_Values'
@@ -183,8 +183,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
         
     def __oga_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ab_data_cube(path)))
                 direc = os.path.dirname(path) + '/05_Absorbance_Original'
@@ -196,8 +196,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
         
     def __ogap_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ab_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/06_Absorbance_Original_without_Negative_Values'
@@ -209,8 +209,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
         
     def __norma_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ab_norm_cube(path)))
                 direc = os.path.dirname(path) + '/07_Absorbance_Normalised'
@@ -222,8 +222,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
         
     def __normap_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = np.flipud(np.rot90(self.listener.ab_norm_non_neg_cube(path)))
                 direc = os.path.dirname(path) + '/08_Absorbance_Normalised_without_Negative_Values'
@@ -235,8 +235,8 @@ class CSVSaver:
                     np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
 
     def __rec_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_rec_data().T
                 info = self.listener.get_current_rec_info()
@@ -246,8 +246,8 @@ class CSVSaver:
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __norm_rec_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_norm_rec_data().T
                 info = self.listener.get_current_rec_info()
@@ -257,8 +257,8 @@ class CSVSaver:
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __new_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_new_data().T
                 info = self.listener.get_current_new_info()
@@ -268,8 +268,8 @@ class CSVSaver:
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __norm_new_to_csv(self):
-        for path, _ in self.listener.get_results().items():
-            selected_paths = self.listener.get_selected_paths()
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_norm_new_data().T
                 info = self.listener.get_current_new_info()
