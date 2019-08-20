@@ -1,6 +1,7 @@
 from GutGuiModules.utility import *
 import numpy as np
 import os
+from threading import Thread
 
 
 class CSVSaver:

@@ -16,18 +16,29 @@ class OGColour:
         self.listener = listener
 
         self.rgb_button = None
-        self.sto2_button = None
-        self.nir_button = None
-        self.thi_button = None
+        self.rgb_checkbox = None
+        self.rgb_checkbox_value = IntVar()
 
-        self.gs_button = None
-        self.gs = False
-        self.gs_checkbox = None
-        self.gs_checkbox_value = IntVar()
+        self.sto2_button = None
+        self.sto2_checkbox = None
+        self.sto2_checkbox_value = IntVar()
+
+        self.nir_button = None
+        self.nir_checkbox = None
+        self.nir_checkbox_value = IntVar()
+
+        self.thi_button = None
+        self.thi_checkbox = None
+        self.thi_checkbox_value = IntVar()
 
         self.twi_button = None
         self.twi_checkbox = None
         self.twi_checkbox_value = IntVar()
+
+        self.gs = False
+        self.gs_dropdown = None
+        self.gs_var = StringVar()
+        self.gs_choices = ['Original', 'Greyscale']
 
         self.pt1_label = None
         self.pt1_remove = None
@@ -179,12 +190,6 @@ class OGColour:
         self.original_image_data = original_image_data
         self._draw_points()
 
-    def get_mask(self):
-        return self.mask_raw
-
-    def get_coords(self):
-        return self.coords_list
-
     def get_bools(self):
         return [self.get_pt1_checkbox_value(), self.get_pt2_checkbox_value(), self.get_pt3_checkbox_value(),
                 self.get_pt4_checkbox_value(), self.get_pt5_checkbox_value(), self.get_pt6_checkbox_value(),
@@ -229,7 +234,7 @@ class OGColour:
         self._build_nir()
         self._build_thi()
         self._build_twi()
-        self._build_gs()
+        self._build_gs_dropdown()
         self._build_points()
         self._build_all_points()
         self._build_use_mask_button()
@@ -237,47 +242,59 @@ class OGColour:
         self._build_edit_coords_button()
         self._build_upload_mask_button()
         self._build_info_label()
-        self._build_original_image(self.original_image_data, self.gs)
+        self._build_original_image(self.original_image_data)
 
     # ---------------------------------------------- BUILDERS (DISPLAY) -----------------------------------------------
 
     def _build_rgb(self):
         self.rgb_button = make_button(self.root, text='RGB', width=3, command=self.__update_to_rgb, row=1, column=0,
                                       columnspan=1, inner_pady=5, outer_padx=(15, 5))
+        self.rgb_checkbox = make_checkbox(self.root, "", row=1, column=0, columnspan=1, var=self.rgb_checkbox_value,
+                                          inner_padx=0, inner_pady=0, outer_padx=(0, 3), sticky=NE)
+        self.rgb_checkbox.deselect()
+        self.rgb_checkbox.bind('<Button-1>', self.__update_rgb_check_status)
 
     def _build_sto2(self):
         self.sto2_button = make_button(self.root, text='StO2', width=4, command=self.__update_to_sto2, row=1, column=1,
                                        columnspan=1, inner_pady=5, outer_padx=(0, 5))
+        self.sto2_checkbox = make_checkbox(self.root, "", row=1, column=1, columnspan=1, var=self.sto2_checkbox_value,
+                                           inner_padx=0, inner_pady=0, outer_padx=(0, 3), sticky=NE)
+        self.sto2_checkbox.deselect()
+        self.sto2_checkbox.bind('<Button-1>', self.__update_sto2_check_status)
 
     def _build_nir(self):
         self.nir_button = make_button(self.root, text='NIR', width=3, command=self.__update_to_nir, row=1, column=2,
                                       columnspan=1, inner_pady=5, outer_padx=(0, 5))
+        self.nir_checkbox = make_checkbox(self.root, "", row=1, column=2, columnspan=1, var=self.nir_checkbox_value,
+                                          inner_padx=0, inner_pady=0, outer_padx=(0, 3), sticky=NE)
+        self.nir_checkbox.deselect()
+        self.nir_checkbox.bind('<Button-1>', self.__update_nir_check_status)
 
     def _build_thi(self):
         self.thi_button = make_button(self.root, text='THI', width=3, command=self.__update_to_thi, row=1, column=3,
                                       columnspan=1, inner_pady=5, outer_padx=(0, 5))
+        self.thi_checkbox = make_checkbox(self.root, "", row=1, column=3, columnspan=1, var=self.thi_checkbox_value,
+                                          inner_padx=0, inner_pady=0, outer_padx=(0, 3), sticky=NE)
+        self.thi_checkbox.deselect()
+        self.thi_checkbox.bind('<Button-1>', self.__update_thi_check_status)
 
     def _build_twi(self):
         self.twi_button = make_button(self.root, text='TWI', width=3, command=self.__update_to_twi, row=1, column=4,
                                       columnspan=1, inner_pady=5, outer_padx=(0, 5))
-
-    def _build_gs(self):
-        self.gs_button = make_button(self.root, text='GS', width=3, command=self.__update_to_gs, row=1, column=5,
-                                     columnspan=1, inner_pady=5, outer_padx=(0, 10))
-        self.gs_checkbox = make_checkbox(self.root, "", row=1, column=5, var=self.gs_checkbox_value, sticky=NE,
-                                         inner_padx=0, inner_pady=0, outer_padx=(0, 3))
-        self.gs_checkbox.deselect()
-        self.gs_checkbox.bind('<Button-1>', self.__update_gs_checked)
+        self.twi_checkbox = make_checkbox(self.root, "", row=1, column=4, columnspan=1, var=self.twi_checkbox_value,
+                                          inner_padx=0, inner_pady=0, outer_padx=(0, 3), sticky=NE)
+        self.twi_checkbox.deselect()
+        self.twi_checkbox.bind('<Button-1>', self.__update_twi_check_status)
 
     # ----------------------------------------------- BUILDERS (POINTS) -----------------------------------------------
 
     def _build_all_points(self):
         # remove
         self.all_points_remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt('all'),
-                                             row=1, column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
+                                             row=1, column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
                                              highlightthickness=0)
         # checkbox
-        self.all_points_checkbox = make_checkbox(self.root, "", row=1, column=8, columnspan=1,
+        self.all_points_checkbox = make_checkbox(self.root, "", row=1, column=7, columnspan=1,
                                                  var=self.all_points_checkbox_value, inner_padx=0, inner_pady=0,
                                                  outer_padx=(0, 15), sticky=W)
         self.all_points_checkbox.deselect()
@@ -300,19 +317,19 @@ class OGColour:
         # display points on interval [1, max] because ??????
         if self.coords_list[num] == (None, None):
             label = make_text(self.root, content="Pt " + str(num) + ': ' + str(self.coords_list[num]),
-                              bg=tkcolour_from_rgb(BACKGROUND), column=6, row=num + 2, width=18, columnspan=1,
+                              bg=tkcolour_from_rgb(BACKGROUND), column=5, row=num + 2, width=18, columnspan=1,
                               padx=0, state=NORMAL)
         else:
             label = make_text(self.root,
                               content="Pt " + str(num) + ': ' + str(tuple(x + 1 for x in self.coords_list[num])),
-                              bg=tkcolour_from_rgb(BACKGROUND), column=6, row=num + 2, width=18, columnspan=1, padx=0,
+                              bg=tkcolour_from_rgb(BACKGROUND), column=5, row=num + 2, width=18, columnspan=1, padx=0,
                               state=NORMAL)
         # remove
         remove = make_button(self.root, text='x', width=1, command=lambda: self.__remove_pt(num + 1), row=num + 2,
-                             column=7, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
+                             column=6, columnspan=1, inner_padx=3, inner_pady=0, outer_padx=10,
                              highlightthickness=0)
         # checkbox
-        checkbox = make_checkbox(self.root, "", row=num + 2, column=8, columnspan=1, var=var, inner_padx=0,
+        checkbox = make_checkbox(self.root, "", row=num + 2, column=7, columnspan=1, var=var, inner_padx=0,
                                  inner_pady=0,
                                  outer_padx=(0, 15), sticky=W)
         return label, remove, checkbox
@@ -377,41 +394,48 @@ class OGColour:
         self.info_label = make_label_button(self.root, text='Original Image', command=self.__info, width=12)
         self.info_label.grid(columnspan=2)
 
+    def _build_gs_dropdown(self):
+        self.gs_var.set(self.gs_choices[0])
+        self.gs_dropdown = OptionMenu(self.root, self.gs_var, *self.gs_choices, command=self.__update_gs)
+        self.gs_dropdown.configure(highlightthickness=0, width=1, anchor='w', padx=15)
+        self.gs_dropdown.grid(column=2, row=0, columnspan=1)
+
     def _build_upload_mask_button(self):
         self.upload_mask_button = make_button(self.root, text='Upload mask', width=9, command=self.__upload_mask,
-                                              row=12, column=0, columnspan=2, inner_pady=5, outer_padx=15,
+                                              row=12, column=0, columnspan=2, inner_pady=5, outer_padx=(15, 0),
                                               outer_pady=(10, 15))
 
     def _build_instant_save_button(self):
         self.instant_save_button = make_button(self.root, text='Save coords', width=9, command=self.__save_coords,
-                                               row=12, column=2, columnspan=2, inner_pady=5, outer_padx=(0, 15),
+                                               row=12, column=2, columnspan=2, inner_pady=5, outer_padx=0,
                                                outer_pady=(10, 15))
 
     def _build_edit_coords_button(self):
         self.input_coords_button = make_button(self.root, text='Edit coords', width=9, command=self.__input_coords,
-                                               row=12, column=4, columnspan=2, inner_pady=5, outer_padx=(0, 15),
+                                               row=12, column=4, columnspan=2, inner_pady=5, outer_padx=(0, 65),
                                                outer_pady=(10, 15))
 
     def _build_use_mask_button(self):
         self.use_mask_button = make_button(self.root, text='Use mask', width=9, command=self.__use_coords, row=12,
-                                           column=6, columnspan=3, inner_pady=5, outer_padx=0, outer_pady=(10, 15))
+                                           column=5, columnspan=3, inner_pady=5, outer_padx=(65, 0),
+                                           outer_pady=(10, 15))
 
     # ---------------------------------------------- BUILDERS (IMAGE) -----------------------------------------------
 
-    def _build_original_image(self, data, gs):
+    def _build_original_image(self, data):
         if data is None:
             # Placeholder
             self.original_image = make_label(self.root, "original image placeholder", row=2, column=0, rowspan=10,
-                                             columnspan=6, inner_pady=80, inner_padx=120, outer_padx=(15, 10),
+                                             columnspan=5, inner_pady=80, inner_padx=120, outer_padx=(15, 10),
                                              outer_pady=(15, 10))
         else:
             if self.gs:
                 data = np.asarray(rgb_image_to_hsi_array(self.original_image_data)).reshape((480, 640))
             logging.debug("BUILDING ORIGINAL COLOUR IMAGE...")
             (self.original_image_graph, self.original_image, self.image_array) = \
-                make_image(self.root, data, row=2, column=0, columnspan=6, rowspan=10, lower_scale_value=None,
+                make_image(self.root, data, row=2, column=0, columnspan=5, rowspan=10, lower_scale_value=None,
                            upper_scale_value=None, color_rgb=BACKGROUND, original=True, figheight=2.5, figwidth=3.5,
-                           gs=gs)
+                           gs=self.gs)
             self.original_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
             self.original_image.get_tk_widget().bind('<Button-1>', self.__get_coords)
             if self.pop_up:
@@ -436,7 +460,7 @@ class OGColour:
                 copy_data[x, (y + yi) % 640, :] = BRIGHT_GREEN_RGB
             idx = not_none.index(point)
             self._draw_a_line(not_none[idx - 1], not_none[idx], copy_data)
-        self._build_original_image(copy_data, self.gs)
+        self._build_original_image(copy_data)
 
     @staticmethod
     def _draw_a_line(self, point1, point2, image):
@@ -564,19 +588,35 @@ class OGColour:
         self.displayed_image_mode = TWI
         self.listener.broadcast_to_original_image()
 
-    def __update_to_gs(self):
-        if not self.gs:
-            self.gs_button.config(foreground="red")
-            self.gs = True
-            self._build_original_image(self.original_image_data, self.gs)
-        else:
-            self.gs_button.config(foreground="black")
+    def __update_gs(self, event):
+        if self.gs_var.get() == 'Original':
             self.gs = False
-            self._build_original_image(self.original_image_data, self.gs)
+            self._build_original_image(self.original_image_data)
+        elif self.gs_var.get() == 'Greyscale':
+            self.gs = True
+            self._build_original_image(self.original_image_data)
 
-    def __update_gs_checked(self, event):
-        value = not bool(self.gs_checkbox_value.get())
-        self.listener.update_saved(GS_ORIGINAL, value)
+    # ---------------------------------------------- UPDATERS (SAVING) ------------------------------------------------
+
+    def __update_rgb_check_status(self, event):
+        value = not bool(self.rgb_checkbox_value.get())
+        self.listener.update_saved(OG_RGB_DATA, value)
+
+    def __update_sto2_check_status(self, event):
+        value = not bool(self.sto2_checkbox_value.get())
+        self.listener.update_saved(OG_STO2_DATA, value)
+
+    def __update_nir_check_status(self, event):
+        value = not bool(self.nir_checkbox_value.get())
+        self.listener.update_saved(OG_NIR_DATA, value)
+
+    def __update_twi_check_status(self, event):
+        value = not bool(self.twi_checkbox_value.get())
+        self.listener.update_saved(OG_TWI_DATA, value)
+
+    def __update_thi_check_status(self, event):
+        value = not bool(self.thi_checkbox_value.get())
+        self.listener.update_saved(OG_THI_DATA, value)
 
     # ---------------------------------------------- UPDATERS (POINTS) ------------------------------------------------
 

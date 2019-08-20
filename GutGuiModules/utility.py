@@ -218,7 +218,7 @@ def make_checkbox(window, text, row, column, var, columnspan=1, inner_padx=1, in
 
 
 def make_image(window, image_data, row, column, columnspan, rowspan, lower_scale_value, upper_scale_value, color_rgb,
-               figwidth=3, figheight=2, original=False, gs=False):
+               figwidth=2.5, figheight=2, original=False, gs=False):
     """
     Plots an image and grids it based on the input parameters. Image is plotted with origin="lower" and cmap="jet".
     Returns the Figure object (fig) that the image is plotted on, as well as the image itself.
