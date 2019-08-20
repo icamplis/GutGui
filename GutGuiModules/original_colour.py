@@ -38,7 +38,11 @@ class OGColour:
         self.gs = False
         self.gs_dropdown = None
         self.gs_var = StringVar()
-        self.gs_choices = ['Original', 'Greyscale']
+        self.gs_choices = ['CS (Colour Scale)', 'GS (Grey Scale)']
+
+        self.save_label = None
+        self.save_checkbox = None
+        self.save_checkbox_value = IntVar()
 
         self.pt1_label = None
         self.pt1_remove = None
@@ -229,14 +233,15 @@ class OGColour:
     # ------------------------------------------------ INITIALIZATION ------------------------------------------------
 
     def _init_widget(self):
+        self._build_gs_dropdown()
         self._build_rgb()
         self._build_sto2()
         self._build_nir()
         self._build_thi()
         self._build_twi()
-        self._build_gs_dropdown()
         self._build_points()
         self._build_all_points()
+        self._build_save()
         self._build_use_mask_button()
         self._build_instant_save_button()
         self._build_edit_coords_button()
@@ -400,19 +405,27 @@ class OGColour:
         self.gs_dropdown.configure(highlightthickness=0, width=1, anchor='w', padx=15)
         self.gs_dropdown.grid(column=2, row=0, columnspan=1)
 
+    def _build_save(self):
+        self.save_label = make_label(self.root, "Save", row=12, column=0, columnspan=1, outer_padx=(12, 0),
+                                     outer_pady=(10, 15), inner_padx=10, inner_pady=5)
+        self.save_checkbox = make_checkbox(self.root, text="", row=12, column=0, var=self.save_checkbox_value, sticky=NE,
+                                           inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(50, 0))
+        self.save_checkbox.deselect()
+        self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
+
     def _build_upload_mask_button(self):
         self.upload_mask_button = make_button(self.root, text='Upload mask', width=9, command=self.__upload_mask,
-                                              row=12, column=0, columnspan=2, inner_pady=5, outer_padx=(15, 0),
+                                              row=12, column=0, columnspan=3, inner_pady=5, outer_padx=(60, 0),
                                               outer_pady=(10, 15))
 
     def _build_instant_save_button(self):
         self.instant_save_button = make_button(self.root, text='Save coords', width=9, command=self.__save_coords,
-                                               row=12, column=2, columnspan=2, inner_pady=5, outer_padx=0,
+                                               row=12, column=2, columnspan=3, inner_pady=5, outer_padx=0,
                                                outer_pady=(10, 15))
 
     def _build_edit_coords_button(self):
         self.input_coords_button = make_button(self.root, text='Edit coords', width=9, command=self.__input_coords,
-                                               row=12, column=4, columnspan=2, inner_pady=5, outer_padx=(0, 65),
+                                               row=12, column=4, columnspan=2, inner_pady=5, outer_padx=(0, 33),
                                                outer_pady=(10, 15))
 
     def _build_use_mask_button(self):
@@ -589,10 +602,10 @@ class OGColour:
         self.listener.broadcast_to_original_image()
 
     def __update_gs(self, event):
-        if self.gs_var.get() == 'Original':
+        if self.gs_var.get()[:2] == 'CS':
             self.gs = False
             self._build_original_image(self.original_image_data)
-        elif self.gs_var.get() == 'Greyscale':
+        elif self.gs_var.get()[:2] == 'GS':
             self.gs = True
             self._build_original_image(self.original_image_data)
 
@@ -617,6 +630,10 @@ class OGColour:
     def __update_thi_check_status(self, event):
         value = not bool(self.thi_checkbox_value.get())
         self.listener.update_saved(OG_THI_DATA, value)
+
+    def __update_save_with_scale_check_status(self, event):
+        value = not bool(self.save_checkbox_value.get())
+        self.listener.update_saved(OG_IMAGE, value)
 
     # ---------------------------------------------- UPDATERS (POINTS) ------------------------------------------------
 

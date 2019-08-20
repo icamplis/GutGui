@@ -27,7 +27,7 @@ class NewColour:
         self.gs = False
         self.gs_dropdown = None
         self.gs_var = StringVar()
-        self.gs_choices = ['Original', 'Greyscale']
+        self.gs_choices = ['CS (Colour Scale)', 'GS (Grey Scale)']
 
         self.save_label = None
         self.save_checkbox = None
@@ -231,10 +231,10 @@ class NewColour:
         self.listener.broadcast_to_new_image()
 
     def __update_gs(self, event):
-        if self.gs_var.get() == 'Original':
+        if self.gs_var.get()[:2] == 'CS':
             self.gs = False
             self._build_new_image()
-        elif self.gs_var.get() == 'Greyscale':
+        elif self.gs_var.get()[:2] == 'GS':
             self.gs = True
             self._build_new_image()
 

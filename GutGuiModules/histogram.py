@@ -160,7 +160,7 @@ class Histogram:
     def _build_drop_down(self):
         self.drop_down_var.set(self.choices[0])
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
-        self.drop_down_menu.configure(highlightthickness=0, width=6,
+        self.drop_down_menu.configure(highlightthickness=0, width=1,
                                       anchor='w', padx=15)
         self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(0, 15))
 

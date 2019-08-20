@@ -23,12 +23,11 @@ class Save:
         self.saves = {
             WHOLE_IMAGE_SAVE: False,
             MASKED_IMAGE_SAVE: False,
-            GS_RECREATED: False,
-            GS_NEW: False,
             STO2_DATA: False,
             NIR_DATA: False,
             TWI_DATA: False,
             THI_DATA: False,
+            OG_IMAGE: False,
             OG_RGB_DATA: False,
             OG_STO2_DATA: False,
             OG_NIR_DATA: False,
@@ -207,10 +206,10 @@ class Save:
     def __save_original_image(self):
         # greyscale or original
         if self.listener.modules[ORIGINAL_COLOUR].gs:
-            title = "_GREYSCALE"
+            title = "_GS"
             cmap = 'gray'
         else:
-            title = '_ORIGINAL'
+            title = '_CS'
             cmap = 'jet'
         # mask
         mask = None
@@ -231,42 +230,62 @@ class Save:
     def __save_og_rgb_image(self, title, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
             rgb = self.__convert_original_image(self.current_hist_result.get_rgb_og())
-            self.__save_image_diagram(rgb, "RGB" + title, False, cmap=cmap)
+            self.__save_data(np.flipud(rgb), "OG_RGB_DATA" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(rgb, "OG_RGB" + title, False, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             rgb = self.__convert_original_image(self.current_hist_result.get_rgb_og(), mask)
-            self.__save_image_diagram(rgb, "RGB" + title + "_MASKED", False, cmap=cmap)
+            self.__save_data(np.flipud(rgb), "OG_RGB_DATA_MASKED" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(rgb, "OG_RGB" + title + "_MASKED", False, cmap=cmap)
 
     def __save_og_sto2_image(self, title, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
             sto2 = self.__convert_original_image(self.current_hist_result.get_sto2_og())
-            self.__save_image_diagram(sto2, "STO2" + title, False, cmap=cmap)
+            self.__save_data(np.flipud(sto2), "OG_STO2_DATA" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(sto2, "STO2" + title, False, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             sto2 = self.__convert_original_image(self.current_hist_result.get_sto2_og(), mask)
-            self.__save_image_diagram(sto2, "STO2" + title + "_MASKED", False, cmap=cmap)
+            self.__save_data(np.flipud(sto2), "OG_STO2_DATA_MASKED" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(sto2, "STO2" + title + "_MASKED", False, cmap=cmap)
 
     def __save_og_nir_image(self, title, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
             nir = self.__convert_original_image(self.current_hist_result.get_nir_og())
-            self.__save_image_diagram(nir, "NIR" + title, False, cmap=cmap)
+            self.__save_data(np.flipud(nir), "OG_NIR_DATA" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(nir, "NIR" + title, False, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             nir = self.__convert_original_image(self.current_hist_result.get_nir_og(), mask)
-            self.__save_image_diagram(nir, "NIR" + title + "_MASKED", False, cmap=cmap)
+            self.__save_data(np.flipud(nir), "OG_NIR_DATA_MASKED" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(nir, "NIR" + title + "_MASKED", False, cmap=cmap)
 
     def __save_og_thi_image(self, title, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
             thi = self.__convert_original_image(self.current_hist_result.get_thi_og())
-            self.__save_image_diagram(thi, "THI" + title, False, cmap=cmap)
+            self.__save_data(np.flipud(thi), "OG_THI_DATA" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(thi, "THI" + title, False, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             thi = self.__convert_original_image(self.current_hist_result.get_thi_og(), mask)
-            self.__save_image_diagram(thi, "THI" + title + "_MASKED", False, cmap=cmap)
+            self.__save_data(np.flipud(thi), "OG_THI_DATA_MASKED" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(thi, "THI" + title + "_MASKED", False, cmap=cmap)
 
     def __save_og_twi_image(self, title, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
             twi = self.__convert_original_image(self.current_hist_result.get_twi_og())
-            self.__save_image_diagram(twi, "TWI" + title, False, cmap=cmap)
+            self.__save_data(np.flipud(twi), "OG_TWI_DATA" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(twi, "TWI" + title, False, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             twi = self.__convert_original_image(self.current_hist_result.get_twi_og(), mask)
-            self.__save_image_diagram(twi, "TWI" + title + "_MASKED", False, cmap=cmap)
+            self.__save_data(np.flipud(twi), "OG_TWI_DATA_MASKED" + title)
+            if self.saves[OG_IMAGE]:
+                self.__save_image_diagram(twi, "TWI" + title + "_MASKED", False, cmap=cmap)
 
     @staticmethod
     def __convert_original_image(array, mask=None):
@@ -388,10 +407,10 @@ class Save:
     def __save_recreated_image(self):
         # greyscale or original
         if self.listener.modules[RECREATED_COLOUR].gs:
-            title = "_GREYSCALE"
+            title = "_GS"
             cmap = 'gray'
         else:
-            title = '_ORIGINAL'
+            title = '_CS'
             cmap = 'jet'
         title += self.listener.get_current_rec_info(saves=True)
 
@@ -449,10 +468,10 @@ class Save:
     def __save_new_image(self):
         # greyscale or original
         if self.listener.modules[NEW_COLOUR].gs:
-            title = "_GREYSCALE"
+            title = "_GS"
             cmap = 'gray'
         else:
-            title = '_ORIGINAL'
+            title = '_CS'
             cmap = 'jet'
 
         if self.saves[WL_DATA]:
