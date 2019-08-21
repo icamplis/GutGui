@@ -287,8 +287,8 @@ class Histogram:
             self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
             # commas and non-scientific notation
             self.axes.ticklabel_format(style='plain')
-            self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
-            self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
+            self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
+            self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
 
         # draw figure
         self.interactive_histogram = FigureCanvasTkAgg(self.interactive_histogram_graph, master=self.root)
@@ -312,7 +312,7 @@ class Histogram:
         self.axes2.get_yaxis().set_visible(False)
 
     @staticmethod
-    def _format_axis(x, p):
+    def format_axis(x, p):
         if x % 1 == 0:
             return format(int(x), ',')
         else:

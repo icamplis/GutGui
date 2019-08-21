@@ -127,7 +127,7 @@ class CSVSaver:
     # ----------------------------------------------------- MISC -----------------------------------------------------
 
     def new_info(self):
-        image_mode = self.listener.modules[RECREATED_COLOUR].displayed_image_mode
+        image_mode = self.listener.modules[NEW_COLOUR].displayed_image_mode
         if image_mode == WL:
             return self.listener.get_current_new_info(mode='WL')
         elif image_mode == IDX:

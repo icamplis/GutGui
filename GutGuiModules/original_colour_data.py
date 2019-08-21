@@ -38,12 +38,7 @@ class OGColourData:
 
     def update_calc(self):
         self.stats_data = self.listener.get_current_original_data()
-        if self.c1:
-            logging.debug("CONVERTING IMAGE TO JET...")
-            self.stats_data = rgb_image_to_jet_array(self.stats_data)
-        elif self.c2:
-            logging.debug("CONVERTING IMAGE TO HSI...")
-            self.stats_data = rgb_image_to_hsi_array(self.stats_data)
+        self.stats_data = rgb_image_to_hsi_array(self.stats_data)
         logging.debug("CALCULATING IMAGE STATS...")
         self._calc_data()
         self._build_data()
@@ -92,12 +87,9 @@ class OGColourData:
                                   column=0, row=6, width=22, columnspan=3, padx=(10, 15), pady=(0, 15), state=NORMAL)
 
     def _build_calc_button(self):
-        self.c1_button = make_button(self.root, text="C1", row=0, column=1, columnspan=1, command=self.__update_c1,
-                                     inner_padx=3, inner_pady=0, outer_padx=(10, 5), outer_pady=15, width=2)
-        self.c2_button = make_button(self.root, text="C2", row=0, column=2, columnspan=1, command=self.__update_c2,
-                                     inner_padx=3, inner_pady=0, outer_padx=(0, 15), outer_pady=15, width=2)
-        # self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1,
-        # command=self.update_calc, inner_padx=3, inner_pady=0, outer_padx=(10, 15), outer_pady=15, width=5)
+        self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1,
+                                       command=self.update_calc, inner_padx=3, inner_pady=0, outer_padx=(10, 15),
+                                       outer_pady=15, width=5)
 
     # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
@@ -105,13 +97,3 @@ class OGColourData:
         info = self.listener.modules[INFO].original_data_info
         title = "Original Data Information"
         make_info(title=title, info=info)
-
-    def __update_c1(self):
-        self.c1 = True
-        self.c2 = False
-        self.update_calc()
-
-    def __update_c2(self):
-        self.c1 = False
-        self.c2 = True
-        self.update_calc()

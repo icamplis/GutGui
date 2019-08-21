@@ -338,35 +338,32 @@ class Save:
         # calc bins
         start = np.min(data)
         stop = np.max(data) + step_size_value
-        step = step_size_value
-        bins = np.arange(start=start, stop=stop, step=step)
+        step = self.listener.modules[HISTOGRAM].step_size_value
+        bins = np.arange(start=start, stop=stop+step, step=step)
         # plot histogram
         axes.hist(data, bins=bins, align='left')
-        # if self.parametric:
-        #     # plot error bar
-        #     self.plot_parametric()
-        # elif self.non_parametric:
-        #     # plot boxplot
-        #     self.plot_non_parametric()
-        # # set axes
-        # self.interactive_histogram_graph.set_tight_layout(True)
-        # self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
-        # self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
-        # # commas and non-scientific notation
-        # self.axes.ticklabel_format(style='plain')
-        # self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
-        # self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
-        # plot boxplot
-        axes2 = axes.twinx()
-        axes2.boxplot(data, vert=False, sym='')
-        axes2.get_yaxis().set_visible(False)
+        x_low = self.listener.modules[HISTOGRAM].x_lower_scale_value
+        x_high = self.listener.modules[HISTOGRAM].x_upper_scale_value
+        y_low = self.listener.modules[HISTOGRAM].y_lower_scale_value
+        y_high = self.listener.modules[HISTOGRAM].y_upper_scale_value
+        if self.listener.modules[HISTOGRAM].parametric:
+            # plot error bar
+            self.listener.modules[HISTOGRAM].plot_parametric()
+        elif self.listener.modules[HISTOGRAM].non_parametric:
+            # plot boxplot
+            self.listener.modules[HISTOGRAM].plot_non_parametric()
         # set axes
+        axes.set_xlim(left=x_low, right=x_high)
+        axes.set_ylim(bottom=y_low, top=y_high)
+        # commas and non-scientific notation
+        axes.ticklabel_format(style='plain')
+        axes.get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(self.listener.modules[HISTOGRAM].format_axis))
+        axes.get_xaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(self.listener.modules[HISTOGRAM].format_axis))
         if scale:
-            axes.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
             plt.title(title)
         else:
-            axes.set_yticklabels([])
-            axes.set_xticklabels([])
             plt.axis('off')
         plt.savefig(output_path)
         plt.clf()

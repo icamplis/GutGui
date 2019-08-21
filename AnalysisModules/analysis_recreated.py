@@ -1,5 +1,6 @@
 from GutGuiModules.utility import *
 import logging
+import numpy as np
 np.set_printoptions(threshold=sys.maxsize)
 
 
@@ -138,6 +139,7 @@ class RecreatedAnalysis:
             self._x_reflectance_mean_655_735 = self.x_reflectance[:, :, 31:47].mean(axis=2)  # between (655nm : 735nm)
             temp1 = self._x_reflectance_mean_825_925 / self._x_reflectance_mean_655_735
         self.nir = (temp1 - self.S1) / (self.S2 - self.S1)
+        self.nir = np.log(np.asarray(self.nir) + 2.51)/np.log(1.3) - 3.8
         logging.debug("Complete NIR Mean: " + str(self.nir[:, :].mean()))
         if self.mask is not None:
             self.nir_masked = np.ma.array(self.nir[:, :], mask=[self.mask])
