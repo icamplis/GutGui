@@ -51,6 +51,15 @@ class RecColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
+        self.sto2_lower = None
+        self.sto2_upper = None
+        self.nir_lower = None
+        self.nir_upper = None
+        self.thi_lower = None
+        self.thi_upper = None
+        self.twi_lower = None
+        self.twi_upper = None
+
         self.norm_button = None
         self.og_button = None
 

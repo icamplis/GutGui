@@ -408,7 +408,8 @@ class OGColour:
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=12, column=0, columnspan=1, outer_padx=(12, 0),
                                      outer_pady=(10, 15), inner_padx=10, inner_pady=5)
-        self.save_checkbox = make_checkbox(self.root, text="", row=12, column=0, var=self.save_checkbox_value, sticky=NE,
+        self.save_checkbox = make_checkbox(self.root, text="", row=12, column=0, var=self.save_checkbox_value,
+                                           sticky=NE,
                                            inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(50, 0))
         self.save_checkbox.deselect()
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
@@ -730,13 +731,14 @@ class OGColour:
 
     def __input_coord_n(self, num):
         title = make_text(self.coords_window, content="Pt " + str(num) + ': ', bg=tkcolour_from_rgb(BACKGROUND),
-                          column=0, row=num+1, width=6, pady=(0, 3), padx=(15, 0))
-        title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND), column=1, row=num+1,
+                          column=0, row=num + 1, width=6, pady=(0, 3), padx=(15, 0))
+        title_x = make_text(self.coords_window, content="x = ", bg=tkcolour_from_rgb(BACKGROUND), column=1, row=num + 1,
                             width=4, pady=(0, 3))
-        title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=num+1,
+        title_y = make_text(self.coords_window, content="y = ", bg=tkcolour_from_rgb(BACKGROUND), column=3, row=num + 1,
                             width=4, pady=(0, 3), padx=(5, 0))
-        input_x = make_entry(self.coords_window, row=num+1, column=2, width=5, columnspan=1, pady=(0, 3))
-        input_y = make_entry(self.coords_window, row=num+1, column=4, width=5, columnspan=1, padx=(0, 15), pady=(0, 3))
+        input_x = make_entry(self.coords_window, row=num + 1, column=2, width=5, columnspan=1, pady=(0, 3))
+        input_y = make_entry(self.coords_window, row=num + 1, column=4, width=5, columnspan=1, padx=(0, 15),
+                             pady=(0, 3))
         if self.coords_list[num] != (None, None):
             input_x.insert(END, str(self.coords_list[num][0] + 1))
             input_y.insert(END, str(self.coords_list[num][1] + 1))
@@ -771,7 +773,7 @@ class OGColour:
             self.__input_coord_n(7)
         self.input_pt9_title, self.input_pt9_title_x, self.input_pt9_title_y, self.input_pt9_x, self.input_pt9_y = \
             self.__input_coord_n(8)
-        self.input_pt10_title, self.input_pt10_title_x, self.input_pt10_title_y, self.input_pt10_x, self.input_pt10_y =\
+        self.input_pt10_title, self.input_pt10_title_x, self.input_pt10_title_y, self.input_pt10_x, self.input_pt10_y = \
             self.__input_coord_n(9)
 
         # go button

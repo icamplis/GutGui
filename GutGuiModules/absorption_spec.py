@@ -207,8 +207,8 @@ class AbsorptionSpec:
         self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
         # commas and non-scientific notation
         self.axes.ticklabel_format(style='plain')
-        self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
-        self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
+        self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
+        self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
         # draw figure
         self.interactive_absorption_spec = FigureCanvasTkAgg(self.interactive_absorption_spec_graph, master=self.root)
         self.interactive_absorption_spec.draw()
@@ -217,7 +217,7 @@ class AbsorptionSpec:
         self.interactive_absorption_spec.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     @staticmethod
-    def _format_axis(x, _):
+    def format_axis(x, _):
         if x % 1 == 0:
             return format(int(x), ',')
         else:

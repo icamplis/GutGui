@@ -6,9 +6,53 @@ class Introduction:
     def __init__(self, introduction_frame):
         self.root = introduction_frame
 
-        self.canvas = None
-        self.scrollbar = None
-        self.frame = None
+        self.number = 1
+        self.prev_button = None
+        self.next_button = None
+
+        self.text_box = None
+        self.text_text_1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut" \
+                           " labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco " \
+                           "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " \
+                           "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat " \
+                           "cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+        self.text_text_2 = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium " \
+                           "voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati "
+
+        self.text_text_3 = "cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id " \
+                           "est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam " \
+                           "libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod " \
+                           "maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. " \
+                           "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet " \
+                           "ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic " \
+                           "tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut " \
+                           "perferendis doloribus asperiores repellat."
+
+        self.text_text_4 = "tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut " \
+                           "perferendis doloribus asperiores repellat."
+
+        self.text_text_5 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut" \
+                           " labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco " \
+                           "laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " \
+                           "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat "
+
+        self.text_text_6 = "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium " \
+                           "voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati "
+
+        self.text_text_7 = "est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam " \
+                           "libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod " \
+                           "maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. " \
+                           "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet " \
+                           "ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic " \
+                           "tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut " \
+                           "perferendis doloribus asperiores repellat."
+
+        self.text_texts = [self.text_text_1, self.text_text_2, self.text_text_3, self.text_text_4,
+                           self.text_text_5, self.text_text_6, self.text_text_7]
+
+        self.image_box = None
+        self.images = []
 
         self.image1 = None
         self.image2 = None
@@ -17,49 +61,52 @@ class Introduction:
         self.image5 = None
         self.image6 = None
         self.image7 = None
-        self.image8 = None
-        self.image9 = None
-        self.image10 = None
-        self.image11 = None
-        self.image12 = None
-        self.image13 = None
 
-        self._build_canvas()
-        self._build_images()
+        self.parse_images()
+        self._build_text_box()
+        self._build_image_box()
+        self._build_prev_next()
 
     # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
-    def _build_canvas(self):
-        self.canvas = Canvas(self.root)
-        self.frame = Frame(self.canvas)
-        self.scrollbar = Scrollbar(self.canvas, orient='vertical', command=self.canvas.yview)
-        self.scrollbar.pack(side=RIGHT, fill=Y)
-        self.canvas.config(yscrollcommand=self.scrollbar.set)
-        self.canvas.pack(side=LEFT, expand=TRUE, fill=BOTH)
-        self.canvas.create_window(4, 4, window=self.frame, anchor='nw')
+    def parse_images(self):
+        self.images.append(image_to_array('./image1.png'))
+        for i in range(2, 8):
+            self.images.append(image_to_array('./image' + str(i) + '.jpg'))
 
-    def _build_images(self):
-        # image 1
-        image1_data = image_to_array('./image1.png')
-        self.image1 = make_image(self.frame, image1_data, row=0, column=0, columnspan=1, rowspan=1, lower_scale_value=0,
-                                 upper_scale_value=0, color_rgb=WHITE, figwidth=3, figheight=3, original=True)[1]
+    def _build_text_box(self):
+        self.text_box = Text(self.root, height=10, width=70, wrap=WORD, highlightthickness=0)
+        self.text_box.insert(END, self.text_texts[self.number-1])
+        self.text_box.config(state="disabled", bg=tkcolour_from_rgb(WHITE))
+        self.text_box.grid(padx=25, pady=15, row=0, column=0)
 
-        # image 2
-        image2_data = image_to_array('./image2.jpg')
-        self.image2 = make_image(self.frame, image2_data, row=1, column=0, columnspan=1, rowspan=1, lower_scale_value=0,
-                                 upper_scale_value=0, color_rgb=WHITE, figwidth=3, figheight=4, original=True)[1]
+    def _build_image_box(self):
+        self.image_box = make_image(self.root, self.images[self.number-1], column=1, rowspan=1, lower_scale_value=None,
+                                    upper_scale_value=None, color_rgb=WHITE, figwidth=8, figheight=7.2, original=True,
+                                    row=0, columnspan=1)[1]
+        self.image_box.get_tk_widget().grid(padx=15, pady=15)
 
-        # image 3
-        image3_data = image_to_array('./image3.jpg')
-        self.image3 = make_image(self.frame, image3_data, row=2, column=0, columnspan=1, rowspan=1, lower_scale_value=0,
-                                 upper_scale_value=0, color_rgb=WHITE, figwidth=3, figheight=1, original=True)[1]
+    def _build_prev_next(self):
+        self.prev_button = make_button(self.root, text='Previous', width=9, command=self.__previous, row=1, column=0,
+                                       columnspan=2, inner_pady=5, outer_padx=(0, 130), outer_pady=15)
+        self.next_button = make_button(self.root, text='Next', width=9, command=self.__next, row=1, column=0,
+                                       columnspan=2, inner_pady=5, outer_padx=(130, 0), outer_pady=15)
 
-        # image 4
-        image4_data = image_to_array('./image4.jpg')
-        self.image4 = make_image(self.frame, image4_data, row=3, column=0, columnspan=1, rowspan=1, lower_scale_value=0,
-                                 upper_scale_value=0, color_rgb=WHITE, figwidth=3, figheight=1, original=True)[1]
+    # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
-        # image 5
-        image5_data = image_to_array('./image5.jpg')
-        self.image5 = make_image(self.frame, image5_data, row=4, column=0, columnspan=1, rowspan=1, lower_scale_value=0,
-                                 upper_scale_value=0, color_rgb=WHITE, figwidth=3, figheight=2, original=True)[1]
+    def __previous(self):
+        if self.number == 1:
+            pass
+        else:
+            self.number -= 1
+            self._build_text_box()
+            self._build_image_box()
+
+    def __next(self):
+        if self.number == 7:
+            pass
+        else:
+            self.number += 1
+            self._build_text_box()
+            self._build_image_box()
+

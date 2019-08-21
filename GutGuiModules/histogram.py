@@ -277,18 +277,10 @@ class Histogram:
             self.axes.hist(self.flattened_data, bins=bins)
             if self.parametric:
                 # plot error bar
-                self.axes2 = self.axes.twinx()
-                self.axes2.plot([self.mean_value-self.sd_value, self.mean_value+self.sd_value], [1, 1], 'k-', lw=1)
-                self.axes2.plot([self.mean_value-self.sd_value, self.mean_value-self.sd_value], [0.9, 1.1], 'k-', lw=1)
-                self.axes2.plot([self.mean_value+self.sd_value, self.mean_value+self.sd_value], [0.9, 1.1], 'k-', lw=1)
-                self.axes2.plot([self.mean_value, self.mean_value], [0.9, 1.1], '#F17E3A', lw=1)
-                self.axes2.set_ylim(bottom=0, top=2)
-                self.axes2.get_yaxis().set_visible(False)
+                self.plot_parametric()
             elif self.non_parametric:
                 # plot boxplot
-                self.axes2 = self.axes.twinx()
-                self.axes2.boxplot(self.flattened_data, vert=False, sym='')
-                self.axes2.get_yaxis().set_visible(False)
+                self.plot_non_parametric()
             # set axes
             self.interactive_histogram_graph.set_tight_layout(True)
             self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
@@ -304,6 +296,20 @@ class Histogram:
         self.interactive_histogram.get_tk_widget().grid(column=0, row=6, columnspan=3, rowspan=7, ipady=5, ipadx=0,
                                                         pady=0)
         self.interactive_histogram.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
+
+    def plot_parametric(self):
+        self.axes2 = self.axes.twinx()
+        self.axes2.plot([self.mean_value-self.sd_value, self.mean_value+self.sd_value], [1, 1], 'k-', lw=1)
+        self.axes2.plot([self.mean_value-self.sd_value, self.mean_value-self.sd_value], [0.9, 1.1], 'k-', lw=1)
+        self.axes2.plot([self.mean_value+self.sd_value, self.mean_value+self.sd_value], [0.9, 1.1], 'k-', lw=1)
+        self.axes2.plot([self.mean_value, self.mean_value], [0.9, 1.1], '#F17E3A', lw=1)
+        self.axes2.set_ylim(bottom=0, top=2)
+        self.axes2.get_yaxis().set_visible(False)
+
+    def plot_non_parametric(self):
+        self.axes2 = self.axes.twinx()
+        self.axes2.boxplot(self.flattened_data, vert=False, sym='')
+        self.axes2.get_yaxis().set_visible(False)
 
     @staticmethod
     def _format_axis(x, p):

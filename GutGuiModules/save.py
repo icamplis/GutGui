@@ -342,6 +342,20 @@ class Save:
         bins = np.arange(start=start, stop=stop, step=step)
         # plot histogram
         axes.hist(data, bins=bins, align='left')
+        # if self.parametric:
+        #     # plot error bar
+        #     self.plot_parametric()
+        # elif self.non_parametric:
+        #     # plot boxplot
+        #     self.plot_non_parametric()
+        # # set axes
+        # self.interactive_histogram_graph.set_tight_layout(True)
+        # self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
+        # self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+        # # commas and non-scientific notation
+        # self.axes.ticklabel_format(style='plain')
+        # self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
+        # self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self._format_axis))
         # plot boxplot
         axes2 = axes.twinx()
         axes2.boxplot(data, vert=False, sym='')
@@ -392,9 +406,20 @@ class Save:
         plt.clf()
         axes = plt.subplot(111)
         x_vals = np.arange(500, 1000, 5)
+        x_low = self.listener.modules[ABSORPTION_SPEC].x_lower_scale_value
+        x_high = self.listener.modules[ABSORPTION_SPEC].x_upper_scale_value
+        y_low = self.listener.modules[ABSORPTION_SPEC].y_lower_scale_value
+        y_high = self.listener.modules[ABSORPTION_SPEC].y_upper_scale_value
         # plot absorption spec
         axes.plot(x_vals, data, '-', lw=0.5)
         axes.grid(linestyle=':', linewidth=0.5)
+        axes.set_xlim(left=x_low, right=x_high)
+        axes.set_ylim(bottom=y_low, top=y_high)
+        axes.ticklabel_format(style='plain')
+        axes.get_yaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(self.listener.modules[ABSORPTION_SPEC].format_axis))
+        axes.get_xaxis().set_major_formatter(
+            matplotlib.ticker.FuncFormatter(self.listener.modules[ABSORPTION_SPEC].format_axis))
         if scale:
             plt.title(title)
         else:
