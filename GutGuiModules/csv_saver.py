@@ -126,6 +126,13 @@ class CSVSaver:
 
     # ----------------------------------------------------- MISC -----------------------------------------------------
 
+    def new_info(self):
+        image_mode = self.listener.modules[RECREATED_COLOUR].displayed_image_mode
+        if image_mode == WL:
+            return self.listener.get_current_new_info(mode='WL')
+        elif image_mode == IDX:
+            return self.listener.get_current_new_info(mode='IDX')
+
     @staticmethod
     def _make_direc(direc):
         if not os.path.isdir(direc):
@@ -264,7 +271,7 @@ class CSVSaver:
                 info = self.listener.get_current_rec_info()
                 direc = os.path.dirname(path) + '/09_Recreated_Image' 
                 self._make_direc(direc)
-                big_path = direc + '/' + '09_recreated_image_data' + info + '.csv'
+                big_path = direc + '/' + '09_recreated_image' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __norm_rec_to_csv(self):
@@ -275,7 +282,7 @@ class CSVSaver:
                 info = self.listener.get_current_rec_info()
                 direc = os.path.dirname(path) + '/10_Normalised_Recreated_Image'
                 self._make_direc(direc)
-                big_path = direc + '/' + '10_norm_recreated_image_data' + info + '.csv'
+                big_path = direc + '/' + '10_norm_recreated_image' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __new_to_csv(self):
@@ -283,10 +290,10 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_new_data().T
-                info = self.listener.get_current_new_info()
+                info = self.new_info()
                 direc = os.path.dirname(path) + '/11_New_Image' 
                 self._make_direc(direc)
-                big_path = direc + '/' + '11_new_image_data' + info + '.csv'
+                big_path = direc + '/' + '11_new_image' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __norm_new_to_csv(self):
@@ -294,8 +301,8 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_norm_new_data().T
-                info = self.listener.get_current_new_info()
+                info = self.new_info()
                 direc = os.path.dirname(path) + '/12_Normalised_New_Image' 
                 self._make_direc(direc)
-                big_path = direc + '/' + '12_norm_new_image_data' + info + '.csv'
+                big_path = direc + '/' + '12_norm_new_image' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')

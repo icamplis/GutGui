@@ -476,7 +476,7 @@ class OGColour:
         self._build_original_image(copy_data)
 
     @staticmethod
-    def _draw_a_line(self, point1, point2, image):
+    def _draw_a_line(point1, point2, image):
         r0, c0 = point1
         r1, c1 = point2
         rr, cc, val = line_aa(c0, r0, c1, r1)

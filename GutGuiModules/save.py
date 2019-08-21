@@ -412,7 +412,7 @@ class Save:
         else:
             title = '_CS'
             cmap = 'jet'
-        title += self.listener.get_current_rec_info(saves=True)
+        title += self.listener.get_current_rec_info()
 
         if self.saves[STO2_DATA]:
             self.__save_sto2_data_and_image(title, cmap)

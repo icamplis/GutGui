@@ -168,13 +168,11 @@ class ModuleListener:
 
     # ------------------------------------------------ INFO GETTERS --------------------------------------------------
 
-    def get_current_rec_info(self, saves=False):
+    def get_current_rec_info(self):
         info = ''
         spec_num = self.modules[RECREATED_COLOUR].spec_number
         image_mode = self.modules[RECREATED_COLOUR].displayed_image_mode
-        if not saves:
-            info += '_' + str(image_mode)
-        info += '_fromCSV' + str(spec_num)
+        info += '_' + str(image_mode) + '_fromCSV' + str(spec_num)
         return info
 
     def get_current_new_info(self, mode=None):
