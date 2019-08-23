@@ -375,6 +375,7 @@ class Histogram:
         choice = self.drop_down_var.get()[:2]
         if choice in ['1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.']:
             self.specs, self.spec_number = specs(choice=choice)
+            self.listener.update_histogram_specs(self.specs)
         elif choice == '9.':
             data = self.listener.get_current_rec_data()
             self.update_histogram(data)

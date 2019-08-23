@@ -80,6 +80,7 @@ class NewColour:
         if self.old_image_mode != self.displayed_image_mode:
             self.initial_data = new_colour_image_data
             self.old_image_mode = self.displayed_image_mode
+        print(self.specs, self.displayed_image_mode)
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         self._build_new_image()

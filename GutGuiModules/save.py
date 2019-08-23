@@ -316,17 +316,15 @@ class Save:
             bins = np.arange(start=start, stop=stop, step=step)
             counts, _, _ = plt.hist(data, bins=bins)
             hist_data = np.stack((bins[1:], counts)).T
-            self.__save_data(hist_data, "HISTOGRAM_EXCEL" + name, fmt="%.2f")  # too slow to save it as an actual xlsx
+            self.__save_data(hist_data, "HISTOGRAM_EXCEL" + name, formatting="%.2f")
 
-    def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale, fmt=".png", min_val=0,
-                               max_val=1):
-        step_size = self.listener.modules[HISTOGRAM].step_size_value
+    def __save_histogram_graph(self, data, title, is_hist_with_scale, is_hist_wo_scale, fmt=".png"):
         if is_hist_with_scale:
-            self.__save_histogram_diagram(data, title + "_WITH_SCALE", True, fmt=fmt, step_size_value=step_size)
+            self.__save_histogram_diagram(data, title + "_WITH_SCALE", True, fmt=fmt)
         if is_hist_wo_scale:
-            self.__save_histogram_diagram(data, title + "_WO_SCALE", False, fmt=fmt, step_size_value=step_size)
+            self.__save_histogram_diagram(data, title + "_WO_SCALE", False, fmt=fmt)
 
-    def __save_histogram_diagram(self, data, title, scale, fmt=".png", step_size_value=0.01):
+    def __save_histogram_diagram(self, data, title, scale, fmt=".png"):
         if scale:
             title += '_WITH_SCALE'
         else:
@@ -383,11 +381,13 @@ class Save:
                                               self.saves[ABSORPTION_SPEC_IMAGE],
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE])
         if self.saves[ABSORPTION_SPEC_EXCEL]:
-            data = self.current_abs_result.absorption_roi[:, 1]
-            self.__save_data(data, "ABSORPTION_SPEC_EXCEL" + name, fmt="%.5f")
+            data1 = np.arange(500, 1000, 5)
+            data2 = self.current_abs_result.absorption_roi[:, 1]
+            data = np.asarray([data1, data2]).T
+            self.__save_data(data, "ABSORPTION_SPEC_EXCEL" + name, formatting="%.5f")
 
     def __save_absorption_spec_graph(self, data, title, is_abspc_with_scale, is_abspc_wo_scale,
-                                     fmt=".png", min_val=0, max_val=1):
+                                     fmt=".png"):
         if is_abspc_with_scale:
             self.__save_absorption_spec_diagram(data, title, True, fmt=fmt)
         if is_abspc_wo_scale:
