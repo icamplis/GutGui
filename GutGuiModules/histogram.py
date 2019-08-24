@@ -122,6 +122,20 @@ class Histogram:
         self._build_interactive_histogram()
         self._build_stats()
 
+    # --------------------------------------------------- GETTERS ----------------------------------------------------
+
+    def get_x_low(self):
+        return float(self.x_lower_scale_input.get())
+
+    def get_x_high(self):
+        return float(self.x_upper_scale_input.get())
+
+    def get_y_low(self):
+        return float(self.y_lower_scale_input.get())
+
+    def get_y_high(self):
+        return float(self.y_upper_scale_input.get())
+
     # ----------------------------------------------- BUILDERS (MISC) -------------------------------------------------
 
     def _build_info_label(self):

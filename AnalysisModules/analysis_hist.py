@@ -43,11 +43,14 @@ class HistogramAnalysis:
         self.nir_og = None
         self.thi_og = None
         self.twi_og = None
+        self.histogram_data = None
+        self.histogram_data_masked = None
 
         self.analysis()
 
     def analysis(self):
         self._calc_general()
+        self._calc_histogram_data()
 
     # --------------------------------------------------- UPDATERS ----------------------------------------------------
 
@@ -94,24 +97,19 @@ class HistogramAnalysis:
         self.twi_og = image_to_array(filename)
         return self.twi_og[24:504, 4:644, :]
 
-    def get_histogram_data(self, is_masked):
-        if is_masked:
-            # if there is a mask
-            if self.absorbance:
-                # if absorbance
-                data = self.x_absorbance_masked
-            else:
-                # if reflectance
-                data = self.x_reflectance_masked
+    # ------------------------------------------------- CALCULATORS --------------------------------------------------
+
+    def _calc_histogram_data(self):
+        if self.absorbance:
+            self.histogram_data = self.x_absorbance
+            if self.mask is not None:
+                print('masked')
+                self.histogram_data_masked = self.x_absorbance_masked
         else:
-            # if there is no mask
-            if self.absorbance:
-                # if absorbance
-                data = self.x_absorbance
-            else:
-                # if reflectance
-                data = self.x_reflectance
-        return data
+            self.histogram_data = self.x_reflectance
+            if self.mask is not None:
+                print('masked')
+                self.histogram_data_masked = self.x_reflectance_masked
 
     # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
 
@@ -125,7 +123,7 @@ class HistogramAnalysis:
     def __calc_x1(self):
         # normalise
         if self.normal:
-            self.x1 = self.data_cube / np.ma.max(self.data_cube)
+            self.x1 = self.data_cube/np.ma.max(self.data_cube)
         else:
             self.x1 = self.data_cube
         # mask negatives
@@ -138,19 +136,19 @@ class HistogramAnalysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower: wav_upper + 1], axis=2)
+            self.x_reflectance_w = np.mean(self.x_reflectance[:, :, wav_lower:wav_upper+1], axis=2)
         else:
             self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength[0]]
 
         if self.mask is not None:
-            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            mask = np.array([self.mask.T] * 100).T
             self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=mask)
             # self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(max(0, min(self.wavelength)), 0))
                 wav_upper = int(round(min(max(self.wavelength), 99), 0))
-                self.x_reflectance_masked_w = np.ma.array(
-                    np.mean(self.x_reflectance[:, :, wav_lower: wav_upper + 1], axis=2), mask=self.mask)
+                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower:wav_upper+1],
+                                                                  axis=2), mask=self.mask)
             else:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
 
@@ -166,20 +164,19 @@ class HistogramAnalysis:
         if self.wavelength[0] != self.wavelength[1]:
             wav_lower = int(round(max(0, min(self.wavelength)), 0))
             wav_upper = int(round(min(max(self.wavelength), 99), 0))
-            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower: wav_upper + 1], axis=2)
+            self.x_absorbance_w = np.mean(self.x_absorbance[:, :, wav_lower:wav_upper+1], axis=2)
         else:
             self.x_absorbance_w = self.x_absorbance[:, :, self.wavelength[0]]
 
         if self.mask is not None:
             # self.x_absorbance_masked = self.__apply_2DMask_on_3DArray(self.mask, self.x_absorbance)
-            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            mask = np.array([self.mask.T] * 100).T
             self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=mask)
             # self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=np.array([self.mask] * 100))
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(min(0, min(self.wavelength)), 0))
                 wav_upper = int(round(max(max(self.wavelength), 99), 0))
-                self.x_absorbance_masked_w = np.ma.array(
-                    np.mean(self.x_absorbance[:, :, wav_lower: wav_upper + 1], axis=2),
-                    mask=self.mask)
+                self.x_absorbance_masked_w = np.ma.array(np.mean(self.x_absorbance[:, :, wav_lower:wav_upper+1],
+                                                                 axis=2), mask=self.mask)
             else:
                 self.x_absorbance_masked_w = np.ma.array(self.x_absorbance[:, :, self.wavelength[0]], mask=self.mask)

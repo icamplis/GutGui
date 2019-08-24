@@ -463,6 +463,7 @@ class OGColour:
     # --------------------------------------------------- DRAWING -----------------------------------------------------
 
     def _draw_points(self):
+        print(self.coords_list)
         copy_data = self.original_image_data.copy()
         not_none = [i for i in self.coords_list if i != (None, None)]
         for point in not_none:
@@ -521,7 +522,7 @@ class OGColour:
         ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
         self.mask_raw = np.array(img)
         self.mask_raw = np.fliplr(self.mask_raw.T)
-        self.listener.submit_mask(self.mask_raw)
+        self.listener.submit_mask(np.logical_not(self.mask_raw))
 
     # --------------------------------------------- ADDING/REMOVING COORDS --------------------------------------------
 
@@ -605,10 +606,10 @@ class OGColour:
     def __update_gs(self, event):
         if self.gs_var.get()[:2] == 'CS':
             self.gs = False
-            self._build_original_image(self.original_image_data)
+            self.update_original_image(self.original_image_data)
         elif self.gs_var.get()[:2] == 'GS':
             self.gs = True
-            self._build_original_image(self.original_image_data)
+            self.update_original_image(self.original_image_data)
 
     # ---------------------------------------------- UPDATERS (SAVING) ------------------------------------------------
 

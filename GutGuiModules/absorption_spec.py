@@ -233,7 +233,7 @@ class AbsorptionSpec:
 
     def _calc_extrema(self):
         abs_spec_list = list(self.absorption_spec)
-        abs_range = abs_spec_list[int((self.lower_value - 500) / 5):int((self.upper_value - 500) / 5)]
+        abs_range = abs_spec_list[int((self.lower_value - 500) / 5):int((self.upper_value - 500) / 5) + 1]
         maximum = np.ma.max(abs_range)
         maximum_x = abs_spec_list.index(maximum) * 5 + 500
         self.local_maximum_value = (maximum_x, round(maximum, 3))

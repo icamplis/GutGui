@@ -207,7 +207,7 @@ class RecreatedAnalysis:
             self.x_reflectance_w = self.x_reflectance[:, :, self.wavelength[0]]
 
         if self.mask is not None:
-            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            mask = np.array([self.mask.T] * 100).T
             self.x_reflectance_masked = np.ma.array(self.x_reflectance[:, :, :], mask=mask)
             # self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
             if self.wavelength[0] != self.wavelength[1]:
@@ -236,7 +236,7 @@ class RecreatedAnalysis:
 
         if self.mask is not None:
             # self.x_absorbance_masked = self.__apply_2DMask_on_3DArray(self.mask, self.x_absorbance)
-            mask = np.logical_not(np.array([self.mask.T] * 100).T)
+            mask = np.array([self.mask.T] * 100).T
             self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=mask)
             # self.x_absorbance_masked = np.ma.array(self.x_absorbance[:, :, :], mask=np.array([self.mask] * 100))
             if self.wavelength[0] != self.wavelength[1]:

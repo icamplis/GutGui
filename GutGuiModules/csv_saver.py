@@ -1,7 +1,6 @@
 from GutGuiModules.utility import *
 import numpy as np
 import os
-from threading import Thread
 
 
 class CSVSaver:
@@ -129,9 +128,9 @@ class CSVSaver:
     def new_info(self):
         image_mode = self.listener.modules[NEW_COLOUR].displayed_image_mode
         if image_mode == WL:
-            return self.listener.get_current_new_info(mode='WL')
+            return self.listener.get_csv_new_info(mode='WL')
         elif image_mode == IDX:
-            return self.listener.get_current_new_info(mode='IDX')
+            return self.listener.get_csv_new_info(mode='IDX')
 
     @staticmethod
     def _make_direc(direc):
@@ -268,7 +267,7 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_rec_data().T
-                info = self.listener.get_current_rec_info()
+                info = self.listener.get_csv_rec_info()
                 direc = os.path.dirname(path) + '/09_Recreated_Image' 
                 self._make_direc(direc)
                 big_path = direc + '/' + '09_recreated_image' + info + '.csv'
@@ -279,7 +278,7 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_norm_rec_data().T
-                info = self.listener.get_current_rec_info()
+                info = self.listener.get_csv_rec_info()
                 direc = os.path.dirname(path) + '/10_Normalised_Recreated_Image'
                 self._make_direc(direc)
                 big_path = direc + '/' + '10_norm_recreated_image' + info + '.csv'

@@ -133,7 +133,7 @@ class ModuleListener:
         if not self.is_masked:
             return data
         else:
-            mask = np.logical_not(np.array([self.mask.T] * 3).T)
+            mask = np.array([self.mask.T] * 3).T
             return np.ma.array(data, mask=mask)
 
     def get_current_rec_data(self):
@@ -141,7 +141,7 @@ class ModuleListener:
         if not self.is_masked:
             return data
         else:
-            return np.ma.array(data, mask=np.logical_not(self.mask))
+            return np.ma.array(data, mask=self.mask)
 
     def get_current_norm_rec_data(self):
         image = self.modules[RECREATED_COLOUR].recreated_colour_image_data
@@ -149,14 +149,14 @@ class ModuleListener:
         if not self.is_masked:
             return data
         else:
-            return np.ma.array(data, mask=np.logical_not(self.mask))
+            return np.ma.array(data, mask=self.mask)
 
     def get_current_new_data(self):
         data = self.modules[NEW_COLOUR].new_colour_image_data
         if not self.is_masked:
             return data
         else:
-            return np.ma.array(data, mask=np.logical_not(self.mask))
+            return np.ma.array(data, mask=self.mask)
 
     def get_current_norm_new_data(self):
         image = self.modules[NEW_COLOUR].new_colour_image_data
@@ -164,39 +164,160 @@ class ModuleListener:
         if not self.is_masked:
             return data
         else:
-            return np.ma.array(data, mask=np.logical_not(self.mask))
+            return np.ma.array(data, mask=self.mask)
 
-    # ------------------------------------------------ INFO GETTERS --------------------------------------------------
+    # --------------------------------------------------- NAMING -----------------------------------------------------
 
-    def get_current_rec_info(self):
-        info = ''
-        spec_num = self.modules[RECREATED_COLOUR].spec_number
-        image_mode = self.modules[RECREATED_COLOUR].displayed_image_mode
-        info += '_' + str(image_mode) + '_fromCSV' + str(spec_num)
+    def get_csv_rec_info(self):
+        # retrieve data: display, csv number
+        display = self.modules[RECREATED_COLOUR].displayed_image_mode
+        num = self.modules[RECREATED_COLOUR].spec_number
+        info = '_' + str(display) + '_fromCSV' + str(num)
         return info
 
-    def get_current_new_info(self, mode=None):
-        info = ''
-        spec_num = self.modules[NEW_COLOUR].spec_number
-        image_mode = self.modules[NEW_COLOUR].displayed_image_mode
-        if image_mode == WL or mode == 'WL':
-            mod = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
-        elif image_mode == IDX or mode == 'IDX':
+    def get_csv_new_info(self):
+        # retrieve data: display, csv number
+        display = self.modules[NEW_COLOUR].displayed_image_mode
+        num = self.modules[NEW_COLOUR].spec_number
+        mod = ''
+        if display == WL:
+            mod = '_WL_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
+        elif display == IDX:
             mod = '_IDX' + str(self.index)
-        info += str(mod)
-        info += '_fromCSV' + str(spec_num)
+        info = str(mod) + '_fromCSV' + str(num)
         return info
 
-    def get_current_hist_abs_info(self, hist_or_abs):
-        info = ''
-        if hist_or_abs == 'hist':
-            spec_num = self.modules[HISTOGRAM].spec_number
-        elif hist_or_abs == 'abs':
-            spec_num = self.modules[ABSORPTION_SPEC].spec_number
-        wl = '_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
-        info += wl
-        info += '_fromCSV' + str(spec_num)
-        return info
+    def get_save_og_info(self, display, image):
+        # e.g. og_image_RGB-cs_masked.png
+        # e.g. og_image_THI_whole_data.csv
+        grey = self.modules[ORIGINAL_COLOUR].gs
+        colour = '-cs'
+        if grey:
+            colour = '-gs'
+        if image:
+            return 'og_image_' + display + colour
+        else:
+            return 'og_image_' + display + '_data'
+
+    def get_save_rec_info(self, display, image):
+        # e.g. rec_image_fromCSV2_with-scale_STO2-gs-0.112341-30.122421_whole.png
+        # e.g. rec_image_fromCSV2_with-scale_STO2-0.112341-30.122421_masked_data.csv
+        num = self.modules[RECREATED_COLOUR].spec_number
+        lower = round(float(self.modules[RECREATED_COLOUR].lower_scale_value), 4)
+        upper = round(float(self.modules[RECREATED_COLOUR].upper_scale_value), 4)
+        grey = self.modules[RECREATED_COLOUR].gs
+        colour = '-cs-'
+        if grey:
+            colour = '-gs-'
+        if image:
+            return 'rec_image_fromCSV' + str(num), display + colour + str(lower) + '-' + str(upper)
+        else:
+            return 'rec_image_fromCSV' + str(num) + '_' + display + '-' + str(lower) + '-' + str(upper) + '_data'
+
+    def get_save_new_info(self, display, image):
+        # e.g. new_image_fromCSV2_with-scale_IDX1-gs-0.112341-30.122421_masked.png
+        # e.g. new_image_fromCSV2_with-scale_WL-500-560-0.112341-30.122421_whole_data.csv
+        mod = ''
+        num = self.modules[NEW_COLOUR].spec_number
+        lower = round(float(self.modules[NEW_COLOUR].lower_scale_value), 4)
+        upper = round(float(self.modules[NEW_COLOUR].upper_scale_value), 4)
+        if display == 'WL':
+            mod = '_WL-' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
+        elif display == 'IDX':
+            mod = '_IDX' + str(self.index)
+        grey = self.modules[NEW_COLOUR].gs
+        colour = '-cs-'
+        if grey:
+            colour = '-gs-'
+        if image:
+            return 'new_image_fromCSV' + str(num), mod + colour + str(lower) + '-' + str(upper)
+        else:
+            return 'new_image_fromCSV' + str(num) + mod + '-' + str(lower) + '-' + str(upper) + '_data'
+
+    def get_save_hist_info(self, scale, image):
+        # e.g. histogram_fromCSV1_(0-3)-(0-200000)-0.01_with-scale_np.png
+        # e.g. histogram_fromCSV9_(0-3)-(0-200000)-0.01_with-scale_np_STO2-csv7-cs-2.62299-0.22225.png
+        # e.g. histogram_fromCSV12_(0-3)_(0-200000)-0.01_with-scale_np_IDX3-csv1-gs-2.62299-0.22225.png
+        num = self.modules[HISTOGRAM].spec_number
+        xmin = round(float(self.modules[HISTOGRAM].get_x_low()), 4)
+        xmax = round(float(self.modules[HISTOGRAM].get_x_high()), 4)
+        ymin = round(float(self.modules[HISTOGRAM].get_y_low()), 4)
+        ymax = round(float(self.modules[HISTOGRAM].get_y_high()), 4)
+        step = self.modules[HISTOGRAM].step_size_value
+        parametric = self.modules[HISTOGRAM].parametric
+        non_parametric = self.modules[HISTOGRAM].non_parametric
+        limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')-' + str(step) + '_'
+        scale_mod = 'wo-scale'
+        if scale:
+            scale_mod = 'with-scale'
+        p_mod = ''
+        if parametric:
+            p_mod = '_p_'
+        if non_parametric:
+            p_mod = '_np_'
+        if num == 9 or num == 10:
+            data_mod = self.get_abbreviated_rec_info()
+        elif num == 11 or num == 12:
+            data_mod = self.get_abbreviated_new_info()
+        else:
+            data_mod = ['', '']
+        if image:
+            return 'histogram_fromCSV' + str(num) + limits + scale_mod + p_mod + data_mod[0]
+        else:
+            return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[1] + 'data'
+
+    def get_save_abs_info(self, scale, image):
+        # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale.png
+        # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale_data.csv
+        num = self.modules[ABSORPTION_SPEC].spec_number
+        xmin = round(float(self.modules[ABSORPTION_SPEC].x_lower_scale_value), 4)
+        xmax = round(float(self.modules[ABSORPTION_SPEC].x_upper_scale_value), 4)
+        ymin = round(float(self.modules[ABSORPTION_SPEC].y_lower_scale_value), 4)
+        ymax = round(float(self.modules[ABSORPTION_SPEC].y_upper_scale_value), 4)
+        limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')_'
+        scale_mod = 'wo-scale'
+        if scale:
+            scale_mod = 'with-scale'
+        if image:
+            return 'abspec_fromCSV' + str(num) + limits + scale_mod
+        else:
+            return 'abspec_fromCSV' + str(num) + limits + 'data'
+
+    def get_abbreviated_rec_info(self):
+        # e.g. [0] = STO2-csv7-cs-2.62299-0.22225
+        # e.g. [1] = STO2-csv7-2.62299-0.22225
+        display = self.modules[RECREATED_COLOUR].displayed_image_mode
+        num = self.modules[RECREATED_COLOUR].spec_number
+        lower = round(float(self.modules[RECREATED_COLOUR].lower_scale_value), 4)
+        upper = round(float(self.modules[RECREATED_COLOUR].upper_scale_value), 4)
+        scale_mod = '-' + str(lower) + '-' + str(upper)
+        grey = self.modules[RECREATED_COLOUR].gs
+        colour = '-cs'
+        if grey:
+            colour = '-gs'
+        image = display + '-csv' + str(num) + colour + scale_mod
+        csv = display + '-csv' + str(num) + scale_mod
+        return [image, csv]
+
+    def get_abbreviated_new_info(self):
+        # e.g. [0] = WL-500-500-csv7-cs-2.62299-0.22225
+        # e.g. [1] = IDX4-csv7-2.62299-0.22225
+        display = self.modules[NEW_COLOUR].displayed_image_mode
+        num = self.modules[NEW_COLOUR].spec_number
+        lower = round(float(self.modules[NEW_COLOUR].lower_scale_value), 4)
+        upper = round(float(self.modules[NEW_COLOUR].upper_scale_value), 4)
+        scale_mod = '-' + str(lower) + '-' + str(upper)
+        grey = self.modules[NEW_COLOUR].gs
+        colour = '-cs'
+        if grey:
+            colour = '-gs'
+        if display == WL:
+            mod = 'WL_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
+        elif display == IDX:
+            mod = 'IDX' + str(self.index)
+        image = mod + '-csv' + str(num) + colour + scale_mod
+        csv = mod + '-csv' + str(num) + scale_mod
+        return [image, csv]
 
     # ------------------------------------------------ CSV FUNCTIONS --------------------------------------------------
 
@@ -359,8 +480,11 @@ class ModuleListener:
         self.broadcast_to_original_image()
 
     def broadcast_to_histogram(self):
-        data = self.get_result(self.current_rendered_result_path)[0].get_histogram_data(self.is_masked)
-        self.modules[HISTOGRAM].update_histogram(data)
+        if self.is_masked:
+            new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data_masked
+        else:
+            new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data
+        self.modules[HISTOGRAM].update_histogram(new_histogram_data)
 
     def broadcast_to_absorption_spec(self):
         if self.is_masked:

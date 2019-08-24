@@ -48,8 +48,12 @@ class Introduction:
                            "tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut " \
                            "perferendis doloribus asperiores repellat."
 
+        self.text_text_8 = "est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam " \
+                           "libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod " \
+                           "maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. "
+
         self.text_texts = [self.text_text_1, self.text_text_2, self.text_text_3, self.text_text_4,
-                           self.text_text_5, self.text_text_6, self.text_text_7]
+                           self.text_text_5, self.text_text_6, self.text_text_7, self.text_text_8]
 
         self.image_box = None
         self.images = []
@@ -61,6 +65,7 @@ class Introduction:
         self.image5 = None
         self.image6 = None
         self.image7 = None
+        self.image8 = None
 
         self.parse_images()
         self._build_text_box()
@@ -71,7 +76,7 @@ class Introduction:
 
     def parse_images(self):
         self.images.append(image_to_array('./image1.png'))
-        for i in range(2, 8):
+        for i in range(2, 9):
             self.images.append(image_to_array('./image' + str(i) + '.jpg'))
 
     def _build_text_box(self):
@@ -103,7 +108,7 @@ class Introduction:
             self._build_image_box()
 
     def __next(self):
-        if self.number == 7:
+        if self.number == 8:
             pass
         else:
             self.number += 1
