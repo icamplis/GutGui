@@ -221,7 +221,8 @@ class NewColour:
         make_popup_image(self.new_colour_image_graph)
 
     def __norm(self):
-        self.update_new_colour_image(self.initial_data / np.ma.max(self.initial_data))
+        data = self.initial_data / np.ma.max(self.initial_data)
+        self.update_new_colour_image(data)
 
     def __og(self):
         self.update_new_colour_image(self.initial_data)

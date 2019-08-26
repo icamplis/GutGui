@@ -341,15 +341,17 @@ class Histogram:
         logging.debug("CONSTRUCTING RANGED DATA...")
         data = self.flattened_data[self.lower_value <= self.flattened_data]
         data = data[data <= self.upper_value]
+        data = np.ma.sort(data)
+        length = np.ma.count(data)
         # mean, sd, median, iqr
         logging.debug("CALCULATING STATS...")
         self.mean_value = np.round(np.ma.mean(data), 3)
         progress(0, 11)
         self.sd_value = np.round(np.ma.std(data), 3)
         progress(1, 11)
-        self.median_value = np.round(np.ma.median(data), 3)
+        self.median_value = np.round(data[int(length*1/2)], 3)
         progress(2, 11)
-        self.iqr_value = (np.round(np.quantile(data, 0.25), 3), round(np.quantile(data, 0.75), 3))
+        self.iqr_value = (np.round(data[int(length*1/4)], 3), round(data[int(length*3/4)], 3))
         progress(3, 11)
         # generate bins
         bins = np.arange(start=self.lower_value, stop=self.upper_value + self.step_size_value,

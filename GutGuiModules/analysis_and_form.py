@@ -1,4 +1,5 @@
 from GutGuiModules.utility import *
+from tkinter import messagebox
 
 
 class AnalysisAndForm:
@@ -121,6 +122,12 @@ class AnalysisAndForm:
                 buttons[i].config(foreground="black")
 
     def __update_wavelength(self, event):
+        lower = float(self.wavelength_lower_entry.get())
+        upper = float(self.wavelength_upper_entry.get())
+        if lower < 500 or lower > 995 or lower%5 != 0:
+            messagebox.showerror("Error", "Wavelength values must be on interval [500, 995] in 5nm steps.")
+        elif upper < 500 or upper > 995 or upper%5 != 0:
+            messagebox.showerror("Error", "Wavelength values must be on interval [500, 995] in 5nm steps.")
         (wav1, wav2) = self.get_wavelength()
         wavelength = tuple((wav1, wav2))
         self.listener.submit_wavelength(wavelength)
