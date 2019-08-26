@@ -159,29 +159,29 @@ class Save:
 
     # ------------------------------------------------- SAVING HELPERS -----------------------------------------------
 
-    def __save_data(self, data, title, fmt=".csv", formatting="%.2f"):
+    def __save_data(self, data, title, stats, fmt=".csv", formatting="%.2f"):
         output_path = self.current_output_path + "/" + title + fmt
         logging.debug("SAVING DATA TO " + output_path)
-        np.savetxt(self.current_output_path + "/" + title + fmt, data, delimiter=",", fmt=formatting)
+        save_data = np.clip(data, a_min=stats[0], a_max=stats[1])
+        np.savetxt(self.current_output_path + "/" + title + fmt, save_data, delimiter=",", fmt=formatting)
 
-    def __save_image(self, data, name, is_image_with_scale, is_image_wo_scale, cmap='jet', fmt=".png"):
+    def __save_image(self, data, name, is_image_with_scale, is_image_wo_scale, stats, cmap='jet', fmt=".png"):
         if is_image_with_scale:
             title = name[0] + '_with-scale_' + name[1]
-            self.__save_image_diagram(data.T, title, True, cmap, fmt)
+            self.__save_image_diagram(data.T, title, True, cmap, stats, fmt)
         if is_image_wo_scale:
             title = name[0] + '_wo-scale_' + name[1]
-            self.__save_image_diagram(data.T, title, False, cmap, fmt)
+            self.__save_image_diagram(data.T, title, False, cmap, stats, fmt)
 
-    def __save_image_diagram(self, data, title, scale, cmap, fmt=".png"):
+    def __save_image_diagram(self, data, title, scale, cmap, stats, fmt=".png"):
         output_path = self.current_output_path + "/" + title + fmt
         logging.debug("SAVING IMAGE TO " + output_path)
+        plt.clf()
+        plt.imshow(np.flipud(data), cmap=cmap, vmin=stats[0], vmax=stats[1])
         if scale:
-            plt.imshow(np.flipud(data), cmap=cmap)
             plt.colorbar()
             plt.title(title)
-            plt.savefig(output_path)
-        else:
-            plt.imsave(output_path, np.flipud(data), cmap=cmap)
+        plt.savefig(output_path)
         plt.clf()
 
     # ------------------------------------------------- ORIGINAL IMAGE -----------------------------------------------
@@ -545,60 +545,68 @@ class Save:
             self.__save_twi_data_and_image(cmap)
 
     def __save_sto2_data_and_image(self, cmap):
-        data_name = self.listener.get_save_rec_info('STO2', image=False)
-        image_name = self.listener.get_save_rec_info('STO2', image=True)
-        whole_image_name = (image_name[0], image_name[1] + '_whole')
-        masked_image_name = (image_name[0], image_name[1] + '_masked')
         if self.saves[WHOLE_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.sto2, data_name)
-            self.__save_image(self.current_rec_result.sto2, whole_image_name, self.saves[REC_IMAGE],
-                              self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_rec_info('STO2', image=False, masked=False, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('STO2', image=True, masked=False, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'STO2')
+            self.__save_data(self.current_rec_result.sto2, data_name, stats)
+            self.__save_image(self.current_rec_result.sto2, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.sto2_masked, data_name + '_masked')
-            self.__save_image(self.current_rec_result.sto2_masked, masked_image_name, self.saves[REC_IMAGE],
-                              self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_rec_info('STO2', image=False, masked=True, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('STO2', image=True, masked=True, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'STO2')
+            self.__save_data(self.current_rec_result.sto2_masked, data_name, stats)
+            self.__save_image(self.current_rec_result.sto2_masked, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
 
     def __save_nir_data_and_image(self, cmap):
-        data_name = self.listener.get_save_rec_info('NIR', image=False)
-        image_name = self.listener.get_save_rec_info('NIR', image=True)
-        whole_image_name = (image_name[0], image_name[1] + '_whole')
-        masked_image_name = (image_name[0], image_name[1] + '_masked')
         if self.saves[WHOLE_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.nir, data_name)
-            self.__save_image(self.current_rec_result.nir, whole_image_name, self.saves[REC_IMAGE],
-                              self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_rec_info('NIR', image=False, masked=False, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('NIR', image=True, masked=False, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'NIR')
+            self.__save_data(self.current_rec_result.nir, data_name, stats)
+            self.__save_image(self.current_rec_result.nir, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.nir_masked, data_name + '_masked')
-            self.__save_image(self.current_rec_result.nir_masked, masked_image_name,
-                              self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
-
-    def __save_twi_data_and_image(self, cmap):
-        data_name = self.listener.get_save_rec_info('TWI', image=False)
-        image_name = self.listener.get_save_rec_info('TWI', image=True)
-        whole_image_name = (image_name[0], image_name[1] + '_whole')
-        masked_image_name = (image_name[0], image_name[1] + '_masked')
-        if self.saves[WHOLE_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.twi, data_name)
-            self.__save_image(self.current_rec_result.twi, whole_image_name, self.saves[REC_IMAGE],
-                              self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
-        if self.saves[MASKED_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.twi_masked, data_name + '_masked')
-            self.__save_image(self.current_rec_result.twi_masked, masked_image_name,
-                              self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_rec_info('NIR', image=False, masked=True, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('NIR', image=True, masked=True, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'NIR')
+            self.__save_data(self.current_rec_result.nir_masked, data_name, stats)
+            self.__save_image(self.current_rec_result.nir_masked, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
 
     def __save_thi_data_and_image(self, cmap):
-        data_name = self.listener.get_save_rec_info('THI', image=False)
-        image_name = self.listener.get_save_rec_info('THI', image=True)
-        whole_image_name = (image_name[0], image_name[1] + '_whole')
-        masked_image_name = (image_name[0], image_name[1] + '_masked')
         if self.saves[WHOLE_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.thi, data_name)
-            self.__save_image(self.current_rec_result.thi, whole_image_name, self.saves[REC_IMAGE],
-                              self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_rec_info('THI', image=False, masked=False, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('THI', image=True, masked=False, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'THI')
+            self.__save_data(self.current_rec_result.thi, data_name, stats)
+            self.__save_image(self.current_rec_result.thi, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
-            self.__save_data(self.current_rec_result.thi_masked, data_name + '_masked')
-            self.__save_image(self.current_rec_result.thi_masked, masked_image_name,
-                              self.saves[REC_IMAGE], self.saves[REC_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_rec_info('THI', image=False, masked=True, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('THI', image=True, masked=True, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'THI')
+            self.__save_data(self.current_rec_result.thi_masked, data_name, stats)
+            self.__save_image(self.current_rec_result.thi_masked, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
+
+    def __save_twi_data_and_image(self, cmap):
+        if self.saves[WHOLE_IMAGE_SAVE]:
+            data_name = self.listener.get_save_rec_info('TWI', image=False, masked=False, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('TWI', image=True, masked=False, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'TWI')
+            self.__save_data(self.current_rec_result.twi, data_name, stats)
+            self.__save_image(self.current_rec_result.twi, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
+        if self.saves[MASKED_IMAGE_SAVE]:
+            data_name = self.listener.get_save_rec_info('TWI', image=False, masked=True, path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info('TWI', image=True, masked=True, path=self.current_result_key)
+            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'TWI')
+            self.__save_data(self.current_rec_result.twi_masked, data_name, stats)
+            self.__save_image(self.current_rec_result.twi_masked, image_name, self.saves[REC_IMAGE],
+                              self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
 
     # ---------------------------------------------------- NEW IMAGE -------------------------------------------------
 
@@ -614,29 +622,33 @@ class Save:
             self.__save_idx_data_and_image(cmap)
 
     def __save_wl_data_and_image(self, cmap):
-        data_name = self.listener.get_save_new_info('WL', image=False)
-        image_name = self.listener.get_save_new_info('WL', image=True)
-        whole_image_name = (image_name[0], image_name[1] + '_whole')
-        masked_image_name = (image_name[0], image_name[1] + '_masked')
         if self.saves[WHOLE_IMAGE_SAVE]:
-            self.__save_data(self.current_new_result.get_wl_data(), data_name)
-            self.__save_image(self.current_new_result.get_wl_data(), whole_image_name, self.saves[NEW_IMAGE],
-                              self.saves[NEW_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_new_info('WL', image=False, masked=False, path=self.current_result_key)
+            image_name = self.listener.get_save_new_info('WL', image=True, masked=False, path=self.current_result_key)
+            stats = self.listener.generate_new_values_for_saving(self.current_result_key, 'WL')
+            self.__save_data(self.current_new_result.get_wl_data(), data_name, stats)
+            self.__save_image(self.current_new_result.get_wl_data(), image_name, self.saves[NEW_IMAGE],
+                              self.saves[NEW_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
-            self.__save_data(self.current_new_result.get_wl_data_masked(), data_name + '_masked')
-            self.__save_image(self.current_new_result.get_wl_data_masked(), masked_image_name,  self.saves[NEW_IMAGE],
-                              self.saves[NEW_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_new_info('WL', image=False, masked=True, path=self.current_result_key)
+            image_name = self.listener.get_save_new_info('WL', image=True, masked=True, path=self.current_result_key)
+            stats = self.listener.generate_new_values_for_saving(self.current_result_key, 'WL')
+            self.__save_data(self.current_new_result.get_wl_data_masked(), data_name, stats)
+            self.__save_image(self.current_new_result.get_wl_data_masked(), image_name,  self.saves[NEW_IMAGE],
+                              self.saves[NEW_IMAGE_WO_SCALE], stats, cmap=cmap)
 
     def __save_idx_data_and_image(self, cmap):
-        data_name = self.listener.get_save_new_info('IDX', image=False)
-        image_name = self.listener.get_save_new_info('IDX', image=True)
-        whole_image_name = (image_name[0], image_name[1] + '_whole')
-        masked_image_name = (image_name[0], image_name[1] + '_masked')
         if self.saves[WHOLE_IMAGE_SAVE]:
-            self.__save_data(self.current_new_result.index, data_name)
-            self.__save_image(self.current_new_result.index, whole_image_name, self.saves[NEW_IMAGE],
-                              self.saves[NEW_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_new_info('IDX', image=False, masked=False, path=self.current_result_key)
+            image_name = self.listener.get_save_new_info('IDX', image=True, masked=False, path=self.current_result_key)
+            stats = self.listener.generate_new_values_for_saving(self.current_result_key, 'IDX')
+            self.__save_data(self.current_new_result.index, data_name, stats)
+            self.__save_image(self.current_new_result.index, image_name, self.saves[NEW_IMAGE],
+                              self.saves[NEW_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
-            self.__save_data(self.current_new_result.index_masked, data_name + '_masked')
-            self.__save_image(self.current_new_result.index_masked, masked_image_name, self.saves[NEW_IMAGE],
-                              self.saves[NEW_IMAGE_WO_SCALE], cmap=cmap)
+            data_name = self.listener.get_save_new_info('IDX', image=False, masked=True, path=self.current_result_key)
+            image_name = self.listener.get_save_new_info('IDX', image=True, masked=True, path=self.current_result_key)
+            stats = self.listener.generate_new_values_for_saving(self.current_result_key, 'IDX')
+            self.__save_data(self.current_new_result.index_masked, data_name, stats)
+            self.__save_image(self.current_new_result.index_masked, image_name, self.saves[NEW_IMAGE],
+                              self.saves[NEW_IMAGE_WO_SCALE], stats, cmap=cmap)

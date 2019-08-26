@@ -51,14 +51,10 @@ class RecColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
-        self.sto2_lower = None
-        self.sto2_upper = None
-        self.nir_lower = None
-        self.nir_upper = None
-        self.thi_lower = None
-        self.thi_upper = None
-        self.twi_lower = None
-        self.twi_upper = None
+        self.sto2_stats = [None, None]  # [lower, upper]
+        self.nir_stats = [None, None]
+        self.thi_stats = [None, None]
+        self.twi_stats = [None, None]
 
         self.norm_button = None
         self.og_button = None
@@ -89,15 +85,33 @@ class RecColour:
     # ------------------------------------------------ INITIALIZATION ------------------------------------------------
 
     def update_recreated_image(self, recreated_colour_image_data):
+        self.recreated_colour_image_data = recreated_colour_image_data
+        self._scale()
         if self.old_specs != self.specs:
             self.initial_data = recreated_colour_image_data
             self.old_specs = self.specs
+            self.sto2_stats = [None, None]
+            self.nir_stats = [None, None]
+            self.thi_stats = [None, None]
+            self.twi_stats = [None, None]
+            self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_image_mode != self.displayed_image_mode:
             self.initial_data = recreated_colour_image_data
             self.old_image_mode = self.displayed_image_mode
-        self.recreated_colour_image_data = recreated_colour_image_data
-        self._scale()
+            self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
+        self._build_lower_scale()
+        self._build_upper_scale()
         self._build_recreated_image()
+
+    def _update_saving_stats(self, lower, upper):
+        if self.displayed_image_mode == STO2:
+            self.sto2_stats = [np.round(lower, 4), np.round(upper, 4)]
+        if self.displayed_image_mode == NIR:
+            self.nir_stats = [np.round(lower, 4), np.round(upper, 4)]
+        if self.displayed_image_mode == THI:
+            self.thi_stats = [np.round(lower, 4), np.round(upper, 4)]
+        if self.displayed_image_mode == TWI:
+            self.twi_stats = [np.round(lower, 4), np.round(upper, 4)]
 
     def _init_widget(self):
         self._build_sto2()
@@ -113,6 +127,18 @@ class RecColour:
         self._build_drop_down()
         self._build_norm_og()
         self._build_recreated_image()
+
+    # --------------------------------------------------- GETTERS ----------------------------------------------------
+
+    def get_stats(self):
+        if self.displayed_image_mode == STO2:
+            return self.sto2_stats
+        if self.displayed_image_mode == NIR:
+            return self.nir_stats
+        if self.displayed_image_mode == THI:
+            return self.thi_stats
+        if self.displayed_image_mode == TWI:
+            return self.twi_stats
 
     # ------------------------------------------------ BUILDERS (MISC) -----------------------------------------------
 
@@ -192,8 +218,6 @@ class RecColour:
     def _scale(self):
         self.upper_scale_value = float(np.ma.max(self.recreated_colour_image_data))
         self.lower_scale_value = float(np.ma.min(self.recreated_colour_image_data))
-        self._build_lower_scale()
-        self._build_upper_scale()
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=2, width=6,
@@ -201,7 +225,7 @@ class RecColour:
         self.lower_scale_input = make_entry(self.root, row=6, column=1, width=12, pady=5, padx=(0, 15), columnspan=2)
         self.lower_scale_input.bind('<Return>', self.__update_upper_lower)
         if self.lower_scale_value is not None:
-            self.lower_scale_input.insert(END, str(round(self.lower_scale_value, 5)))
+            self.lower_scale_input.insert(END, str(round(self.get_stats()[0], 5)))
 
     def _build_upper_scale(self):
         self.upper_scale_text = make_text(self.root, content="Upper: ", row=7, column=0, columnspan=2, width=6,
@@ -210,7 +234,7 @@ class RecColour:
                                             columnspan=2)
         self.upper_scale_input.bind('<Return>', self.__update_upper_lower)
         if self.upper_scale_value is not None:
-            self.upper_scale_input.insert(END, str(round(self.upper_scale_value, 5)))
+            self.upper_scale_input.insert(END, str(round(self.get_stats()[1], 5)))
 
     def _build_norm_og(self):
         self.norm_button = make_button(self.root, text="NORM", row=6, column=3, columnspan=1, command=self.__norm,
@@ -230,7 +254,7 @@ class RecColour:
             logging.debug("BUILDING RECREATED COLOUR IMAGE...")
             (self.recreated_colour_image_graph, self.recreated_colour_image, self.image_array) = \
                 make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4,
-                           lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value,
+                           lower_scale_value=self.get_stats()[0], upper_scale_value=self.get_stats()[1],
                            color_rgb=BACKGROUND, gs=self.gs)
             self.recreated_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
@@ -298,6 +322,7 @@ class RecColour:
     def __update_upper_lower(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())
         self.lower_scale_value = float(self.lower_scale_input.get())
+        self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         self._build_recreated_image()
 
     def __update_sto2_check_status(self, event):

@@ -44,6 +44,9 @@ class NewColour:
         self.upper_scale_value = None
         self.lower_scale_value = None
 
+        self.wl_stats = [None, None]
+        self.idx_stats = [None, None]
+
         self.norm_button = None
         self.og_button = None
 
@@ -74,16 +77,25 @@ class NewColour:
     # ------------------------------------------------ INITIALIZATION ------------------------------------------------
 
     def update_new_colour_image(self, new_colour_image_data):
+        self.new_colour_image_data = new_colour_image_data
+        self._scale()
         if self.old_specs != self.specs:
             self.initial_data = new_colour_image_data
             self.old_specs = self.specs
+            self.wl_stats = [None, None]
+            self.idx_stats = [None, None]
+            self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_image_mode != self.displayed_image_mode:
             self.initial_data = new_colour_image_data
             self.old_image_mode = self.displayed_image_mode
-        print(self.specs, self.displayed_image_mode)
-        self.new_colour_image_data = new_colour_image_data
-        self._scale()
+            self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         self._build_new_image()
+
+    def _update_saving_stats(self, lower, upper):
+        if self.displayed_image_mode == IDX:
+            self.idx_stats = [np.round(lower, 4), np.round(upper, 4)]
+        if self.displayed_image_mode == WL:
+            self.wl_stats = [np.round(lower, 4), np.round(upper, 4)]
 
     def _init_widget(self):
         self._build_wl()
@@ -242,6 +254,7 @@ class NewColour:
     def __update_upper_lower(self, event):
         self.upper_scale_value = float(self.upper_scale_input.get())
         self.lower_scale_value = float(self.lower_scale_input.get())
+        self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         self._build_new_image()
 
     def __update_wl_check_status(self, event):

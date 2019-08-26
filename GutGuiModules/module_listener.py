@@ -199,40 +199,84 @@ class ModuleListener:
         else:
             return 'og_image_' + display + '_data'
 
-    def get_save_rec_info(self, display, image):
+    def get_save_rec_info(self, display, image, masked, path):
         # e.g. rec_image_fromCSV2_with-scale_STO2-gs-0.112341-30.122421_whole.png
-        # e.g. rec_image_fromCSV2_with-scale_STO2-0.112341-30.122421_masked_data.csv
+        # e.g. rec_image_fromCSV2_wo-scale_STO2-0.112341-30.122421_masked_data.csv
         num = self.modules[RECREATED_COLOUR].spec_number
-        lower = round(float(self.modules[RECREATED_COLOUR].lower_scale_value), 4)
-        upper = round(float(self.modules[RECREATED_COLOUR].upper_scale_value), 4)
+        (lower, upper) = self.generate_rec_values_for_saving(path, display)
         grey = self.modules[RECREATED_COLOUR].gs
-        colour = '-cs-'
+        colour = '-cs'
         if grey:
-            colour = '-gs-'
+            colour = '-gs'
+        scale = '-' + str(lower) + '-' + str(upper)
+        masked_mod = '_whole'
+        if masked:
+            masked_mod = '_masked'
         if image:
-            return 'rec_image_fromCSV' + str(num), display + colour + str(lower) + '-' + str(upper)
+            return 'rec_image_fromCSV' + str(num), display + colour + scale + masked_mod
         else:
-            return 'rec_image_fromCSV' + str(num) + '_' + display + '-' + str(lower) + '-' + str(upper) + '_data'
+            return 'rec_image_fromCSV' + str(num) + '_' + display + scale + masked_mod + '_data'
 
-    def get_save_new_info(self, display, image):
+    def generate_rec_values_for_saving(self, path, display):
+        arr = []
+        if display == STO2:
+            arr = self.modules[RECREATED_COLOUR].sto2_stats
+            if arr == [None, None]:
+                data = self.results[path][2].sto2
+                arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
+        if display == NIR:
+            arr = self.modules[RECREATED_COLOUR].nir_stats
+            if arr == [None, None]:
+                data = self.results[path][2].nir
+                arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
+        if display == THI:
+            arr = self.modules[RECREATED_COLOUR].thi_stats
+            if arr == [None, None]:
+                data = self.results[path][2].thi
+                arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
+        if display == TWI:
+            arr = self.modules[RECREATED_COLOUR].twi_stats
+            if arr == [None, None]:
+                data = self.results[path][2].twi
+                arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
+        return arr
+
+    def get_save_new_info(self, display, image, masked, path):
         # e.g. new_image_fromCSV2_with-scale_IDX1-gs-0.112341-30.122421_masked.png
         # e.g. new_image_fromCSV2_with-scale_WL-500-560-0.112341-30.122421_whole_data.csv
-        mod = ''
         num = self.modules[NEW_COLOUR].spec_number
-        lower = round(float(self.modules[NEW_COLOUR].lower_scale_value), 4)
-        upper = round(float(self.modules[NEW_COLOUR].upper_scale_value), 4)
+        (lower, upper) = self.generate_new_values_for_saving(path, display)
+        mod = ''
         if display == 'WL':
-            mod = '_WL-' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
+            mod = 'WL-' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif display == 'IDX':
-            mod = '_IDX' + str(self.index)
+            mod = 'IDX' + str(self.index)
         grey = self.modules[NEW_COLOUR].gs
-        colour = '-cs-'
+        colour = '-cs'
         if grey:
-            colour = '-gs-'
+            colour = '-gs'
+        scale = '-' + str(lower) + '-' + str(upper)
+        masked_mod = '_whole'
+        if masked:
+            masked_mod = '_masked'
         if image:
-            return 'new_image_fromCSV' + str(num), mod + colour + str(lower) + '-' + str(upper)
+            return 'new_image_fromCSV' + str(num), mod + colour + scale + masked_mod
         else:
-            return 'new_image_fromCSV' + str(num) + mod + '-' + str(lower) + '-' + str(upper) + '_data'
+            return 'new_image_fromCSV' + str(num) + '_' + mod + scale + masked_mod + '_data'
+
+    def generate_new_values_for_saving(self, path, display):
+        arr = []
+        if display == IDX:
+            arr = self.modules[NEW_COLOUR].idx_stats
+            if arr == [None, None]:
+                data = self.results[path][2].index
+                arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
+        if display == WL:
+            arr = self.modules[NEW_COLOUR].wl_stats
+            if arr == [None, None]:
+                data = self.results[path][2].get_wl_data()
+                arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
+        return arr
 
     def get_save_hist_info(self, scale, image, masked, path):
         # e.g. histogram_fromCSV1_(0-3)-(0-200000)-0.01_with-scale_np.png
@@ -289,7 +333,7 @@ class ModuleListener:
     def get_save_abs_info(self, scale, image, masked, path):
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale.png
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale_data.csv
-        num = self.modules[HISTOGRAM].spec_number
+        num = self.modules[ABSORPTION_SPEC].spec_number
         (xmin, xmax, ymin, ymax) = self.generate_abs_values_for_saving(masked, path)
         limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')_'
         scale_mod = 'wo-scale_'
@@ -378,7 +422,7 @@ class ModuleListener:
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] < 0:
-                        cube[i][j][k] = float('NaN')
+                        cube[i][j][k] = str('')
                     else:
                         cube[i][j][k] = str(float(cube[i][j][k]))
                 progress(j + i * len(cube[i]), 307200)
@@ -406,7 +450,7 @@ class ModuleListener:
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] < 0:
-                        cube[i][j][k] = float('NaN')
+                        cube[i][j][k] = str('')
                     else:
                         cube[i][j][k] = str(float(cube[i][j][k]))
                 progress(j + i * len(cube[i]), 307200)
@@ -420,7 +464,7 @@ class ModuleListener:
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0:
-                        cube[i][j][k] = float('NaN')
+                        cube[i][j][k] = str('')
                     else:
                         cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
                 progress(j + i * len(cube[i]), 307200)
@@ -435,7 +479,7 @@ class ModuleListener:
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                        cube[i][j][k] = float('NaN')
+                        cube[i][j][k] = str('')
                     else:
                         cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
                 progress(j + i * len(cube[i]), 307200)
@@ -451,7 +495,7 @@ class ModuleListener:
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0:
-                        cube[i][j][k] = float('NaN')
+                        cube[i][j][k] = str('')
                     else:
                         cube[i][j][k] = str(float(-np.log(cube[i][j][k])) / max5)
                 progress(j + i * len(cube[i]), 307200)
@@ -468,7 +512,7 @@ class ModuleListener:
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
                     if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                        cube[i][j][k] = float('NaN')
+                        cube[i][j][k] = str('')
                     else:
                         cube[i][j][k] = str(float(-np.log(cube[i][j][k])) / max5)
                 progress(j + i * len(cube[i]), 307200)

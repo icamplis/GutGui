@@ -88,14 +88,12 @@ class NewAnalysis:
             index_module = Index(index_number, self.x_absorbance, wavelength=self.wavelength)
             self.index = index_module.get_index()
             if self.mask is not None:
-                masked_index_module = Index(index_number, self.x_absorbance_masked, wavelength=self.wavelength)
-                self.index_masked = masked_index_module.get_index()
+                self.index_masked = np.ma.array(index_module.get_index(), mask=self.mask)
         else:
             index_module = Index(index_number, self.x_reflectance, wavelength=self.wavelength)
             self.index = index_module.get_index()
             if self.mask is not None:
-                masked_index_module = Index(index_number, self.x_reflectance_masked, wavelength=self.wavelength)
-                self.index_masked = masked_index_module.get_index()
+                self.index_masked = np.ma.array(index_module.get_index(), mask=self.mask)
 
     # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
 

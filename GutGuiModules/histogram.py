@@ -132,18 +132,6 @@ class Histogram:
 
     # --------------------------------------------------- GETTERS ----------------------------------------------------
 
-    def get_x_low(self):
-        return float(self.x_lower_scale_input.get())
-
-    def get_x_high(self):
-        return float(self.x_upper_scale_input.get())
-
-    def get_y_low(self):
-        return float(self.y_lower_scale_input.get())
-
-    def get_y_high(self):
-        return float(self.y_upper_scale_input.get())
-
     def get_stats(self):
         if self.listener.is_masked:
             return self.masked_stats
