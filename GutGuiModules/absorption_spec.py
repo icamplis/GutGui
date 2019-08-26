@@ -35,6 +35,9 @@ class AbsorptionSpec:
         self.x_lower_scale_value = None
         self.y_lower_scale_value = None
 
+        self.whole_stats = [None, None, None, None]
+        self.masked_stats = [None, None, None, None]
+
         self.save_label = None
         self.save_checkbox = None
         self.save_checkbox_value = IntVar()
@@ -76,6 +79,12 @@ class AbsorptionSpec:
         self.absorption_spec = absorption_spec_data
         self._calc_extrema()
         self._calc_high_low()
+        if self.listener.is_masked:
+            self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
+                                 self.y_lower_scale_value, self.y_upper_scale_value]
+        else:
+            self.whole_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
+                                self.y_lower_scale_value, self.y_upper_scale_value]
         self._build_scale()
         self._build_interactive_absorption_spec()
 
@@ -89,6 +98,14 @@ class AbsorptionSpec:
         self._build_drop_down()
         self._build_interactive_absorption_spec()
         self._build_extrema()
+
+    # --------------------------------------------------- GETTERS ----------------------------------------------------
+
+    def get_stats(self):
+        if self.listener.is_masked:
+            return self.masked_stats
+        else:
+            return self.whole_stats
 
     # ----------------------------------------------- BUILDERS (MISC) -------------------------------------------------
 
@@ -270,6 +287,14 @@ class AbsorptionSpec:
         self.y_upper_scale_value = float(self.y_upper_scale_input.get())
         self.x_lower_scale_value = float(self.x_lower_scale_input.get())
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
+        if self.listener.is_masked:
+            self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
+                                 self.y_lower_scale_value, self.y_upper_scale_value]
+            print('masked ' + str(self.masked_stats))
+        else:
+            self.whole_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
+                                self.y_lower_scale_value, self.y_upper_scale_value]
+            print('whole ' + str(self.whole_stats))
         self._build_interactive_absorption_spec()
 
     def __update_save_with_scale_check_status(self, event):

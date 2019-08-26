@@ -113,10 +113,7 @@ class Histogram:
         if self.listener.is_masked:
             self.masked_stats = [self.min_x, self.max_x, self.min_y, self.max_y, self.step_size_value]
         else:
-            print(self.whole_stats[4])
-            print(self.step_size_value)
             self.whole_stats = [self.min_x, self.max_x, self.min_y, self.max_y, self.step_size_value]
-            print(self.whole_stats[4])
         self._build_scale()
         self._build_step_size()
         self._build_interactive_histogram()
@@ -291,8 +288,6 @@ class Histogram:
                                         pady=(0, 10))
         self.step_size_input = make_entry(self.root, row=6, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.step_size_input.bind('<Return>', self.__update_scales)
-        print(self.listener.is_masked)
-        print(self.get_stats())
         self.step_size_input.insert(END, str(self.get_stats()[4]))
 
     # ---------------------------------------------- BUILDERS (GRAPH) ------------------------------------------------

@@ -286,22 +286,38 @@ class ModuleListener:
                 x_max = np.round(histogram_data[1][-1], 4)
                 return [x_min, x_max, y_min, y_max, step]
 
-    def get_save_abs_info(self, scale, image):
+    def get_save_abs_info(self, scale, image, masked, path):
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale.png
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale_data.csv
-        num = self.modules[ABSORPTION_SPEC].spec_number
-        xmin = round(float(self.modules[ABSORPTION_SPEC].x_lower_scale_value), 4)
-        xmax = round(float(self.modules[ABSORPTION_SPEC].x_upper_scale_value), 4)
-        ymin = round(float(self.modules[ABSORPTION_SPEC].y_lower_scale_value), 4)
-        ymax = round(float(self.modules[ABSORPTION_SPEC].y_upper_scale_value), 4)
+        num = self.modules[HISTOGRAM].spec_number
+        (xmin, xmax, ymin, ymax) = self.generate_abs_values_for_saving(masked, path)
         limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')_'
-        scale_mod = 'wo-scale'
+        scale_mod = 'wo-scale_'
         if scale:
-            scale_mod = 'with-scale'
+            scale_mod = 'with-scale_'
+        masked_mod = 'whole'
+        if masked:
+            masked_mod = 'masked'
         if image:
-            return 'abspec_fromCSV' + str(num) + limits + scale_mod
+            return 'abspec_fromCSV' + str(num) + limits + scale_mod + masked_mod
         else:
-            return 'abspec_fromCSV' + str(num) + limits + 'data'
+            return 'abspec_fromCSV' + str(num) + limits + masked_mod + '_data'
+
+    def generate_abs_values_for_saving(self, masked, path):
+        if not masked:
+            arr = self.modules[ABSORPTION_SPEC].whole_stats
+            return [round(float(arr[i]), 4) for i in range(4)]
+        else:
+            arr = self.modules[ABSORPTION_SPEC].masked_stats
+            if arr != [None, None, None, None]:
+                return [round(float(arr[i]), 4) for i in range(4)]
+            else:
+                masked_data = self.results[path][1].absorption_roi_masked[:, 1]
+                y_min = np.round(np.ma.min(masked_data), 4)
+                y_max = np.round(np.ma.max(masked_data), 4)
+                x_min = 500
+                x_max = 995
+                return [x_min, x_max, y_min, y_max]
 
     def get_abbreviated_rec_info(self):
         # e.g. [0] = STO2-csv7-cs-2.62299-0.22225

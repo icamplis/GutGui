@@ -456,51 +456,60 @@ class Save:
     # ------------------------------------------------ ABSORPTION SPEC -----------------------------------------------
 
     def __save_absorption_spec(self):
-        x_low = self.listener.modules[ABSORPTION_SPEC].x_lower_scale_value
-        x_high = self.listener.modules[ABSORPTION_SPEC].x_upper_scale_value
-        y_low = self.listener.modules[ABSORPTION_SPEC].y_lower_scale_value
-        y_high = self.listener.modules[ABSORPTION_SPEC].y_upper_scale_value
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_abs_result.absorption_roi[:, 1]
             self.__save_absorption_spec_graph(data, self.saves[ABSORPTION_SPEC_IMAGE],
-                                              self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked='_whole')
+                                              self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=False)
+
             if self.saves[ABSORPTION_SPEC_EXCEL]:
+                stats = self.listener.generate_abs_values_for_saving(False, self.current_result_key)
+                (x_low, x_high, y_low, y_high) = stats
+
                 data1 = np.arange(x_low//5 * 5, x_high//5 * 5 + 5, 5)
                 data2 = self.current_abs_result.absorption_roi[:, 1][int((x_low-500)/5):int((x_high-500)/5) + 1]
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
-                name = self.listener.get_save_abs_info(scale=True, image=False) + '_whole'
+
+                name = self.listener.get_save_abs_info(scale=True, image=False, masked=False,
+                                                       path=self.current_result_key)
                 self.__save_data(data, name, formatting="%.5f")
+
         if self.saves[MASKED_IMAGE_SAVE]:
             data = self.current_abs_result.absorption_roi_masked[:, 1]
             self.__save_absorption_spec_graph(data, self.saves[ABSORPTION_SPEC_IMAGE],
-                                              self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked='_masked')
+                                              self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=True)
+
             if self.saves[ABSORPTION_SPEC_EXCEL]:
+                stats = self.listener.generate_abs_values_for_saving(True, self.current_result_key)
+                (x_low, x_high, y_low, y_high) = stats
+
                 data1 = np.arange(x_low//5 * 5, x_high//5 * 5 + 5, 5)
-                data2 = self.current_abs_result.absorption_roi[:, 1]
+                data2 = self.current_abs_result.absorption_roi_masked[:, 1]
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
-                name = self.listener.get_save_abs_info(scale=True, image=False) + '_masked'
+                print(data)
+                name = self.listener.get_save_abs_info(scale=True, image=False, masked=True,
+                                                       path=self.current_result_key)
                 self.__save_data(data, name, formatting="%.5f")
 
     def __save_absorption_spec_graph(self, data, is_abspc_with_scale, is_abspc_wo_scale, masked, fmt=".png"):
         if is_abspc_with_scale:
-            name = self.listener.get_save_abs_info(scale=True, image=True) + masked
-            self.__save_absorption_spec_diagram(data, name, True, fmt=fmt)
+            name = self.listener.get_save_abs_info(scale=True, image=True, masked=masked,
+                                                   path=self.current_result_key)
+            self.__save_absorption_spec_diagram(data, name, True, masked, fmt=fmt)
         if is_abspc_wo_scale:
-            name = self.listener.get_save_abs_info(scale=False, image=True) + masked
-            self.__save_absorption_spec_diagram(data, name, False, fmt=fmt)
+            name = self.listener.get_save_abs_info(scale=False, image=True, masked=masked,
+                                                   path=self.current_result_key)
+            self.__save_absorption_spec_diagram(data, name, False, masked, fmt=fmt)
 
-    def __save_absorption_spec_diagram(self, data, title, scale, fmt=".png"):
+    def __save_absorption_spec_diagram(self, data, title, scale, masked, fmt=".png"):
         output_path = self.current_output_path + "/" + title + fmt
         logging.debug("SAVING ABSORPTION SPEC" + output_path)
         plt.clf()
         axes = plt.subplot(111)
         x_vals = np.arange(500, 1000, 5)
-        x_low = self.listener.modules[ABSORPTION_SPEC].x_lower_scale_value
-        x_high = self.listener.modules[ABSORPTION_SPEC].x_upper_scale_value
-        y_low = self.listener.modules[ABSORPTION_SPEC].y_lower_scale_value
-        y_high = self.listener.modules[ABSORPTION_SPEC].y_upper_scale_value
+        stats = self.listener.generate_abs_values_for_saving(masked, self.current_result_key)
+        (x_low, x_high, y_low, y_high) = stats
         # plot absorption spec
         axes.plot(x_vals, data, '-', lw=0.5)
         axes.grid(linestyle=':', linewidth=0.5)
