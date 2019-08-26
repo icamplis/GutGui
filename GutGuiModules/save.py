@@ -371,28 +371,27 @@ class Save:
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_hist_result.histogram_data.flatten()
             self.__save_histogram_graph(data, self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE],
-                                        masked='_whole')
+                                        masked=False)
             if self.saves[HISTOGRAM_EXCEL]:
                 data = self.current_hist_result.histogram_data.flatten()
-                name = self.listener.get_save_hist_info(scale=True, image=False) + '_whole'
-                self.__save_histogram_data(data, name)
+                name = self.listener.get_save_hist_info(scale=True, image=False, masked=False,
+                                                        path=self.current_result_key)
+                self.__save_histogram_data(data, name, masked=False)
 
         if self.saves[MASKED_IMAGE_SAVE]:
             data = self.current_hist_result.histogram_data.flatten()
             self.__save_histogram_graph(data, self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE],
-                                        masked='_masked')
+                                        masked=True)
             if self.saves[HISTOGRAM_EXCEL]:
                 data = self.current_hist_result.histogram_data_masked.flatten()
-                name = self.listener.get_save_hist_info(scale=True, image=False) + '_masked'
-                self.__save_histogram_data(data, name)
+                name = self.listener.get_save_hist_info(scale=True, image=False, masked=True,
+                                                        path=self.current_result_key)
+                self.__save_histogram_data(data, name, masked=True)
 
-    def __save_histogram_data(self, data, name):
-        x_low = self.listener.modules[HISTOGRAM].get_x_low()
-        x_high = self.listener.modules[HISTOGRAM].get_x_high()
-        y_low = self.listener.modules[HISTOGRAM].get_y_low()
-        y_high = self.listener.modules[HISTOGRAM].get_y_high()
+    def __save_histogram_data(self, data, name, masked):
+        stats = self.listener.generate_hist_values_for_saving(masked, self.current_result_key)
+        (x_low, x_high, y_low, y_high, step) = stats
         start = x_low
-        step = self.listener.modules[HISTOGRAM].step_size_value
         stop = x_high + step
         bins = np.arange(start=start, stop=stop, step=step)
         counts, hist_bins, _ = plt.hist(data, bins=bins)
@@ -402,23 +401,21 @@ class Save:
 
     def __save_histogram_graph(self, data, is_hist_with_scale, is_hist_wo_scale, masked, fmt=".png"):
         if is_hist_with_scale:
-            name = self.listener.get_save_hist_info(scale=True, image=True) + masked
-            self.__save_histogram_diagram(data, name, True, fmt=fmt)
+            name = self.listener.get_save_hist_info(scale=True, image=True, masked=masked,
+                                                    path=self.current_result_key)
+            self.__save_histogram_diagram(data, name, True, masked, fmt=fmt)
         if is_hist_wo_scale:
-            name = self.listener.get_save_hist_info(scale=False, image=True) + masked
-            self.__save_histogram_diagram(data, name, False, fmt=fmt)
+            name = self.listener.get_save_hist_info(scale=False, image=True, masked=masked,
+                                                    path=self.current_result_key)
+            self.__save_histogram_diagram(data, name, False, masked, fmt=fmt)
 
-    def __save_histogram_diagram(self, data, title, scale, fmt=".png"):
+    def __save_histogram_diagram(self, data, title, scale, masked, fmt=".png"):
         output_path = self.current_output_path + "/" + title + fmt
         logging.debug("SAVING HISTOGRAM TO " + output_path)
         plt.clf()
         axes = plt.subplot(111)
-        x_low = self.listener.modules[HISTOGRAM].get_x_low()
-        x_high = self.listener.modules[HISTOGRAM].get_x_high()
-        y_low = self.listener.modules[HISTOGRAM].get_y_low()
-        y_high = self.listener.modules[HISTOGRAM].get_y_high()
-        # calc bins
-        step = self.listener.modules[HISTOGRAM].step_size_value
+        stats = self.listener.generate_hist_values_for_saving(masked, self.current_result_key)
+        (x_low, x_high, y_low, y_high, step) = stats
         start = np.min(data)
         stop = np.max(data) + step
         bins = np.arange(start=start, stop=stop+step, step=step)
@@ -426,8 +423,8 @@ class Save:
         axes.hist(data, bins=bins, align='left')
         if self.listener.modules[HISTOGRAM].parametric:
             # plot error bar
-            mean_value = self.listener.modules[HISTOGRAM].mean_value
-            sd_value = self.listener.modules[HISTOGRAM].sd_value
+            mean_value = np.mean(data)
+            sd_value = np.std(data)
             axes2 = axes.twinx()
             axes2.plot([mean_value-sd_value, mean_value+sd_value], [1, 1], 'k-', lw=1)
             axes2.plot([mean_value-sd_value, mean_value-sd_value], [0.9, 1.1], 'k-', lw=1)

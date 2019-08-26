@@ -234,37 +234,57 @@ class ModuleListener:
         else:
             return 'new_image_fromCSV' + str(num) + mod + '-' + str(lower) + '-' + str(upper) + '_data'
 
-    def get_save_hist_info(self, scale, image):
+    def get_save_hist_info(self, scale, image, masked, path):
         # e.g. histogram_fromCSV1_(0-3)-(0-200000)-0.01_with-scale_np.png
         # e.g. histogram_fromCSV9_(0-3)-(0-200000)-0.01_with-scale_np_STO2-csv7-cs-2.62299-0.22225.png
         # e.g. histogram_fromCSV12_(0-3)_(0-200000)-0.01_with-scale_np_IDX3-csv1-gs-2.62299-0.22225.png
         num = self.modules[HISTOGRAM].spec_number
-        xmin = round(float(self.modules[HISTOGRAM].get_x_low()), 4)
-        xmax = round(float(self.modules[HISTOGRAM].get_x_high()), 4)
-        ymin = round(float(self.modules[HISTOGRAM].get_y_low()), 4)
-        ymax = round(float(self.modules[HISTOGRAM].get_y_high()), 4)
-        step = self.modules[HISTOGRAM].step_size_value
+        (xmin, xmax, ymin, ymax, step) = self.generate_hist_values_for_saving(masked, path)
         parametric = self.modules[HISTOGRAM].parametric
         non_parametric = self.modules[HISTOGRAM].non_parametric
         limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')-' + str(step) + '_'
-        scale_mod = 'wo-scale'
+        scale_mod = 'wo-scale_'
         if scale:
-            scale_mod = 'with-scale'
+            scale_mod = 'with-scale_'
         p_mod = ''
         if parametric:
-            p_mod = '_p_'
+            p_mod = 'p_'
         if non_parametric:
-            p_mod = '_np_'
+            p_mod = 'np_'
         if num == 9 or num == 10:
             data_mod = self.get_abbreviated_rec_info()
         elif num == 11 or num == 12:
             data_mod = self.get_abbreviated_new_info()
         else:
             data_mod = ['', '']
+        masked_mod = 'whole'
+        if masked:
+            masked_mod = 'masked'
         if image:
-            return 'histogram_fromCSV' + str(num) + limits + scale_mod + p_mod + data_mod[0]
+            return 'histogram_fromCSV' + str(num) + limits + scale_mod + p_mod + data_mod[0] + masked_mod
         else:
-            return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[1] + 'data'
+            return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[1] + masked_mod + '_data'
+
+    def generate_hist_values_for_saving(self, masked, path):
+        if not masked:
+            arr = self.modules[HISTOGRAM].whole_stats
+            return [round(float(arr[i]), 4) for i in range(5)]
+        else:
+            arr = self.modules[HISTOGRAM].masked_stats
+            if arr != [None, None, None, None, None]:
+                return [round(float(arr[i]), 4) for i in range(5)]
+            else:
+                masked_data = self.results[path][0].histogram_data_masked
+                lower = np.ma.min(masked_data)
+                upper = np.ma.max(masked_data)
+                step = 0.01
+                bins = np.arange(start=lower, stop=upper + step, step=step)
+                histogram_data = np.histogram(masked_data, bins=bins)
+                y_min = np.round(np.ma.min(histogram_data[0]), 4)
+                y_max = np.round(np.ma.max(histogram_data[0]), 4)
+                x_min = np.round(histogram_data[1][0], 4)
+                x_max = np.round(histogram_data[1][-1], 4)
+                return [x_min, x_max, y_min, y_max, step]
 
     def get_save_abs_info(self, scale, image):
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale.png
@@ -295,8 +315,8 @@ class ModuleListener:
         colour = '-cs'
         if grey:
             colour = '-gs'
-        image = display + '-csv' + str(num) + colour + scale_mod
-        csv = display + '-csv' + str(num) + scale_mod
+        image = display + '-csv' + str(num) + colour + scale_mod + '_'
+        csv = display + '-csv' + str(num) + scale_mod + '_'
         return [image, csv]
 
     def get_abbreviated_new_info(self):
@@ -315,8 +335,8 @@ class ModuleListener:
             mod = 'WL_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif display == IDX:
             mod = 'IDX' + str(self.index)
-        image = mod + '-csv' + str(num) + colour + scale_mod
-        csv = mod + '-csv' + str(num) + scale_mod
+        image = mod + '-csv' + str(num) + colour + scale_mod + '_'
+        csv = mod + '-csv' + str(num) + scale_mod + '_'
         return [image, csv]
 
     # ------------------------------------------------ CSV FUNCTIONS --------------------------------------------------

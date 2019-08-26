@@ -70,7 +70,10 @@ class Histogram:
 
         self.step_size_text = None
         self.step_size_input = None
-        self.step_size_value = 0.01 
+        self.step_size_value = 0.01
+
+        self.whole_stats = [None, None, None, None, None]  # [min_x, max_x, min_y, max_y, step]
+        self.masked_stats = [None, None, None, None, None]
 
         self.save_label = None
         self.save_checkbox = None
@@ -107,7 +110,15 @@ class Histogram:
         self.upper_value = np.ma.max(self.flattened_data)
         self.lower_value = np.ma.min(self.flattened_data)
         self._calc_stats()
+        if self.listener.is_masked:
+            self.masked_stats = [self.min_x, self.max_x, self.min_y, self.max_y, self.step_size_value]
+        else:
+            print(self.whole_stats[4])
+            print(self.step_size_value)
+            self.whole_stats = [self.min_x, self.max_x, self.min_y, self.max_y, self.step_size_value]
+            print(self.whole_stats[4])
         self._build_scale()
+        self._build_step_size()
         self._build_interactive_histogram()
 
     def _init_widgets(self):
@@ -135,6 +146,12 @@ class Histogram:
 
     def get_y_high(self):
         return float(self.y_upper_scale_input.get())
+
+    def get_stats(self):
+        if self.listener.is_masked:
+            return self.masked_stats
+        else:
+            return self.whole_stats
 
     # ----------------------------------------------- BUILDERS (MISC) -------------------------------------------------
 
@@ -242,7 +259,7 @@ class Histogram:
         self.x_lower_scale_input = make_entry(self.root, row=9, column=4, width=7, pady=(0, 10), padx=(0, 15),
                                               columnspan=1)
         self.x_lower_scale_input.bind('<Return>', self.__update_scales)
-        self.x_lower_scale_input.insert(END, str(self.min_x))
+        self.x_lower_scale_input.insert(END, str(self.get_stats()[0]))
 
         # x upper
         self.x_upper_scale_text = make_text(self.root, content="Max x: ", bg=tkcolour_from_rgb(BACKGROUND), column=3,
@@ -250,7 +267,7 @@ class Histogram:
         self.x_upper_scale_input = make_entry(self.root, row=10, column=4, width=7, pady=(0, 10), padx=(0, 15),
                                               columnspan=1)
         self.x_upper_scale_input.bind('<Return>', self.__update_scales)
-        self.x_upper_scale_input.insert(END, str(self.max_x))
+        self.x_upper_scale_input.insert(END, str(self.get_stats()[1]))
 
         # y lower
         self.y_lower_scale_text = make_text(self.root, content="Min y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3,
@@ -258,7 +275,7 @@ class Histogram:
         self.y_lower_scale_input = make_entry(self.root, row=11, column=4, width=7, pady=(0, 10), padx=(0, 15),
                                               columnspan=1)
         self.y_lower_scale_input.bind('<Return>', self.__update_scales)
-        self.y_lower_scale_input.insert(END, str(self.min_y))
+        self.y_lower_scale_input.insert(END, str(self.get_stats()[2]))
 
         # y upper
         self.y_upper_scale_text = make_text(self.root, content="Max y: ", bg=tkcolour_from_rgb(BACKGROUND), column=3,
@@ -266,7 +283,7 @@ class Histogram:
         self.y_upper_scale_input = make_entry(self.root, row=12, column=4, width=7, pady=(0, 10), padx=(0, 15),
                                               columnspan=1)
         self.y_upper_scale_input.bind('<Return>', self.__update_scales)
-        self.y_upper_scale_input.insert(END, str(self.max_y))
+        self.y_upper_scale_input.insert(END, str(self.get_stats()[3]))
 
     def _build_step_size(self):
         self.step_size_text = make_text(self.root, content="Step: ", 
@@ -274,7 +291,9 @@ class Histogram:
                                         pady=(0, 10))
         self.step_size_input = make_entry(self.root, row=6, column=4, width=7, pady=(0, 10), padx=(0, 15), columnspan=1)
         self.step_size_input.bind('<Return>', self.__update_scales)
-        self.step_size_input.insert(END, str(self.step_size_value))
+        print(self.listener.is_masked)
+        print(self.get_stats())
+        self.step_size_input.insert(END, str(self.get_stats()[4]))
 
     # ---------------------------------------------- BUILDERS (GRAPH) ------------------------------------------------
 
@@ -286,7 +305,7 @@ class Histogram:
         if self.flattened_data is not None:
             # calc bins
             bins = np.arange(start=np.ma.min(self.flattened_data),
-                             stop=np.ma.max(self.flattened_data) + self.step_size_value, step=self.step_size_value)
+                             stop=np.ma.max(self.flattened_data) + self.get_stats()[4], step=self.get_stats()[4])
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins)
             if self.parametric:
@@ -297,8 +316,8 @@ class Histogram:
                 self.plot_non_parametric()
             # set axes
             self.interactive_histogram_graph.set_tight_layout(True)
-            self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
-            self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+            self.axes.set_xlim(left=self.get_stats()[0], right=self.get_stats()[1])
+            self.axes.set_ylim(bottom=self.get_stats()[2], top=self.get_stats()[3])
             # commas and non-scientific notation
             self.axes.ticklabel_format(style='plain')
             self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
@@ -449,19 +468,21 @@ class Histogram:
         self.y_upper_scale_value = float(self.y_upper_scale_input.get())
         self.x_lower_scale_value = float(self.x_lower_scale_input.get())
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
+        print(self.whole_stats[4])
+        print(self.step_size_value)
+        print(self.step_size_input.get())
         self.step_size_value = float(self.step_size_input.get())
+        if self.listener.is_masked:
+            self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
+                                 self.y_lower_scale_value, self.y_upper_scale_value,
+                                 self.step_size_value]
+            print('masked ' + str(self.masked_stats))
+        else:
+            self.whole_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
+                                self.y_lower_scale_value, self.y_upper_scale_value,
+                                self.step_size_value]
+            print('whole ' + str(self.whole_stats))
         self._build_interactive_histogram()
-
-    def __update_to_original_data(self):
-        self.listener.broadcast_to_histogram()
-
-    def __update_to_wl_data(self):
-        data = self.listener.get_wl()
-        self.update_histogram(data)
-        
-    def __update_to_idx_data(self):
-        data = self.listener.get_idx()
-        self.update_histogram(data)
 
     def __update_save_with_scale_check_status(self, event):
         value = not bool(self.save_checkbox_value.get())
