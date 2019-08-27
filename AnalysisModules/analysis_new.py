@@ -98,7 +98,7 @@ class NewAnalysis:
     # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
 
     def _calc_general(self):
-        logging.debug("CALCULATING: NEW IMAGE...")
+        logging.debug("CALCULATING: ABSORPTION SPECTRUM...")
         self.__calc_x1()
         self.__calc_x_reflectance()
         self.__calc_x2()
@@ -131,7 +131,7 @@ class NewAnalysis:
             if self.wavelength[0] != self.wavelength[1]:
                 wav_lower = int(round(max(0, min(self.wavelength)), 0))
                 wav_upper = int(round(min(max(self.wavelength), 99), 0))
-                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower: wav_upper+1],
+                self.x_reflectance_masked_w = np.ma.array(np.mean(self.x_reflectance[:, :, wav_lower:wav_upper+1],
                                                                   axis=2), mask=self.mask)
             else:
                 self.x_reflectance_masked_w = np.ma.array(self.x_reflectance[:, :, self.wavelength[0]], mask=self.mask)
@@ -141,6 +141,8 @@ class NewAnalysis:
         self.x2 = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
         if self.negative:
             self.x2 = np.ma.array(self.x2, mask=self.x2 < 0)
+        if self.normal:
+            self.x2 = self.x2/np.ma.max(self.x2)
 
     def __calc_x_absorbance(self):
         self.x_absorbance = self.x2

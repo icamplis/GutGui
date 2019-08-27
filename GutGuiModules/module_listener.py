@@ -175,14 +175,13 @@ class ModuleListener:
         info = '_' + str(display) + '_fromCSV' + str(num)
         return info
 
-    def get_csv_new_info(self):
+    def get_csv_new_info(self, mode):
         # retrieve data: display, csv number
-        display = self.modules[NEW_COLOUR].displayed_image_mode
         num = self.modules[NEW_COLOUR].spec_number
         mod = ''
-        if display == WL:
+        if mode == WL:
             mod = '_WL_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
-        elif display == IDX:
+        elif mode == IDX:
             mod = '_IDX' + str(self.index)
         info = str(mod) + '_fromCSV' + str(num)
         return info

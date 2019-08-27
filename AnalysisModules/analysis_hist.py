@@ -114,7 +114,7 @@ class HistogramAnalysis:
     # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
 
     def _calc_general(self):
-        logging.debug("CALCULATING: HISTOGRAM...")
+        logging.debug("CALCULATING: ABSORPTION SPECTRUM...")
         self.__calc_x1()
         self.__calc_x_reflectance()
         self.__calc_x2()
@@ -157,6 +157,8 @@ class HistogramAnalysis:
         self.x2 = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
         if self.negative:
             self.x2 = np.ma.array(self.x2, mask=self.x2 < 0)
+        if self.normal:
+            self.x2 = self.x2/np.ma.max(self.x2)
 
     def __calc_x_absorbance(self):
         self.x_absorbance = self.x2
