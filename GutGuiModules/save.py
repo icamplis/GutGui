@@ -159,11 +159,12 @@ class Save:
 
     # ------------------------------------------------- SAVING HELPERS -----------------------------------------------
 
-    def __save_data(self, data, title, stats, fmt=".csv", formatting="%.2f"):
+    def __save_data(self, data, title, stats=[None, None], fmt=".csv", formatting="%.2f"):
         output_path = self.current_output_path + "/" + title + fmt
         logging.debug("SAVING DATA TO " + output_path)
-        save_data = np.clip(data, a_min=stats[0], a_max=stats[1])
-        np.savetxt(self.current_output_path + "/" + title + fmt, save_data, delimiter=",", fmt=formatting)
+        if stats != [None, None]:
+            data = np.clip(data, a_min=stats[0], a_max=stats[1])
+        np.savetxt(self.current_output_path + "/" + title + fmt, data, delimiter=",", fmt=formatting)
 
     def __save_image(self, data, name, is_image_with_scale, is_image_wo_scale, stats, cmap='jet', fmt=".png"):
         if is_image_with_scale:
@@ -173,7 +174,7 @@ class Save:
             title = name[0] + '_wo-scale_' + name[1]
             self.__save_image_diagram(data.T, title, False, cmap, stats, fmt)
 
-    def __save_image_diagram(self, data, title, scale, cmap, stats, fmt=".png"):
+    def __save_image_diagram(self, data, title, scale, cmap, stats=[None, None], fmt=".png"):
         output_path = self.current_output_path + "/" + title + fmt
         logging.debug("SAVING IMAGE TO " + output_path)
         plt.clf()

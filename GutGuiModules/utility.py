@@ -315,7 +315,7 @@ def make_info(title, info):
     window.title(title)
     window.geometry("+0+0")
     # create textbox and insert info
-    text = Text(window, height=23, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
+    text = Text(window, height=24, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
     text.insert(END, title, ('title', str(0)))
     text.insert(END, '\n\n' + info)
     text.tag_config('title', foreground='black', underline=True)

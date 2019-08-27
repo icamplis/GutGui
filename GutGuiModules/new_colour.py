@@ -79,7 +79,7 @@ class NewColour:
 
     # ------------------------------------------------ INITIALIZATION ------------------------------------------------
 
-    def update_new_colour_image(self, new_colour_image_data):
+    def update_new_colour_image(self, new_colour_image_data, build=True):
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         if self.old_specs != self.specs:
@@ -93,12 +93,15 @@ class NewColour:
             self.old_image_mode = self.displayed_image_mode
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_wavelength != self.listener.wavelength:
+            self.initial_data = new_colour_image_data
             self.old_wavelength = self.listener.wavelength
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_index != self.listener.index:
+            self.initial_data = new_colour_image_data
             self.old_index = self.listener.index
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
-        self._build_new_image()
+        if build:
+            self._build_new_image()
 
     def _update_saving_stats(self, lower, upper):
         if self.displayed_image_mode == IDX:
@@ -181,21 +184,25 @@ class NewColour:
         self._build_lower_scale()
         self._build_upper_scale()
 
-    def _build_lower_scale(self):
+    def _build_lower_scale(self, lower=None):
         self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=1, width=6,
                                           bg=tkcolour_from_rgb(BACKGROUND), pady=5, padx=15)
         self.lower_scale_input = make_entry(self.root, row=6, column=1, width=12, pady=5, padx=0, columnspan=2)
         self.lower_scale_input.bind('<Return>', self.__update_upper_lower)
-        if self.lower_scale_value is not None:
+        if self.lower_scale_value is not None and lower is None:
             self.lower_scale_input.insert(END, str(round(self.lower_scale_value, 5)))
+        if lower is not None:
+            self.lower_scale_input.insert(END, str(round(lower, 5)))
 
-    def _build_upper_scale(self):
+    def _build_upper_scale(self, upper=None):
         self.upper_scale_text = make_text(self.root, content="Upper:", row=7, column=0, columnspan=1, width=6,
                                           bg=tkcolour_from_rgb(BACKGROUND), pady=(5, 0), padx=15)
         self.upper_scale_input = make_entry(self.root, row=7, column=1, width=12, pady=(5, 0), padx=0, columnspan=2)
         self.upper_scale_input.bind('<Return>', self.__update_upper_lower)
-        if self.upper_scale_value is not None:
+        if self.upper_scale_value is not None and upper is None:
             self.upper_scale_input.insert(END, str(round(self.upper_scale_value, 5)))
+        if upper is not None:
+            self.upper_scale_input.insert(END, str(round(upper, 5)))
 
     def _build_norm_og(self):
         self.norm_button = make_button(self.root, text="NORM", row=6, column=3, columnspan=1, command=self.__norm,
@@ -231,10 +238,11 @@ class NewColour:
 
     def __norm(self):
         data = self.initial_data / np.ma.max(self.initial_data)
-        self.update_new_colour_image(data)
+        self.update_new_colour_image(data, build=False)
 
     def __og(self):
-        self.update_new_colour_image(self.initial_data)
+        data = self.initial_data
+        self.update_new_colour_image(data)
 
     def __update_data(self, event):
         choice = self.drop_down_var.get()[:2]

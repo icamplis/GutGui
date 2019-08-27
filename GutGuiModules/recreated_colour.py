@@ -84,7 +84,7 @@ class RecColour:
 
     # ------------------------------------------------ INITIALIZATION ------------------------------------------------
 
-    def update_recreated_image(self, recreated_colour_image_data):
+    def update_recreated_image(self, recreated_colour_image_data, build=True):
         self.recreated_colour_image_data = recreated_colour_image_data
         self._scale()
         if self.old_specs != self.specs:
@@ -101,7 +101,8 @@ class RecColour:
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         self._build_lower_scale()
         self._build_upper_scale()
-        self._build_recreated_image()
+        if build:
+            self._build_recreated_image()
 
     def _update_saving_stats(self, lower, upper):
         if self.displayed_image_mode == STO2:
@@ -225,7 +226,7 @@ class RecColour:
         self.lower_scale_input = make_entry(self.root, row=6, column=1, width=12, pady=5, padx=(0, 15), columnspan=2)
         self.lower_scale_input.bind('<Return>', self.__update_upper_lower)
         if self.lower_scale_value is not None:
-            self.lower_scale_input.insert(END, str(round(self.get_stats()[0], 5)))
+            self.lower_scale_input.insert(END, str(round(self.lower_scale_value, 5)))
 
     def _build_upper_scale(self):
         self.upper_scale_text = make_text(self.root, content="Upper: ", row=7, column=0, columnspan=2, width=6,
@@ -234,7 +235,7 @@ class RecColour:
                                             columnspan=2)
         self.upper_scale_input.bind('<Return>', self.__update_upper_lower)
         if self.upper_scale_value is not None:
-            self.upper_scale_input.insert(END, str(round(self.get_stats()[1], 5)))
+            self.upper_scale_input.insert(END, str(round(self.upper_scale_value, 5)))
 
     def _build_norm_og(self):
         self.norm_button = make_button(self.root, text="NORM", row=6, column=3, columnspan=1, command=self.__norm,
@@ -269,7 +270,7 @@ class RecColour:
         make_popup_image(self.recreated_colour_image_graph)
 
     def __norm(self):
-        self.update_recreated_image(self.initial_data / np.ma.max(self.initial_data))
+        self.update_recreated_image(self.initial_data / np.ma.max(self.initial_data), build=False)
 
     def __og(self):
         self.update_recreated_image(self.initial_data)
