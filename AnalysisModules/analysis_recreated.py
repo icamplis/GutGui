@@ -107,21 +107,23 @@ class RecreatedAnalysis:
     def _calc_sto2(self):
         logging.debug("CALCULATING: STO2...")
         if self.absorbance:
-            self._x_absorbance_gradient = np.gradient(self.x_absorbance, axis=2)
-            self._x_absorbance_gradient_min_1 = \
-                self._x_absorbance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
-            self._x_absorbance_gradient_min_2 = \
-                self._x_absorbance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
-            temp1 = self._x_absorbance_gradient_min_1 / self.R1
-            temp2 = self._x_absorbance_gradient_min_2 / self.R2
+            # between 570nm and 590nm
+            data1 = np.ma.amin(np.gradient(np.gradient(self.x_absorbance[:, :, 14:18], axis=2), axis=2), axis=2)
+            # between 740nm and 780nm
+            data2 = np.ma.amin(np.gradient(np.gradient(self.x_absorbance[:, :, 48:56], axis=2), axis=2), axis=2)
+            # self._x_absorbance_gradient_min_1 = self._x_absorbance_gradient[:, :, 14:18].min(axis=2)
+            # self._x_absorbance_gradient_min_2 = self._x_absorbance_gradient[:, :, 48:56].min(axis=2)
+            temp1 = data1 / self.R1
+            temp2 = data2 / self.R2
         else:
-            self._x_reflectance_gradient = np.gradient(self.x_reflectance, axis=2)
-            self._x_reflectance_gradient_min_1 = \
-                self._x_reflectance_gradient[:, :, 14:18].min(axis=2)  # between 570nm and 590nm
-            self._x_reflectance_gradient_min_2 = \
-                self._x_reflectance_gradient[:, :, 48:56].min(axis=2)  # between 740nm and 780nm
-            temp1 = self._x_reflectance_gradient_min_1 / self.R1
-            temp2 = self._x_reflectance_gradient_min_2 / self.R2
+            # between 570nm and 590nm
+            data1 = np.ma.amin(np.gradient(np.gradient(self.x_reflectance[:, :, 14:18], axis=2), axis=2), axis=2)
+            # between 740nm and 780nm
+            data2 = np.ma.amin(np.gradient(np.gradient(self.x_reflectance[:, :, 48:56], axis=2), axis=2), axis=2)
+            # self._x_reflectance_gradient_min_1 = self._x_reflectance_gradient[:, :, 14:18].min(axis=2)
+            # self._x_reflectance_gradient_min_2 = self._x_reflectance_gradient[:, :, 48:56].min(axis=2)
+            temp1 = data1 / self.R1
+            temp2 = data2 / self.R2
         self.sto2 = temp1 / (temp1 + temp2)
         logging.debug("Complete Sto2 Mean: " + str(self.sto2[:, :].mean()))
         if self.mask is not None:

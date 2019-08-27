@@ -99,8 +99,6 @@ class RecColour:
             self.initial_data = recreated_colour_image_data
             self.old_image_mode = self.displayed_image_mode
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
-        self._build_lower_scale()
-        self._build_upper_scale()
         if build:
             self._build_recreated_image()
 
@@ -219,6 +217,8 @@ class RecColour:
     def _scale(self):
         self.upper_scale_value = float(np.ma.max(self.recreated_colour_image_data))
         self.lower_scale_value = float(np.ma.min(self.recreated_colour_image_data))
+        self._build_lower_scale()
+        self._build_upper_scale()
 
     def _build_lower_scale(self):
         self.lower_scale_text = make_text(self.root, content="Lower:", row=6, column=0, columnspan=2, width=6,
@@ -255,7 +255,7 @@ class RecColour:
             logging.debug("BUILDING RECREATED COLOUR IMAGE...")
             (self.recreated_colour_image_graph, self.recreated_colour_image, self.image_array) = \
                 make_image(self.root, self.recreated_colour_image_data, row=2, column=0, columnspan=4, rowspan=4,
-                           lower_scale_value=self.get_stats()[0], upper_scale_value=self.get_stats()[1],
+                           lower_scale_value=self.lower_scale_value, upper_scale_value=self.upper_scale_value,
                            color_rgb=BACKGROUND, gs=self.gs)
             self.recreated_colour_image.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
