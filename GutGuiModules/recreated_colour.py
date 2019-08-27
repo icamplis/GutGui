@@ -270,7 +270,13 @@ class RecColour:
         make_popup_image(self.recreated_colour_image_graph)
 
     def __norm(self):
-        self.update_recreated_image(self.initial_data / np.ma.max(self.initial_data), build=False)
+        data = self.initial_data
+        if np.ma.min(self.initial_data) < 0:
+            data = data + np.abs(np.ma.min(data))
+        if np.ma.min(self.initial_data) > 0:
+            data = data - np.abs(np.ma.min(data))
+        data = data / np.ma.max(data)
+        self.update_recreated_image(data, build=False)
 
     def __og(self):
         self.update_recreated_image(self.initial_data)

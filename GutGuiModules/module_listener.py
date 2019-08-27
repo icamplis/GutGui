@@ -144,8 +144,12 @@ class ModuleListener:
             return np.ma.array(data, mask=self.mask)
 
     def get_current_norm_rec_data(self):
-        image = self.modules[RECREATED_COLOUR].recreated_colour_image_data
-        data = image / np.ma.max(image)
+        data = self.modules[RECREATED_COLOUR].recreated_colour_image_data
+        if np.ma.min(data) < 0:
+            data = data + np.abs(np.ma.min(data))
+        if np.ma.min(data) > 0:
+            data = data - np.abs(np.ma.min(data))
+        data = data / np.ma.max(data)
         if not self.is_masked:
             return data
         else:
@@ -159,8 +163,12 @@ class ModuleListener:
             return np.ma.array(data, mask=self.mask)
 
     def get_current_norm_new_data(self):
-        image = self.modules[NEW_COLOUR].new_colour_image_data
-        data = image / np.ma.max(image)
+        data = self.modules[NEW_COLOUR].new_colour_image_data
+        if np.ma.min(data) < 0:
+            data = data + np.abs(np.ma.min(data))
+        if np.ma.min(data) > 0:
+            data = data - np.abs(np.ma.min(data))
+        data = data / np.ma.max(data)
         if not self.is_masked:
             return data
         else:
