@@ -569,15 +569,16 @@ class ModuleListener:
     # ------------------------------------------------ BROADCASTERS --------------------------------------------------
 
     def broadcast_new_data(self):
-        self.broadcast_to_histogram()
-        self.broadcast_to_absorption_spec()
         self.broadcast_to_recreated_image()
         self.broadcast_to_new_image()
+        self.broadcast_to_histogram()
+        self.broadcast_to_absorption_spec()
         self.broadcast_to_original_image()
 
     def broadcast_to_histogram(self):
         num = self.modules[HISTOGRAM].spec_number
         if num in [1, 2, 3, 4, 5, 6, 7, 8]:
+
             if self.is_masked:
                 new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data_masked
             else:

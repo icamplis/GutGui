@@ -5,12 +5,15 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def main():
-    (window, introduction, input_output, image_diagram) = init()
+    (window, introduction, input_output, image_diagram, subtraction) = init()
 
     listener = ModuleListener()
 
     # introduction
-    intro_module = Introduction(introduction)
+    Introduction(introduction)
+
+    # histogram subtraction
+    Subtraction(subtraction, listener)
 
     # source and output
     source_and_output_frame = frame(input_output, BACKGROUND, 0, 0, 1, 2)

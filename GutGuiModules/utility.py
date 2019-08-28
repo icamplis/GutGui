@@ -38,9 +38,13 @@ def init():
     image_diagram.pack()
     notebook.add(image_diagram, text="Images and Diagrams")
 
+    subtraction = Frame(notebook, bg=tkcolour_from_rgb(BACKGROUND))
+    subtraction.pack()
+    notebook.add(subtraction, text="Histogram Subtraction")
+
     notebook.pack()
 
-    return root, introduction, input_output, image_diagram
+    return root, introduction, input_output, image_diagram, subtraction
 
 
 def tkcolour_from_rgb(rgb):
@@ -342,7 +346,7 @@ def specs(choice):
         specs_tup = (True, False, False)
     elif choice == '8.':
         specs_tup = (True, False, True)
-    spec_number = choice[0]
+    spec_number = int(choice[0])
     return specs_tup, spec_number
 
 
