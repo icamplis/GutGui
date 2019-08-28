@@ -58,6 +58,7 @@ class RecColour:
 
         self.norm_button = None
         self.og_button = None
+        self.norm = False
 
         self.recreated_colour_image_graph = None
         self.recreated_colour_image = None
@@ -88,6 +89,7 @@ class RecColour:
         self.recreated_colour_image_data = recreated_colour_image_data
         self._scale()
         if self.old_specs != self.specs:
+            self.norm = False
             self.initial_data = recreated_colour_image_data
             self.old_specs = self.specs
             self.sto2_stats = [None, None]
@@ -96,6 +98,7 @@ class RecColour:
             self.twi_stats = [None, None]
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_image_mode != self.displayed_image_mode:
+            self.norm = False
             self.initial_data = recreated_colour_image_data
             self.old_image_mode = self.displayed_image_mode
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
@@ -270,6 +273,7 @@ class RecColour:
         make_popup_image(self.recreated_colour_image_graph)
 
     def __norm(self):
+        self.norm = True
         data = self.initial_data
         if np.ma.min(self.initial_data) < 0:
             data = data + np.abs(np.ma.min(data))
@@ -279,6 +283,7 @@ class RecColour:
         self.update_recreated_image(data, build=False)
 
     def __og(self):
+        self.norm = False
         self.update_recreated_image(self.initial_data)
 
     def __update_data(self, event):

@@ -37,7 +37,7 @@ class ModuleListener:
         self.params = [0.2, -0.03, -0.46, 0.45, 0.4, 1.55, 0.1, -0.5]
 
         # ORIGINAL IMAGE
-        self.mask = []
+        self.mask = None
 
         # DIAGRAM
         self.is_masked = False
@@ -103,7 +103,7 @@ class ModuleListener:
             return self.results[path]
 
     def get_mask(self):
-        if len(self.mask) != 0:
+        if self.mask is not None:
             return self.mask
         else:
             return np.asarray([[False for _ in range(640)] for _ in range(480)])
@@ -342,7 +342,10 @@ class ModuleListener:
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale_data.csv
         num = self.modules[ABSORPTION_SPEC].spec_number
         (xmin, xmax, ymin, ymax) = self.generate_abs_values_for_saving(masked, path)
-        limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')_'
+        norm = '_'
+        if self.modules[ABSORPTION_SPEC].norm:
+            norm = '-normed_'
+        limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')' + norm
         scale_mod = 'wo-scale_'
         if scale:
             scale_mod = 'with-scale_'
@@ -379,11 +382,14 @@ class ModuleListener:
         upper = round(float(self.modules[RECREATED_COLOUR].upper_scale_value), 4)
         scale_mod = '-' + str(lower) + '-' + str(upper)
         grey = self.modules[RECREATED_COLOUR].gs
+        norm = ''
+        if self.modules[RECREATED_COLOUR].norm:
+            norm = '-normed'
         colour = '-cs'
         if grey:
             colour = '-gs'
-        image = display + '-csv' + str(num) + colour + scale_mod + '_'
-        csv = display + '-csv' + str(num) + scale_mod + '_'
+        image = display + '-csv' + str(num) + colour + scale_mod + norm + '_'
+        csv = display + '-csv' + str(num) + scale_mod + norm + '_'
         return [image, csv]
 
     def get_abbreviated_new_info(self):
@@ -395,6 +401,9 @@ class ModuleListener:
         upper = round(float(self.modules[NEW_COLOUR].upper_scale_value), 4)
         scale_mod = '-' + str(lower) + '-' + str(upper)
         grey = self.modules[NEW_COLOUR].gs
+        norm = ''
+        if self.modules[NEW_COLOUR].norm:
+            norm = '-normed'
         colour = '-cs'
         if grey:
             colour = '-gs'
@@ -402,8 +411,8 @@ class ModuleListener:
             mod = 'WL_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif display == IDX:
             mod = 'IDX' + str(self.index)
-        image = mod + '-csv' + str(num) + colour + scale_mod + '_'
-        csv = mod + '-csv' + str(num) + scale_mod + '_'
+        image = mod + '-csv' + str(num) + colour + scale_mod + norm + '_'
+        csv = mod + '-csv' + str(num) + scale_mod + norm + '_'
         return [image, csv]
 
     # ------------------------------------------------ CSV FUNCTIONS --------------------------------------------------
@@ -567,10 +576,20 @@ class ModuleListener:
         self.broadcast_to_original_image()
 
     def broadcast_to_histogram(self):
-        if self.is_masked:
-            new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data_masked
-        else:
-            new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data
+        num = self.modules[HISTOGRAM].spec_number
+        if num in [1, 2, 3, 4, 5, 6, 7, 8]:
+            if self.is_masked:
+                new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data_masked
+            else:
+                new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data
+        elif num == 9:
+            new_histogram_data = self.get_current_rec_data()
+        elif num == 10:
+            new_histogram_data = self.get_current_norm_rec_data()
+        elif num == 11:
+            new_histogram_data = self.get_current_new_data()
+        elif num == 12:
+            new_histogram_data = self.get_current_norm_new_data()
         self.modules[HISTOGRAM].update_histogram(new_histogram_data)
 
     def broadcast_to_absorption_spec(self):

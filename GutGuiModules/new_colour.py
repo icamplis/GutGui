@@ -52,6 +52,7 @@ class NewColour:
 
         self.norm_button = None
         self.og_button = None
+        self.norm = False
 
         self.new_colour_image_graph = None
         self.new_colour_image = None
@@ -83,20 +84,24 @@ class NewColour:
         self.new_colour_image_data = new_colour_image_data
         self._scale()
         if self.old_specs != self.specs:
+            self.norm = False
             self.initial_data = new_colour_image_data
             self.old_specs = self.specs
             self.wl_stats = [None, None]
             self.idx_stats = [None, None]
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_image_mode != self.displayed_image_mode:
+            self.norm = False
             self.initial_data = new_colour_image_data
             self.old_image_mode = self.displayed_image_mode
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_wavelength != self.listener.wavelength:
+            self.norm = False
             self.initial_data = new_colour_image_data
             self.old_wavelength = self.listener.wavelength
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if self.old_index != self.listener.index:
+            self.norm = False
             self.initial_data = new_colour_image_data
             self.old_index = self.listener.index
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
@@ -237,6 +242,7 @@ class NewColour:
         make_popup_image(self.new_colour_image_graph)
 
     def __norm(self):
+        self.norm = True
         data = self.initial_data
         if np.ma.min(self.initial_data) < 0:
             data = data + np.abs(np.ma.min(data))
@@ -246,6 +252,7 @@ class NewColour:
         self.update_new_colour_image(data, build=False)
 
     def __og(self):
+        self.norm = False
         data = self.initial_data
         self.update_new_colour_image(data)
 

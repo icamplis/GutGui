@@ -368,23 +368,48 @@ class Save:
 
     # ---------------------------------------------------- HISTOGRAM -------------------------------------------------
 
+    def hist_data_from_spec_num(self, spec_num, masked):
+        if spec_num in [1, 2, 3, 4, 5, 6, 7, 8]:
+            if masked:
+                return self.current_hist_result.histogram_data_masked.flatten()
+            else:
+                return self.current_hist_result.histogram_data.flatten()
+        else:
+            mask = self.listener.get_mask()
+            if masked:
+                return np.ma.array(self.listener.modules[HISTOGRAM].flattened_data, mask=mask)
+            else:
+                data = self.listener.modules[HISTOGRAM].flattened_data
+                if isinstance(data, np.ma.MaskedArray):
+                    print('masked')
+                    whole_mask = data.mask.flatten()
+                    print(whole_mask.shape)
+                    flat_mask = mask.flatten()
+                    print(flat_mask.shape)
+                    unmasked = data.data
+                    stack = np.stack((whole_mask, flat_mask))
+                    temp_mask = [stack[0][i] or stack[1][i] for i in range(len(stack[0]))]
+                    final_mask = np.asarray(temp_mask).reshape((480, 640))
+                    data = np.ma.array(unmasked, mask=final_mask)
+                return data
+
     def __save_histogram(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
-            data = self.current_hist_result.histogram_data.flatten()
+            data = self.hist_data_from_spec_num(self.listener.modules[HISTOGRAM].spec_number, False)
             self.__save_histogram_graph(data, self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE],
                                         masked=False)
             if self.saves[HISTOGRAM_EXCEL]:
-                data = self.current_hist_result.histogram_data.flatten()
+                data = self.hist_data_from_spec_num(self.listener.modules[HISTOGRAM].spec_number, False)
                 name = self.listener.get_save_hist_info(scale=True, image=False, masked=False,
                                                         path=self.current_result_key)
                 self.__save_histogram_data(data, name, masked=False)
 
         if self.saves[MASKED_IMAGE_SAVE]:
-            data = self.current_hist_result.histogram_data.flatten()
+            data = self.hist_data_from_spec_num(self.listener.modules[HISTOGRAM].spec_number, True)
             self.__save_histogram_graph(data, self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE],
                                         masked=True)
             if self.saves[HISTOGRAM_EXCEL]:
-                data = self.current_hist_result.histogram_data_masked.flatten()
+                data = self.hist_data_from_spec_num(self.listener.modules[HISTOGRAM].spec_number, True)
                 name = self.listener.get_save_hist_info(scale=True, image=False, masked=True,
                                                         path=self.current_result_key)
                 self.__save_histogram_data(data, name, masked=True)
@@ -456,27 +481,40 @@ class Save:
 
     # ------------------------------------------------ ABSORPTION SPEC -----------------------------------------------
 
+    @staticmethod
+    def norm(data):
+        if np.ma.min(data) < 0:
+            data = data + np.abs(np.ma.min(data))
+        if np.ma.min(data) > 0:
+            data = data - np.abs(np.ma.min(data))
+        return data / np.ma.max(data)
+
     def __save_absorption_spec(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_abs_result.absorption_roi[:, 1]
+            if self.listener.modules[ABSORPTION_SPEC].norm:
+                data = self.norm(data)
             self.__save_absorption_spec_graph(data, self.saves[ABSORPTION_SPEC_IMAGE],
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=False)
 
             if self.saves[ABSORPTION_SPEC_EXCEL]:
                 stats = self.listener.generate_abs_values_for_saving(False, self.current_result_key)
                 (x_low, x_high, y_low, y_high) = stats
-
+                print(y_low, y_high)
                 data1 = np.arange(x_low//5 * 5, x_high//5 * 5 + 5, 5)
                 data2 = self.current_abs_result.absorption_roi[:, 1][int((x_low-500)/5):int((x_high-500)/5) + 1]
+                if self.listener.modules[ABSORPTION_SPEC].norm:
+                    data2 = self.norm(data2)
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
-
                 name = self.listener.get_save_abs_info(scale=True, image=False, masked=False,
                                                        path=self.current_result_key)
                 self.__save_data(data, name, formatting="%.5f")
 
         if self.saves[MASKED_IMAGE_SAVE]:
             data = self.current_abs_result.absorption_roi_masked[:, 1]
+            if self.listener.modules[ABSORPTION_SPEC].norm:
+                data = self.norm(data)
             self.__save_absorption_spec_graph(data, self.saves[ABSORPTION_SPEC_IMAGE],
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=True)
 
@@ -486,6 +524,8 @@ class Save:
 
                 data1 = np.arange(x_low//5 * 5, x_high//5 * 5 + 5, 5)
                 data2 = self.current_abs_result.absorption_roi_masked[:, 1]
+                if self.listener.modules[ABSORPTION_SPEC].norm:
+                    data2 = self.norm(data2)
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
                 print(data)

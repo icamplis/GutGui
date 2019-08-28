@@ -15,6 +15,12 @@ class AbsorptionSpec:
         self.x_vals = np.arange(500, 1000, 5)
         self.absorption_spec = []
 
+        self.og_button = None
+        self.norm_button = None
+        self.norm = False
+        self.initial_data = None
+        self.old_specs = ()
+
         self.local_maximum_title = None
         self.local_maximum_text = None
         self.local_maximum_value = None
@@ -79,12 +85,18 @@ class AbsorptionSpec:
         self.absorption_spec = absorption_spec_data
         self._calc_extrema()
         self._calc_high_low()
+        if self.old_specs != self.specs:
+            self.norm = False
+            self.initial_data = absorption_spec_data
+            self.old_specs = self.specs
         if self.listener.is_masked:
+            self.norm = False
             self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
                                  self.y_lower_scale_value, self.y_upper_scale_value]
         else:
             self.whole_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
                                 self.y_lower_scale_value, self.y_upper_scale_value]
+        print(self.norm)
         self._build_scale()
         self._build_interactive_absorption_spec()
 
@@ -96,6 +108,7 @@ class AbsorptionSpec:
         self._build_info_label()
         self._build_reset_button()
         self._build_drop_down()
+        self._build_norm_og()
         self._build_interactive_absorption_spec()
         self._build_extrema()
 
@@ -148,6 +161,12 @@ class AbsorptionSpec:
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
         self.drop_down_menu.configure(highlightthickness=0, width=1, anchor='w', padx=15)
         self.drop_down_menu.grid(column=1, row=0, columnspan=1, padx=(80, 0))
+
+    def _build_norm_og(self):
+        self.norm_button = make_button(self.root, text="NORM", row=0, column=2, columnspan=1, command=self.__norm,
+                                       inner_padx=3, inner_pady=0, outer_padx=(0, 15), width=5)
+        self.og_button = make_button(self.root, text="OG", row=0, column=3, columnspan=1, command=self.__og,
+                                     inner_padx=3, inner_pady=0, outer_padx=(0, 15), width=5)
 
     # ----------------------------------------------- BUILDERS (DATA) -------------------------------------------------
 
@@ -238,7 +257,7 @@ class AbsorptionSpec:
         if x % 1 == 0:
             return format(int(x), ',')
         else:
-            return format(round(x, 2))
+            return format(round(x, 4))
 
     # ------------------------------------------------- CALCULATORS --------------------------------------------------
 
@@ -271,6 +290,21 @@ class AbsorptionSpec:
         self._calc_high_low()
         self._build_scale()
         self._build_interactive_absorption_spec()
+
+    def __norm(self):
+        self.norm = True
+        data = self.initial_data
+        if np.ma.min(self.initial_data) < 0:
+            data = data + np.abs(np.ma.min(data))
+        if np.ma.min(self.initial_data) > 0:
+            data = data - np.abs(np.ma.min(data))
+        data = data / np.ma.max(data)
+        self.update_absorption_spec(data / np.ma.max(data))
+
+    def __og(self):
+        self.norm = False
+        data = self.initial_data
+        self.update_absorption_spec(data)
 
     def __update_data(self, event):
         choice = self.drop_down_var.get()[:2]
