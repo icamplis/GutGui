@@ -2,6 +2,7 @@ from AnalysisModules.analysis_abs import AbsSpecAnalysis
 from AnalysisModules.analysis_hist import HistogramAnalysis
 from AnalysisModules.analysis_new import NewAnalysis
 from AnalysisModules.analysis_recreated import RecreatedAnalysis
+from AnalysisModules.analysis import Analysis
 from GutGuiModules.utility import *
 import numpy as np
 import logging
@@ -417,124 +418,70 @@ class ModuleListener:
 
     # ------------------------------------------------ CSV FUNCTIONS --------------------------------------------------
 
-    def ref_data_cube(self, path):
-        # 1. Original reflectance
-        # Data cube is originally same for all, use hist because its the first in the list
-        cube = self.get_result(path)[0].data_cube.tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
+    def remove_masked_values(self, cube):
+        logging.debug("DEALING WITH MASKED VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
                 for k in range(len(cube[i][j])):
-                    cube[i][j][k] = str(float(cube[i][j][k]))
-                progress(j + i * len(cube[i]), 307200)
+                    if cube[i][j][k] == '--' or cube[i][j][k] is None:
+                        cube[i][j][k] = str('')
+                    else:
+                        cube[i][j][k] = str(float(cube[i][j][k]))
         return cube
+
+    def ref_data_cube(self, path):
+        # 1. Original reflectance
+        # Data cube is originally same for all, use hist because its the first in the list
+        # absorbance, original, non-neg
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (False, True, False), mask=None)
+        cube = obj.x1.tolist()
+        return self.remove_masked_values(cube)
 
     def ref_non_neg_cube(self, path):
         # 2. Original reflectance without negative values --> 1 with spaces for
         # negative values
-        cube = self.get_result(path)[0].data_cube.tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] < 0:
-                        cube[i][j][k] = str('')
-                    else:
-                        cube[i][j][k] = str(float(cube[i][j][k]))
-                progress(j + i * len(cube[i]), 307200)
-        return cube
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (False, True, True), mask=None)
+        cube = obj.x1.tolist()
+        return self.remove_masked_values(cube)
 
     def ref_norm_cube(self, path):
         # 3. Normalised reflectance --> 1 divded by max(1)
-        cube = self.get_result(path)[0].data_cube
-        max_val = np.ma.max(cube)
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                for k in range(len(cube[i][j])):
-                    cube[i][j][k] = str(float(cube[i][j][k] / max_val))
-                progress(j + i * len(cube[i]), 307200)
-        return cube
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (False, False, False), mask=None)
+        cube = obj.x1.tolist()
+        return self.remove_masked_values(cube)
 
     def ref_norm_non_neg_cube(self, path):
         # 4. Normalised reflectance without negative values --> 3 with spaces
         # for negative values
-        cube = self.get_result(path)[0].data_cube
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        cube = cube / np.ma.max(cube)
-        cube = cube.tolist()
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] < 0:
-                        cube[i][j][k] = str('')
-                    else:
-                        cube[i][j][k] = str(float(cube[i][j][k]))
-                progress(j + i * len(cube[i]), 307200)
-        return cube
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (False, False, True), mask=None)
+        cube = obj.x1.tolist()
+        return self.remove_masked_values(cube)
 
     def ab_data_cube(self, path):
         # 5. Original absorbance --> -log() of 2
-        cube = self.get_result(path)[0].data_cube.tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0:
-                        cube[i][j][k] = str('')
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
-                progress(j + i * len(cube[i]), 307200)
-        return cube
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (True, True, False), mask=None)
+        cube = obj.x2.tolist()
+        return self.remove_masked_values(cube)
 
     def ab_non_neg_cube(self, path):
         # 6. Original absorbanve without negative values --> 5 with spaces for
         # negative values
-        cube = self.get_result(path)[0].data_cube.tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                        cube[i][j][k] = str('')
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])))
-                progress(j + i * len(cube[i]), 307200)
-        return cube
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (True, True, True), mask=None)
+        cube = obj.x2.tolist()
+        return self.remove_masked_values(cube)
 
     def ab_norm_cube(self, path):
         # 7. Normalised absorbance --> 5 divided by max(5)
-        cube = self.get_result(path)[0].data_cube
-        logging.debug("FINDING MAX...")
-        max5 = -np.ma.log(np.ma.min(cube[cube > 0]))
-        cube = cube.tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0:
-                        cube[i][j][k] = str('')
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])) / max5)
-                progress(j + i * len(cube[i]), 307200)
-        return cube
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (True, False, False), mask=None)
+        cube = obj.x2.tolist()
+        return self.remove_masked_values(cube)
 
     def ab_norm_non_neg_cube(self, path):
         # 8. Normalised absorbance without negative values --> 7 with spaces for
         # negative values
-        cube = self.get_result(path)[0].data_cube
-        logging.debug("FINDING MAX...")
-        max5 = -np.ma.log(np.ma.min(cube[cube > 0]))
-        cube = cube.tolist()
-        logging.debug("REMOVING NEGATIVE VALUES...")
-        for i in range(len(cube)):
-            for j in range(len(cube[i])):
-                for k in range(len(cube[i][j])):
-                    if cube[i][j][k] <= 0 or cube[i][j][k] > 1:
-                        cube[i][j][k] = str('')
-                    else:
-                        cube[i][j][k] = str(float(-np.log(cube[i][j][k])) / max5)
-                progress(j + i * len(cube[i]), 307200)
-        return cube
+        obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (True, False, True), mask=None)
+        cube = obj.x2.tolist()
+        return self.remove_masked_values(cube)
 
     # ------------------------------------------------- SUBMITTERS ---------------------------------------------------
 

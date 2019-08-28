@@ -43,6 +43,7 @@ class Subtraction:
 
     def _init_widget(self):
         self._build_buttons()
+        self._build_reset_buttons()
         self._build_drop_down()
         self._build_equals()
         self._build_hist(None, None, 0, self.data1_stats)
@@ -66,6 +67,14 @@ class Subtraction:
                                        command=self.__calculate, row=1, column=10, outer_pady=(0, 5),
                                        outer_padx=15, width=23, height=1, columnspan=4)
 
+    def _build_reset_buttons(self):
+        make_button(self.root, text="Reset", command=self.__reset_data1, row=5, column=0, outer_padx=15,
+                    width=6, height=1, columnspan=4, outer_pady=15)
+        make_button(self.root, text="Reset", command=self.__reset_data2, row=5, column=5, outer_padx=15,
+                    width=6, height=1, columnspan=4, outer_pady=15)
+        make_button(self.root, text="Reset", command=self.__reset_data3, row=5, column=10, outer_padx=15,
+                    width=6, height=1, columnspan=4, outer_pady=15)
+
     def _build_drop_down(self):
         self.drop_down_var.set(self.choices[0])
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_math)
@@ -82,26 +91,27 @@ class Subtraction:
 
     def _build_scale_helper(self, stats, col):
         bg = tkcolour_from_rgb(BACKGROUND)
+        print(stats)
         # min x
         make_text(self.root, content="Min x: ", bg=bg, column=col, row=3, width=7, pady=(0, 10))
         min_x_input = make_entry(self.root, row=3, column=col+1, width=7, pady=(0, 10), padx=(0, 15))
-        min_x_input.bind('<Return>', lambda: self.__update_scales(col))
+        min_x_input.bind('<Return>', lambda x: self.__update_scales(col))
         min_x_input.insert(END, str(stats[0]))
         # max x
         make_text(self.root, content="Max x: ", bg=bg, column=col+2, row=3, width=7, pady=(0, 10))
         max_x_input = make_entry(self.root, row=3, column=col+3, width=7, pady=(0, 10), padx=(0, 15))
-        max_x_input.bind('<Return>', lambda: self.__update_scales(col))
-        max_x_input.insert(END, str(stats[0]))
+        max_x_input.bind('<Return>', lambda x: self.__update_scales(col))
+        max_x_input.insert(END, str(stats[1]))
         # min y
         make_text(self.root, content="Min y: ", bg=bg, column=col, row=4, width=7, pady=(0, 10))
         min_y_input = make_entry(self.root, row=4, column=col+1, width=7, pady=(0, 10), padx=(0, 15))
-        min_y_input.bind('<Return>', lambda: self.__update_scales(col))
-        min_y_input.insert(END, str(stats[0]))
+        min_y_input.bind('<Return>', lambda x: self.__update_scales(col))
+        min_y_input.insert(END, str(stats[2]))
         # max x
         make_text(self.root, content="Max y: ", bg=bg, column=col+2, row=4, width=7, pady=(0, 10))
         max_y_input = make_entry(self.root, row=4, column=col+3, width=7, pady=(0, 10), padx=(0, 15))
-        max_y_input.bind('<Return>', lambda: self.__update_scales(col))
-        max_y_input.insert(END, str(stats[0]))
+        max_y_input.bind('<Return>', lambda x: self.__update_scales(col))
+        max_y_input.insert(END, str(stats[3]))
         return min_x_input, max_x_input, min_y_input, max_y_input
 
     def _build_equals(self):
@@ -167,7 +177,12 @@ class Subtraction:
             self.contents = []
             for i in range(len(data)):
                 self.contents += [self.bins[i] for _ in range(data[i])]
+            self.data3_stats = [np.min(self.bins), np.max(self.bins), np.min(contents), np.max(contents)]
+            self.initial_data3 = self.contents
+            self.initial_stats3 = self.data3_stats
         self._build_hist(self.bins, self.contents, 4, self.data3_stats)
+        self._build_scale(self.data3_stats, 10)
+
 
     @staticmethod
     def format_axis(x, p):
@@ -184,8 +199,12 @@ class Subtraction:
         if data1_path[-4:] != ".csv":
             messagebox.showerror("Error", "That's not a .csv file!")
         else:
-            self.data1_bin_width, self.data1 = self.__load_data(data1_path)
+            self.data1_bin_width, self.data1, self.data1_stats = self.__load_data(data1_path)
             self._build_hist(self.data1[0], self.data1[1], 0, self.data1_stats)
+            self._build_scale(self.data1_stats, 0)
+            self.initial_data1 = self.data1
+            self.initial_stats1 = self.data1_stats
+
 
     def __update_data2(self):
         data2_path = filedialog.askopenfilename(parent=self.root, title="Please select a .csv file containing histogram"
@@ -195,8 +214,11 @@ class Subtraction:
         if data2_path[-4:] != ".csv":
             messagebox.showerror("Error", "That's not a .csv file!")
         else:
-            self.data2_bin_width, self.data2 = self.__load_data(data2_path)
+            self.data2_bin_width, self.data2, self.data2_stats = self.__load_data(data2_path)
             self._build_hist(self.data2[0], self.data2[1], 2, self.data2_stats)
+            self._build_scale(self.data2_stats, 5)
+            self.initial_data2 = self.data2
+            self.initial_stats2 = self.data2_stats
 
     @staticmethod
     def __load_data(path):
@@ -212,27 +234,52 @@ class Subtraction:
             cont += [bins[i] for _ in range(contents[i])]
         bin_width = round(np.abs(bins[1] - bins[2]), 7)
         data = [bins, cont]
-        return bin_width, data
+        stats = [np.min(bins), np.max(bins), np.min(contents), np.max(contents)]
+        print(stats)
+        return bin_width, data, stats
 
     def __update_scales(self, col):
         if col == 0:
+            print('updating')
             minx = float(self.data1_minx.get())
             maxx = float(self.data1_maxx.get())
             miny = float(self.data1_miny.get())
             maxy = float(self.data1_maxy.get())
             self.data1_stats = [minx, maxx, miny, maxy]
+            self._build_hist(self.data1[0], self.data1[1], 0, self.data1_stats)
         elif col == 5:
             minx = float(self.data2_minx.get())
             maxx = float(self.data2_maxx.get())
             miny = float(self.data2_miny.get())
             maxy = float(self.data2_maxy.get())
             self.data2_stats = [minx, maxx, miny, maxy]
+            self._build_hist(self.data2[0], self.data2[1], 2, self.data2_stats)
         elif col == 10:
             minx = float(self.data3_minx.get())
             maxx = float(self.data3_maxx.get())
             miny = float(self.data3_miny.get())
             maxy = float(self.data3_maxy.get())
             self.data3_stats = [minx, maxx, miny, maxy]
+            self._build_hist(self.data2[0], self.data2[1], 4, self.data2_stats)
+
+    def __reset_data1(self):
+        print('resetting')
+        self.data1_stats = self.initial_stats1
+        self.data1 = self.initial_data1
+        self._build_hist(self.data1[0], self.data1[1], 0, self.data1_stats)
+        self._build_scale(self.data1_stats, 0)
+
+    def __reset_data2(self):
+        self.data2_stats = self.initial_stats2
+        self.data2 = self.initial_data2
+        self._build_hist(self.data2[0], self.data2[1], 2, self.data2_stats)
+        self._build_scale(self.data2_stats, 5)
+
+    def __reset_data3(self):
+        self.data3_stats = self.initial_stats3
+        self.data3 = self.initial_data3
+        self._build_hist(self.data3[0], self.data3[1], 4, self.data3_stats)
+        self._build_scale(self.data3_stats, 10)
 
     def __update_math(self, event):
         self.math = self.drop_down_var.get()

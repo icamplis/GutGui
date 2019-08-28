@@ -114,7 +114,6 @@ class HistogramAnalysis:
     # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
 
     def _calc_general(self):
-        logging.debug("CALCULATING: ABSORPTION SPECTRUM...")
         self.__calc_x1()
         self.__calc_x_reflectance()
         self.__calc_x2()
@@ -123,7 +122,12 @@ class HistogramAnalysis:
     def __calc_x1(self):
         # normalise
         if self.normal:
-            self.x1 = self.data_cube/np.ma.max(self.data_cube)
+            data = self.data_cube
+            if np.ma.min(self.data_cube) < 0:
+                data = data + np.abs(np.ma.min(data))
+            if np.ma.min(self.data_cube) > 0:
+                data = data - np.abs(np.ma.min(data))
+            self.x1 = data / np.ma.max(data)
         else:
             self.x1 = self.data_cube
         # mask negatives
@@ -158,7 +162,12 @@ class HistogramAnalysis:
         if self.negative:
             self.x2 = np.ma.array(self.x2, mask=self.x2 < 0)
         if self.normal:
-            self.x2 = self.x2/np.ma.max(self.x2)
+            data = self.data_cube
+            if np.ma.min(self.data_cube) < 0:
+                data = data + np.abs(np.ma.min(data))
+            if np.ma.min(self.data_cube) > 0:
+                data = data - np.abs(np.ma.min(data))
+            self.x1 = data / np.ma.max(data)
 
     def __calc_x_absorbance(self):
         self.x_absorbance = self.x2

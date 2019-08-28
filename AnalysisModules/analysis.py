@@ -1,22 +1,21 @@
 from GutGuiModules.utility import *
+from GutGuiModules.constants import *
 import logging
+
 np.set_printoptions(threshold=sys.maxsize)
 
 
-class AbsSpecAnalysis:
-    # performs analyses necessary for the absorption spectrum
-    def __init__(self, path, data_cube, wavelength, spec_tup, listener, mask=None):
-
-        self.listener = listener
+class Analysis:
+    def __init__(self, path, data_cube, wavelength, specs, mask=None):
 
         # inputs
         self.path = path
         self.data_cube = data_cube
         self.mask = mask
         self.wavelength = wavelength
-        self.absorbance = bool(spec_tup[0])
-        self.normal = not bool(spec_tup[1])
-        self.negative = bool(spec_tup[2])
+        self.absorbance = bool(specs[0])
+        self.normal = not bool(specs[1])
+        self.negative = bool(specs[2])
 
         # calculated generally
         self.x1 = None
@@ -31,61 +30,18 @@ class AbsSpecAnalysis:
         self.x_reflectance_masked_w = None
 
         # specific to module
-        self.absorption_roi = None
-        self.absorption_roi_masked = None
-
-        # data cube 
-        self.key = None
-        self.value = None
+        self.rgb_og = None
+        self.sto2_og = None
+        self.nir_og = None
+        self.thi_og = None
+        self.twi_og = None
+        self.histogram_data = None
+        self.histogram_data_masked = None
 
         self.analysis()
 
     def analysis(self):
         self._calc_general()
-        self._calc_absorption_spec()
-
-    # --------------------------------------------------- UPDATERS ----------------------------------------------------
-
-    def update_mask(self, new_mask):
-        self.mask = new_mask
-        self.analysis()
-
-    def update_wavelength(self, new_wavelength):
-        self.wavelength = new_wavelength
-        self.analysis()
-
-    def update_normal(self, new_normal):
-        self.normal = new_normal
-        self.analysis()
-
-    def update_absorbance(self, new_absorbance):
-        self.absorbance = new_absorbance
-        self.analysis()
-
-    # ------------------------------------------------- CALCULATORS --------------------------------------------------
-
-    def _calc_absorption_spec(self):
-        if self.absorbance:
-            self.absorption_roi = self._calc_absorption_spec_roi(self.x_absorbance)
-            if self.mask is not None:
-                self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_absorbance_masked)
-        else:
-            self.absorption_roi = self._calc_absorption_spec_roi(self.x_reflectance)
-            if self.mask is not None:
-                self.absorption_roi_masked = self._calc_absorption_spec_roi(self.x_reflectance_masked)
-
-    @staticmethod
-    def _calc_absorption_spec_roi(data):
-        absorption_roi = []
-        wavelengths = np.arange(500, 1000, 5)
-
-        for i in range(data.shape[2]):
-            tmp = np.ma.median(data[:, :, i])
-            absorption_roi.append((int(wavelengths[i]), tmp))
-
-        return np.array(absorption_roi)
-
-    # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------
 
     def _calc_general(self):
         self.__calc_x1()
