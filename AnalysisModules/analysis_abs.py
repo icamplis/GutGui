@@ -94,19 +94,22 @@ class AbsSpecAnalysis:
         self.__calc_x_absorbance()
 
     def __calc_x1(self):
+        neg = 0
         # normalise
-        if self.normal:
+        if self.normal and not self.absorbance:
             data = self.data_cube
             if np.ma.min(self.data_cube) < 0:
+                neg = np.abs(np.ma.min(data))
                 data = data + np.abs(np.ma.min(data))
             if np.ma.min(self.data_cube) > 0:
                 data = data - np.abs(np.ma.min(data))
+            neg = neg / np.ma.max(data)
             self.x1 = data / np.ma.max(data)
         else:
             self.x1 = self.data_cube
         # mask negatives
         if self.negative:
-            self.x1 = np.ma.array(self.x1, mask=self.x1 < 0)
+            self.x1 = np.ma.array(self.x1, mask=self.x1 < neg)
 
     def __calc_x_reflectance(self):
         self.x_reflectance = self.x1
@@ -133,15 +136,20 @@ class AbsSpecAnalysis:
     def __calc_x2(self):
         self.x2 = -np.ma.log(self.x1)
         self.x2 = np.ma.array(self.x2, mask=~np.isfinite(self.x2))
-        if self.negative:
-            self.x2 = np.ma.array(self.x2, mask=self.x2 < 0)
-        if self.normal:
-            data = self.data_cube
-            if np.ma.min(self.data_cube) < 0:
+        neg = 0
+        # normalise
+        if self.normal and self.absorbance:
+            data = self.x2
+            if np.ma.min(self.x2) < 0:
+                neg = np.abs(np.ma.min(data))
                 data = data + np.abs(np.ma.min(data))
-            if np.ma.min(self.data_cube) > 0:
+            if np.ma.min(self.x2) > 0:
                 data = data - np.abs(np.ma.min(data))
-            self.x1 = data / np.ma.max(data)
+            neg = neg / np.ma.max(data)
+            self.x2 = data / np.ma.max(data)
+        # mask negatives
+        if self.negative:
+            self.x2 = np.ma.array(self.x2, mask=self.x2 < neg)
 
     def __calc_x_absorbance(self):
         self.x_absorbance = self.x2
