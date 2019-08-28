@@ -503,9 +503,10 @@ class ModuleListener:
 
     def ab_norm_cube(self, path):
         # 7. Normalised absorbance --> 5 divided by max(5)
-        cube = self.get_result(path)[0].data_cube.tolist()
+        cube = self.get_result(path)[0].data_cube
         logging.debug("FINDING MAX...")
-        max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
+        max5 = -np.ma.log(np.ma.min(cube[cube > 0]))
+        cube = cube.tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
@@ -520,9 +521,10 @@ class ModuleListener:
     def ab_norm_non_neg_cube(self, path):
         # 8. Normalised absorbance without negative values --> 7 with spaces for
         # negative values
-        cube = self.get_result(path)[0].data_cube.tolist()
+        cube = self.get_result(path)[0].data_cube
         logging.debug("FINDING MAX...")
-        max5 = -np.ma.log(np.ma.min(np.ma.abs(cube)))
+        max5 = -np.ma.log(np.ma.min(cube[cube > 0]))
+        cube = cube.tolist()
         logging.debug("REMOVING NEGATIVE VALUES...")
         for i in range(len(cube)):
             for j in range(len(cube[i])):
