@@ -178,7 +178,7 @@ class Introduction:
     def _build_page1(self):
         # text
         text = Text(self.root, height=28, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
-        text.insert(END, self.title_3a, ('title', str(0)))
+        text.insert(END, self.title_1, ('title', str(0)))
         text.insert(END, self.text_text_1a)
         text.insert(END, self.text_text_1b)
         text.insert(END, self.text_text_1c, ('link0', str(1)))
@@ -211,7 +211,7 @@ class Introduction:
     def _build_page2(self):
         # text
         text = Text(self.root, height=7, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
-        text.insert(END, self.title_1, ('title', str(0)))
+        text.insert(END, self.title_2, ('title', str(0)))
         text.insert(END, self.text_text_2)
         text.tag_config('title', foreground='black', underline=True)
         text.config(state="disabled", bg=tkcolour_from_rgb(WHITE))
