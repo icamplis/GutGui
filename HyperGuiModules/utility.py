@@ -44,7 +44,7 @@ def init():
 
     spec_calculation = Frame(notebook, bg=tkcolour_from_rgb(BACKGROUND))
     spec_calculation.pack()
-    notebook.add(spec_calculation, text="Spectrum Calculation")
+    notebook.add(spec_calculation, text="Optical Spectrum Calculation")
 
     notebook.pack()
 
