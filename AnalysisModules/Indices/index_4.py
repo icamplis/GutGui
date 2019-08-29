@@ -1,4 +1,3 @@
 def get_index_4(x):
-    # TODO
-    index = -1
+    index = x[:, :, 0]
     return index

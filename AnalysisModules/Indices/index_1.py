@@ -1,5 +1,3 @@
-import numpy as np
-
 def get_index_1(x):
 	index = (x[:,:,60] +
 	         x[:,:,61] +
