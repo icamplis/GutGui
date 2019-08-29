@@ -162,9 +162,9 @@ class SpecCalculation:
             messagebox.showerror("Error", "Please select two csv files.")
         elif self.x_vals1[0] != self.x_vals2[0] and self.x_vals1[-1] != self.x_vals2[-1]:
             messagebox.showerror("Error", "Please ensure your x axis is the same for each spectrum. Currently your "
-                                          "primary csv file begins at " + str(self.data1[0][0]) + " and ends at "
-                                          + str(self.data1[0][-1]) + " while your secondary csv file begins at "
-                                          + str(self.data2[0][0]) + " and ends at " + str(self.data2[0][-1]) + ".")
+                                          "primary csv file begins at " + str(self.x_vals1[0]) + " and ends at "
+                                          + str(self.x_vals1[-1]) + " while your secondary csv file begins at "
+                                          + str(self.x_vals2[0]) + " and ends at " + str(self.x_vals2[-1]) + ".")
         else:
             self.x_vals3 = self.x_vals1
             if self.math == '-':
@@ -227,7 +227,6 @@ class SpecCalculation:
                 x_vals.append(float(row[0]))
                 y_vals.append(float(row[1]))
         stats = [np.min(x_vals), np.max(x_vals), np.min(y_vals), np.max(y_vals)]
-        print(stats)
         return x_vals, y_vals, stats
 
     def __update_scales(self, col):
@@ -299,13 +298,17 @@ class SpecCalculation:
             messagebox.showerror("Error", "Please generate a spectrum to save.")
         else:
             (x_low, x_high, y_low, y_high) = self.data3_stats
-            data1 = np.arange(x_low // 5 * 5, x_high // 5 * 5 + 5, 5)
-            data2 = self.y_vals3[int((x_low - 500) / 5):int((x_high - 500) / 5) + 1]
-            data2 = np.clip(data2, a_min=y_low, a_max=y_high)
-            data = np.asarray([data1, data2]).T
+            index1 = np.where(self.x_vals3 == x_low)[0][0]
+            index2 = np.where(self.x_vals3 == x_high)[0][0]
+            print(self.y_vals3)
+            x_vals = self.x_vals3[index1:index2+1]
+            y_vals = self.y_vals3[index1:index2+1]
+            y_vals = np.clip(y_vals, a_min=y_low, a_max=y_high)
+            print(y_vals)
+            data = np.asarray([x_vals, y_vals]).T
             output_path = self.output_path + "/spectrum_calculation.csv"
             logging.debug("SAVING DATA TO " + output_path)
-            np.savetxt(output_path, data, delimiter=",", fmt="%.2f")
+            np.savetxt(output_path, data, delimiter=",", fmt="%.5f")
 
     def __save_as_image(self):
         if self.output_path is None:
