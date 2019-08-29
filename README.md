@@ -7,7 +7,7 @@ Download HyperGUI by
 
 To install Python, go to python.org/downloads/ and download version 3.7.4.
 
-To install the required packages, navigate to terminal and type in `pip3 install --user -r /path/requirements.txt`, where 'path' refers to the path of directories required to reach the file `requirements.txt`. Alternatively, type the following into the terminal as separate commands:
+To install the required packages, navigate to terminal and type in `pip3 install --user -r /path/requirements.txt`, where 'path' refers to the path of directories required to reach the file `requirements.txt` (for example, 'Users/joe/downloads/HyperGui-master' Alternatively, type the following into the terminal as separate commands:
 - `pip3 install - -user certifi`
 - `pip3 install - -user cycler`
 - `pip3 install - -decorator`
