@@ -192,7 +192,7 @@ class ModuleListener:
         if mode == WL:
             mod = '_WL_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif mode == IDX:
-            mod = '_IDX' + str(self.index)
+            mod = '_IDX' + str(self.index_number)
         info = str(mod) + '_fromCSV' + str(num)
         return info
 
@@ -259,7 +259,7 @@ class ModuleListener:
         if display == 'WL':
             mod = 'WL-' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif display == 'IDX':
-            mod = 'IDX' + str(self.index)
+            mod = 'IDX' + str(self.index_number)
         grey = self.modules[NEW_COLOUR].gs
         colour = '-cs'
         if grey:
