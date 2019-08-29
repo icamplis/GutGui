@@ -1,4 +1,4 @@
-# GutGui
+# HyperGui
 
 ## Installation Instructions
 
