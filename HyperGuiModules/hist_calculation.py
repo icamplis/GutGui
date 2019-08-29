@@ -4,6 +4,7 @@ import matplotlib
 from tkinter import filedialog, messagebox
 import csv
 import logging
+import os
 matplotlib.use("TkAgg")
 
 
@@ -80,7 +81,7 @@ class HistCalculation:
                     width=6, height=1, columnspan=4, outer_pady=15)
 
     def _build_save_buttons(self):
-        make_button(self.root, text="Select Output Folder", command=self.__select_output, row=2, column=14,
+        make_button(self.root, text="Change Output Folder", command=self.__select_output, row=2, column=14,
                     outer_padx=15, width=15, height=1, columnspan=1, outer_pady=(35, 5), inner_pady=5)
         make_button(self.root, text="Save as CSV", command=self.__save_as_csv, row=3, column=14, outer_padx=15,
                     width=15, height=1, columnspan=1, outer_pady=(0, 5), inner_pady=5)
@@ -184,6 +185,10 @@ class HistCalculation:
             elif self.math == 'x':
                 data = np.asarray(self.data1[2]) * np.asarray(self.data2[2])
             elif self.math == '/':
+                if 0 in self.data2[2] or 0.0 in self.data2[2]:
+                    messagebox.showerror("Error", "Division by zero. Your second csv file contains zeros and thus "
+                                                  "division cannot be completed.")
+                    pass
                 contents = np.asarray(self.data1[2]) / np.asarray(self.data2[2])
                 data = [int(i) for i in contents]
             self.contents = []
@@ -195,7 +200,6 @@ class HistCalculation:
             self.initial_stats3 = self.data3_stats
         self._build_hist(self.data3[0], self.data3[1], 4, self.data3_stats)
         self._build_scale(self.data3_stats, 10)
-
 
     @staticmethod
     def format_axis(x, p):
@@ -212,6 +216,7 @@ class HistCalculation:
         if data1_path[-4:] != ".csv":
             messagebox.showerror("Error", "That's not a .csv file!")
         else:
+            self.output_path = os.path.dirname(data1_path)
             self.data1_bin_width, self.data1, self.data1_stats = self.__load_data(data1_path)
             self._build_hist(self.data1[0], self.data1[1], 0, self.data1_stats)
             self._build_scale(self.data1_stats, 0)
@@ -331,7 +336,7 @@ class HistCalculation:
 
             bin_heights = np.clip(bin_heights, a_min=y_low, a_max=y_high)
             hist_data = np.stack((bins[:-1], bin_heights)).T
-            output_path = self.output_path + "/histogram_calculation.csv"
+            output_path = self.output_path + "/histogram_calculation" + self.__get_naming_info() + '.csv'
             logging.debug("SAVING DATA TO " + output_path)
             np.savetxt(output_path, hist_data, delimiter=",", fmt="%.2f")
 
@@ -341,7 +346,7 @@ class HistCalculation:
         if self.data3 is None:
             messagebox.showerror("Error", "Please generate a histogram to save.")
         else:
-            output_path = self.output_path + "/histogram_calculation.png"
+            output_path = self.output_path + "/histogram_calculation" + self.__get_naming_info() + '.png'
             logging.debug("SAVING HISTOGRAM TO " + output_path)
             bins = self.data3[0]
             contents = self.data3[1]
@@ -356,3 +361,20 @@ class HistCalculation:
             axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
             plt.savefig(output_path)
             plt.clf()
+
+    def __get_naming_info(self):
+        x_low = str(round(self.data3_stats[0], 5))
+        x_high = str(round(self.data3_stats[1], 5))
+        y_low = str(round(self.data3_stats[2], 5))
+        y_high = str(round(self.data3_stats[3], 5))
+        step = str(round(self.data1_bin_width, 5))
+        func = ''
+        if self.math == '-':
+            func = 'subtraction'
+        if self.math == '+':
+            func = 'addition'
+        if self.math == 'x':
+            func = 'multiplication'
+        if self.math == '/':
+            func = 'division'
+        return '_' + func + '_(' + x_low + '-' + x_high + ")-(" + y_low + '-' + y_high + ')-' + step

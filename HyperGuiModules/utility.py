@@ -181,7 +181,7 @@ def make_listbox(window, row, column, padx=0, pady=0, highlightthickness=0, colu
     columnspan : int (default 1)
     rowspan : int (default 1)
     """
-    listbox = Listbox(window, width=16, highlightthickness=highlightthickness, selectmode=EXTENDED, height=10)
+    listbox = Listbox(window, width=16, highlightthickness=highlightthickness, selectmode=EXTENDED, height=13)
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 

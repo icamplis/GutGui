@@ -68,7 +68,7 @@ class SourceAndOutput:
                                                    outer_padx=15, row=2, column=0, width=15, outer_pady=(0, 5))
 
     def _build_selection_box(self):
-        self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=3, padx=(0, 15), pady=(0, 15))
+        self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=8, padx=(0, 15), pady=(0, 15))
         self.selection_listbox.bind('<<ListboxSelect>>', self.__update_selected_data_cube)
 
     def _build_delete_button(self):

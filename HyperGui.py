@@ -24,29 +24,29 @@ def main():
     listener.attach_module(SOURCE_AND_OUTPUT, source_and_output_module)
 
     # analysis and form
-    analysis_and_form_frame = frame(input_output, BACKGROUND, 1, 0, 2, 2)
+    analysis_and_form_frame = frame(input_output, BACKGROUND, 1, 0, 1, 2)
     analysis_and_form_module = AnalysisAndForm(analysis_and_form_frame, listener)
     listener.attach_module(ANALYSIS_AND_FORM, analysis_and_form_module)
 
     # save
-    save_frame = frame(input_output, BACKGROUND, 4, 0, 1, 1)
+    save_frame = frame(input_output, BACKGROUND, 2, 0, 1, 1)
     save_module = Save(save_frame, listener)
     listener.attach_module(SAVE, save_module)
 
     # info
-    info_frame = frame(input_output, BACKGROUND, 4, 1, 1, 1)
+    info_frame = frame(input_output, BACKGROUND, 2, 1, 1, 1)
     info_module = Info(info_frame, listener)
     listener.attach_module(INFO, info_module)
 
     # save csvs
-    csv_frame = frame(input_output, BACKGROUND, 0, 2, 5, 1)
+    csv_frame = frame(input_output, BACKGROUND, 0, 2, 3, 1)
     csv_module = CSVSaver(csv_frame, listener)
     listener.attach_module(CSV, csv_module)
 
     # parameter specification
-    # parameter_frame = frame(input_output, BACKGROUND, 0, 3, 2, 1)
-    # parameter_module = Parameter(parameter_frame, listener)
-    # listener.attach_module(PARAMETER, parameter_module)
+    parameter_frame = frame(input_output, BACKGROUND, 0, 3, 1, 1)
+    parameter_module = Parameter(parameter_frame, listener)
+    listener.attach_module(PARAMETER, parameter_module)
 
     # original colour
     og_color_frame = frame(image_diagram, BACKGROUND, 0, 0, 7, 6)

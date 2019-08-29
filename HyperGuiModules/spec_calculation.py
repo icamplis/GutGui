@@ -4,6 +4,7 @@ import matplotlib
 from tkinter import filedialog, messagebox
 import csv
 import logging
+import os
 matplotlib.use("TkAgg")
 
 
@@ -80,7 +81,7 @@ class SpecCalculation:
                     width=6, height=1, columnspan=4, outer_pady=15)
 
     def _build_save_buttons(self):
-        make_button(self.root, text="Select Output Folder", command=self.__select_output, row=2, column=14,
+        make_button(self.root, text="Change Output Folder", command=self.__select_output, row=2, column=14,
                     outer_padx=15, width=15, height=1, columnspan=1, outer_pady=(35, 5), inner_pady=5)
         make_button(self.root, text="Save as CSV", command=self.__save_as_csv, row=3, column=14, outer_padx=15,
                     width=15, height=1, columnspan=1, outer_pady=(0, 5), inner_pady=5)
@@ -184,6 +185,10 @@ class SpecCalculation:
             elif self.math == 'x':
                 self.y_vals3 = np.asarray(self.y_vals1) * np.asarray(self.y_vals2)
             elif self.math == '/':
+                if 0 in self.y_vals2 or 0.0 in self.y_vals2:
+                    messagebox.showerror("Error", "Division by zero. Your second csv file contains zeros and thus "
+                                                  "division cannot be completed.")
+                    pass
                 self.y_vals3 = np.asarray(self.y_vals1) / np.asarray(self.y_vals2)
             self.data3_stats = [np.min(self.x_vals3), np.max(self.x_vals3), np.min(self.y_vals3), np.max(self.y_vals3)]
             self.initial_data3 = [self.x_vals3, self.y_vals3]
@@ -207,6 +212,7 @@ class SpecCalculation:
         if data1_path[-4:] != ".csv":
             messagebox.showerror("Error", "That's not a .csv file!")
         else:
+            self.output_path = os.path.dirname(data1_path)
             self.x_vals1, self.y_vals1, self.data1_stats = self.__load_data(data1_path)
             self._build_spec(self.x_vals1, self.y_vals1, 0, self.data1_stats)
             self._build_scale(self.data1_stats, 0)
@@ -316,7 +322,7 @@ class SpecCalculation:
             y_vals = np.clip(y_vals, a_min=y_low, a_max=y_high)
             print(y_vals)
             data = np.asarray([x_vals, y_vals]).T
-            output_path = self.output_path + "/optical_spectrum_calculation.csv"
+            output_path = self.output_path + "/optical_spectrum_calculation" + self.__get_naming_info() + '.csv'
             logging.debug("SAVING DATA TO " + output_path)
             np.savetxt(output_path, data, delimiter=",", fmt="%.5f")
 
@@ -327,7 +333,7 @@ class SpecCalculation:
             messagebox.showerror("Error", "Please generate an optical spectrum to save.")
         else:
             (x_low, x_high, y_low, y_high) = self.data3_stats
-            output_path = self.output_path + "/optical_spectrum_calculation.png"
+            output_path = self.output_path + "/optical_spectrum_calculation" + self.__get_naming_info() + '.png'
             logging.debug("SAVING SPEC" + output_path)
             plt.clf()
             axes = plt.subplot(111)
@@ -347,3 +353,19 @@ class SpecCalculation:
             axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
             plt.savefig(output_path)
             plt.clf()
+
+    def __get_naming_info(self):
+        x_low = str(round(self.data3_stats[0], 5))
+        x_high = str(round(self.data3_stats[1], 5))
+        y_low = str(round(self.data3_stats[2], 5))
+        y_high = str(round(self.data3_stats[3], 5))
+        func = ''
+        if self.math == '-':
+            func = 'subtraction'
+        if self.math == '+':
+            func = 'addition'
+        if self.math == 'x':
+            func = 'multiplication'
+        if self.math == '/':
+            func = 'division'
+        return '_' + func + '_(' + x_low + '-' + x_high + ")-(" + y_low + '-' + y_high + ')'
