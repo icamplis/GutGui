@@ -1,20 +1,56 @@
-# GutGui
+# HyperGui
 
-## Instructions
+## Installation Instructions for MacOS
+Download HyperGUI by clicking the green 'Clone or Download' button and downloading and unpacking the .zip file.
 
-Go into the terminal,
-navigate to this directory (GutGui),
-and run the command
+To install Python, go to python.org/downloads/ and download version 3.7.4.
 
-```python3 GutGui.py```
+To install the required packages, navigate to terminal and type in `pip3 install --user -r /path/requirements.txt`, where 'path' refers to the path of directories required to reach the file `requirements.txt` (for example, 'Users/joe/downloads/HyperGui-master'). Alternatively, type the following into the terminal as separate commands:
+- `pip3 install --user certifi`
+- `pip3 install --user cycler`
+- `pip3 install --decorator`
+- `pip3 install --imageio`
+- `pip3 install --kiwisolver`
+- `pip3 install --matplotlib`
+- `pip3 install --networkx`
+- `pip3 install --numpy`
+- `pip3 install --Pillow`
+- `pip3 install --pyparsing`
+- `pip3 install --python-dateutil`
+- `pip3 install --PyWavelets`
+- `pip3 install --scikit-image`
+- `pip3 install --scipy`
+- `pip3 install --six`
 
-Note: `Select Data Superdirectory` refers to
-the folder that contains all the other folders containing the data cubes.
+Correct versions are: certifi==2019.6.16, cycler==0.10.0, decorator==4.4.0, imageio==2.5.0, kiwisolver==1.1.0, matplotlib==3.1.1, networkx==2.3, numpy==1.17.0, Pillow==6.1.0, pyparsing==2.4.2, python-dateutil==2.8.0, PyWavelets==1.0.3, scikit-image==0.15.0, scipy==1.3.0, six==1.12.0
 
-Note: When multiple data cubes are selected,
-the topmost one will be displayed.
 
-<!--  TODO-->
+## Installation Instructions for Windows
+Download HyperGUI by clicking the green 'Clone or Download' button and downloading and unpacking the .zip file.
+
+To install Python, go to python.org/downloads/ and download version 3.7.4.
+
+To instal pip, go to https://pip.pypa.io/en/stable/installing/ and download get-pip.py. Then, navigate to terminal and type in `cd path` where 'path' refers to the path of directories required to get to where get-pip.py is. Then, type `python get-pip.py`.
+
+To install the required packages, navigate to terminal and type in `cd path` where 'path' refers to the path of directories that finished with `HyperGui-master`. Once in the HyperGUI directory, type `pip3 install --user -r requirements.txt`. Alternatively, type the following into the terminal as separate commands:
+- `pip3 install --user certifi`
+- `pip3 install --user cycler`
+- `pip3 install --decorator`
+- `pip3 install --imageio`
+- `pip3 install --kiwisolver`
+- `pip3 install --matplotlib`
+- `pip3 install --networkx`
+- `pip3 install --numpy`
+- `pip3 install --Pillow`
+- `pip3 install --pyparsing`
+- `pip3 install --python-dateutil`
+- `pip3 install --PyWavelets`
+- `pip3 install --scikit-image`
+- `pip3 install --scipy`
+- `pip3 install --six`
+
+Correct versions are: certifi==2019.6.16, cycler==0.10.0, decorator==4.4.0, imageio==2.5.0, kiwisolver==1.1.0, matplotlib==3.1.1, networkx==2.3, numpy==1.17.0, Pillow==6.1.0, pyparsing==2.4.2, python-dateutil==2.8.0, PyWavelets==1.0.3, scikit-image==0.15.0, scipy==1.3.0, six==1.12.0
+
 
 ## Development Notes
 ### Regarding Performance
