@@ -238,9 +238,15 @@ class AbsorptionSpec:
             self.axes.plot(self.x_vals, self.absorption_spec, '-', lw=0.5)
             self.axes.grid(linestyle=':', linewidth=0.5)
         # set axes
+        y_low = self.y_lower_scale_value
+        y_high = self.y_upper_scale_value
+        if y_low is not None and y_high is not None:
+            factor = (y_high - y_low) * 0.05
+            y_low -= factor
+            y_high += factor
         self.interactive_absorption_spec_graph.set_tight_layout(True)
         self.axes.set_xlim(left=self.x_lower_scale_value, right=self.x_upper_scale_value)
-        self.axes.set_ylim(bottom=self.y_lower_scale_value, top=self.y_upper_scale_value)
+        self.axes.set_ylim(bottom=y_low, top=y_high)
         # commas and non-scientific notation
         self.axes.ticklabel_format(style='plain')
         self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
