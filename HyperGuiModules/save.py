@@ -554,8 +554,14 @@ class Save:
         # plot absorption spec
         axes.plot(x_vals, data, '-', lw=0.5)
         axes.grid(linestyle=':', linewidth=0.5)
+        low = y_low
+        high = y_high
+        if low is not None and high is not None:
+            factor = (high - low) * 0.05
+            low -= factor
+            high += factor
         axes.set_xlim(left=x_low, right=x_high)
-        axes.set_ylim(bottom=y_low, top=y_high)
+        axes.set_ylim(bottom=low, top=high)
         axes.ticklabel_format(style='plain')
         axes.get_yaxis().set_major_formatter(
             matplotlib.ticker.FuncFormatter(self.listener.modules[ABSORPTION_SPEC].format_axis))

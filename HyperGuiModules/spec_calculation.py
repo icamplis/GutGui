@@ -142,8 +142,14 @@ class SpecCalculation:
             self.axes.grid(linestyle=':', linewidth=0.5)
         # set axes
         self.graph.set_tight_layout(True)
+        y_low = stats[2]
+        y_high = stats[3]
+        if y_low is not None and y_high is not None:
+            factor = (y_high - y_low) * 0.05
+            y_low -= factor
+            y_high += factor
         self.axes.set_xlim(left=stats[0], right=stats[1])
-        self.axes.set_ylim(bottom=stats[2], top=stats[3])
+        self.axes.set_ylim(bottom=y_low, top=y_high)
         # commas and non-scientific notation
         self.axes.ticklabel_format(style='plain')
         self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
@@ -327,8 +333,14 @@ class SpecCalculation:
             axes = plt.subplot(111)
             axes.plot(self.x_vals3, self.y_vals3, '-', lw=0.5)
             axes.grid(linestyle=':', linewidth=0.5)
+            low = y_low
+            high = y_high
+            if low is not None and high is not None:
+                factor = (high - low) * 0.05
+                low -= factor
+                high += factor
             axes.set_xlim(left=x_low, right=x_high)
-            axes.set_ylim(bottom=y_low, top=y_high)
+            axes.set_ylim(bottom=low, top=high)
             # commas and non-scientific notation
             axes.ticklabel_format(style='plain')
             axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
