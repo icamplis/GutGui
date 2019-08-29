@@ -59,18 +59,31 @@ class Info:
                                   "data folders can then be removed by 'Remove Data Cube'." \
                                   "\n\nAfter your datacube(s) is displayed in the white box you have to select it for " \
                                   "rendering before you continue with 'Images and Diagrams'."
-        self.analysis_form_info = "In this window the analysis settings for the “New Image” can be specified. In case" \
-                                  " that only a certain area of the spectrum is interesting, this area can be specified" \
-                                  " in the text boxes for lower and upper wavelength (between 500 - 995 nm). In case" \
-                                  " one not only wants to visualize simple wavelength areas, but also wants to perform" \
-                                  " mathematical operations - much like the original mathematical formulas for StO2," \
-                                  " NIR, THI and TWI - there are placeholders for 8 formulas that can be chosen. " \
-                                  "\n\nThese formulas can be created and modified depending on the need or " \
-                                  "scientific deliberations by encoding them in the module Index in the folder " \
-                                  "AnalysisModules/Indices within the GUI directory."
+        self.analysis_form_info = "In this window the analysis settings for the 'New Image' can be specified. In case " \
+                                  "that only a certain area of the spectrum is interesting, this area can be " \
+                                  "specified in the text boxes for lower and upper wavelength (between 500 - 995 nm). " \
+                                  "In case one not only wants to visualize simple wavelength areas, but also wants to " \
+                                  "perform mathematical operations - much like the original mathematical formulas for " \
+                                  "StO2, NIR, THI and TWI - there are placeholders for 8 formulas that can be selected " \
+                                  "and modified. " \
+                                  "\n\nThese formulas can be modified depending on the need or scientific " \
+                                  "deliberations by clicking on “edit”. The formula has to be written in Python. " \
+                                  "The notation has to be read as following:" \
+                                  "\nx[:,:,:] means all the values in all x and y dimensions and through all the " \
+                                  "wavelengths" \
+                                  "\nx[2,7,13] means only the value of pixel x=2+1=3 and y=7+1=8 at wavelength " \
+                                  "500+(5*13)=565 nm" \
+                                  "\nx[2:8,8:200,0:50] means the values of the pixels x=(3 to 9) and y=(9 to 201) at " \
+                                  "the wavelengths 500 to 750 nm" \
+                                  "\n\nThe pixel in the upper left hand corner is [0,0,:], the pixel in the lower " \
+                                  "right hand corner is [640,480,:]."
         self.csv_info = "This window allows to save all of the numerical information in .csv files with 480 rows" \
                         " and 640 columns in accordance to the pixel distribution of 480 x 640 in the original" \
-                        " recordings."
+                        " recordings." \
+                        "\n\nNormalization of datasets is performed by stretching or compressing the original values " \
+                        "into a scale from 0 to 1. The addition 'without negative values' describes the fact that in " \
+                        "these datasets all the values are removed that used to be negative in the original file " \
+                        "(so either in the '1. Original Reflectance' or '2.Original Absorbance')."
         self.save_info = "This window allows to save all of the features of the 'Images and Diagrams' window that" \
                          " have a tick in the blue boxes. These features can either be saved for the selected" \
                          " datacube in the 'Source and Output' window by 'Save for Selected Data Cube Only'." \
@@ -144,8 +157,17 @@ class Info:
                            "index pictures from the TIVITA® Tissue Hyperspectral Camera. Blue means low value and " \
                            "red means high value. For every of the three image windows the used scale can be " \
                            "specified by a drop-down menu."
-        self.hist_calc_info = "Histogram Calculation Information"
-        self.spec_calc_info = "Spectrum Calculation Information"
+        self.hist_calc_info = "This window allows to perform basic mathematical operations on histograms that have " \
+                              "been saved previously. It is mainly thought to enable a baseline subtraction, but " \
+                              "can be used for other calculations as well. By default the saving folder for the " \
+                              "newly 'Calculated Histogram' will be the same folder from which the 'First Histogram' " \
+                              "has been pulled. However, this can be changed via 'Select Output Folder'."
+        self.spec_calc_info = "This window allows to perform basic mathematical operations on optical spectrums that " \
+                              "have been saved previously. It is mainly thought to enable a baseline subtraction, but " \
+                              "can be used for other calculations as well. By default the saving folder for the " \
+                              "newly 'Calculated Optical Spectrum' will be the same folder from which the 'First " \
+                              "Optical Spectrum' has been pulled. However, this can be changed via 'Select Output " \
+                              "Folder'."
 
         self._init_widget()
 
