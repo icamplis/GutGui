@@ -436,6 +436,8 @@ class ModuleListener:
         # absorbance, original, non-neg
         obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (False, True, False), mask=None)
         cube = obj.x1.tolist()
+        print(obj.x1[0][80][:10])
+        print(obj.x1[0][81][:10])
         return self.remove_masked_values(cube)
 
     def ref_non_neg_cube(self, path):
@@ -607,6 +609,7 @@ class ModuleListener:
                     result_list[i].update_wavelength(wavelength)
             if index_number is not None:
                 logging.debug("UPDATING INDEX TO: " + str(index_number))
+                print(result_list[3])
                 result_list[3].update_index(index_number)
 
     def update_histogram_specs(self, spec_tup):

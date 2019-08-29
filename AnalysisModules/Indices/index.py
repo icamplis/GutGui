@@ -36,7 +36,6 @@ class Index:
     def _calc_index(self):
         # Get raw index
         self._calc_raw_index()
-        self._calc_index_gradient(wavelength=self.wavelength)
 
     def _calc_raw_index(self):
         if self.index_no == 1:
@@ -55,7 +54,4 @@ class Index:
             self.index = get_index_7(self.x_abs_or_ref)
         elif self.index_no == 8:
             self.index = get_index_8(self.x_abs_or_ref)
-
-    def _calc_index_gradient(self, wavelength=None):
-        index_gradient = np.array(np.gradient(self.index, axis=1))
-        self.index = index_gradient
+        print(self.index[:, :10])

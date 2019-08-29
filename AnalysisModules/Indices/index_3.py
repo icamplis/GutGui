@@ -1,4 +1,4 @@
 def get_index_3(x):
     # TODO
-    index = -1
+    index = x[:, :, 60]/x[:, :, 0]
     return index
