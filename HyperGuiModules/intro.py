@@ -332,7 +332,7 @@ class Introduction:
 
     def _build_page8(self):
         # text
-        text = Text(self.root, height=41, width=150, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
+        text = Text(self.root, height=42, width=150, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
         text.insert(END, self.title_6, ('title', str(0)))
         text.insert(END, self.text_text_6a)
         text.insert(END, self.text_text_6b)

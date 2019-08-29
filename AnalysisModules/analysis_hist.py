@@ -101,12 +101,10 @@ class HistogramAnalysis:
         if self.absorbance:
             self.histogram_data = self.x2
             if self.mask is not None:
-                print('masked')
                 self.histogram_data_masked = self.x_absorbance_masked
         else:
             self.histogram_data = self.x1
             if self.mask is not None:
-                print('masked')
                 self.histogram_data_masked = self.x_reflectance_masked
 
     # --------------------------------------------- GENERAL CALCULATORS ----------------------------------------------

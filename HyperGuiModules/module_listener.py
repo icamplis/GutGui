@@ -139,7 +139,6 @@ class ModuleListener:
 
     def get_current_rec_data(self):
         data = self.modules[RECREATED_COLOUR].recreated_colour_image_data
-        print(np.max(data))
         if not self.is_masked:
             return data
         else:
@@ -436,8 +435,6 @@ class ModuleListener:
         # absorbance, original, non-neg
         obj = Analysis(path, self.get_result(path)[0].data_cube, self.wavelength, (False, True, False), mask=None)
         cube = obj.x1.tolist()
-        print(obj.x1[0][80][:10])
-        print(obj.x1[0][81][:10])
         return self.remove_masked_values(cube)
 
     def ref_non_neg_cube(self, path):
@@ -493,7 +490,11 @@ class ModuleListener:
         self.mask = new_mask
         self.update_analysis(mask=self.mask)
         if self.is_masked:
-            self.broadcast_new_data()
+            self.broadcast_to_recreated_image()
+            self.broadcast_to_new_image()
+            # self.broadcast_to_histogram()
+            self.broadcast_to_absorption_spec()
+            self.broadcast_to_original_image()
 
     def submit_wavelength(self, new_wavelength):
         logging.debug("NEW WAVELENGTH: " + str(new_wavelength))
@@ -510,7 +511,13 @@ class ModuleListener:
     def submit_is_masked(self, new_is_masked):
         logging.debug("USING WHOLE IMAGE? " + str(new_is_masked))
         self.is_masked = new_is_masked
-        self.broadcast_new_data()
+        if self.is_masked:
+            self.broadcast_to_recreated_image()
+            self.broadcast_to_new_image()
+            self.broadcast_to_absorption_spec()
+            self.broadcast_to_original_image()
+        else:
+            self.broadcast_new_data()
 
     def submit_params(self):
         self.params = self.modules[PARAMETER].get_params()
@@ -609,7 +616,6 @@ class ModuleListener:
                     result_list[i].update_wavelength(wavelength)
             if index_number is not None:
                 logging.debug("UPDATING INDEX TO: " + str(index_number))
-                print(result_list[3])
                 result_list[3].update_index(index_number)
 
     def update_histogram_specs(self, spec_tup):

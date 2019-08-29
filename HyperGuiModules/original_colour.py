@@ -463,7 +463,6 @@ class OGColour:
     # --------------------------------------------------- DRAWING -----------------------------------------------------
 
     def _draw_points(self):
-        print(self.coords_list)
         copy_data = self.original_image_data.copy()
         not_none = [i for i in self.coords_list if i != (None, None)]
         for point in not_none:
@@ -508,7 +507,7 @@ class OGColour:
         with open(path) as csvfile:
             read_csv = csv.reader(csvfile, delimiter=',')
             for row in read_csv:
-                coords.append((int(float(row[0] - 1)), (int(float(row[1] - 1)))))
+                coords.append(((int(float(row[0]) - 1)), (int(float(row[1]) - 1))))
         for i in range(10 - len(coords)):
             coords.append((None, None))
         self.coords_list = coords
@@ -671,7 +670,6 @@ class OGColour:
 
     def __update_pt1_checked(self, event):
         value = self.get_pt1_checkbox_value()
-        print(value)
         self.listener.update_saved(PT1, value)
 
     def __update_pt2_checked(self, event):

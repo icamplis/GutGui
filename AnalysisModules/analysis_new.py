@@ -91,10 +91,7 @@ class NewAnalysis:
                 self.index_masked = np.ma.array(index_module.get_index(), mask=self.mask)
         else:
             index_module = Index(index_number, self.x1, wavelength=self.wavelength)
-            print(self.x1[0, :10, 60])
-            print(self.x1[0, :10, 61])
             self.index = index_module.index
-            print(self.index[0, :10])
             if self.mask is not None:
                 self.index_masked = np.ma.array(index_module.get_index(), mask=self.mask)
 

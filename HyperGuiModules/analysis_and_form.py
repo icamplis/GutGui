@@ -127,7 +127,7 @@ class AnalysisAndForm:
         make_button(self.root, text='edit', command=lambda: self.__open_index(7), row=7, column=6,
                     outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(8), row=7, column=7,
-                    outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 15), outer_padx=(0, 12), width=3, inner_padx=0, inner_pady=1)
 
     # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 

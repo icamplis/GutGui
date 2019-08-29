@@ -116,6 +116,7 @@ class Histogram:
             self.whole_stats = [self.min_x, self.max_x, self.min_y, self.max_y, self.step_size_value]
         self._build_scale()
         self._build_step_size()
+        print('matplotlibbing')
         self._build_interactive_histogram()
 
     def _init_widgets(self):
@@ -291,6 +292,8 @@ class Histogram:
                              stop=np.ma.max(self.flattened_data) + self.get_stats()[4], step=self.get_stats()[4])
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins)
+            print(len(self.flattened_data))
+            print(len(bins))
             if self.parametric:
                 # plot error bar
                 self.plot_parametric()
@@ -453,20 +456,15 @@ class Histogram:
         self.y_upper_scale_value = float(self.y_upper_scale_input.get())
         self.x_lower_scale_value = float(self.x_lower_scale_input.get())
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
-        print(self.whole_stats[4])
-        print(self.step_size_value)
-        print(self.step_size_input.get())
         self.step_size_value = float(self.step_size_input.get())
         if self.listener.is_masked:
             self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
                                  self.y_lower_scale_value, self.y_upper_scale_value,
                                  self.step_size_value]
-            print('masked ' + str(self.masked_stats))
         else:
             self.whole_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
                                 self.y_lower_scale_value, self.y_upper_scale_value,
                                 self.step_size_value]
-            print('whole ' + str(self.whole_stats))
         self._build_interactive_histogram()
 
     def __update_save_with_scale_check_status(self, event):

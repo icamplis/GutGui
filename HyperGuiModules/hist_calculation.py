@@ -104,7 +104,6 @@ class HistCalculation:
 
     def _build_scale_helper(self, stats, col):
         bg = tkcolour_from_rgb(BACKGROUND)
-        print(stats)
         # min x
         make_text(self.root, content="Min x: ", bg=bg, column=col, row=5, width=7, pady=(0, 10), padx=(25, 5))
         min_x_input = make_entry(self.root, row=5, column=col+1, width=7, pady=(0, 10), padx=(0, 30))
@@ -139,7 +138,6 @@ class HistCalculation:
         self.graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
         if contents is not None:
             # plot histogram
-            # print(contents, bins)
             self.axes.hist(contents, bins=bins)
             # set axes
             self.graph.set_tight_layout(True)
@@ -252,7 +250,6 @@ class HistCalculation:
         bin_width = round(np.abs(bins[1] - bins[2]), 7)
         data = [bins, cont, contents]
         stats = [np.min(bins), np.max(bins), np.min(contents), np.max(contents)]
-        print(stats)
         return bin_width, data, stats
 
     def __update_scales(self, col):
@@ -330,8 +327,6 @@ class HistCalculation:
             bin_heights = self.data3[2]
             index1 = np.where(self.bins == x_low)[0][0]
             index2 = np.where(self.bins == x_high)[0][0]
-            print(index1)
-            print(index2)
             bin_heights = bin_heights[index1:index2+1]
 
             bin_heights = np.clip(bin_heights, a_min=y_low, a_max=y_high)
