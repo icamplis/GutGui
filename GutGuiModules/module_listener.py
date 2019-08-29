@@ -139,6 +139,7 @@ class ModuleListener:
 
     def get_current_rec_data(self):
         data = self.modules[RECREATED_COLOUR].recreated_colour_image_data
+        print(np.max(data))
         if not self.is_masked:
             return data
         else:

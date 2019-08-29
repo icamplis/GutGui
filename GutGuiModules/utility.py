@@ -38,13 +38,17 @@ def init():
     image_diagram.pack()
     notebook.add(image_diagram, text="Images and Diagrams")
 
-    subtraction = Frame(notebook, bg=tkcolour_from_rgb(BACKGROUND))
-    subtraction.pack()
-    notebook.add(subtraction, text="Histogram Subtraction")
+    hist_calculation = Frame(notebook, bg=tkcolour_from_rgb(BACKGROUND))
+    hist_calculation.pack()
+    notebook.add(hist_calculation, text="Histogram Calculation")
+
+    spec_calculation = Frame(notebook, bg=tkcolour_from_rgb(BACKGROUND))
+    spec_calculation.pack()
+    notebook.add(spec_calculation, text="Spectrum Calculation")
 
     notebook.pack()
 
-    return root, introduction, input_output, image_diagram, subtraction
+    return root, introduction, input_output, image_diagram, hist_calculation, spec_calculation
 
 
 def tkcolour_from_rgb(rgb):

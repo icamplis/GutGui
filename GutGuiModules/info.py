@@ -144,6 +144,8 @@ class Info:
                            "index pictures from the TIVITA® Tissue Hyperspectral Camera. Blue means low value and " \
                            "red means high value. For every of the three image windows the used scale can be " \
                            "specified by a drop-down menu."
+        self.hist_calc_info = "Histogram Calculation Information"
+        self.spec_calc_info = "Spectrum Calculation Information"
 
         self._init_widget()
 

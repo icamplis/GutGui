@@ -418,7 +418,7 @@ class Save:
         stats = self.listener.generate_hist_values_for_saving(masked, self.current_result_key)
         (x_low, x_high, y_low, y_high, step) = stats
         start = x_low
-        stop = x_high + step
+        stop = x_high + step + step
         bins = np.arange(start=start, stop=stop, step=step)
         counts, hist_bins, _ = plt.hist(data, bins=bins)
         counts = np.clip(counts, a_min=y_low, a_max=y_high)
@@ -443,7 +443,7 @@ class Save:
         stats = self.listener.generate_hist_values_for_saving(masked, self.current_result_key)
         (x_low, x_high, y_low, y_high, step) = stats
         start = np.min(data)
-        stop = np.max(data) + step
+        stop = np.max(data) + step + step
         bins = np.arange(start=start, stop=stop+step, step=step)
         # plot histogram
         axes.hist(data, bins=bins, align='left')

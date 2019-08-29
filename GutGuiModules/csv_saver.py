@@ -267,6 +267,18 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_rec_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
                 info = self.listener.get_csv_rec_info()
                 direc = os.path.dirname(path) + '/09_Recreated_Image' 
                 self._make_direc(direc)
@@ -278,6 +290,18 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_norm_rec_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
                 info = self.listener.get_csv_rec_info()
                 direc = os.path.dirname(path) + '/10_Normalised_Recreated_Image'
                 self._make_direc(direc)
@@ -289,6 +313,18 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_new_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
                 info = self.new_info()
                 direc = os.path.dirname(path) + '/11_New_Image' 
                 self._make_direc(direc)
@@ -300,6 +336,18 @@ class CSVSaver:
             selected_paths = self.listener.selected_paths
             if path in selected_paths:
                 data = self.listener.get_current_norm_new_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
                 info = self.new_info()
                 direc = os.path.dirname(path) + '/12_Normalised_New_Image' 
                 self._make_direc(direc)
