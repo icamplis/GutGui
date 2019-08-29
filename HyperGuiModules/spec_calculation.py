@@ -26,6 +26,10 @@ class SpecCalculation:
         self.data2_stats = [None, None, None, None]
         self.data3_stats = [None, None, None, None]
 
+        self.initial_data1 = None
+        self.initial_data2 = None
+        self.initial_data3 = None
+
         self.drop_down_var = StringVar()
         self.choices = ['-', '+', 'x', '/']
 
@@ -57,13 +61,13 @@ class SpecCalculation:
     # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
     def _build_buttons(self):
-        self.hist1_button = make_button(self.root, text="Choose Primary Spectrum",
+        self.hist1_button = make_button(self.root, text="Choose First Optical Spectrum",
                                         command=self.__update_data1, row=1, column=0, outer_pady=(0, 5),
                                         outer_padx=15, width=23, height=1, columnspan=4)
-        self.hist2_button = make_button(self.root, text="Choose Secondary Spectrum",
+        self.hist2_button = make_button(self.root, text="Choose Second Optical Spectrum",
                                         command=self.__update_data2, row=1, column=5, outer_pady=(0, 5),
                                         outer_padx=15, width=23, height=1, columnspan=4)
-        self.calc_button = make_button(self.root, text="Calculate Spectrum",
+        self.calc_button = make_button(self.root, text="Calculate Optical Spectrum",
                                        command=self.__calculate, row=1, column=10, outer_pady=(0, 5),
                                        outer_padx=15, width=23, height=1, columnspan=4)
 
@@ -152,7 +156,7 @@ class SpecCalculation:
         self.interactive_absorption_spec.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
 
     def _build_info_label(self):
-        self.info_label = make_label_button(self.root, text='Spectrum Subtraction', command=self.__info, width=16)
+        self.info_label = make_label_button(self.root, text='Optical Spectrum Calculation', command=self.__info, width=16)
         self.info_label.grid(columnspan=2, pady=(25, 30))
 
     # -------------------------------------------------- CALLBACKS ---------------------------------------------------
@@ -162,8 +166,8 @@ class SpecCalculation:
             messagebox.showerror("Error", "Please select two csv files.")
         elif self.x_vals1[0] != self.x_vals2[0] and self.x_vals1[-1] != self.x_vals2[-1]:
             messagebox.showerror("Error", "Please ensure your x axis is the same for each spectrum. Currently your "
-                                          "primary csv file begins at " + str(self.x_vals1[0]) + " and ends at "
-                                          + str(self.x_vals1[-1]) + " while your secondary csv file begins at "
+                                          "first csv file begins at " + str(self.x_vals1[0]) + " and ends at "
+                                          + str(self.x_vals1[-1]) + " while your second csv file begins at "
                                           + str(self.x_vals2[0]) + " and ends at " + str(self.x_vals2[-1]) + ".")
         else:
             self.x_vals3 = self.x_vals1
@@ -204,8 +208,8 @@ class SpecCalculation:
             self.initial_stats1 = self.data1_stats
 
     def __update_data2(self):
-        data2_path = filedialog.askopenfilename(parent=self.root, title="Please select a .csv file containing spectrum"
-                                                                        "data.")
+        data2_path = filedialog.askopenfilename(parent=self.root, title="Please select a .csv file containing optical "
+                                                                        "spectrum data.")
         if data2_path == '' or data2_path is None:
             return None
         if data2_path[-4:] != ".csv":
@@ -281,7 +285,7 @@ class SpecCalculation:
 
     def __info(self):
         info = self.listener.modules[INFO].spec_calc_info
-        title = "Spectrum Calculation Information"
+        title = "Optical Spectrum Calculation Information"
         make_info(title=title, info=info)
 
     def __pop_up_image(self, event):
@@ -295,7 +299,7 @@ class SpecCalculation:
         if self.output_path is None:
             messagebox.showerror("Error", "Please select an output folder before saving data.")
         if self.x_vals1 is None:
-            messagebox.showerror("Error", "Please generate a spectrum to save.")
+            messagebox.showerror("Error", "Please generate an optical spectrum to save.")
         else:
             (x_low, x_high, y_low, y_high) = self.data3_stats
             index1 = np.where(self.x_vals3 == x_low)[0][0]
@@ -306,7 +310,7 @@ class SpecCalculation:
             y_vals = np.clip(y_vals, a_min=y_low, a_max=y_high)
             print(y_vals)
             data = np.asarray([x_vals, y_vals]).T
-            output_path = self.output_path + "/spectrum_calculation.csv"
+            output_path = self.output_path + "/optical_spectrum_calculation.csv"
             logging.debug("SAVING DATA TO " + output_path)
             np.savetxt(output_path, data, delimiter=",", fmt="%.5f")
 
@@ -314,10 +318,10 @@ class SpecCalculation:
         if self.output_path is None:
             messagebox.showerror("Error", "Please select an output folder before saving data.")
         elif self.initial_data3 is None:
-            messagebox.showerror("Error", "Please generate a spectrum to save.")
+            messagebox.showerror("Error", "Please generate an optical spectrum to save.")
         else:
             (x_low, x_high, y_low, y_high) = self.data3_stats
-            output_path = self.output_path + "/spectrum_calculation.png"
+            output_path = self.output_path + "/optical_spectrum_calculation.png"
             logging.debug("SAVING SPEC" + output_path)
             plt.clf()
             axes = plt.subplot(111)

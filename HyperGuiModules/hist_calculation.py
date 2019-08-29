@@ -61,10 +61,10 @@ class HistCalculation:
     # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
     def _build_buttons(self):
-        self.hist1_button = make_button(self.root, text="Choose Primary Histogram",
+        self.hist1_button = make_button(self.root, text="Choose First Histogram",
                                         command=self.__update_data1, row=1, column=0, outer_pady=(0, 5),
                                         outer_padx=15, width=23, height=1, columnspan=4)
-        self.hist2_button = make_button(self.root, text="Choose Secondary Histogram",
+        self.hist2_button = make_button(self.root, text="Choose Second Histogram",
                                         command=self.__update_data2, row=1, column=5, outer_pady=(0, 5),
                                         outer_padx=15, width=23, height=1, columnspan=4)
         self.calc_button = make_button(self.root, text="Calculate Histogram",
@@ -166,13 +166,13 @@ class HistCalculation:
         if self.data1 is None or self.data2 is None:
             messagebox.showerror("Error", "Please select two csv files.")
         elif self.data1_bin_width != self.data2_bin_width:
-            messagebox.showerror("Error", "Please ensure your files have the same bin width. Currently your primary "
+            messagebox.showerror("Error", "Please ensure your files have the same bin width. Currently your first "
                                           "csv file has a bin width of " + str(self.data1_bin_width) + " while your "
-                                          "secondary csv file has a bin width of " + str(self.data2_bin_width) + ".")
+                                          "second csv file has a bin width of " + str(self.data2_bin_width) + ".")
         elif self.data1[0][0] != self.data2[0][0] and self.data1[0][-1] != self.data2[0][-1]:
-            messagebox.showerror("Error", "Please ensure your start and end with the same bin. Currently your primary "
+            messagebox.showerror("Error", "Please ensure your start and end with the same bin. Currently your first "
                                           "csv file begins with a bin at " + str(self.data1[0][0]) + " and ends with a "
-                                          "bin at " + str(self.data1[0][-1]) + " while your secondary csv file begins "
+                                          "bin at " + str(self.data1[0][-1]) + " while your second csv file begins "
                                           "with a bin at " + str(self.data2[0][0]) + " and ends with a bin at " +
                                           str(self.data2[0][-1]) + ".")
         else:
