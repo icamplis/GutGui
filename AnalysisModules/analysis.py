@@ -1,5 +1,5 @@
-from GutGuiModules.utility import *
-from GutGuiModules.constants import *
+from HyperGuiModules.utility import *
+from HyperGuiModules.constants import *
 import logging
 
 np.set_printoptions(threshold=sys.maxsize)

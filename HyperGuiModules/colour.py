@@ -1,4 +1,4 @@
-from GutGuiModules.utility import *
+from HyperGuiModules.utility import *
 from matplotlib.pyplot import cm
 import matplotlib
 matplotlib.use("TkAgg")

@@ -1,4 +1,5 @@
-from GutGuiModules.utility import *
+from HyperGuiModules.utility import *
+from HyperGuiModules.constants import *
 from tkinter import *
 import webbrowser
 

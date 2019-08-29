@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.ttk import Notebook, Style
 from tkinter.ttk import Button as TButton
-from GutGuiModules.constants import *
+from HyperGuiModules.constants import *
 import numpy as np
 from matplotlib import cm
 import imageio

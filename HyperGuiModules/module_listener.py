@@ -3,7 +3,7 @@ from AnalysisModules.analysis_hist import HistogramAnalysis
 from AnalysisModules.analysis_new import NewAnalysis
 from AnalysisModules.analysis_recreated import RecreatedAnalysis
 from AnalysisModules.analysis import Analysis
-from GutGuiModules.utility import *
+from HyperGuiModules.utility import *
 import numpy as np
 import logging
 

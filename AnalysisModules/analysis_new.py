@@ -1,5 +1,5 @@
 from AnalysisModules.Indices import Index
-from GutGuiModules.utility import *
+from HyperGuiModules.utility import *
 import logging
 np.set_printoptions(threshold=sys.maxsize)
 

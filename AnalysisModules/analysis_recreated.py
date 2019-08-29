@@ -1,4 +1,4 @@
-from GutGuiModules.utility import *
+from HyperGuiModules.utility import *
 import logging
 import numpy as np
 np.set_printoptions(threshold=sys.maxsize)

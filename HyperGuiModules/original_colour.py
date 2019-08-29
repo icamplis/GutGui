@@ -1,5 +1,5 @@
-from GutGuiModules.utility import *
-from GutGuiModules.constants import *
+from HyperGuiModules.utility import *
+from HyperGuiModules.constants import *
 from skimage.draw import line_aa
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageDraw

@@ -1,4 +1,4 @@
-from GutGuiModules.utility import *
+from HyperGuiModules.utility import *
 import matplotlib.pyplot as plt
 import matplotlib
 from tkinter import filedialog, messagebox
