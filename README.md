@@ -3,7 +3,7 @@
 ## Installation Instructions
 
 ### Package requirements and intructions
-Download HyperGUI by 
+Download HyperGUI by clicking the green 'Clone or Download' button and downloading the .zip file.
 
 To install Python, go to python.org/downloads/ and download version 3.7.4.
 
