@@ -133,7 +133,7 @@ class Introduction:
                         "was chosen as a sample image."
         self.image_4b = "Both formulas used by the software to calculate the four index pictures. The top formula is " \
                         "used for StO2, the bottom formula is used for NIR, THI, and TWI with the different wavelength" \
-                        "areas specified in Figures 6a and 6b. The letter variables 'r' and 's' cannot be provided."
+                        " areas specified in Figures 6a and 6b. The letter variables 'r' and 's' cannot be provided."
 
         self._init_widget()
 

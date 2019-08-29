@@ -50,6 +50,7 @@ class AnalysisAndForm:
     def _init_widget(self):
         self._build_idx_title()
         self._build_idxs()
+        self._build_wavelength_title()
         self._build_wavelength_text()
         self._build_wavelength_upper_entry()
         self._build_wavelength_lower_entry()
@@ -61,6 +62,10 @@ class AnalysisAndForm:
         self.info_label = make_label_button(self.root, text='Analysis Settings\nfor "New Image"', command=self.__info,
                                             width=14)
         self.info_label.grid(columnspan=4)
+
+    def _build_wavelength_title(self):
+        self.idx_title = make_text(self.root, content="Wavelength:", bg=tkcolour_from_rgb(BACKGROUND), column=0,
+                                   row=1, width=11, columnspan=8, pady=(0, 10))
 
     def _build_wavelength_text(self):
         self.lower_wavelength_text = make_text(self.root, content="Lower Wavelength: ",
