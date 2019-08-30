@@ -495,6 +495,7 @@ class ModuleListener:
             # self.broadcast_to_histogram()
             self.broadcast_to_absorption_spec()
             self.broadcast_to_original_image()
+        #     self.broadcast_new_data()
 
     def submit_wavelength(self, new_wavelength):
         logging.debug("NEW WAVELENGTH: " + str(new_wavelength))
