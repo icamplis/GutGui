@@ -185,6 +185,20 @@ class Save:
         plt.savefig(output_path)
         plt.clf()
 
+    @staticmethod
+    def remove_masked_vals(data, mask, stats):
+        data = np.clip(data, a_min=stats[0], a_max=stats[1])
+        print(data.shape)
+        print(data.count())
+        arr = []
+        for i in range(len(data)):
+            for j in range(len(data[i])):
+                if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                    arr.append(str(''))
+                else:
+                    arr.append(str(float(data[i][j])))
+        return np.asarray(arr).reshape((640, 480))
+
     # ------------------------------------------------- ORIGINAL IMAGE -----------------------------------------------
 
     def __save_points(self):
@@ -336,7 +350,7 @@ class Save:
             title = self.listener.get_save_og_info('TWI', image=False) + '_whole'
             data = np.flipud(self.current_hist_result.get_twi_og())
             twi = np.flipud(self.__convert_original_image(data))
-            self.__save_data(np.flipud(twi), title)
+            self.__save_data(twi, title)
 
             if self.saves[OG_IMAGE]:
                 title = self.listener.get_save_og_info('TWI', image=True) + '_whole'
@@ -349,7 +363,8 @@ class Save:
             title = self.listener.get_save_og_info('TWI', image=False) + '_masked'
             data = np.flipud(np.ma.array(self.current_hist_result.get_twi_og()[:,:,:3], mask=np.array([mask.T] * 3).T))
             twi = np.flipud(self.__convert_original_image(self.current_hist_result.get_twi_og()[:,:,:3], mask))
-            self.__save_data(np.flipud(twi), title)
+            save_data = self.remove_masked_vals(data, mask)
+            self.__save_data(save_data, title)
 
             if self.saves[OG_IMAGE]:
                 print(data[0][:30])
@@ -601,14 +616,15 @@ class Save:
             data_name = self.listener.get_save_rec_info('STO2', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('STO2', image=True, masked=False, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'STO2')
-            self.__save_data(self.current_rec_result.sto2, data_name, stats)
+            self.__save_data(self.current_rec_result.sto2.T, data_name, stats)
             self.__save_image(self.current_rec_result.sto2, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('STO2', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('STO2', image=True, masked=True, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'STO2')
-            self.__save_data(self.current_rec_result.sto2_masked, data_name, stats)
+            data = self.remove_masked_vals(self.current_rec_result.sto2_masked, np.fliplr(self.listener.get_mask()), stats)
+            self.__save_data(data.T, data_name, [None, None], formatting="%s")
             self.__save_image(self.current_rec_result.sto2_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
 
@@ -617,14 +633,15 @@ class Save:
             data_name = self.listener.get_save_rec_info('NIR', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('NIR', image=True, masked=False, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'NIR')
-            self.__save_data(self.current_rec_result.nir, data_name, stats)
+            self.__save_data(self.current_rec_result.nir.T, data_name, stats)
             self.__save_image(self.current_rec_result.nir, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('NIR', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('NIR', image=True, masked=True, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'NIR')
-            self.__save_data(self.current_rec_result.nir_masked, data_name, stats)
+            data = self.remove_masked_vals(self.current_rec_result.nir_masked, np.fliplr(self.listener.get_mask()), stats)
+            self.__save_data(data.T, data_name, [None, None], formatting="%s")
             self.__save_image(self.current_rec_result.nir_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
 
@@ -633,14 +650,15 @@ class Save:
             data_name = self.listener.get_save_rec_info('THI', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('THI', image=True, masked=False, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'THI')
-            self.__save_data(self.current_rec_result.thi, data_name, stats)
+            self.__save_data(self.current_rec_result.thi.T, data_name, stats)
             self.__save_image(self.current_rec_result.thi, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('THI', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('THI', image=True, masked=True, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'THI')
-            self.__save_data(self.current_rec_result.thi_masked, data_name, stats)
+            data = self.remove_masked_vals(self.current_rec_result.thi_masked, np.fliplr(self.listener.get_mask()), stats)
+            self.__save_data(data.T, data_name, [None, None], formatting="%s")
             self.__save_image(self.current_rec_result.thi_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
 
@@ -649,14 +667,15 @@ class Save:
             data_name = self.listener.get_save_rec_info('TWI', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('TWI', image=True, masked=False, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'TWI')
-            self.__save_data(self.current_rec_result.twi, data_name, stats)
+            self.__save_data(self.current_rec_result.twi.T, data_name, stats)
             self.__save_image(self.current_rec_result.twi, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('TWI', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('TWI', image=True, masked=True, path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'TWI')
-            self.__save_data(self.current_rec_result.twi_masked, data_name, stats)
+            data = self.remove_masked_vals(self.current_rec_result.twi, np.fliplr(self.listener.get_mask()), stats)
+            self.__save_data(data.T, data_name, [None, None], formatting="%s")
             self.__save_image(self.current_rec_result.twi_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
 
@@ -685,7 +704,8 @@ class Save:
             data_name = self.listener.get_save_new_info('WL', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_new_info('WL', image=True, masked=True, path=self.current_result_key)
             stats = self.listener.generate_new_values_for_saving(self.current_result_key, 'WL')
-            self.__save_data(self.current_new_result.get_wl_data_masked(), data_name, stats)
+            data = self.remove_masked_vals(self.current_new_result.get_wl_data_masked(), self.listener.get_mask())
+            self.__save_data(data, data_name, stats)
             self.__save_image(self.current_new_result.get_wl_data_masked(), image_name,  self.saves[NEW_IMAGE],
                               self.saves[NEW_IMAGE_WO_SCALE], stats, cmap=cmap)
 
@@ -701,6 +721,7 @@ class Save:
             data_name = self.listener.get_save_new_info('IDX', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_new_info('IDX', image=True, masked=True, path=self.current_result_key)
             stats = self.listener.generate_new_values_for_saving(self.current_result_key, 'IDX')
-            self.__save_data(self.current_new_result.index_masked, data_name, stats)
+            data = self.remove_masked_vals(self.current_new_result.index_masked, self.listener.get_mask())
+            self.__save_data(data, data_name, stats)
             self.__save_image(self.current_new_result.index_masked, image_name, self.saves[NEW_IMAGE],
                               self.saves[NEW_IMAGE_WO_SCALE], stats, cmap=cmap)
