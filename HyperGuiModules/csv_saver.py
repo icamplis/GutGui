@@ -169,7 +169,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '01_refl_og_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
 
     def __ogrp_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -182,7 +182,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '02_refl_og_wo_neg_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
         
     def __normr_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -195,7 +195,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '03_refl_norm_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
 
     def __normrp_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -208,7 +208,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '04_refl_norm_wo_neg_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
         
     def __oga_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -221,7 +221,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '05_abs_og_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
         
     def __ogap_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -234,7 +234,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '06_abs_og_wo_neg_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
         
     def __norma_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -247,7 +247,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '07_abs_norm_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
         
     def __normap_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -260,7 +260,7 @@ class CSVSaver:
                     num = i*5 + 500
                     progress(i, 100)
                     big_path = direc + '/' + '08_abs_norm_wo_neg_slice_' + str(num) + '.csv'
-                    np.savetxt(big_path, data[:, :, i], delimiter=",", fmt='%s')
+                    np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
 
     def __rec_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -283,7 +283,7 @@ class CSVSaver:
                 direc = os.path.dirname(path) + '/09_Recreated_Image' 
                 self._make_direc(direc)
                 big_path = direc + '/' + '09_recreated_image' + info + '.csv'
-                np.savetxt(big_path, data, delimiter=",", fmt='%s')
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
 
     def __norm_rec_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -306,7 +306,7 @@ class CSVSaver:
                 direc = os.path.dirname(path) + '/10_Normalised_Recreated_Image'
                 self._make_direc(direc)
                 big_path = direc + '/' + '10_norm_recreated_image' + info + '.csv'
-                np.savetxt(big_path, data, delimiter=",", fmt='%s')
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
 
     def __new_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -329,7 +329,7 @@ class CSVSaver:
                 direc = os.path.dirname(path) + '/11_New_Image' 
                 self._make_direc(direc)
                 big_path = direc + '/' + '11_new_image' + info + '.csv'
-                np.savetxt(big_path, data, delimiter=",", fmt='%s')
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
 
     def __norm_new_to_csv(self):
         for path, _ in self.listener.results.items():
@@ -352,4 +352,4 @@ class CSVSaver:
                 direc = os.path.dirname(path) + '/12_Normalised_New_Image' 
                 self._make_direc(direc)
                 big_path = direc + '/' + '12_norm_new_image' + info + '.csv'
-                np.savetxt(big_path, data, delimiter=",", fmt='%s')
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
