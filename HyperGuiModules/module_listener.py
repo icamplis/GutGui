@@ -134,7 +134,7 @@ class ModuleListener:
         if not self.is_masked:
             return data
         else:
-            mask = np.array([self.mask.T] * 3).T
+            mask = np.array([self.mask.T] * 3)
             return np.ma.array(data, mask=mask)
 
     def get_current_rec_data(self):
@@ -277,12 +277,12 @@ class ModuleListener:
         if display == IDX:
             arr = self.modules[NEW_COLOUR].idx_stats
             if arr == [None, None]:
-                data = self.results[path][2].index
+                data = self.results[path][3].index
                 arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
         if display == WL:
             arr = self.modules[NEW_COLOUR].wl_stats
             if arr == [None, None]:
-                data = self.results[path][2].get_wl_data()
+                data = self.results[path][3].get_wl_data()
                 arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
         return arr
 
@@ -295,9 +295,9 @@ class ModuleListener:
         parametric = self.modules[HISTOGRAM].parametric
         non_parametric = self.modules[HISTOGRAM].non_parametric
         limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')-' + str(step) + '_'
-        scale_mod = 'wo-scale_'
+        scale_mod = 'wo-scale'
         if scale:
-            scale_mod = 'with-scale_'
+            scale_mod = 'with-scale'
         p_mod = ''
         if parametric:
             p_mod = 'p_'
@@ -309,11 +309,11 @@ class ModuleListener:
             data_mod = self.get_abbreviated_new_info()
         else:
             data_mod = ['', '']
-        masked_mod = 'whole'
+        masked_mod = 'whole_'
         if masked:
-            masked_mod = 'masked'
+            masked_mod = 'masked_'
         if image:
-            return 'histogram_fromCSV' + str(num) + limits + scale_mod + p_mod + data_mod[0] + masked_mod
+            return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[0] + masked_mod + scale_mod
         else:
             return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[1] + masked_mod + '_data'
 
@@ -347,16 +347,16 @@ class ModuleListener:
         if self.modules[ABSORPTION_SPEC].norm:
             norm = '-normed_'
         limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')' + norm
-        scale_mod = 'wo-scale_'
+        scale_mod = 'wo-scale'
         if scale:
-            scale_mod = 'with-scale_'
-        masked_mod = 'whole'
+            scale_mod = 'with-scale'
+        masked_mod = 'whole_'
         if masked:
-            masked_mod = 'masked'
+            masked_mod = 'masked_'
         if image:
-            return 'abspec_fromCSV' + str(num) + limits + scale_mod + masked_mod
+            return 'spectrum_fromCSV' + str(num) + limits + masked_mod + scale_mod
         else:
-            return 'abspec_fromCSV' + str(num) + limits + masked_mod + '_data'
+            return 'spectrum_fromCSV' + str(num) + limits + masked_mod + 'data'
 
     def generate_abs_values_for_saving(self, masked, path):
         if not masked:
@@ -490,12 +490,7 @@ class ModuleListener:
         self.mask = new_mask
         self.update_analysis(mask=self.mask)
         if self.is_masked:
-            self.broadcast_to_recreated_image()
-            self.broadcast_to_new_image()
-            # self.broadcast_to_histogram()
-            self.broadcast_to_absorption_spec()
-            self.broadcast_to_original_image()
-        #     self.broadcast_new_data()
+            self.broadcast_new_data()
 
     def submit_wavelength(self, new_wavelength):
         logging.debug("NEW WAVELENGTH: " + str(new_wavelength))
@@ -512,13 +507,7 @@ class ModuleListener:
     def submit_is_masked(self, new_is_masked):
         logging.debug("USING WHOLE IMAGE? " + str(new_is_masked))
         self.is_masked = new_is_masked
-        if self.is_masked:
-            self.broadcast_to_recreated_image()
-            self.broadcast_to_new_image()
-            self.broadcast_to_absorption_spec()
-            self.broadcast_to_original_image()
-        else:
-            self.broadcast_new_data()
+        self.broadcast_new_data()
 
     def submit_params(self):
         self.params = self.modules[PARAMETER].get_params()

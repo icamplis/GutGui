@@ -52,12 +52,15 @@ class OGColourData:
     # ------------------------------------------------- CALCULATOR ---------------------------------------------------
 
     def _calc_data(self):
-        self.mean_value = np.round(np.ma.mean(self.stats_data), 3)
-        self.sd_value = np.round(np.ma.std(self.stats_data), 3)
-        self.median_value = np.round(np.ma.median(self.stats_data), 3)
-        self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.stats_data, 0.75), 3))
-        self.min_value = np.round(np.ma.min(self.stats_data), 3)
-        self.max_value = np.round(np.ma.max(self.stats_data), 3)
+        data = np.ma.sort(self.stats_data)
+        length = np.ma.count(data)
+        logging.debug("CALCULATING STATS...")
+        self.mean_value = np.round(np.ma.mean(data), 3)
+        self.sd_value = np.round(np.ma.std(data), 3)
+        self.median_value = np.round(data[int(length*1/2)], 3)
+        self.iqr_value = (np.round(data[int(length*1/4)], 3), round(data[int(length*3/4)], 3))
+        self.min_value = np.round(np.ma.min(data), 3)
+        self.max_value = np.round(np.ma.max(data), 3)
 
     # --------------------------------------------------- BUILDERS ---------------------------------------------------
 

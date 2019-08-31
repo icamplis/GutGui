@@ -93,7 +93,7 @@ class HistogramAnalysis:
     def get_twi_og(self):
         filename = str(self.path[:-13]) + TWI_FILE
         self.twi_og = image_to_array(filename)
-        return self.twi_og[24:504, 4:644, :]
+        return self.twi_og[24:504, 4:644, :3]
 
     # ------------------------------------------------- CALCULATORS --------------------------------------------------
 

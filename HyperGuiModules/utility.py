@@ -501,6 +501,11 @@ def find_closest_3d(point):
 
 def rgb_image_to_hsi_array(img_array):
     array = []
+    truth = isinstance(img_array, np.ma.MaskedArray)
+    print(img_array[0][:20])
+    if truth:
+        mask = img_array.mask[:, :, 0]
+        print(mask[0, :20])
     # iterate over pixels in image
     for i in range(len(img_array)):
         progress(i, len(img_array))
@@ -509,7 +514,18 @@ def rgb_image_to_hsi_array(img_array):
             zero = img_array[i][j][0]
             one = img_array[i][j][1]
             two = img_array[i][j][2]
-            # convert rgb to jet value using rgb_to_angle and angle_to_jet and append to the array to form the 2D
-            # matrix or jet values
-            array.append(find_closest_3d((zero, one, two)))
-    return array
+            if truth:
+                if not mask[i][j]:
+                    a = find_closest_3d((zero, one, two))
+                    print(zero, one, two)
+                    print(a)
+                    array.append(a)
+                else:
+                    array.append(0)
+            else:
+                array.append(find_closest_3d((zero, one, two)))
+    if truth:
+        print(mask.shape)
+        return np.ma.array(array, mask=mask)
+    else:
+        return array

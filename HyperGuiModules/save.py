@@ -205,7 +205,7 @@ class Save:
         # mask
         mask = None
         if self.saves[MASKED_IMAGE_SAVE]:
-            mask = np.logical_not(self.listener.get_mask())
+            mask = self.listener.get_mask()
         # cmap
         cmap = 'jet'
         if self.listener.modules[ORIGINAL_COLOUR].gs:
@@ -226,15 +226,16 @@ class Save:
         if self.saves[WHOLE_IMAGE_SAVE]:
             title = self.listener.get_save_og_info('RGB', image=False) + '_whole'
             data = self.current_hist_result.get_rgb_og().T
+            print(data.size)
             rgb = self.__convert_original_image(data)
             self.__save_data(np.flipud(rgb), title)
 
             if self.saves[OG_IMAGE]:
-                title = self.listener.get_save_og_info('RGB', image=True)
+                title = self.listener.get_save_og_info('RGB', image=True) + '_whole'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title + '_whole', False, cmap=cmap)
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(rgb, title + '_whole', False, cmap=cmap)
+                    self.__save_image_diagram(rgb, title, False, cmap=cmap)
 
         if self.saves[MASKED_IMAGE_SAVE]:
             title = self.listener.get_save_og_info('RGB', image=False) + '_masked'
@@ -245,9 +246,9 @@ class Save:
             if self.saves[OG_IMAGE]:
                 title = self.listener.get_save_og_info('RGB', image=True) + '_masked'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title + '_masked', False, cmap=cmap)
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(rgb, title + '_masked', False, cmap=cmap)
+                    self.__save_image_diagram(rgb, title, False, cmap=cmap)
 
     def __save_og_sto2_image(self, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
@@ -257,24 +258,24 @@ class Save:
             self.__save_data(np.flipud(sto2), title)
 
             if self.saves[OG_IMAGE]:
-                title = self.listener.get_save_og_info('STO2', image=True)
+                title = self.listener.get_save_og_info('STO2', image=True) + '_whole'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(sto2, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(sto2, title, False, cmap=cmap)
 
         if self.saves[MASKED_IMAGE_SAVE]:
             title = self.listener.get_save_og_info('STO2', image=False) + '_masked'
             data = np.ma.array(self.current_hist_result.get_sto2_og(), mask=np.array([mask.T] * 3).T)
             sto2 = self.__convert_original_image(self.current_hist_result.get_sto2_og(), mask)
-            self.__save_data(np.flipud(sto2), title)
+            self.__save_data(np.flipud(data), title)
 
             if self.saves[OG_IMAGE]:
                 title = self.listener.get_save_og_info('STO2', image=True) + '_masked'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(sto2, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(sto2, title, False, cmap=cmap)
 
     def __save_og_nir_image(self, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
@@ -284,11 +285,11 @@ class Save:
             self.__save_data(np.flipud(nir), title)
 
             if self.saves[OG_IMAGE]:
-                title = self.listener.get_save_og_info('NIR', image=True)
+                title = self.listener.get_save_og_info('NIR', image=True) + '_whole'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(nir, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(nir, title, False, cmap=cmap)
 
         if self.saves[MASKED_IMAGE_SAVE]:
             title = self.listener.get_save_og_info('NIR', image=False) + '_masked'
@@ -299,9 +300,9 @@ class Save:
             if self.saves[OG_IMAGE]:
                 title = self.listener.get_save_og_info('NIR', image=True) + '_masked'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(nir, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(nir, title, False, cmap=cmap)
 
     def __save_og_thi_image(self, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
@@ -311,11 +312,11 @@ class Save:
             self.__save_data(np.flipud(thi), title)
 
             if self.saves[OG_IMAGE]:
-                title = self.listener.get_save_og_info('THI', image=True)
+                title = self.listener.get_save_og_info('THI', image=True) + '_whole'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(thi, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(thi, title, False, cmap=cmap)
 
         if self.saves[MASKED_IMAGE_SAVE]:
             title = self.listener.get_save_og_info('THI', image=False) + '_masked'
@@ -326,45 +327,49 @@ class Save:
             if self.saves[OG_IMAGE]:
                 title = self.listener.get_save_og_info('THI', image=True) + '_masked'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(thi, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(thi, title, False, cmap=cmap)
 
     def __save_og_twi_image(self, cmap, mask):
         if self.saves[WHOLE_IMAGE_SAVE]:
             title = self.listener.get_save_og_info('TWI', image=False) + '_whole'
-            data = self.current_hist_result.get_twi_og()
-            twi = self.__convert_original_image(data)
+            data = np.flipud(self.current_hist_result.get_twi_og())
+            twi = np.flipud(self.__convert_original_image(data))
             self.__save_data(np.flipud(twi), title)
 
             if self.saves[OG_IMAGE]:
-                title = self.listener.get_save_og_info('TWI', image=True)
+                title = self.listener.get_save_og_info('TWI', image=True) + '_whole'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(twi, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(twi, title, False, cmap=cmap)
 
         if self.saves[MASKED_IMAGE_SAVE]:
             title = self.listener.get_save_og_info('TWI', image=False) + '_masked'
-            data = np.ma.array(self.current_hist_result.get_twi_og(), mask=np.array([mask.T] * 3).T)
-            twi = self.__convert_original_image(self.current_hist_result.get_twi_og(), mask)
+            data = np.flipud(np.ma.array(self.current_hist_result.get_twi_og()[:,:,:3], mask=np.array([mask.T] * 3).T))
+            twi = np.flipud(self.__convert_original_image(self.current_hist_result.get_twi_og()[:,:,:3], mask))
             self.__save_data(np.flipud(twi), title)
 
             if self.saves[OG_IMAGE]:
+                print(data[0][:30])
+                print(twi[0][:30])
                 title = self.listener.get_save_og_info('TWI', image=True) + '_masked'
                 if cmap == 'jet':
-                    self.__save_image_diagram(data, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(data, title, False, cmap=cmap)
                 else:
-                    self.__save_image_diagram(twi, title, False, cmap=cmap) + '_whole'
+                    self.__save_image_diagram(twi, title, False, cmap=cmap)
 
     @staticmethod
     def __convert_original_image(array, mask=None):
+        if array.shape == (3, 640, 480):
+            array = np.moveaxis(array, [0, 1, 2], [-1, -2, -3])
         if mask is None:
             mask = []
         if len(mask) == 0:
-            return np.flipud(np.asarray(rgb_image_to_hsi_array(array)).reshape((480, 640))).T
+            return np.asarray(rgb_image_to_hsi_array(array)).reshape((480, 640))
         else:
-            return np.ma.array(np.flipud(skimage.color.rgb2gray(array)).T, mask=mask)
+            return np.ma.array(rgb_image_to_hsi_array(array), mask=mask).reshape((480, 640)).T
 
     # ---------------------------------------------------- HISTOGRAM -------------------------------------------------
 
@@ -595,14 +600,14 @@ class Save:
         if self.saves[WHOLE_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('STO2', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('STO2', image=True, masked=False, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'STO2')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'STO2')
             self.__save_data(self.current_rec_result.sto2, data_name, stats)
             self.__save_image(self.current_rec_result.sto2, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('STO2', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('STO2', image=True, masked=True, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'STO2')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'STO2')
             self.__save_data(self.current_rec_result.sto2_masked, data_name, stats)
             self.__save_image(self.current_rec_result.sto2_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
@@ -611,14 +616,14 @@ class Save:
         if self.saves[WHOLE_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('NIR', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('NIR', image=True, masked=False, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'NIR')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'NIR')
             self.__save_data(self.current_rec_result.nir, data_name, stats)
             self.__save_image(self.current_rec_result.nir, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('NIR', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('NIR', image=True, masked=True, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'NIR')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'NIR')
             self.__save_data(self.current_rec_result.nir_masked, data_name, stats)
             self.__save_image(self.current_rec_result.nir_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
@@ -627,14 +632,14 @@ class Save:
         if self.saves[WHOLE_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('THI', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('THI', image=True, masked=False, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'THI')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'THI')
             self.__save_data(self.current_rec_result.thi, data_name, stats)
             self.__save_image(self.current_rec_result.thi, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('THI', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('THI', image=True, masked=True, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'THI')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'THI')
             self.__save_data(self.current_rec_result.thi_masked, data_name, stats)
             self.__save_image(self.current_rec_result.thi_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
@@ -643,14 +648,14 @@ class Save:
         if self.saves[WHOLE_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('TWI', image=False, masked=False, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('TWI', image=True, masked=False, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(False, self.current_result_key, 'TWI')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'TWI')
             self.__save_data(self.current_rec_result.twi, data_name, stats)
             self.__save_image(self.current_rec_result.twi, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)
         if self.saves[MASKED_IMAGE_SAVE]:
             data_name = self.listener.get_save_rec_info('TWI', image=False, masked=True, path=self.current_result_key)
             image_name = self.listener.get_save_rec_info('TWI', image=True, masked=True, path=self.current_result_key)
-            stats = self.listener.generate_rec_values_for_saving(True, self.current_result_key, 'TWI')
+            stats = self.listener.generate_rec_values_for_saving(self.current_result_key, 'TWI')
             self.__save_data(self.current_rec_result.twi_masked, data_name, stats)
             self.__save_image(self.current_rec_result.twi_masked, image_name, self.saves[REC_IMAGE],
                               self.saves[REC_IMAGE_WO_SCALE], stats, cmap=cmap)

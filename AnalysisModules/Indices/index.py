@@ -54,4 +54,3 @@ class Index:
             self.index = get_index_7(self.x_abs_or_ref)
         elif self.index_no == 8:
             self.index = get_index_8(self.x_abs_or_ref)
-        print(self.index[:, :10])
