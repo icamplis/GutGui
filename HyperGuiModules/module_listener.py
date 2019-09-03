@@ -665,7 +665,7 @@ class ModuleListener:
 
     def update_new_specs(self, spec_tup):
         self.new_specs = spec_tup
-        self._make_new_new_analysis(self.dc_path, self.data_cube, self.wavelength, self.index, self.mask,
+        self._make_new_new_analysis(self.dc_path, self.data_cube, self.wavelength, self.index_number, self.mask,
                                     self.new_specs)
         self.broadcast_to_new_image()
 

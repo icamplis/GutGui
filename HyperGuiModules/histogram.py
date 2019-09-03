@@ -347,7 +347,6 @@ class Histogram:
         data = data[data <= self.upper_value]
         data = np.ma.sort(data)
         length = np.ma.count(data)
-        print(list(set(data))[:30])
         # mean, sd, median, iqr
         logging.debug("CALCULATING STATS...")
         self.mean_value = np.round(np.ma.mean(data), 3)
