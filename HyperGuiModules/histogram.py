@@ -295,8 +295,6 @@ class Histogram:
                              stop=np.ma.max(self.flattened_data) + self.get_stats()[4], step=self.get_stats()[4])
             # plot histogram
             self.axes.hist(self.flattened_data, bins=bins)
-            print(len(self.flattened_data))
-            print(len(bins))
             if self.parametric:
                 # plot error bar
                 self.plot_parametric()
@@ -349,7 +347,7 @@ class Histogram:
         data = data[data <= self.upper_value]
         data = np.ma.sort(data)
         length = np.ma.count(data)
-        print(set(data))
+        print(list(set(data))[:30])
         # mean, sd, median, iqr
         logging.debug("CALCULATING STATS...")
         self.mean_value = np.round(np.ma.mean(data), 3)
@@ -399,22 +397,27 @@ class Histogram:
     def __update_data(self, event):
         choice = self.drop_down_var.get()[:2]
         if choice in ['1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.']:
+            self.step_size_value = 0.01
             self.specs, self.spec_number = specs(choice=choice)
             self.listener.update_histogram_specs(self.specs)
         elif choice == '9.':
             data = self.listener.get_current_rec_data()
+            self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 9
         elif choice == '10':
             data = self.listener.get_current_norm_rec_data()
+            self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 10
         elif choice == '11':
             data = self.listener.get_current_new_data()
+            self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 11
         elif choice == '12':
             data = self.listener.get_current_norm_new_data()
+            self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 12
         elif choice == '13':
@@ -424,6 +427,7 @@ class Histogram:
             self.spec_number = 13
         elif choice == '14':
             data = self.listener.get_current_norm_original_data()
+            self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 14
 
