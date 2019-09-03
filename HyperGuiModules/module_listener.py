@@ -29,7 +29,6 @@ class ModuleListener:
         self.normal = None
         self.absorbance = None
         self.wavelength = None
-        self.index = None
         self.index_number = None
         self.histogram_specs = None
         self.ab_spec_specs = None
@@ -54,7 +53,7 @@ class ModuleListener:
 
         if self.modules[ANALYSIS_AND_FORM]:
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
-            self.index = self.modules[ANALYSIS_AND_FORM].index_selected
+            self.index_number = self.modules[ANALYSIS_AND_FORM].index_selected
             self.mask = self.modules[ORIGINAL_COLOUR].mask_raw
             self.is_masked = self.modules[DIAGRAM].is_masked
 
@@ -70,7 +69,7 @@ class ModuleListener:
             self._make_new_abs_analysis(dc_path, data_cube, self.wavelength, self.mask, self.ab_spec_specs)
             self._make_new_rec_analysis(dc_path, data_cube, self.wavelength, self.mask,
                                         self.recreated_specs, self.params)
-            self._make_new_new_analysis(dc_path, data_cube, self.wavelength, self.index, self.mask, self.new_specs)
+            self._make_new_new_analysis(dc_path, data_cube, self.wavelength, self.index_number, self.mask, self.new_specs)
 
     def set_data_cube(self, dc_path):
         logging.debug("SELECTED DATA CUBE AT: " + dc_path)
@@ -434,7 +433,7 @@ class ModuleListener:
         if display == WL:
             mod = 'WL_' + str(self.wavelength[0] * 5 + 500) + '-' + str(self.wavelength[1] * 5 + 500)
         elif display == IDX:
-            mod = 'IDX' + str(self.index)
+            mod = 'IDX' + str(self.index_number)
         image = mod + '-csv' + str(num) + colour + scale_mod + norm + '_'
         csv = mod + '-csv' + str(num) + scale_mod + norm + '_'
         return [image, csv]

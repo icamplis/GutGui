@@ -66,7 +66,8 @@ class Introduction:
                            "\n- THI: HSI Tissue Haemoglobin Index		         530-590 nm & 785-825 nm" \
                            "\n- TWI: HSI Tissue Water Index			              880-900 nm & 955-980 nm" \
                            "\n\nThe formulas used are displayed on the right (Figure 7). The parameters represented " \
-                           "by the letter variables are part of the corporate secret and cannot be provided."
+                           "by the letter variables are part of the corporate secret and cannot be provided." \
+                           "\n\nExemplary images can be seen in Figure 8."
 
         self.text_text_5 = "\n\nThe purpose of this software is the facilitation of an extensive analysation of the " \
                            "hyperspectral datacube." \
@@ -134,6 +135,9 @@ class Introduction:
         self.image_4b = "Both formulas used by the software to calculate the four index pictures. The top formula is " \
                         "used for StO2, the bottom formula is used for NIR, THI, and TWI with the different wavelength" \
                         " areas specified in Figures 6a and 6b. The letter variables 'r' and 's' cannot be provided."
+        self.image_4c = "Original images from the TIVITA camera system. On the top there is the " \
+                        "regular RGB image of the gastric conduit that was chosen as an example. Below that the four " \
+                        "index pictures (StO2, NIR, THI and TWI) are displayed."
 
         self._init_widget()
 
@@ -148,7 +152,7 @@ class Introduction:
     # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
     def parse_images(self):
-        for i in range(1, 7):
+        for i in range(1, 8):
             self.images.append(image_to_array('./image0' + str(i) + '.png'))
 
     def build_spacer(self):
@@ -176,6 +180,8 @@ class Introduction:
             self._build_page7()
         if page_num == 8:
             self._build_page8()
+        if page_num == 8:
+            self._build_page9()
 
     def _build_page1(self):
         # text
@@ -265,7 +271,7 @@ class Introduction:
 
     def _build_page4(self):
         # text
-        text = Text(self.root, height=13, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
+        text = Text(self.root, height=16, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
         text.insert(END, self.title_4, ('title', str(0)))
         text.insert(END, self.text_text_4)
         text.tag_config('title', foreground='black', underline=True)
@@ -285,7 +291,7 @@ class Introduction:
 
     def _build_page5(self):
         # text
-        text = Text(self.root, height=13, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
+        text = Text(self.root, height=16, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
         text.insert(END, self.title_4, ('title', str(0)))
         text.insert(END, self.text_text_4)
         text.tag_config('title', foreground='black', underline=True)
@@ -305,7 +311,7 @@ class Introduction:
 
     def _build_page6(self):
         # text
-        text = Text(self.root, height=13, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
+        text = Text(self.root, height=16, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
         text.insert(END, self.title_4, ('title', str(0)))
         text.insert(END, self.text_text_4)
         text.tag_config('title', foreground='black', underline=True)
@@ -325,6 +331,26 @@ class Introduction:
 
     def _build_page7(self):
         # text
+        text = Text(self.root, height=16, width=70, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
+        text.insert(END, self.title_4, ('title', str(0)))
+        text.insert(END, self.text_text_4)
+        text.tag_config('title', foreground='black', underline=True)
+        text.config(state="disabled", bg=tkcolour_from_rgb(WHITE))
+        text.grid(padx=(25, 20), pady=15, row=0, column=0)
+        # images
+        make_image(self.root, self.images[6], column=1, rowspan=1, lower_scale_value=None,
+                   upper_scale_value=None, color_rgb=WHITE, figwidth=7.5, figheight=6.5, original=True,
+                   row=0, columnspan=1)
+        image_text1 = Text(self.root, height=3, width=100, wrap=WORD, highlightthickness=0,
+                           foreground=tkcolour_from_rgb(GREY))
+        image_text1.insert(END, 'Figure 8', ('tit', str(2)))
+        image_text1.insert(END, ' | ' + self.image_4c)
+        image_text1.tag_config('tit', foreground='black')
+        image_text1.grid(padx=(0, 25), pady=(690, 0), row=0, column=1)
+        image_text1.config(state=DISABLED)
+
+    def _build_page8(self):
+        # text
         text = Text(self.root, height=10, width=150, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
         text.insert(END, self.title_5, ('title', str(0)))
         text.insert(END, self.text_text_5)
@@ -332,7 +358,7 @@ class Introduction:
         text.config(state="disabled", bg=tkcolour_from_rgb(WHITE))
         text.grid(padx=(25, 260), pady=15, row=0, column=0, columnspan=2)
 
-    def _build_page8(self):
+    def _build_page9(self):
         # text
         text = Text(self.root, height=42, width=150, wrap=WORD, highlightthickness=0, foreground=tkcolour_from_rgb(GREY))
         text.insert(END, self.title_6, ('title', str(0)))
@@ -363,7 +389,7 @@ class Introduction:
             self._build_page(self.number)
 
     def __next(self):
-        if self.number == 8:
+        if self.number == 9:
             pass
         else:
             self.build_spacer()
