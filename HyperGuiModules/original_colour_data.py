@@ -48,6 +48,15 @@ class OGColourData:
         self._build_info_label()
         self._build_calc_button()
 
+    def empty_stats(self):
+        self.mean_value = ''
+        self.sd_value = ''
+        self.median_value = ''
+        self.iqr_value = ''
+        self.min_value = ''
+        self.max_value = ''
+        self._build_data()
+
     # ------------------------------------------------- CALCULATOR ---------------------------------------------------
 
     def _calc_data(self):

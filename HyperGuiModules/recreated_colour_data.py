@@ -43,6 +43,15 @@ class RecreatedColourData:
         self._build_calc_button()
         self._build_info_label()
 
+    def empty_stats(self):
+        self.mean_value = ''
+        self.sd_value = ''
+        self.median_value = ''
+        self.iqr_value = ''
+        self.min_value = ''
+        self.max_value = ''
+        self._build_data()
+
     # ------------------------------------------------- CALCULATOR ---------------------------------------------------
 
     def _calc_data(self):

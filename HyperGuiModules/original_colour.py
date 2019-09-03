@@ -516,6 +516,10 @@ class OGColour:
 
     def __use_coords(self):
         # produces a 640x480 8-bit mask
+        if self.listener.is_masked:
+            self.listener.modules[ORIGINAL_COLOUR_DATA].empty_stats()
+            self.listener.modules[NEW_COLOUR_DATA].empty_stats()
+            self.listener.modules[RECREATED_COLOUR_DATA].empty_stats()
         polygon = [point for point in self.coords_list if point != (None, None)]
         img = Image.new('L', (640, 480), 0)
         ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
