@@ -55,7 +55,7 @@ class Histogram:
                         '11. New Image',
                         '12. New Image - Normalised',
                         '13. Original Image',
-                        '14. Original Image = Normalised']
+                        '14. Original Image - Normalised']
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -107,6 +107,7 @@ class Histogram:
 
     def update_histogram(self, data):
         logging.debug("BUILDING HISTOGRAM...")
+        print(data[0, 50:90])
         self.flattened_data = data.flatten()
         self.flattened_data = self.flattened_data[self.flattened_data != np.array(None)]
         self.upper_value = np.ma.max(self.flattened_data)
@@ -348,6 +349,7 @@ class Histogram:
         data = data[data <= self.upper_value]
         data = np.ma.sort(data)
         length = np.ma.count(data)
+        print(set(data))
         # mean, sd, median, iqr
         logging.debug("CALCULATING STATS...")
         self.mean_value = np.round(np.ma.mean(data), 3)
@@ -417,6 +419,7 @@ class Histogram:
             self.spec_number = 12
         elif choice == '13':
             data = self.listener.get_current_original_data()
+            self.step_size_value = 1
             self.update_histogram(data)
             self.spec_number = 13
         elif choice == '14':

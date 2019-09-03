@@ -522,5 +522,5 @@ def rgb_image_to_hsi_array(img_array):
                 else:
                     array.append(str('NaN'))
             else:
-                array.append(find_closest_3d((zero, one, two)))
+                array.append(find_closest_3d((zero, one, two))+CORRECTION_VALUE)
     return np.asarray(array).reshape((480, 640))
