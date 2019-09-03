@@ -154,8 +154,10 @@ class Introduction:
     def build_spacer(self):
         spacer1 = Text(self.root, height=47)
         spacer1.grid(padx=(25, 0), pady=15, row=0, column=0)
+        spacer1.config(state=DISABLED)
         spacer2 = Text(self.root, height=47, width=110)
         spacer2.grid(padx=(0, 25), pady=15, row=0, column=1)
+        spacer2.config(state=DISABLED)
 
     def _build_page(self, page_num):
         if page_num == 1:

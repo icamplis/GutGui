@@ -20,6 +20,7 @@ class AbsorptionSpec:
         self.norm = False
         self.initial_data = None
         self.old_specs = ()
+        self.old_masked = False
 
         self.local_maximum_title = None
         self.local_maximum_text = None
@@ -89,6 +90,9 @@ class AbsorptionSpec:
             self.norm = False
             self.initial_data = absorption_spec_data
             self.old_specs = self.specs
+        if self.old_masked != self.listener.is_masked:
+            self.initial_data = absorption_spec_data
+            self.old_masked = self.listener.is_masked
         if self.listener.is_masked:
             self.norm = False
             self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,

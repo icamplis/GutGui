@@ -517,8 +517,8 @@ def rgb_image_to_hsi_array(img_array):
             two = img_array[i][j][2]
             if truth:
                 if not mask[i][j]:
-                    a = find_closest_3d((zero, one, two))
-                    array.append(a)
+                    closest = find_closest_3d((zero, one, two))
+                    array.append(closest+CORRECTION_VALUE)
                 else:
                     array.append(str('NaN'))
             else:

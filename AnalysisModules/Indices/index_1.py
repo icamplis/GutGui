@@ -1,4 +1,4 @@
-# Example index 1
+# Index 1: ICG formula
 def get_index_1(x):
     index = (x[:, :, 60] +
              x[:, :, 61] +
