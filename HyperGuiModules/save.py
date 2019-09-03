@@ -534,7 +534,7 @@ class Save:
             self.__save_new_data_image(cmap, 'IDX', self.current_new_result.index, self.current_new_result.index_masked)
         if self.saves[WL_DATA]:
             self.__save_new_data_image(cmap, 'WL', self.current_new_result.get_wl_data(),
-                                      self.current_new_result.get_wl_data_masked())
+                                       self.current_new_result.get_wl_data_masked())
 
     def __save_new_data_image(self, cmap, display, current_result_display, current_result_display_masked):
         scale = [NEW_IMAGE, NEW_IMAGE_WO_SCALE]

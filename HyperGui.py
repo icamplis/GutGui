@@ -18,30 +18,30 @@ def main():
     # histogram calculation
     SpecCalculation(spec_calculation, listener)
 
-    # source and output
-    source_and_output_frame = frame(input_output, BACKGROUND, 0, 0, 1, 2)
-    source_and_output_module = SourceAndOutput(source_and_output_frame, listener)
-    listener.attach_module(SOURCE_AND_OUTPUT, source_and_output_module)
-
     # analysis and form
     analysis_and_form_frame = frame(input_output, BACKGROUND, 1, 0, 4, 2)
     analysis_and_form_module = AnalysisAndForm(analysis_and_form_frame, listener)
     listener.attach_module(ANALYSIS_AND_FORM, analysis_and_form_module)
+
+    # source and output
+    source_and_output_frame = frame(input_output, BACKGROUND, 0, 0, 1, 2)
+    source_and_output_module = SourceAndOutput(source_and_output_frame, listener)
+    listener.attach_module(SOURCE_AND_OUTPUT, source_and_output_module)
 
     # save
     save_frame = frame(input_output, BACKGROUND, 5, 0, 1, 1)
     save_module = Save(save_frame, listener)
     listener.attach_module(SAVE, save_module)
 
-    # info
-    info_frame = frame(input_output, BACKGROUND, 5, 1, 1, 1)
-    info_module = Info(info_frame, listener)
-    listener.attach_module(INFO, info_module)
-
     # save csvs
     csv_frame = frame(input_output, BACKGROUND, 0, 2, 6, 1)
     csv_module = CSVSaver(csv_frame, listener)
     listener.attach_module(CSV, csv_module)
+
+    # info
+    info_frame = frame(input_output, BACKGROUND, 5, 1, 1, 1)
+    info_module = Info(info_frame, listener)
+    listener.attach_module(INFO, info_module)
 
     # parameter specification
     parameter_frame = frame(input_output, BACKGROUND, 0, 3, 2, 1)

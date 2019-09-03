@@ -50,6 +50,7 @@ class AnalysisAndForm:
 
     def _init_widget(self):
         self._build_idx_title()
+        self._build_buffer()
         self._build_idxs()
         self._build_edit_idxs()
         self._build_wavelength_title()
@@ -91,6 +92,10 @@ class AnalysisAndForm:
         self.idx_title = make_text(self.root, content="Individual Index:", bg=tkcolour_from_rgb(BACKGROUND), column=0,
                                    row=5, width=17, columnspan=8, pady=(10, 5))
 
+    def _build_buffer(self):
+        self.buffer = make_text(self.root, content=" ", bg=tkcolour_from_rgb(BACKGROUND), column=0,
+                                row=10, width=17, columnspan=8, pady=(0, 30))
+
     def _build_idxs(self):
         self.idx1_button = make_button(self.root, text='1', command=lambda: self.__idxn(1), row=6, column=0,
                                        outer_pady=(5, 0), outer_padx=(15, 5), width=1)
@@ -112,19 +117,19 @@ class AnalysisAndForm:
         self.idx9_button = make_button(self.root, text='9', command=lambda: self.__idxn(9), row=8, column=0,
                                        outer_pady=(5, 0), outer_padx=(15, 5), width=1)
         self.idx10_button = make_button(self.root, text='10', command=lambda: self.__idxn(10), row=8, column=1,
-                                       outer_pady=(5, 0), outer_padx=5, width=1)
+                                        outer_pady=(5, 0), outer_padx=5, width=1)
         self.idx11_button = make_button(self.root, text='11', command=lambda: self.__idxn(11), row=8, column=2,
-                                       outer_pady=(5, 0), outer_padx=5, width=1)
+                                        outer_pady=(5, 0), outer_padx=5, width=1)
         self.idx12_button = make_button(self.root, text='12', command=lambda: self.__idxn(12), row=8, column=3,
-                                       outer_pady=(5, 0), outer_padx=5, width=1)
+                                        outer_pady=(5, 0), outer_padx=5, width=1)
         self.idx13_button = make_button(self.root, text='13', command=lambda: self.__idxn(13), row=8, column=4,
-                                       outer_pady=(5, 0), outer_padx=5, width=1)
+                                        outer_pady=(5, 0), outer_padx=5, width=1)
         self.idx14_button = make_button(self.root, text='14', command=lambda: self.__idxn(14), row=8, column=5,
-                                       outer_pady=(5, 0), outer_padx=5, width=1)
+                                        outer_pady=(5, 0), outer_padx=5, width=1)
         self.idx15_button = make_button(self.root, text='15', command=lambda: self.__idxn(15), row=8, column=6,
-                                       outer_pady=(5, 0), outer_padx=5, width=1)
+                                        outer_pady=(5, 0), outer_padx=5, width=1)
         self.idx16_button = make_button(self.root, text='16', command=lambda: self.__idxn(16), row=8, column=7,
-                                       outer_pady=(5, 0), outer_padx=(5, 15), width=1)
+                                        outer_pady=(5, 0), outer_padx=(5, 15), width=1)
         self.idx1_button.config(foreground="red")
         self.index_selected = 1  # Use index no.1 by default
 
@@ -146,21 +151,21 @@ class AnalysisAndForm:
         make_button(self.root, text='edit', command=lambda: self.__open_index(8), row=7, column=7,
                     outer_pady=(5, 5), outer_padx=(0, 12), width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(9), row=9, column=0,
-                    outer_pady=(5, 15), outer_padx=(12, 0), width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=(12, 0), width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(10), row=9, column=1,
-                    outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(11), row=9, column=2,
-                    outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(12), row=9, column=3,
-                    outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(13), row=9, column=4,
-                    outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(14), row=9, column=5,
-                    outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(15), row=9, column=6,
-                    outer_pady=(5, 15), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=0, width=3, inner_padx=0, inner_pady=1)
         make_button(self.root, text='edit', command=lambda: self.__open_index(16), row=9, column=7,
-                    outer_pady=(5, 15), outer_padx=(0, 12), width=3, inner_padx=0, inner_pady=1)
+                    outer_pady=(5, 5), outer_padx=(0, 12), width=3, inner_padx=0, inner_pady=1)
 
     # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 

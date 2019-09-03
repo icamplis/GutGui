@@ -137,6 +137,19 @@ class ModuleListener:
         else:
             return np.ma.array(data, mask=np.rot90(self.mask))
 
+    def get_current_norm_original_data(self):
+        data = self.modules[ORIGINAL_COLOUR].original_image_data
+        data = np.asarray(rgb_image_to_hsi_array(data))
+        if np.ma.min(data) < 0:
+            data = data + np.abs(np.ma.min(data))
+        if np.ma.min(data) > 0:
+            data = data - np.abs(np.ma.min(data))
+        data = data / np.ma.max(data)
+        if not self.is_masked:
+            return data
+        else:
+            return np.ma.array(data, mask=np.rot90(self.mask))
+
     def get_current_rec_data(self):
         data = self.modules[RECREATED_COLOUR].recreated_colour_image_data
         if not self.is_masked:
@@ -193,6 +206,12 @@ class ModuleListener:
         elif mode == IDX:
             mod = '_IDX' + str(self.index_number)
         info = str(mod) + '_fromCSV' + str(num)
+        return info
+
+    def get_csv_og_info(self):
+        # retrieve data: display
+        display = self.modules[ORIGINAL_COLOUR].displayed_image_mode
+        info = '_original-' + str(display)
         return info
 
     def get_save_og_info(self, display, image):
@@ -307,6 +326,8 @@ class ModuleListener:
             data_mod = self.get_abbreviated_rec_info()
         elif num == 11 or num == 12:
             data_mod = self.get_abbreviated_new_info()
+        elif num == 13 or num == 14:
+            data_mod = self.get_abbreviated_og_info(num)
         else:
             data_mod = ['', '']
         masked_mod = 'whole_'
@@ -414,6 +435,18 @@ class ModuleListener:
             mod = 'IDX' + str(self.index)
         image = mod + '-csv' + str(num) + colour + scale_mod + norm + '_'
         csv = mod + '-csv' + str(num) + scale_mod + norm + '_'
+        return [image, csv]
+
+    def get_abbreviated_og_info(self, num):
+        # e.g. [0] = original-STO2-cs
+        # e.g. [1] = origianal-STO2-gs
+        display = self.modules[ORIGINAL_COLOUR].displayed_image_mode
+        grey = self.modules[ORIGINAL_COLOUR].gs
+        colour = '-cs'
+        if grey:
+            colour = '-gs'
+        image = 'original-' + str(display) + colour + '_'
+        csv = 'original-' + str(display) + '_'
         return [image, csv]
 
     # ------------------------------------------------ CSV FUNCTIONS --------------------------------------------------
@@ -540,6 +573,10 @@ class ModuleListener:
             new_histogram_data = self.get_current_new_data()
         elif num == 12:
             new_histogram_data = self.get_current_norm_new_data()
+        elif num == 13:
+            new_histogram_data = self.get_current_original_data()
+        elif num == 14:
+            new_histogram_data = self.get_current_norm_original_data()
         self.modules[HISTOGRAM].update_histogram(new_histogram_data)
 
     def broadcast_to_absorption_spec(self):

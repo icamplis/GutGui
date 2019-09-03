@@ -1,7 +1,5 @@
-import numpy as np
-
-
+# Example index 3
 def get_index_3(x):
     # TODO
-    index = np.asarray(x[:, :, 60])/np.asarray(x[:, :, 0])
+    index = x[:, :, 60]/x[:, :, 0]
     return index

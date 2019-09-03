@@ -53,7 +53,9 @@ class Histogram:
                         '9. Recreated Image',
                         '10. Recreated Image - Normalised',
                         '11. New Image',
-                        '12. New Image - Normalised']
+                        '12. New Image - Normalised',
+                        '13. Original Image',
+                        '14. Original Image = Normalised']
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -413,6 +415,14 @@ class Histogram:
             data = self.listener.get_current_norm_new_data()
             self.update_histogram(data)
             self.spec_number = 12
+        elif choice == '13':
+            data = self.listener.get_current_original_data()
+            self.update_histogram(data)
+            self.spec_number = 13
+        elif choice == '14':
+            data = self.listener.get_current_norm_original_data()
+            self.update_histogram(data)
+            self.spec_number = 14
 
     def __pop_up_image(self, event):
         make_popup_image(self.interactive_histogram_graph)

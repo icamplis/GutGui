@@ -85,12 +85,12 @@ class NewAnalysis:
     def _calc_index(self, index_number):
         logging.debug("CALCULATING: INDEX...")
         if self.absorbance:
-            index_module = Index(index_number, self.x_absorbance, wavelength=self.wavelength)
+            index_module = Index(index_number, self.x_absorbance, wavelength=self.wavelength, listener=self.listener)
             self.index = index_module.get_index()
             if self.mask is not None:
                 self.index_masked = np.ma.array(index_module.get_index(), mask=self.mask)
         else:
-            index_module = Index(index_number, self.x1, wavelength=self.wavelength)
+            index_module = Index(index_number, self.x1, wavelength=self.wavelength, listener=self.listener)
             self.index = index_module.index
             if self.mask is not None:
                 self.index_masked = np.ma.array(index_module.get_index(), mask=self.mask)

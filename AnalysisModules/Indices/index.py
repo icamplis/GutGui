@@ -17,7 +17,9 @@ from AnalysisModules.Indices.index_16 import get_index_16
 
 
 class Index:
-    def __init__(self, index_no, x_abs_or_ref, wavelength=None):
+    def __init__(self, index_no, x_abs_or_ref, listener, wavelength=None):
+        self.listener = listener
+
         self.index_no = index_no
         self.x_abs_or_ref = x_abs_or_ref
         assert index_no in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
@@ -67,10 +69,10 @@ class Index:
         elif self.index_no == 12:
             self.index = get_index_12(self.x_abs_or_ref)
         elif self.index_no == 13:
-            self.index = get_index_13(self.x_abs_or_ref)
+            self.index = get_index_13(self.x_abs_or_ref, self.listener)
         elif self.index_no == 14:
-            self.index = get_index_14(self.x_abs_or_ref)
+            self.index = get_index_14(self.x_abs_or_ref, self.listener)
         elif self.index_no == 15:
-            self.index = get_index_15(self.x_abs_or_ref)
+            self.index = get_index_15(self.x_abs_or_ref, self.listener)
         elif self.index_no == 16:
-            self.index = get_index_16(self.x_abs_or_ref)
+            self.index = get_index_16(self.x_abs_or_ref, self.listener)
