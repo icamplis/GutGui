@@ -139,7 +139,7 @@ class AbsorptionSpec:
                                               outer_padx=(5, 16), outer_pady=(0, 15), columnspan=1)
         self.save_wo_scale_checkbox = make_checkbox(self.root, "", row=8, column=1,
                                                     var=self.save_wo_scale_checkbox_value, sticky=NE, inner_padx=0,
-                                                    inner_pady=0, outer_padx=(0, 25))
+                                                    inner_pady=0, outer_padx=(0, 15))
         self.save_wo_scale_checkbox.deselect()
         self.save_wo_scale_checkbox.bind('<Button-1>', self.__update_save_wo_scale_check_status)
 

@@ -73,27 +73,47 @@ class HistogramAnalysis:
     def get_rgb_og(self):
         filename = str(self.path[:-13]) + RGB_FILE
         self.rgb_og = image_to_array(filename)
-        return self.rgb_og[30:510, 3:643, :]
+        chopped = self.rgb_og[30:510, 3:643, :3]
+        reshaped = self.ensure_shape(chopped)
+        print(reshaped.shape)
+        return reshaped
 
     def get_sto2_og(self):
         filename = str(self.path[:-13]) + STO2_FILE
         self.sto2_og = image_to_array(filename)
-        return self.sto2_og[26:506, 4:644, :]
+        chopped = self.sto2_og[26:506, 4:644, :3]
+        print(chopped.shape)
+        return chopped
 
     def get_nir_og(self):
         filename = str(self.path[:-13]) + NIR_FILE
         self.nir_og = image_to_array(filename)
-        return self.nir_og[26:506, 4:644, :]
+        chopped = self.nir_og[26:506, 4:644, :3]
+        print(chopped.shape)
+        return chopped
 
     def get_thi_og(self):
         filename = str(self.path[:-13]) + THI_FILE
         self.thi_og = image_to_array(filename)
-        return self.thi_og[26:506, 4:644, :]
+        chopped = self.thi_og[26:506, 4:644, :3]
+        print(chopped.shape)
+        return chopped
 
     def get_twi_og(self):
         filename = str(self.path[:-13]) + TWI_FILE
         self.twi_og = image_to_array(filename)
-        return self.twi_og[24:504, 4:644, :3]
+        chopped = self.twi_og[26:506, 4:644, :3]
+        print(chopped.shape)
+        return chopped
+
+    def ensure_shape(self, data):
+        arr = np.asarray(data.shape)
+        g = arr.copy()
+        arr.sort()
+        i1 = np.where(g == arr[1])[0][0]
+        i2 = np.where(g == arr[2])[0][0]
+        i3 = np.where(g == arr[0])[0][0]
+        return np.moveaxis(data, [i1, i2, i3], [0, 1, 2])
 
     # ------------------------------------------------- CALCULATORS --------------------------------------------------
 

@@ -46,8 +46,8 @@ class SourceAndOutput:
     # ------------------------------------------------ INITIALIZATION ------------------------------------------------
 
     def _init_widgets(self):
-        self._build_select_superdir_button()
         self._build_select_dir_button()
+        self._build_select_superdir_button()
         self._build_selection_box()
         self._build_delete_button()
         self._build_info_label()
@@ -57,14 +57,14 @@ class SourceAndOutput:
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Source and Output', command=self.__info, width=15)
 
-    def _build_select_superdir_button(self):
-        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory",
-                                                   command=self.__add_data_cube_dirs, inner_padx=10, inner_pady=10,
-                                                   outer_padx=15, row=1, column=0, width=15, outer_pady=(0, 5))
-
     def _build_select_dir_button(self):
         self.select_data_cube_button = make_button(self.root, text=" Select Data Directory",
                                                    command=self.__add_data_cube_dir, inner_padx=10, inner_pady=10,
+                                                   outer_padx=15, row=1, column=0, width=15, outer_pady=(0, 5))
+
+    def _build_select_superdir_button(self):
+        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory",
+                                                   command=self.__add_data_cube_dirs, inner_padx=10, inner_pady=10,
                                                    outer_padx=15, row=2, column=0, width=15, outer_pady=(0, 5))
 
     def _build_selection_box(self):

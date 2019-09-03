@@ -37,8 +37,7 @@ class OGColourData:
     # ----------------------------------------------- INITIALIZATION -------------------------------------------------
 
     def update_calc(self):
-        self.stats_data = self.listener.get_current_original_data()
-        self.stats_data = rgb_image_to_hsi_array(self.stats_data)
+        self.stats_data = self.listener.get_current_original_data().flatten()
         logging.debug("CALCULATING IMAGE STATS...")
         self._calc_data()
         self._build_data()

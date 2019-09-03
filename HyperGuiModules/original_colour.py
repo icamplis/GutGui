@@ -409,8 +409,8 @@ class OGColour:
         self.save_label = make_label(self.root, "Save", row=12, column=0, columnspan=1, outer_padx=(12, 0),
                                      outer_pady=(10, 15), inner_padx=10, inner_pady=5)
         self.save_checkbox = make_checkbox(self.root, text="", row=12, column=0, var=self.save_checkbox_value,
-                                           sticky=NE,
-                                           inner_padx=0, inner_pady=0, outer_pady=(10, 15), outer_padx=(50, 0))
+                                           sticky=NE, inner_padx=0, inner_pady=0, outer_pady=(10, 15),
+                                           outer_padx=(54, 0))
         self.save_checkbox.deselect()
         self.save_checkbox.bind('<Button-1>', self.__update_save_with_scale_check_status)
 

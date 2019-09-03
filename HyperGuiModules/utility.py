@@ -181,7 +181,7 @@ def make_listbox(window, row, column, padx=0, pady=0, highlightthickness=0, colu
     columnspan : int (default 1)
     rowspan : int (default 1)
     """
-    listbox = Listbox(window, width=16, highlightthickness=highlightthickness, selectmode=EXTENDED, height=13)
+    listbox = Listbox(window, width=16, highlightthickness=highlightthickness, selectmode=EXTENDED, height=8)
     listbox.grid(row=row, column=column, padx=padx, pady=pady, rowspan=rowspan, columnspan=columnspan)
     return listbox
 
@@ -502,10 +502,11 @@ def find_closest_3d(point):
 def rgb_image_to_hsi_array(img_array):
     array = []
     truth = isinstance(img_array, np.ma.MaskedArray)
-    print(img_array[0][:20])
+    print('shapes')
+    print(img_array.shape)
     if truth:
         mask = img_array.mask[:, :, 0]
-        print(mask[0, :20])
+        print(mask.shape)
     # iterate over pixels in image
     for i in range(len(img_array)):
         progress(i, len(img_array))
@@ -517,15 +518,9 @@ def rgb_image_to_hsi_array(img_array):
             if truth:
                 if not mask[i][j]:
                     a = find_closest_3d((zero, one, two))
-                    print(zero, one, two)
-                    print(a)
                     array.append(a)
                 else:
-                    array.append(0)
+                    array.append(str('NaN'))
             else:
                 array.append(find_closest_3d((zero, one, two)))
-    if truth:
-        print(mask.shape)
-        return np.ma.array(array, mask=mask)
-    else:
-        return array
+    return np.asarray(array).reshape((480, 640))

@@ -131,11 +131,11 @@ class ModuleListener:
 
     def get_current_original_data(self):
         data = self.modules[ORIGINAL_COLOUR].original_image_data
+        data = np.asarray(rgb_image_to_hsi_array(data))
         if not self.is_masked:
             return data
         else:
-            mask = np.array([self.mask.T] * 3)
-            return np.ma.array(data, mask=mask)
+            return np.ma.array(data, mask=np.rot90(self.mask))
 
     def get_current_rec_data(self):
         data = self.modules[RECREATED_COLOUR].recreated_colour_image_data
@@ -315,7 +315,7 @@ class ModuleListener:
         if image:
             return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[0] + masked_mod + scale_mod
         else:
-            return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[1] + masked_mod + '_data'
+            return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[1] + masked_mod + 'data'
 
     def generate_hist_values_for_saving(self, masked, path):
         if not masked:

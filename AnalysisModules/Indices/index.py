@@ -6,13 +6,21 @@ from AnalysisModules.Indices.index_5 import get_index_5
 from AnalysisModules.Indices.index_6 import get_index_6
 from AnalysisModules.Indices.index_7 import get_index_7
 from AnalysisModules.Indices.index_8 import get_index_8
-import numpy as np
+from AnalysisModules.Indices.index_9 import get_index_9
+from AnalysisModules.Indices.index_10 import get_index_10
+from AnalysisModules.Indices.index_11 import get_index_11
+from AnalysisModules.Indices.index_12 import get_index_12
+from AnalysisModules.Indices.index_13 import get_index_13
+from AnalysisModules.Indices.index_14 import get_index_14
+from AnalysisModules.Indices.index_15 import get_index_15
+from AnalysisModules.Indices.index_16 import get_index_16
+
 
 class Index:
     def __init__(self, index_no, x_abs_or_ref, wavelength=None):
         self.index_no = index_no
         self.x_abs_or_ref = x_abs_or_ref
-        assert index_no in [1, 2, 3, 4, 5, 6, 7, 8]
+        assert index_no in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
         self.wavelength = wavelength
 
         self.index = None
@@ -34,10 +42,6 @@ class Index:
     """
 
     def _calc_index(self):
-        # Get raw index
-        self._calc_raw_index()
-
-    def _calc_raw_index(self):
         if self.index_no == 1:
             self.index = get_index_1(self.x_abs_or_ref)
         elif self.index_no == 2:
@@ -54,3 +58,19 @@ class Index:
             self.index = get_index_7(self.x_abs_or_ref)
         elif self.index_no == 8:
             self.index = get_index_8(self.x_abs_or_ref)
+        elif self.index_no == 9:
+            self.index = get_index_9(self.x_abs_or_ref)
+        elif self.index_no == 10:
+            self.index = get_index_10(self.x_abs_or_ref)
+        elif self.index_no == 11:
+            self.index = get_index_11(self.x_abs_or_ref)
+        elif self.index_no == 12:
+            self.index = get_index_12(self.x_abs_or_ref)
+        elif self.index_no == 13:
+            self.index = get_index_13(self.x_abs_or_ref)
+        elif self.index_no == 14:
+            self.index = get_index_14(self.x_abs_or_ref)
+        elif self.index_no == 15:
+            self.index = get_index_15(self.x_abs_or_ref)
+        elif self.index_no == 16:
+            self.index = get_index_16(self.x_abs_or_ref)
