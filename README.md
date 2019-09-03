@@ -61,7 +61,7 @@ Navigate to Command Prompt and type in `cd ` (with space at the end). Then click
 
 
 ## Development Notes
-### Regarding Performance
+#### Regarding Performance
 For every folder uploaded, it's scanned for a data cube,
 and that data cube is processed fully for all of the analysis patterns.
 Similarly, for every change in mode (Normal vs Original, Masked vs. Whole, etc.),
