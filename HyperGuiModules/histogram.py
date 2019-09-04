@@ -50,12 +50,12 @@ class Histogram:
                         '6. Absorbance - Original without Negative Values',
                         '7. Absorbance - Normalised',
                         '8. Absorbance - Normalised without Negative Values',
-                        '9. Recreated Image',
-                        '10. Recreated Image - Normalised',
-                        '11. New Image',
-                        '12. New Image - Normalised',
-                        '13. Original Image',
-                        '14. Original Image - Normalised']
+                        '9. Original Image',
+                        '10. Original Image - Normalised',
+                        '11. Recreated Image',
+                        '12. Recreated Image - Normalised',
+                        '13. New Image',
+                        '14. New Image - Normalised']
 
         self.x_upper_scale_text = None
         self.y_upper_scale_text = None
@@ -400,32 +400,32 @@ class Histogram:
             self.specs, self.spec_number = specs(choice=choice)
             self.listener.update_histogram_specs(self.specs)
         elif choice == '9.':
-            data = self.listener.get_current_rec_data()
-            self.step_size_value = 0.01
+            data = self.listener.get_current_original_data()
+            self.step_size_value = 1
             self.update_histogram(data)
             self.spec_number = 9
         elif choice == '10':
-            data = self.listener.get_current_norm_rec_data()
+            data = self.listener.get_current_norm_original_data()
             self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 10
         elif choice == '11':
-            data = self.listener.get_current_new_data()
+            data = self.listener.get_current_rec_data()
             self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 11
         elif choice == '12':
-            data = self.listener.get_current_norm_new_data()
+            data = self.listener.get_current_norm_rec_data()
             self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 12
         elif choice == '13':
-            data = self.listener.get_current_original_data()
-            self.step_size_value = 1
+            data = self.listener.get_current_new_data()
+            self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 13
         elif choice == '14':
-            data = self.listener.get_current_norm_original_data()
+            data = self.listener.get_current_norm_new_data()
             self.step_size_value = 0.01
             self.update_histogram(data)
             self.spec_number = 14

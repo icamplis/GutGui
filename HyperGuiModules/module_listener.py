@@ -324,11 +324,11 @@ class ModuleListener:
         if non_parametric:
             p_mod = 'np_'
         if num == 9 or num == 10:
-            data_mod = self.get_abbreviated_rec_info()
+            data_mod = self.get_abbreviated_og_info()
         elif num == 11 or num == 12:
-            data_mod = self.get_abbreviated_new_info()
+            data_mod = self.get_abbreviated_rec_info()
         elif num == 13 or num == 14:
-            data_mod = self.get_abbreviated_og_info(num)
+            data_mod = self.get_abbreviated_new_info()
         else:
             data_mod = ['', '']
         masked_mod = 'whole_'
@@ -438,7 +438,7 @@ class ModuleListener:
         csv = mod + '-csv' + str(num) + scale_mod + norm + '_'
         return [image, csv]
 
-    def get_abbreviated_og_info(self, num):
+    def get_abbreviated_og_info(self):
         # e.g. [0] = original-STO2-cs
         # e.g. [1] = origianal-STO2-gs
         display = self.modules[ORIGINAL_COLOUR].displayed_image_mode

@@ -100,10 +100,10 @@ class NewColour:
             self.initial_data = new_colour_image_data
             self.old_wavelength = self.listener.wavelength
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
-        if self.old_index != self.listener.index:
+        if self.old_index != self.listener.index_number:
             self.norm = False
             self.initial_data = new_colour_image_data
-            self.old_index = self.listener.index
+            self.old_index = self.listener.index_number
             self._update_saving_stats(self.lower_scale_value, self.upper_scale_value)
         if build:
             self._build_new_image()

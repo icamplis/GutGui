@@ -93,32 +93,32 @@ class CSVSaver:
                                        command=self.__normap_to_csv, row=10, column=0, outer_pady=(0, 5), outer_padx=15,
                                        width=32)
 
-    def _build_rec(self):
-        self.rec_butt = make_button(self.root, text="9. Recreated Image to CSV", command=self.__rec_to_csv, row=12,
-                                    column=0, outer_pady=(0, 5), outer_padx=15, width=32)
-
-    def _build_norm_rec(self):
-        self.norm_rec_butt = make_button(self.root, text="10. Normalised Recreated Image to CSV",
-                                         command=self.__norm_rec_to_csv, row=13, column=0, outer_pady=(0, 5),
-                                         outer_padx=15, width=32)
-
-    def _build_new(self):
-        self.new_butt = make_button(self.root, text="11. New Image to CSV", command=self.__new_to_csv, row=14, column=0,
-                                    outer_pady=(0, 5), outer_padx=15, width=32)
-
-    def _build_norm_new(self):
-        self.norm_new_butt = make_button(self.root, text="12. Normalised New Image to CSV",
-                                         command=self.__norm_new_to_csv, row=15, column=0, outer_pady=(0, 5),
-                                         outer_padx=15, width=32)
-
     def _build_og(self):
-        self.og_butt = make_button(self.root, text="13. Original Image to CSV", command=self.__og_to_csv, row=16,
+        self.og_butt = make_button(self.root, text="9. Original Image to CSV", command=self.__og_to_csv, row=12,
                                    column=0, outer_pady=(0, 5), outer_padx=15, width=32)
 
     def _build_norm_og(self):
-        self.og_new_butt = make_button(self.root, text="14. Normalised Original Image to CSV",
-                                       command=self.__norm_og_to_csv, row=17, column=0, outer_pady=(0, 15),
+        self.og_new_butt = make_button(self.root, text="10. Normalised Original Image to CSV",
+                                       command=self.__norm_og_to_csv, row=13, column=0, outer_pady=(0, 5),
                                        outer_padx=15, width=32)
+
+    def _build_rec(self):
+        self.rec_butt = make_button(self.root, text="11. Recreated Image to CSV", command=self.__rec_to_csv, row=14,
+                                    column=0, outer_pady=(0, 5), outer_padx=15, width=32)
+
+    def _build_norm_rec(self):
+        self.norm_rec_butt = make_button(self.root, text="12. Normalised Recreated Image to CSV",
+                                         command=self.__norm_rec_to_csv, row=15, column=0, outer_pady=(0, 5),
+                                         outer_padx=15, width=32)
+
+    def _build_new(self):
+        self.new_butt = make_button(self.root, text="13. New Image to CSV", command=self.__new_to_csv, row=16, column=0,
+                                    outer_pady=(0, 5), outer_padx=15, width=32)
+
+    def _build_norm_new(self):
+        self.norm_new_butt = make_button(self.root, text="14. Normalised New Image to CSV",
+                                         command=self.__norm_new_to_csv, row=17, column=0, outer_pady=(0, 5),
+                                         outer_padx=15, width=32)
 
     def _build_all(self):
         self.all_butt = make_button(self.root, text="All to CSV", command=self.__all_to_csv, row=18, column=0,
@@ -277,98 +277,6 @@ class CSVSaver:
                     big_path = direc + '/' + '08_abs_norm_wo_neg_slice_' + str(num) + '.csv'
                     np.savetxt(big_path, np.flipud(data[:, :, i]), delimiter=",", fmt='%s')
 
-    def __rec_to_csv(self):
-        for path, _ in self.listener.results.items():
-            selected_paths = self.listener.selected_paths
-            if path in selected_paths:
-                data = self.listener.get_current_rec_data().T
-                arr = []
-                val = np.ma.is_masked(data)
-                mask = [[False for _ in range(640)] for _ in range(480)]
-                if val:
-                    mask = data.mask
-                for i in range(len(data)):
-                    for j in range(len(data[i])):
-                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
-                            arr.append(str(''))
-                        else:
-                            arr.append(str(float(data[i][j])))
-                data = np.asarray(arr).reshape((480, 640))
-                info = self.listener.get_csv_rec_info()
-                direc = os.path.dirname(path) + '/09_Recreated_Image'
-                self._make_direc(direc)
-                big_path = direc + '/' + '09_recreated_image' + info + '.csv'
-                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
-
-    def __norm_rec_to_csv(self):
-        for path, _ in self.listener.results.items():
-            selected_paths = self.listener.selected_paths
-            if path in selected_paths:
-                data = self.listener.get_current_norm_rec_data().T
-                arr = []
-                val = np.ma.is_masked(data)
-                mask = [[False for _ in range(640)] for _ in range(480)]
-                if val:
-                    mask = data.mask
-                for i in range(len(data)):
-                    for j in range(len(data[i])):
-                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
-                            arr.append(str(''))
-                        else:
-                            arr.append(str(float(data[i][j])))
-                data = np.asarray(arr).reshape((480, 640))
-                info = self.listener.get_csv_rec_info()
-                direc = os.path.dirname(path) + '/10_Normalised_Recreated_Image'
-                self._make_direc(direc)
-                big_path = direc + '/' + '10_norm_recreated_image' + info + '.csv'
-                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
-
-    def __new_to_csv(self):
-        for path, _ in self.listener.results.items():
-            selected_paths = self.listener.selected_paths
-            if path in selected_paths:
-                data = self.listener.get_current_new_data().T
-                arr = []
-                val = np.ma.is_masked(data)
-                mask = [[False for _ in range(640)] for _ in range(480)]
-                if val:
-                    mask = data.mask
-                for i in range(len(data)):
-                    for j in range(len(data[i])):
-                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
-                            arr.append(str(''))
-                        else:
-                            arr.append(str(float(data[i][j])))
-                data = np.asarray(arr).reshape((480, 640))
-                info = self.new_info()
-                direc = os.path.dirname(path) + '/11_New_Image'
-                self._make_direc(direc)
-                big_path = direc + '/' + '11_new_image' + info + '.csv'
-                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
-
-    def __norm_new_to_csv(self):
-        for path, _ in self.listener.results.items():
-            selected_paths = self.listener.selected_paths
-            if path in selected_paths:
-                data = self.listener.get_current_norm_new_data().T
-                arr = []
-                val = np.ma.is_masked(data)
-                mask = [[False for _ in range(640)] for _ in range(480)]
-                if val:
-                    mask = data.mask
-                for i in range(len(data)):
-                    for j in range(len(data[i])):
-                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
-                            arr.append(str(''))
-                        else:
-                            arr.append(str(float(data[i][j])))
-                data = np.asarray(arr).reshape((480, 640))
-                info = self.new_info()
-                direc = os.path.dirname(path) + '/12_Normalised_New_Image'
-                self._make_direc(direc)
-                big_path = direc + '/' + '12_norm_new_image' + info + '.csv'
-                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
-
     def __og_to_csv(self):
         for path, _ in self.listener.results.items():
             selected_paths = self.listener.selected_paths
@@ -387,9 +295,9 @@ class CSVSaver:
                             arr.append(str(float(data[i][j])))
                 data = np.asarray(arr).reshape((480, 640))
                 info = self.listener.get_csv_og_info()
-                direc = os.path.dirname(path) + '/13_Original_Image'
+                direc = os.path.dirname(path) + '/9_Original_Image'
                 self._make_direc(direc)
-                big_path = direc + '/' + '13_original_image' + info + '.csv'
+                big_path = direc + '/' + '9_original_image' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
 
     def __norm_og_to_csv(self):
@@ -410,7 +318,99 @@ class CSVSaver:
                             arr.append(str(float(data[i][j])))
                 data = np.asarray(arr).reshape((480, 640))
                 info = self.listener.get_csv_og_info()
-                direc = os.path.dirname(path) + '/14_Normalised_Original_Image'
+                direc = os.path.dirname(path) + '/10_Normalised_Original_Image'
                 self._make_direc(direc)
-                big_path = direc + '/' + '14_norm_original_image' + info + '.csv'
+                big_path = direc + '/' + '10_norm_original_image' + info + '.csv'
                 np.savetxt(big_path, data, delimiter=",", fmt='%s')
+
+    def __rec_to_csv(self):
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
+            if path in selected_paths:
+                data = self.listener.get_current_rec_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
+                info = self.listener.get_csv_rec_info()
+                direc = os.path.dirname(path) + '/11_Recreated_Image'
+                self._make_direc(direc)
+                big_path = direc + '/' + '11_recreated_image' + info + '.csv'
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
+
+    def __norm_rec_to_csv(self):
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
+            if path in selected_paths:
+                data = self.listener.get_current_norm_rec_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
+                info = self.listener.get_csv_rec_info()
+                direc = os.path.dirname(path) + '/12_Normalised_Recreated_Image'
+                self._make_direc(direc)
+                big_path = direc + '/' + '12_norm_recreated_image' + info + '.csv'
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
+
+    def __new_to_csv(self):
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
+            if path in selected_paths:
+                data = self.listener.get_current_new_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
+                info = self.new_info()
+                direc = os.path.dirname(path) + '/13_New_Image'
+                self._make_direc(direc)
+                big_path = direc + '/' + '13_new_image' + info + '.csv'
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
+
+    def __norm_new_to_csv(self):
+        for path, _ in self.listener.results.items():
+            selected_paths = self.listener.selected_paths
+            if path in selected_paths:
+                data = self.listener.get_current_norm_new_data().T
+                arr = []
+                val = np.ma.is_masked(data)
+                mask = [[False for _ in range(640)] for _ in range(480)]
+                if val:
+                    mask = data.mask
+                for i in range(len(data)):
+                    for j in range(len(data[i])):
+                        if data[i][j] == '--' or data[i][j] is None or mask[i][j]:
+                            arr.append(str(''))
+                        else:
+                            arr.append(str(float(data[i][j])))
+                data = np.asarray(arr).reshape((480, 640))
+                info = self.new_info()
+                direc = os.path.dirname(path) + '/14_Normalised_New_Image'
+                self._make_direc(direc)
+                big_path = direc + '/' + '14_norm_new_image' + info + '.csv'
+                np.savetxt(big_path, np.flipud(data), delimiter=",", fmt='%s')
