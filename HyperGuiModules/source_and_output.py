@@ -129,12 +129,12 @@ class SourceAndOutput:
             self.data_cube_paths.pop(index)
             self.data_cubes.pop(index)
 
-    def __get_path_to_file(self, title):
-        path = filedialog.askopenfilename(parent=self.root, title=title)
-        return path
-
     def __get_path_to_dir(self, title):
-        path = filedialog.askdirectory(parent=self.root, title=title)
+        if self.listener.dc_path is not None:
+            p = os.path.dirname(os.path.dirname(self.listener.dc_path))
+            path = filedialog.askdirectory(parent=self.root, title=title, initialdir=p)
+        else:
+            path = filedialog.askdirectory(parent=self.root, title=title)
         return path
 
     @staticmethod
