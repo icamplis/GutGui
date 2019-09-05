@@ -42,7 +42,8 @@ class Histogram:
         self.percent_negative_value = None
 
         self.drop_down_var = StringVar()
-        self.choices = ['1. Reflectance - Original', 
+        self.choices = ['Choose data',
+                        '1. Reflectance - Original',
                         '2. Reflectance - Original without Negative Values',
                         '3. Reflectance - Normalised',
                         '4. Reflectance - Normalised without Negative Values',
@@ -107,8 +108,14 @@ class Histogram:
 
     def update_histogram(self, data):
         logging.debug("BUILDING HISTOGRAM...")
-        print(data[0, 50:90])
         self.flattened_data = data.flatten()
+        print(isinstance(self.flattened_data, np.ma.MaskedArray))
+        if isinstance(self.flattened_data, np.ma.MaskedArray):
+            arr = np.ma.sort(self.flattened_data)
+            index = np.where(arr.mask)[0][0]
+            print(index)
+            self.flattened_data = arr[:index]
+            print(len(self.flattened_data))
         self.flattened_data = self.flattened_data[self.flattened_data != np.array(None)]
         self.upper_value = np.ma.max(self.flattened_data)
         self.lower_value = np.ma.min(self.flattened_data)
@@ -133,6 +140,32 @@ class Histogram:
         self._build_drop_down()
         self._build_interactive_histogram()
         self._build_stats()
+
+    def empty_hist(self):
+        self.flattened_data = None
+        self.masked_stats = [None, None, None, None, None]
+        self.whole_stats = [None, None, None, None, None]
+        self.min_x = None
+        self.min_x_val = None
+        self.min_y = None
+        self.min_y_val = None
+        self.max_x = None
+        self.max_x_val = None
+        self.max_y = None
+        self.max_y_val = None
+        self.upper_value = None
+        self.lower_value = None
+        self.mean_value = None
+        self.sd_value = None
+        self.median_value = None
+        self.iqr_value = None
+        self._build_scale()
+        self._build_step_size()
+        self._build_interactive_histogram()
+        self._build_stats()
+        self._build_drop_down()
+        self.drop_down_var.set(self.choices[0])
+        self.spec_number = -1
 
     # --------------------------------------------------- GETTERS ----------------------------------------------------
 
@@ -178,7 +211,7 @@ class Histogram:
                                         inner_pady=5, outer_padx=15, outer_pady=(0, 10), columnspan=2)
 
     def _build_drop_down(self):
-        self.drop_down_var.set(self.choices[0])
+        self.drop_down_var.set(self.choices[1])
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
         self.drop_down_menu.configure(highlightthickness=0, width=1,
                                       anchor='w', padx=15)
@@ -294,6 +327,9 @@ class Histogram:
             bins = np.arange(start=np.ma.min(self.flattened_data),
                              stop=np.ma.max(self.flattened_data) + self.get_stats()[4], step=self.get_stats()[4])
             # plot histogram
+            if isinstance(self.flattened_data, np.ma.MaskedArray):
+                data = np.ma.filled(self.flattened_data, -1)
+                print(set(data))
             self.axes.hist(self.flattened_data, bins=bins)
             if self.parametric:
                 # plot error bar
@@ -336,7 +372,7 @@ class Histogram:
         if x % 1 == 0:
             return format(int(x), ',')
         else:
-            return format(round(x, 2))
+            return format(round(x, 3))
 
     # ------------------------------------------------- CALCULATORS --------------------------------------------------
 

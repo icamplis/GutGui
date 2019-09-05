@@ -306,6 +306,8 @@ class Save:
                 return data
 
     def __save_histogram(self):
+        if self.listener.modules[HISTOGRAM].spec_number == -1:
+            pass
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.hist_data_from_spec_num(self.listener.modules[HISTOGRAM].spec_number, False)
             self.__save_histogram_graph(data, self.saves[HISTOGRAM_IMAGE], self.saves[HISTOGRAM_IMAGE_WO_SCALE],

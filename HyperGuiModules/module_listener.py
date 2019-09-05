@@ -135,7 +135,9 @@ class ModuleListener:
         if not self.is_masked:
             return data
         else:
-            return np.ma.array(data, mask=np.rot90(self.mask))
+            data = np.ma.array(data, mask=np.rot90(self.mask))
+            print(data[100, 250:290])
+            return data
 
     def get_current_norm_original_data(self):
         data = self.modules[ORIGINAL_COLOUR].original_image_data
@@ -567,17 +569,17 @@ class ModuleListener:
             else:
                 new_histogram_data = self.get_result(self.current_rendered_result_path)[0].histogram_data
         elif num == 9:
-            new_histogram_data = self.get_current_rec_data()
-        elif num == 10:
-            new_histogram_data = self.get_current_norm_rec_data()
-        elif num == 11:
-            new_histogram_data = self.get_current_new_data()
-        elif num == 12:
-            new_histogram_data = self.get_current_norm_new_data()
-        elif num == 13:
             new_histogram_data = self.get_current_original_data()
-        elif num == 14:
+        elif num == 10:
             new_histogram_data = self.get_current_norm_original_data()
+        elif num == 11:
+            new_histogram_data = self.get_current_rec_data()
+        elif num == 12:
+            new_histogram_data = self.get_current_norm_rec_data()
+        elif num == 13:
+            new_histogram_data = self.get_current_new_data()
+        elif num == 14:
+            new_histogram_data = self.get_current_norm_new_data()
         self.modules[HISTOGRAM].update_histogram(new_histogram_data)
 
     def broadcast_to_absorption_spec(self):
