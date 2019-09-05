@@ -241,9 +241,12 @@ class Histogram:
                                                                   '%', bg=tkcolour_from_rgb(BACKGROUND), column=3,
                                                row=2, width=25, columnspan=2, rowspan=1, padx=(10, 0), state=NORMAL,
                                                pady=0)
-        self.count_text = make_text(self.root, content="Count = " + str(self.count_value),
-                                    bg=tkcolour_from_rgb(BACKGROUND), column=3, row=3, width=17, columnspan=2,
-                                    rowspan=1, padx=0, state=NORMAL, pady=0)
+        if self.count_value is None:
+            add = str(None)
+        else:
+            add = '{:,}'.format(self.count_value)
+        self.count_text = make_text(self.root, content="Count = " + add, bg=tkcolour_from_rgb(BACKGROUND), column=3,
+                                    row=3, width=21, columnspan=2, rowspan=1, padx=0, state=NORMAL, pady=0)
 
     def _build_scale(self):
         # lower

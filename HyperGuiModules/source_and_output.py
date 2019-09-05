@@ -16,6 +16,7 @@ class SourceAndOutput:
         # GUI
         self.select_data_cube_button = None
         self.select_output_dir_button = None
+        self.render_data_cube_button = None
         self.selection_listbox = None
         self.data_cube_path_label = None
         self.output_dir_label = None
@@ -48,6 +49,7 @@ class SourceAndOutput:
     def _init_widgets(self):
         self._build_select_dir_button()
         self._build_select_superdir_button()
+        self._build_render_button()
         self._build_selection_box()
         self._build_delete_button()
         self._build_info_label()
@@ -58,22 +60,27 @@ class SourceAndOutput:
         self.info_label = make_label_button(self.root, text='Source and Output', command=self.__info, width=15)
 
     def _build_select_dir_button(self):
-        self.select_data_cube_button = make_button(self.root, text=" Select Data Directory",
+        self.select_data_cube_button = make_button(self.root, text="Select Data\nDirectory",
                                                    command=self.__add_data_cube_dir, inner_padx=10, inner_pady=10,
-                                                   outer_padx=15, row=1, column=0, width=15, outer_pady=(0, 5))
+                                                   outer_padx=15, row=1, column=0, width=11, outer_pady=(0, 5))
 
     def _build_select_superdir_button(self):
-        self.select_data_cube_button = make_button(self.root, text=" Select Data \n Superdirectory",
+        self.select_data_cube_button = make_button(self.root, text="Select Data\nSuperdirectory",
                                                    command=self.__add_data_cube_dirs, inner_padx=10, inner_pady=10,
-                                                   outer_padx=15, row=2, column=0, width=15, outer_pady=(0, 5))
+                                                   outer_padx=15, row=2, column=0, width=11, outer_pady=(0, 5))
+
+    def _build_render_button(self):
+        self.render_data_cube_button = make_button(self.root, text="Render Data\nCube",
+                                                   command=self.__render_cube, inner_padx=10, inner_pady=10,
+                                                   outer_padx=15, row=3, column=0, width=11, outer_pady=(0, 5))
 
     def _build_selection_box(self):
-        self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=8, padx=(0, 15), pady=(0, 15))
+        self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=4, padx=(0, 15), pady=(0, 15))
         self.selection_listbox.bind('<<ListboxSelect>>', self.__update_selected_data_cube)
 
     def _build_delete_button(self):
-        self.delete_button = make_button(self.root, text="Remove Data Cube", command=self.__delete_selected_data_cube,
-                                         inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=15,
+        self.delete_button = make_button(self.root, text="Remove Data\nCube", command=self.__delete_selected_data_cube,
+                                         inner_padx=10, inner_pady=10, outer_padx=15, row=4, column=0, width=11,
                                          outer_pady=(0, 15))
 
     # -------------------------------------------------- CALLBACKS ---------------------------------------------------
@@ -84,10 +91,11 @@ class SourceAndOutput:
         make_info(title=title, info=info)
 
     def __update_selected_data_cube(self, event):
-        dc_path = self.get_selected_data_cube_path()
-        selected_paths = self.get_selected_data_paths()
-        self.listener.set_data_cube(dc_path)
-        self.listener.update_selected_paths(selected_paths)
+        pass
+        # dc_path = self.get_selected_data_cube_path()
+        # selected_paths = self.get_selected_data_paths()
+        # self.listener.set_data_cube(dc_path)
+        # self.listener.update_selected_paths(selected_paths)
 
     def __add_data_cube_dirs(self):
         super_dir = self.__get_path_to_dir("Please select folder containing all the data folders.")
@@ -116,7 +124,7 @@ class SourceAndOutput:
                 # Display the data cube
                 concat_path = os.path.basename(os.path.normpath(dc_path))
                 self.selection_listbox.insert(END, concat_path)
-                self.selection_listbox.config(width=16)
+                self.selection_listbox.config(width=18)
 
                 # Add data cube to listener for analysis
                 self.listener.submit_data_cube(data_cube, dc_path)
@@ -136,6 +144,12 @@ class SourceAndOutput:
         else:
             path = filedialog.askdirectory(parent=self.root, title=title)
         return path
+
+    def __render_cube(self):
+        dc_path = self.get_selected_data_cube_path()
+        selected_paths = self.get_selected_data_paths()
+        self.listener.set_data_cube(dc_path)
+        self.listener.update_selected_paths(selected_paths)
 
     @staticmethod
     def __process_data_cube(path):

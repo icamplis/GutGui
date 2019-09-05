@@ -94,7 +94,7 @@ class AnalysisAndForm:
 
     def _build_buffer(self):
         self.buffer = make_text(self.root, content=" ", bg=tkcolour_from_rgb(BACKGROUND), column=0,
-                                row=10, width=17, columnspan=8, pady=(0, 30))
+                                row=10, width=17, columnspan=8, pady=(0, 5))
 
     def _build_idxs(self):
         self.idx1_button = make_button(self.root, text='1', command=lambda: self.__idxn(1), row=6, column=0,
