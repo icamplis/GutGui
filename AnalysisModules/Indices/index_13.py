@@ -13,4 +13,5 @@ def get_index_13(x, listener):
     temp1 = data1 / r1
     temp2 = data2 / r2
     index = temp1 / (temp1 + temp2)
+    print(index)
     return index

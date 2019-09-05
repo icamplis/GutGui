@@ -544,7 +544,7 @@ class OGColour:
         path = os.path.dirname(self.listener.current_rendered_result_path)
         print(path)
         output_path = path + "/mask" + '.csv'
-        np.savetxt(output_path, mask_array, delimiter=",", fmt="%.5f")
+        np.savetxt(output_path, mask_array, delimiter=",", fmt="%d")
 
     # --------------------------------------------- ADDING/REMOVING COORDS --------------------------------------------
 
