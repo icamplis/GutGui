@@ -540,7 +540,6 @@ class OGColour:
         img = Image.new('L', (640, 480), 0)
         ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
         mask_array = np.array(img)
-        mask_array = mask_array
         path = os.path.dirname(self.listener.current_rendered_result_path)
         print(path)
         output_path = path + "/mask" + '.csv'

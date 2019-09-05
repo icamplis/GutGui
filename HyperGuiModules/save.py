@@ -374,7 +374,6 @@ class Save:
         self.__save_data(hist_data, name, formatting="%.2f")
 
     def __save_histogram_graph(self, data, is_hist_with_scale, is_hist_wo_scale, masked, fmt=".png"):
-        print(data)
         if is_hist_with_scale:
             name = self.listener.get_save_hist_info(scale=True, image=True, masked=masked,
                                                     data=data)
