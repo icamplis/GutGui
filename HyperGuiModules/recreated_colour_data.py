@@ -55,12 +55,12 @@ class RecreatedColourData:
     # ------------------------------------------------- CALCULATOR ---------------------------------------------------
 
     def _calc_data(self):
-        self.mean_value = np.round(np.ma.mean(self.stats_data), 3)
-        self.sd_value = np.round(np.ma.std(self.stats_data), 3)
-        self.median_value = np.round(np.ma.median(self.stats_data), 3)
-        self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 3), round(np.quantile(self.stats_data, 0.75), 3))
-        self.min_value = np.round(np.ma.min(self.stats_data), 3)
-        self.max_value = np.round(np.ma.max(self.stats_data), 3)
+        self.mean_value = np.round(np.ma.mean(self.stats_data), 4)
+        self.sd_value = np.round(np.ma.std(self.stats_data), 4)
+        self.median_value = np.round(np.ma.median(self.stats_data), 4)
+        self.iqr_value = (np.round(np.quantile(self.stats_data, 0.25), 4), round(np.quantile(self.stats_data, 0.75), 4))
+        self.min_value = np.round(np.ma.min(self.stats_data), 4)
+        self.max_value = np.round(np.ma.max(self.stats_data), 4)
 
     # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
@@ -70,24 +70,24 @@ class RecreatedColourData:
     def _build_data(self):
         # mean
         self.mean_text = make_text(self.root, content="Mean = " + str(self.mean_value),
-                                   bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=22, columnspan=2,
+                                   bg=tkcolour_from_rgb(BACKGROUND), column=0, row=1, width=25, columnspan=2,
                                    padx=(3, 15), state=NORMAL)
         # standard deviation
         self.sd_text = make_text(self.root, content="SD = " + str(self.sd_value), bg=tkcolour_from_rgb(BACKGROUND),
-                                 column=0, row=2, width=22, columnspan=2, padx=(3, 15), state=NORMAL)
+                                 column=0, row=2, width=25, columnspan=2, padx=(3, 15), state=NORMAL)
         # median
         self.median_text = make_text(self.root, content="Median = " + str(self.median_value),
-                                     bg=tkcolour_from_rgb(BACKGROUND), column=0, row=3, width=22, columnspan=2,
+                                     bg=tkcolour_from_rgb(BACKGROUND), column=0, row=3, width=25, columnspan=2,
                                      padx=(3, 15), state=NORMAL)
         # IQR
         self.iqr_text = make_text(self.root, content="IQR = " + str(self.iqr_value), bg=tkcolour_from_rgb(BACKGROUND),
-                                  column=0, row=4, width=22, columnspan=2, padx=(3, 15), state=NORMAL)
+                                  column=0, row=4, width=25, columnspan=2, padx=(3, 15), state=NORMAL)
         # min
         self.min_text = make_text(self.root, content="Min = " + str(self.min_value), bg=tkcolour_from_rgb(BACKGROUND),
-                                  column=0, row=5, width=22, columnspan=2, padx=(3, 15), state=NORMAL)
+                                  column=0, row=5, width=25, columnspan=2, padx=(3, 15), state=NORMAL)
         # max
         self.max_text = make_text(self.root, content="Max = " + str(self.max_value), bg=tkcolour_from_rgb(BACKGROUND),
-                                  column=0, row=6, width=22, columnspan=2, padx=(3, 15), pady=(0, 15), state=NORMAL)
+                                  column=0, row=6, width=25, columnspan=2, padx=(3, 15), pady=(0, 15), state=NORMAL)
 
     def _build_calc_button(self):
         self.calc_button = make_button(self.root, text="CALC", row=0, column=1, columnspan=1, command=self.update_calc,

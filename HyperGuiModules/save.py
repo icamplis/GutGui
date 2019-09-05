@@ -179,9 +179,8 @@ class Save:
         logging.debug("SAVING IMAGE TO " + output_path)
         plt.clf()
         plt.imshow(data, cmap=cmap, vmin=stats[0], vmax=stats[1])
-        if scale:
-            plt.colorbar()
-            plt.title(title)
+        if not scale:
+            plt.axis('off')
         plt.savefig(output_path)
         plt.clf()
 
