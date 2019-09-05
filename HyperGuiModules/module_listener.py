@@ -81,7 +81,7 @@ class ModuleListener:
 
     def delete_analysis_result(self, path):
         logging.debug("DELETING DATA CUBE: " + path)
-        self.results[path] = None
+        del self.results[path]
     # ---------------------------------------------------- MISC ------------------------------------------------------
 
     def attach_module(self, module_name, mod):
@@ -363,11 +363,11 @@ class ModuleListener:
             x_max = np.round(histogram_data[1][-1], 4)
             return [x_min, x_max, y_min, y_max, step]
 
-    def get_save_abs_info(self, scale, image, masked, path):
+    def get_save_abs_info(self, scale, image, masked, data):
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale.png
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale_data.csv
         num = self.modules[ABSORPTION_SPEC].spec_number
-        (xmin, xmax, ymin, ymax) = self.generate_abs_values_for_saving(masked, path)
+        (xmin, xmax, ymin, ymax) = self.generate_abs_values_for_saving(masked, data)
         norm = '_'
         if self.modules[ABSORPTION_SPEC].norm:
             norm = '-normed_'
@@ -383,21 +383,19 @@ class ModuleListener:
         else:
             return 'spectrum_fromCSV' + str(num) + limits + masked_mod + 'data'
 
-    def generate_abs_values_for_saving(self, masked, path):
+    def generate_abs_values_for_saving(self, masked, data):
         if not masked:
             arr = self.modules[ABSORPTION_SPEC].whole_stats
-            return [round(float(arr[i]), 4) for i in range(4)]
         else:
             arr = self.modules[ABSORPTION_SPEC].masked_stats
-            if arr != [None, None, None, None]:
-                return [round(float(arr[i]), 4) for i in range(4)]
-            else:
-                masked_data = self.results[path][1].absorption_roi_masked[:, 1]
-                y_min = np.round(np.ma.min(masked_data), 4)
-                y_max = np.round(np.ma.max(masked_data), 4)
-                x_min = 500
-                x_max = 995
-                return [x_min, x_max, y_min, y_max]
+        if arr != [None, None, None, None]:
+            return [round(float(arr[i]), 4) for i in range(4)]
+        else:
+            y_min = np.round(np.ma.min(data), 4)
+            y_max = np.round(np.ma.max(data), 4)
+            x_min = 500
+            x_max = 995
+            return [x_min, x_max, y_min, y_max]
 
     def get_abbreviated_rec_info(self):
         # e.g. [0] = STO2-csv7-cs-2.62299-0.22225

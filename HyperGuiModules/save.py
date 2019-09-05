@@ -450,7 +450,7 @@ class Save:
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=False)
 
             if self.saves[ABSORPTION_SPEC_EXCEL]:
-                stats = self.listener.generate_abs_values_for_saving(False, self.current_result_key)
+                stats = self.listener.generate_abs_values_for_saving(False, data)
                 (x_low, x_high, y_low, y_high) = stats
                 print(y_low, y_high)
                 data1 = np.arange(x_low // 5 * 5, x_high // 5 * 5 + 5, 5)
@@ -459,8 +459,7 @@ class Save:
                     data2 = self.norm(data2)
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
-                name = self.listener.get_save_abs_info(scale=True, image=False, masked=False,
-                                                       path=self.current_result_key)
+                name = self.listener.get_save_abs_info(scale=True, image=False, masked=False, data=data)
                 self.__save_data(data, name, formatting="%.5f")
 
         if self.saves[MASKED_IMAGE_SAVE]:
@@ -471,7 +470,7 @@ class Save:
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=True)
 
             if self.saves[ABSORPTION_SPEC_EXCEL]:
-                stats = self.listener.generate_abs_values_for_saving(True, self.current_result_key)
+                stats = self.listener.generate_abs_values_for_saving(True, data)
                 (x_low, x_high, y_low, y_high) = stats
 
                 data1 = np.arange(x_low // 5 * 5, x_high // 5 * 5 + 5, 5)
@@ -481,18 +480,15 @@ class Save:
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
                 print(data)
-                name = self.listener.get_save_abs_info(scale=True, image=False, masked=True,
-                                                       path=self.current_result_key)
+                name = self.listener.get_save_abs_info(scale=True, image=False, masked=True, data=data)
                 self.__save_data(data, name, formatting="%.5f")
 
     def __save_absorption_spec_graph(self, data, is_abspc_with_scale, is_abspc_wo_scale, masked, fmt=".png"):
         if is_abspc_with_scale:
-            name = self.listener.get_save_abs_info(scale=True, image=True, masked=masked,
-                                                   path=self.current_result_key)
+            name = self.listener.get_save_abs_info(scale=True, image=True, masked=masked, data=data)
             self.__save_absorption_spec_diagram(data, name, True, masked, fmt=fmt)
         if is_abspc_wo_scale:
-            name = self.listener.get_save_abs_info(scale=False, image=True, masked=masked,
-                                                   path=self.current_result_key)
+            name = self.listener.get_save_abs_info(scale=False, image=True, masked=masked, data=data)
             self.__save_absorption_spec_diagram(data, name, False, masked, fmt=fmt)
 
     def __save_absorption_spec_diagram(self, data, title, scale, masked, fmt=".png"):
@@ -501,7 +497,7 @@ class Save:
         plt.clf()
         axes = plt.subplot(111)
         x_vals = np.arange(500, 1000, 5)
-        stats = self.listener.generate_abs_values_for_saving(masked, self.current_result_key)
+        stats = self.listener.generate_abs_values_for_saving(masked, data)
         (x_low, x_high, y_low, y_high) = stats
         # plot absorption spec
         axes.plot(x_vals, data, '-', lw=0.5)
