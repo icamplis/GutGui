@@ -42,8 +42,8 @@ class AbsorptionSpec:
         self.x_lower_scale_value = None
         self.y_lower_scale_value = None
 
-        self.whole_stats = [None, None, None, None]
-        self.masked_stats = [None, None, None, None]
+        self.whole_stats = [None, None, None, None, False]
+        self.masked_stats = [None, None, None, None, False]
 
         self.save_label = None
         self.save_checkbox = None
@@ -96,10 +96,10 @@ class AbsorptionSpec:
         if self.listener.is_masked:
             self.norm = False
             self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
-                                 self.y_lower_scale_value, self.y_upper_scale_value]
+                                 self.y_lower_scale_value, self.y_upper_scale_value, self.norm]
         else:
             self.whole_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
-                                self.y_lower_scale_value, self.y_upper_scale_value]
+                                self.y_lower_scale_value, self.y_upper_scale_value, self.norm]
         print(self.norm)
         self._build_scale()
         self._build_interactive_absorption_spec()
@@ -333,11 +333,11 @@ class AbsorptionSpec:
         self.y_lower_scale_value = float(self.y_lower_scale_input.get())
         if self.listener.is_masked:
             self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
-                                 self.y_lower_scale_value, self.y_upper_scale_value]
+                                 self.y_lower_scale_value, self.y_upper_scale_value, self.norm]
             print('masked ' + str(self.masked_stats))
         else:
             self.whole_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
-                                self.y_lower_scale_value, self.y_upper_scale_value]
+                                self.y_lower_scale_value, self.y_upper_scale_value, self.norm]
             print('whole ' + str(self.whole_stats))
         self._build_interactive_absorption_spec()
 

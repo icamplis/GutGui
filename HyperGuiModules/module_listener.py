@@ -388,14 +388,17 @@ class ModuleListener:
             arr = self.modules[ABSORPTION_SPEC].whole_stats
         else:
             arr = self.modules[ABSORPTION_SPEC].masked_stats
-        if arr != [None, None, None, None]:
-            return [round(float(arr[i]), 4) for i in range(4)]
+        if arr != [None, None, None, None, None]:
+            a = [round(float(arr[i]), 4) for i in range(4)]
+            a.append(arr[4])
+            return a
         else:
             y_min = np.round(np.ma.min(data), 4)
             y_max = np.round(np.ma.max(data), 4)
             x_min = 500
             x_max = 995
-            return [x_min, x_max, y_min, y_max]
+            norm = False
+            return [x_min, x_max, y_min, y_max, norm]
 
     def get_abbreviated_rec_info(self):
         # e.g. [0] = STO2-csv7-cs-2.62299-0.22225

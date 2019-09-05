@@ -86,7 +86,7 @@ class Save:
     # --------------------------------------------------- BUILDERS ---------------------------------------------------
 
     def _build_save_specific_button(self):
-        self.save_specific_button = make_button(self.root, text="Save for Selected Data Cube Only",
+        self.save_specific_button = make_button(self.root, text="Save for Rendered Data Cube Only",
                                                 command=self._save_specific, row=1, column=0, outer_pady=(0, 5),
                                                 outer_padx=15, width=13, wraplength=120, height=2)
 
@@ -444,18 +444,18 @@ class Save:
     def __save_absorption_spec(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_abs_result.absorption_roi[:, 1]
-            if self.listener.modules[ABSORPTION_SPEC].norm:
+            if self.listener.modules[ABSORPTION_SPEC].whole_stats[4]:
                 data = self.norm(data)
             self.__save_absorption_spec_graph(data, self.saves[ABSORPTION_SPEC_IMAGE],
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=False)
 
             if self.saves[ABSORPTION_SPEC_EXCEL]:
                 stats = self.listener.generate_abs_values_for_saving(False, data)
-                (x_low, x_high, y_low, y_high) = stats
+                (x_low, x_high, y_low, y_high, norm) = stats
                 print(y_low, y_high)
                 data1 = np.arange(x_low // 5 * 5, x_high // 5 * 5 + 5, 5)
                 data2 = self.current_abs_result.absorption_roi[:, 1][int((x_low - 500) / 5):int((x_high - 500) / 5) + 1]
-                if self.listener.modules[ABSORPTION_SPEC].norm:
+                if self.listener.modules[ABSORPTION_SPEC].whole_stats[4]:
                     data2 = self.norm(data2)
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
@@ -464,18 +464,18 @@ class Save:
 
         if self.saves[MASKED_IMAGE_SAVE]:
             data = self.current_abs_result.absorption_roi_masked[:, 1]
-            if self.listener.modules[ABSORPTION_SPEC].norm:
+            if self.listener.modules[ABSORPTION_SPEC].masked_stats[4]:
                 data = self.norm(data)
             self.__save_absorption_spec_graph(data, self.saves[ABSORPTION_SPEC_IMAGE],
                                               self.saves[ABSORPTION_SPEC_IMAGE_WO_SCALE], masked=True)
 
             if self.saves[ABSORPTION_SPEC_EXCEL]:
                 stats = self.listener.generate_abs_values_for_saving(True, data)
-                (x_low, x_high, y_low, y_high) = stats
+                (x_low, x_high, y_low, y_high, norm) = stats
 
                 data1 = np.arange(x_low // 5 * 5, x_high // 5 * 5 + 5, 5)
                 data2 = self.current_abs_result.absorption_roi_masked[:, 1]
-                if self.listener.modules[ABSORPTION_SPEC].norm:
+                if self.listener.modules[ABSORPTION_SPEC].masked_stats[4]:
                     data2 = self.norm(data2)
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
@@ -498,7 +498,7 @@ class Save:
         axes = plt.subplot(111)
         x_vals = np.arange(500, 1000, 5)
         stats = self.listener.generate_abs_values_for_saving(masked, data)
-        (x_low, x_high, y_low, y_high) = stats
+        (x_low, x_high, y_low, y_high, norm) = stats
         # plot absorption spec
         axes.plot(x_vals, data, '-', lw=0.5)
         axes.grid(linestyle=':', linewidth=0.5)

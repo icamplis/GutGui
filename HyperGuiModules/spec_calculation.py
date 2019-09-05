@@ -36,7 +36,9 @@ class SpecCalculation:
 
         self.bins = None
         self.contents = None
-        self.graph = None
+        self.graph0 = None
+        self.graph2 = None
+        self.graph4 = None
         self.axes = None
 
         self.info_label = None
@@ -132,17 +134,26 @@ class SpecCalculation:
                            columnspan=1, padx=0, rowspan=3)
         equals.config(font=("Courier", 44))
 
+    def get_graph(self, column):
+        if column == 0:
+            return self.graph0
+        if column == 2:
+            return self.graph2
+        if column == 4:
+            return self.graph4
+
     def _build_spec(self, x_vals, y_vals, column, stats):
         # create canvas
-        self.graph = Figure(figsize=(3, 2))
-        self.axes = self.graph.add_subplot(111)
-        self.graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
+        graph = self.get_graph(column)
+        graph = Figure(figsize=(3, 2))
+        self.axes = graph.add_subplot(111)
+        graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
         # plot absorption spec
         if x_vals is not None:
             self.axes.plot(x_vals, y_vals, '-', lw=0.5)
             self.axes.grid(linestyle=':', linewidth=0.5)
         # set axes
-        self.graph.set_tight_layout(True)
+        graph.set_tight_layout(True)
         y_low = stats[2]
         y_high = stats[3]
         if y_low is not None and y_high is not None:
@@ -156,11 +167,11 @@ class SpecCalculation:
         self.axes.get_yaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
         self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
         # draw figure
-        self.interactive_absorption_spec = FigureCanvasTkAgg(self.graph, master=self.root)
+        self.interactive_absorption_spec = FigureCanvasTkAgg(graph, master=self.root)
         self.interactive_absorption_spec.draw()
         self.interactive_absorption_spec.get_tk_widget().grid(column=int(2.5*column), row=2, columnspan=4, rowspan=3, ipady=5,
                                                               ipadx=0, pady=(0, 20), padx=0)
-        self.interactive_absorption_spec.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
+        self.interactive_absorption_spec.get_tk_widget().bind('<Button-2>', lambda x: self.__pop_up_image(graph))
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Optical Spectrum Calculation', command=self.__info, width=16)
@@ -300,8 +311,8 @@ class SpecCalculation:
         title = "Optical Spectrum Calculation Information"
         make_info(title=title, info=info)
 
-    def __pop_up_image(self, event):
-        make_popup_image(self.graph)
+    def __pop_up_image(self, graph):
+        make_popup_image(graph)
 
     def __select_output(self):
         title = "Please select an output folder."

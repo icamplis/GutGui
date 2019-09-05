@@ -36,7 +36,9 @@ class HistCalculation:
 
         self.bins = None
         self.contents = None
-        self.graph = None
+        self.graph0 = None
+        self.graph2 = None
+        self.graph4 = None
         self.axes = None
 
         self.info_label = None
@@ -131,16 +133,25 @@ class HistCalculation:
                            columnspan=1, padx=0, rowspan=3)
         equals.config(font=("Courier", 44))
 
+    def get_graph(self, column):
+        if column == 0:
+            return self.graph0
+        if column == 2:
+            return self.graph2
+        if column == 4:
+            return self.graph4
+
     def _build_hist(self, bins, contents, column, stats):
         # create canvas
-        self.graph = Figure(figsize=(3, 2))
-        self.axes = self.graph.add_subplot(111)
-        self.graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
+        graph = self.get_graph(column)
+        graph = Figure(figsize=(3, 2))
+        self.axes = graph.add_subplot(111)
+        graph.patch.set_facecolor(rgb_to_rgba(BACKGROUND))
         if contents is not None:
             # plot histogram
             self.axes.hist(contents, bins=bins)
             # set axes
-            self.graph.set_tight_layout(True)
+            graph.set_tight_layout(True)
             self.axes.set_xlim(left=stats[0], right=stats[1])
             self.axes.set_ylim(bottom=stats[2], top=stats[3])
             # commas and non-scientific notation
@@ -149,11 +160,11 @@ class HistCalculation:
             self.axes.get_xaxis().set_major_formatter(matplotlib.ticker.FuncFormatter(self.format_axis))
 
         # draw figure
-        self.interactive_histogram = FigureCanvasTkAgg(self.graph, master=self.root)
+        self.interactive_histogram = FigureCanvasTkAgg(graph, master=self.root)
         self.interactive_histogram.draw()
         self.interactive_histogram.get_tk_widget().grid(column=int(2.5*column), row=2, columnspan=4, rowspan=3, ipady=5,
                                                         ipadx=0, pady=(0, 20), padx=0)
-        self.interactive_histogram.get_tk_widget().bind('<Button-2>', self.__pop_up_image)
+        self.interactive_histogram.get_tk_widget().bind('<Button-2>', lambda x: self.__pop_up_image(graph))
 
     def _build_info_label(self):
         self.info_label = make_label_button(self.root, text='Histogram Calculation', command=self.__info, width=16)
@@ -304,8 +315,8 @@ class HistCalculation:
         title = "Histogram Calculation Information"
         make_info(title=title, info=info)
 
-    def __pop_up_image(self, event):
-        make_popup_image(self.graph)
+    def __pop_up_image(self, graph):
+        make_popup_image(graph)
 
     def __select_output(self):
         title = "Please select an output folder."
