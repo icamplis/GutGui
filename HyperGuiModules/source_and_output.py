@@ -69,19 +69,19 @@ class SourceAndOutput:
                                                    command=self.__add_data_cube_dirs, inner_padx=10, inner_pady=10,
                                                    outer_padx=15, row=2, column=0, width=11, outer_pady=(0, 5))
 
+    def _build_delete_button(self):
+        self.delete_button = make_button(self.root, text="Remove Data\nCube", command=self.__delete_selected_data_cube,
+                                         inner_padx=10, inner_pady=10, outer_padx=15, row=3, column=0, width=11,
+                                         outer_pady=(0, 5))
+
     def _build_render_button(self):
         self.render_data_cube_button = make_button(self.root, text="Render Data\nCube",
                                                    command=self.__render_cube, inner_padx=10, inner_pady=10,
-                                                   outer_padx=15, row=3, column=0, width=11, outer_pady=(0, 5))
+                                                   outer_padx=15, row=4, column=0, width=11, outer_pady=(0, 15))
 
     def _build_selection_box(self):
         self.selection_listbox = make_listbox(self.root, row=1, column=1, rowspan=4, padx=(0, 15), pady=(0, 15))
         self.selection_listbox.bind('<<ListboxSelect>>', self.__update_selected_data_cube)
-
-    def _build_delete_button(self):
-        self.delete_button = make_button(self.root, text="Remove Data\nCube", command=self.__delete_selected_data_cube,
-                                         inner_padx=10, inner_pady=10, outer_padx=15, row=4, column=0, width=11,
-                                         outer_pady=(0, 15))
 
     # -------------------------------------------------- CALLBACKS ---------------------------------------------------
 
@@ -146,6 +146,9 @@ class SourceAndOutput:
         return path
 
     def __render_cube(self):
+        self.selection_listbox.config(foreground='black')
+        index = self.selection_listbox.curselection()[0]
+        self.selection_listbox.itemconfig(index, foreground='red')
         dc_path = self.get_selected_data_cube_path()
         selected_paths = self.get_selected_data_paths()
         self.listener.set_data_cube(dc_path)
