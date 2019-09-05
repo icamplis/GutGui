@@ -323,7 +323,7 @@ class HistCalculation:
         self.output_path = filedialog.askdirectory(parent=self.root, title=title)
 
     def __save_as_csv(self):
-        if self.output_path is None:
+        if self.output_path is None or self.output_path == '':
             messagebox.showerror("Error", "Please select an output folder before saving data.")
         if self.data3 is None:
             messagebox.showerror("Error", "Please generate a histogram to save.")
@@ -347,7 +347,7 @@ class HistCalculation:
             np.savetxt(output_path, hist_data, delimiter=",", fmt="%.5f")
 
     def __save_as_image(self):
-        if self.output_path is None:
+        if self.output_path is None or self.output_path == '':
             messagebox.showerror("Error", "Please select an output folder before saving data.")
         if self.data3 is None:
             messagebox.showerror("Error", "Please generate a histogram to save.")

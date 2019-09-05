@@ -319,7 +319,7 @@ class SpecCalculation:
         self.output_path = filedialog.askdirectory(parent=self.root, title=title)
 
     def __save_as_csv(self):
-        if self.output_path is None:
+        if self.output_path is None or self.output_path == '':
             messagebox.showerror("Error", "Please select an output folder before saving data.")
         if self.x_vals1 is None:
             messagebox.showerror("Error", "Please generate an optical spectrum to save.")
@@ -338,7 +338,7 @@ class SpecCalculation:
             np.savetxt(output_path, data, delimiter=",", fmt="%.5f")
 
     def __save_as_image(self):
-        if self.output_path is None:
+        if self.output_path is None or self.output_path == '':
             messagebox.showerror("Error", "Please select an output folder before saving data.")
         elif self.initial_data3 is None:
             messagebox.showerror("Error", "Please generate an optical spectrum to save.")
