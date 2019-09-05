@@ -93,8 +93,8 @@ class AbsorptionSpec:
         if self.old_masked != self.listener.is_masked:
             self.initial_data = absorption_spec_data
             self.old_masked = self.listener.is_masked
-        if self.listener.is_masked:
             self.norm = False
+        if self.listener.is_masked:
             self.masked_stats = [self.x_lower_scale_value, self.x_upper_scale_value,
                                  self.y_lower_scale_value, self.y_upper_scale_value, self.norm]
         else:

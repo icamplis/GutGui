@@ -367,9 +367,9 @@ class ModuleListener:
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale.png
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale_data.csv
         num = self.modules[ABSORPTION_SPEC].spec_number
-        (xmin, xmax, ymin, ymax) = self.generate_abs_values_for_saving(masked, data)
+        (xmin, xmax, ymin, ymax, normed) = self.generate_abs_values_for_saving(masked, data)
         norm = '_'
-        if self.modules[ABSORPTION_SPEC].norm:
+        if normed:
             norm = '-normed_'
         limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')' + norm
         scale_mod = 'wo-scale'
@@ -388,7 +388,7 @@ class ModuleListener:
             arr = self.modules[ABSORPTION_SPEC].whole_stats
         else:
             arr = self.modules[ABSORPTION_SPEC].masked_stats
-        if arr != [None, None, None, None, None]:
+        if arr != [None, None, None, None, False]:
             a = [round(float(arr[i]), 4) for i in range(4)]
             a.append(arr[4])
             return a

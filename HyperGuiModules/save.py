@@ -444,6 +444,7 @@ class Save:
     def __save_absorption_spec(self):
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = self.current_abs_result.absorption_roi[:, 1]
+            print(self.listener.modules[ABSORPTION_SPEC].whole_stats)
             if self.listener.modules[ABSORPTION_SPEC].whole_stats[4]:
                 data = self.norm(data)
             self.__save_absorption_spec_graph(data, self.saves[ABSORPTION_SPEC_IMAGE],
@@ -463,6 +464,7 @@ class Save:
                 self.__save_data(data, name, formatting="%.5f")
 
         if self.saves[MASKED_IMAGE_SAVE]:
+            print(self.listener.modules[ABSORPTION_SPEC].masked_stats)
             data = self.current_abs_result.absorption_roi_masked[:, 1]
             if self.listener.modules[ABSORPTION_SPEC].masked_stats[4]:
                 data = self.norm(data)
@@ -479,7 +481,6 @@ class Save:
                     data2 = self.norm(data2)
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
                 data = np.asarray([data1, data2]).T
-                print(data)
                 name = self.listener.get_save_abs_info(scale=True, image=False, masked=True, data=data)
                 self.__save_data(data, name, formatting="%.5f")
 
