@@ -34,7 +34,7 @@ class ModuleListener:
         self.ab_spec_specs = None
         self.recreated_specs = None
         self.new_specs = None
-        self.params = [0.2, -0.03, -0.46, 0.45, 0.4, 1.55, 0.1, -0.5]
+        self.params = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 
         # ORIGINAL IMAGE
         self.mask = None
