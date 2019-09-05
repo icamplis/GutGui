@@ -181,7 +181,7 @@ class Save:
         plt.imshow(data, cmap=cmap, vmin=stats[0], vmax=stats[1])
         if not scale:
             plt.axis('off')
-        plt.savefig(output_path, bbox_inches='tight', pad_inches=0, dpi=150)
+        plt.savefig(output_path, bbox_inches='tight', pad_inches=0, dpi=300)
         plt.clf()
 
     @staticmethod
