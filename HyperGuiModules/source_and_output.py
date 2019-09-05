@@ -146,7 +146,8 @@ class SourceAndOutput:
         return path
 
     def __render_cube(self):
-        self.selection_listbox.config(foreground='black')
+        for i in range(len(self.selection_listbox.curselection())):
+            self.selection_listbox.itemconfig(i, foreground='black')
         index = self.selection_listbox.curselection()[0]
         self.selection_listbox.itemconfig(index, foreground='red')
         dc_path = self.get_selected_data_cube_path()

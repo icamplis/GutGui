@@ -650,25 +650,31 @@ class ModuleListener:
                 result_list[3].update_index(index_number)
 
     def update_histogram_specs(self, spec_tup):
+        path = self.current_rendered_result_path
+        print(path)
         self.histogram_specs = spec_tup
-        self._make_new_hist_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask, self.histogram_specs)
+        self._make_new_hist_analysis(path, self.data_cube, self.wavelength, self.mask, self.histogram_specs)
         self.broadcast_to_histogram()
 
     def update_abs_specs(self, spec_tup):
+        path = self.current_rendered_result_path
+        print(path)
         self.ab_spec_specs = spec_tup
-        self._make_new_abs_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask, self.ab_spec_specs)
+        self._make_new_abs_analysis(path, self.data_cube, self.wavelength, self.mask, self.ab_spec_specs)
         self.broadcast_to_absorption_spec()
 
     def update_recreated_specs(self, spec_tup):
+        path = self.current_rendered_result_path
+        print(path)
         self.recreated_specs = spec_tup
-        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask, self.recreated_specs,
-                                    self.params)
+        self._make_new_rec_analysis(path, self.data_cube, self.wavelength, self.mask, self.recreated_specs, self.params)
         self.broadcast_to_recreated_image()
 
     def update_new_specs(self, spec_tup):
+        path = self.current_rendered_result_path
+        print(path)
         self.new_specs = spec_tup
-        self._make_new_new_analysis(self.dc_path, self.data_cube, self.wavelength, self.index_number, self.mask,
-                                    self.new_specs)
+        self._make_new_new_analysis(path, self.data_cube, self.wavelength, self.index_number, self.mask, self.new_specs)
         self.broadcast_to_new_image()
 
     # -------------------------------------------- CREATE MODULE OBJECTS ---------------------------------------------
@@ -676,6 +682,7 @@ class ModuleListener:
     # Use the path of the data cube as an identifier
 
     def _make_new_hist_analysis(self, path, data_cube, wavelength, mask, spec_tup):
+        print(path)
         self.results[path][0] = HistogramAnalysis(path, data_cube, wavelength, spec_tup, ModuleListener(), mask)
 
     def _make_new_abs_analysis(self, path, data_cube, wavelength, mask, spec_tup):
