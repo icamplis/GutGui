@@ -49,7 +49,7 @@ class ModuleListener:
 
         self.data_cube = data_cube
         self.dc_path = dc_path
-        self.results[dc_path] = ['hist', 'abs', 'rec', 'new']
+        self.results[dc_path] = ['hist', 'abs', 'rec', 'new', data_cube]
 
         if self.modules[ANALYSIS_AND_FORM]:
             self.wavelength = self.modules[ANALYSIS_AND_FORM].get_wavelength()
@@ -548,7 +548,8 @@ class ModuleListener:
 
     def submit_params(self):
         self.params = self.modules[PARAMETER].get_params()
-        self._make_new_rec_analysis(self.dc_path, self.data_cube, self.wavelength, self.mask,
+        data_cube = self.get_result(self.current_rendered_result_path)[4]
+        self._make_new_rec_analysis(self.current_rendered_result_path, data_cube, self.wavelength, self.mask,
                                     self.recreated_specs, self.params)
         self.broadcast_to_recreated_image()
 
@@ -653,28 +654,30 @@ class ModuleListener:
         path = self.current_rendered_result_path
         print(path)
         self.histogram_specs = spec_tup
-        self._make_new_hist_analysis(path, self.data_cube, self.wavelength, self.mask, self.histogram_specs)
+        data_cube = self.get_result(self.current_rendered_result_path)[4]
+        self._make_new_hist_analysis(path, data_cube, self.wavelength, self.mask, self.histogram_specs)
         self.broadcast_to_histogram()
 
     def update_abs_specs(self, spec_tup):
         path = self.current_rendered_result_path
-        print(path)
         self.ab_spec_specs = spec_tup
-        self._make_new_abs_analysis(path, self.data_cube, self.wavelength, self.mask, self.ab_spec_specs)
+        data_cube = self.get_result(self.current_rendered_result_path)[4]
+        self._make_new_abs_analysis(path, data_cube, self.wavelength, self.mask, self.ab_spec_specs)
         self.broadcast_to_absorption_spec()
 
     def update_recreated_specs(self, spec_tup):
         path = self.current_rendered_result_path
-        print(path)
         self.recreated_specs = spec_tup
-        self._make_new_rec_analysis(path, self.data_cube, self.wavelength, self.mask, self.recreated_specs, self.params)
+        data_cube = self.get_result(self.current_rendered_result_path)[4]
+        self._make_new_rec_analysis(path, data_cube, self.wavelength, self.mask, self.recreated_specs, self.params)
         self.broadcast_to_recreated_image()
 
     def update_new_specs(self, spec_tup):
         path = self.current_rendered_result_path
         print(path)
         self.new_specs = spec_tup
-        self._make_new_new_analysis(path, self.data_cube, self.wavelength, self.index_number, self.mask, self.new_specs)
+        data_cube = self.get_result(self.current_rendered_result_path)[4]
+        self._make_new_new_analysis(path, data_cube, self.wavelength, self.index_number, self.mask, self.new_specs)
         self.broadcast_to_new_image()
 
     # -------------------------------------------- CREATE MODULE OBJECTS ---------------------------------------------

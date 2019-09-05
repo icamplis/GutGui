@@ -146,7 +146,7 @@ class SourceAndOutput:
         return path
 
     def __render_cube(self):
-        for i in range(len(self.selection_listbox.curselection())):
+        for i in range(self.selection_listbox.size()):
             self.selection_listbox.itemconfig(i, foreground='black')
         index = self.selection_listbox.curselection()[0]
         self.selection_listbox.itemconfig(index, foreground='red')
