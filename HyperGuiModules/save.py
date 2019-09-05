@@ -283,26 +283,60 @@ class Save:
     def hist_data_from_spec_num(self, spec_num, masked):
         if spec_num in [1, 2, 3, 4, 5, 6, 7, 8]:
             if masked:
-                return self.current_hist_result.histogram_data_masked.flatten()
+                data = self.current_hist_result.histogram_data_masked.flatten()
+                d = np.ma.sort(data)
+                index = np.where(d.mask)[0][0]
+                return d[:index]
             else:
                 return self.current_hist_result.histogram_data.flatten()
         else:
             mask = self.listener.get_mask()
             if masked:
-                return np.ma.array(self.listener.modules[HISTOGRAM].flattened_data, mask=mask)
+                if spec_num not in [9, 10]:
+                    unmasked_data = self.listener.modules[HISTOGRAM].hist_data
+                    data = np.ma.array(unmasked_data, mask=mask)
+                    d = np.ma.sort(data)
+                    index = np.where(d.mask)[0][0]
+                    data = d[:index]
+                    return data
+
+                else:
+                    if self.listener.is_masked:
+                        data = self.listener.modules[HISTOGRAM].hist_data
+                        print('masked? ' + str(isinstance(data, np.ma.MaskedArray)))
+                        d = np.ma.sort(data)
+                        index = np.where(d.mask)[0][0]
+                        data = d[:index]
+                        return data
+
+                    else:
+                        data = self.listener.modules[HISTOGRAM].hist_data
+                        print('masked? ' + str(isinstance(data, np.ma.MaskedArray)))
+                        data = np.ma.array(data, mask=np.rot90(mask))
+                        d = np.ma.sort(data)
+                        index = np.where(d.mask)[0][0]
+                        data = d[:index]
+                        return data.data
+
             else:
-                data = self.listener.modules[HISTOGRAM].flattened_data
+                data = self.listener.modules[HISTOGRAM].hist_data
+                print(len(data))
                 if isinstance(data, np.ma.MaskedArray):
                     print('masked')
                     whole_mask = data.mask.flatten()
-                    print(whole_mask.shape)
                     flat_mask = mask.flatten()
-                    print(flat_mask.shape)
                     unmasked = data.data
-                    stack = np.stack((whole_mask, flat_mask))
-                    temp_mask = [stack[0][i] or stack[1][i] for i in range(len(stack[0]))]
-                    final_mask = np.asarray(temp_mask).reshape((480, 640))
+
+                    temp_mask = [whole_mask[i] if not flat_mask[i] else False for i in range(len(whole_mask))]
+
+                    final_mask = np.asarray(temp_mask)
                     data = np.ma.array(unmasked, mask=final_mask)
+                    d = np.ma.sort(data)
+                    if True in d.mask:
+                        index = np.where(d.mask)[0][0]
+                        data = d[:index]
+                    else:
+                        data = d
                 return data
 
     def __save_histogram(self):
@@ -315,7 +349,7 @@ class Save:
             if self.saves[HISTOGRAM_EXCEL]:
                 data = self.hist_data_from_spec_num(self.listener.modules[HISTOGRAM].spec_number, False)
                 name = self.listener.get_save_hist_info(scale=True, image=False, masked=False,
-                                                        path=self.current_result_key)
+                                                        data=data)
                 self.__save_histogram_data(data, name, masked=False)
 
         if self.saves[MASKED_IMAGE_SAVE]:
@@ -325,14 +359,14 @@ class Save:
             if self.saves[HISTOGRAM_EXCEL]:
                 data = self.hist_data_from_spec_num(self.listener.modules[HISTOGRAM].spec_number, True)
                 name = self.listener.get_save_hist_info(scale=True, image=False, masked=True,
-                                                        path=self.current_result_key)
+                                                        data=data)
                 self.__save_histogram_data(data, name, masked=True)
 
     def __save_histogram_data(self, data, name, masked):
-        stats = self.listener.generate_hist_values_for_saving(masked, self.current_result_key)
+        stats = self.listener.generate_hist_values_for_saving(masked, data)
         (x_low, x_high, y_low, y_high, step) = stats
         start = x_low
-        stop = x_high + step + step
+        stop = x_high + step
         bins = np.arange(start=start, stop=stop, step=step)
         counts, hist_bins, _ = plt.hist(data, bins=bins)
         counts = np.clip(counts, a_min=y_low, a_max=y_high)
@@ -340,13 +374,14 @@ class Save:
         self.__save_data(hist_data, name, formatting="%.2f")
 
     def __save_histogram_graph(self, data, is_hist_with_scale, is_hist_wo_scale, masked, fmt=".png"):
+        print(data)
         if is_hist_with_scale:
             name = self.listener.get_save_hist_info(scale=True, image=True, masked=masked,
-                                                    path=self.current_result_key)
+                                                    data=data)
             self.__save_histogram_diagram(data, name, True, masked, fmt=fmt)
         if is_hist_wo_scale:
             name = self.listener.get_save_hist_info(scale=False, image=True, masked=masked,
-                                                    path=self.current_result_key)
+                                                    data=data)
             self.__save_histogram_diagram(data, name, False, masked, fmt=fmt)
 
     def __save_histogram_diagram(self, data, title, scale, masked, fmt=".png"):
@@ -354,21 +389,25 @@ class Save:
         logging.debug("SAVING HISTOGRAM TO " + output_path)
         plt.clf()
         axes = plt.subplot(111)
-        stats = self.listener.generate_hist_values_for_saving(masked, self.current_result_key)
+        stats = self.listener.generate_hist_values_for_saving(masked, data)
         (x_low, x_high, y_low, y_high, step) = stats
-        start = np.min(data)
-        stop = np.max(data) + step + step
-        bins = np.arange(start=start, stop=stop+step, step=step)
+        start = x_low
+        stop = x_high + step
+        print(start, stop, step)
+        print(stats)
+        print(len(data))
+        print(data[:30])
+        bins = np.arange(start=start, stop=stop, step=step)
         # plot histogram
-        axes.hist(data, bins=bins, align='left')
+        axes.hist(data, bins=bins)
         if self.listener.modules[HISTOGRAM].parametric:
             # plot error bar
             mean_value = np.mean(data)
             sd_value = np.std(data)
             axes2 = axes.twinx()
-            axes2.plot([mean_value-sd_value, mean_value+sd_value], [1, 1], 'k-', lw=1)
-            axes2.plot([mean_value-sd_value, mean_value-sd_value], [0.9, 1.1], 'k-', lw=1)
-            axes2.plot([mean_value+sd_value, mean_value+sd_value], [0.9, 1.1], 'k-', lw=1)
+            axes2.plot([mean_value - sd_value, mean_value + sd_value], [1, 1], 'k-', lw=1)
+            axes2.plot([mean_value - sd_value, mean_value - sd_value], [0.9, 1.1], 'k-', lw=1)
+            axes2.plot([mean_value + sd_value, mean_value + sd_value], [0.9, 1.1], 'k-', lw=1)
             axes2.plot([mean_value, mean_value], [0.9, 1.1], '#F17E3A', lw=1)
             axes2.set_ylim(bottom=0, top=2)
             axes2.get_yaxis().set_visible(False)
@@ -415,8 +454,8 @@ class Save:
                 stats = self.listener.generate_abs_values_for_saving(False, self.current_result_key)
                 (x_low, x_high, y_low, y_high) = stats
                 print(y_low, y_high)
-                data1 = np.arange(x_low//5 * 5, x_high//5 * 5 + 5, 5)
-                data2 = self.current_abs_result.absorption_roi[:, 1][int((x_low-500)/5):int((x_high-500)/5) + 1]
+                data1 = np.arange(x_low // 5 * 5, x_high // 5 * 5 + 5, 5)
+                data2 = self.current_abs_result.absorption_roi[:, 1][int((x_low - 500) / 5):int((x_high - 500) / 5) + 1]
                 if self.listener.modules[ABSORPTION_SPEC].norm:
                     data2 = self.norm(data2)
                 data2 = np.clip(data2, a_min=y_low, a_max=y_high)
@@ -436,7 +475,7 @@ class Save:
                 stats = self.listener.generate_abs_values_for_saving(True, self.current_result_key)
                 (x_low, x_high, y_low, y_high) = stats
 
-                data1 = np.arange(x_low//5 * 5, x_high//5 * 5 + 5, 5)
+                data1 = np.arange(x_low // 5 * 5, x_high // 5 * 5 + 5, 5)
                 data2 = self.current_abs_result.absorption_roi_masked[:, 1]
                 if self.listener.modules[ABSORPTION_SPEC].norm:
                     data2 = self.norm(data2)
@@ -509,8 +548,10 @@ class Save:
         scale = [REC_IMAGE, REC_IMAGE_WO_SCALE]
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = np.rot90(current_result_display)
-            data_name = self.listener.get_save_rec_info(display, image=False, masked=False, path=self.current_result_key)
-            image_name = self.listener.get_save_rec_info(display, image=True, masked=False, path=self.current_result_key)
+            data_name = self.listener.get_save_rec_info(display, image=False, masked=False,
+                                                        path=self.current_result_key)
+            image_name = self.listener.get_save_rec_info(display, image=True, masked=False,
+                                                         path=self.current_result_key)
             stats = self.listener.generate_rec_values_for_saving(self.current_result_key, display)
             self.__save_data(data, data_name, stats)
             self.__save_image(data, image_name, self.saves[scale[0]], self.saves[scale[1]], stats, cmap=cmap)
@@ -542,8 +583,10 @@ class Save:
         scale = [NEW_IMAGE, NEW_IMAGE_WO_SCALE]
         if self.saves[WHOLE_IMAGE_SAVE]:
             data = np.rot90(current_result_display)
-            data_name = self.listener.get_save_new_info(display, image=False, masked=False, path=self.current_result_key)
-            image_name = self.listener.get_save_new_info(display, image=True, masked=False, path=self.current_result_key)
+            data_name = self.listener.get_save_new_info(display, image=False, masked=False,
+                                                        path=self.current_result_key)
+            image_name = self.listener.get_save_new_info(display, image=True, masked=False,
+                                                         path=self.current_result_key)
             stats = self.listener.generate_new_values_for_saving(self.current_result_key, display)
             self.__save_data(data, data_name, stats)
             self.__save_image(data, image_name, self.saves[scale[0]], self.saves[scale[1]], stats, cmap=cmap)

@@ -159,8 +159,8 @@ class Introduction:
         spacer1 = Text(self.root, height=47)
         spacer1.grid(padx=(25, 0), pady=15, row=0, column=0)
         spacer1.config(state=DISABLED)
-        spacer2 = Text(self.root, height=47, width=110)
-        spacer2.grid(padx=(0, 25), pady=15, row=0, column=1)
+        spacer2 = Text(self.root, height=49, width=110)
+        spacer2.grid(padx=(0, 25), pady=(15, 0), row=0, column=1)
         spacer2.config(state=DISABLED)
 
     def _build_page(self, page_num):
@@ -389,7 +389,7 @@ class Introduction:
             self._build_page(self.number)
 
     def __next(self):
-        if self.number == 9:
+        if self.number == 8:
             pass
         else:
             self.build_spacer()

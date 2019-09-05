@@ -191,10 +191,6 @@ class OGColour:
     # ---------------------------------------------- UPDATER AND GETTERS ----------------------------------------------
 
     def update_original_image(self, original_image_data):
-        if not np.array_equal(self.original_image_data, original_image_data):
-            self.listener.modules[ORIGINAL_COLOUR_DATA].empty_stats()
-            if self.listener.modules[HISTOGRAM].spec_number in [9, 10]:
-                self.listener.modules[HISTOGRAM].empty_hist()
         self.original_image_data = original_image_data
         self._draw_points()
 

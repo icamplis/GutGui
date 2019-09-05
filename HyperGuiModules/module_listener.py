@@ -308,12 +308,12 @@ class ModuleListener:
                 arr = [np.round(np.min(data), 4), np.round(np.max(data), 4)]
         return arr
 
-    def get_save_hist_info(self, scale, image, masked, path):
+    def get_save_hist_info(self, scale, image, masked, data):
         # e.g. histogram_fromCSV1_(0-3)-(0-200000)-0.01_with-scale_np.png
         # e.g. histogram_fromCSV9_(0-3)-(0-200000)-0.01_with-scale_np_STO2-csv7-cs-2.62299-0.22225.png
         # e.g. histogram_fromCSV12_(0-3)_(0-200000)-0.01_with-scale_np_IDX3-csv1-gs-2.62299-0.22225.png
         num = self.modules[HISTOGRAM].spec_number
-        (xmin, xmax, ymin, ymax, step) = self.generate_hist_values_for_saving(masked, path)
+        (xmin, xmax, ymin, ymax, step) = self.generate_hist_values_for_saving(masked, data)
         parametric = self.modules[HISTOGRAM].parametric
         non_parametric = self.modules[HISTOGRAM].non_parametric
         limits = '_(' + str(xmin) + '-' + str(xmax) + ')-(' + str(ymin) + '-' + str(ymax) + ')-' + str(step) + '_'
@@ -341,26 +341,27 @@ class ModuleListener:
         else:
             return 'histogram_fromCSV' + str(num) + limits + p_mod + data_mod[1] + masked_mod + 'data'
 
-    def generate_hist_values_for_saving(self, masked, path):
+    def generate_hist_values_for_saving(self, masked, data):
         if not masked:
             arr = self.modules[HISTOGRAM].whole_stats
-            return [round(float(arr[i]), 4) for i in range(5)]
         else:
             arr = self.modules[HISTOGRAM].masked_stats
-            if arr != [None, None, None, None, None]:
-                return [round(float(arr[i]), 4) for i in range(5)]
-            else:
-                masked_data = self.results[path][0].histogram_data_masked
-                lower = np.ma.min(masked_data)
-                upper = np.ma.max(masked_data)
-                step = 0.01
-                bins = np.arange(start=lower, stop=upper + step, step=step)
-                histogram_data = np.histogram(masked_data, bins=bins)
-                y_min = np.round(np.ma.min(histogram_data[0]), 4)
-                y_max = np.round(np.ma.max(histogram_data[0]), 4)
-                x_min = np.round(histogram_data[1][0], 4)
-                x_max = np.round(histogram_data[1][-1], 4)
-                return [x_min, x_max, y_min, y_max, step]
+
+        if arr != [None, None, None, None, None]:
+            return [round(float(arr[i]), 4) for i in range(5)]
+        else:
+            lower = np.ma.min(data)
+            upper = np.ma.max(data)
+            step = 0.01
+            if self.modules[HISTOGRAM].spec_number == 9:
+                step = 1
+            bins = np.arange(start=lower, stop=upper + step, step=step)
+            histogram_data = np.histogram(data, bins=bins)
+            y_min = np.round(np.ma.min(histogram_data[0]), 4)
+            y_max = np.round(np.ma.max(histogram_data[0]), 4)
+            x_min = np.round(histogram_data[1][0], 4)
+            x_max = np.round(histogram_data[1][-1], 4)
+            return [x_min, x_max, y_min, y_max, step]
 
     def get_save_abs_info(self, scale, image, masked, path):
         # e.g. abspec_fromCSV1_(0-3)_(0-200000)_with-scale.png

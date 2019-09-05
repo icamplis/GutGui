@@ -12,6 +12,7 @@ class Histogram:
 
         self.specs = (False, True, False)
         self.spec_number = 1
+        self.old_spec_number = 1
 
         self.parametric = False
         self.non_parametric = False
@@ -40,10 +41,11 @@ class Histogram:
 
         self.percent_negative_text = None
         self.percent_negative_value = None
+        self.count_text = None
+        self.count_value = None
 
         self.drop_down_var = StringVar()
-        self.choices = ['Choose data',
-                        '1. Reflectance - Original',
+        self.choices = ['1. Reflectance - Original',
                         '2. Reflectance - Original without Negative Values',
                         '3. Reflectance - Normalised',
                         '4. Reflectance - Normalised without Negative Values',
@@ -108,14 +110,22 @@ class Histogram:
 
     def update_histogram(self, data):
         logging.debug("BUILDING HISTOGRAM...")
+        self.hist_data = data.flatten()
         self.flattened_data = data.flatten()
-        print(isinstance(self.flattened_data, np.ma.MaskedArray))
-        if isinstance(self.flattened_data, np.ma.MaskedArray):
-            arr = np.ma.sort(self.flattened_data)
+        print(self.old_spec_number)
+        print(self.spec_number)
+        if self.old_spec_number != self.spec_number:
+            print('nums')
+            print(self.old_spec_number)
+            print(self.spec_number)
+            self.old_spec_number = self.spec_number
+            self.masked_stats = [None, None, None, None, None]
+            self.whole_stats = [None, None, None, None, None]
+            print(self.get_stats())
+        if isinstance(self.hist_data, np.ma.MaskedArray):
+            arr = np.ma.sort(self.hist_data)
             index = np.where(arr.mask)[0][0]
-            print(index)
             self.flattened_data = arr[:index]
-            print(len(self.flattened_data))
         self.flattened_data = self.flattened_data[self.flattened_data != np.array(None)]
         self.upper_value = np.ma.max(self.flattened_data)
         self.lower_value = np.ma.min(self.flattened_data)
@@ -140,32 +150,6 @@ class Histogram:
         self._build_drop_down()
         self._build_interactive_histogram()
         self._build_stats()
-
-    def empty_hist(self):
-        self.flattened_data = None
-        self.masked_stats = [None, None, None, None, None]
-        self.whole_stats = [None, None, None, None, None]
-        self.min_x = None
-        self.min_x_val = None
-        self.min_y = None
-        self.min_y_val = None
-        self.max_x = None
-        self.max_x_val = None
-        self.max_y = None
-        self.max_y_val = None
-        self.upper_value = None
-        self.lower_value = None
-        self.mean_value = None
-        self.sd_value = None
-        self.median_value = None
-        self.iqr_value = None
-        self._build_scale()
-        self._build_step_size()
-        self._build_interactive_histogram()
-        self._build_stats()
-        self._build_drop_down()
-        self.drop_down_var.set(self.choices[0])
-        self.spec_number = -1
 
     # --------------------------------------------------- GETTERS ----------------------------------------------------
 
@@ -211,7 +195,7 @@ class Histogram:
                                         inner_pady=5, outer_padx=15, outer_pady=(0, 10), columnspan=2)
 
     def _build_drop_down(self):
-        self.drop_down_var.set(self.choices[1])
+        self.drop_down_var.set(self.choices[0])
         self.drop_down_menu = OptionMenu(self.root, self.drop_down_var, *self.choices, command=self.__update_data)
         self.drop_down_menu.configure(highlightthickness=0, width=1,
                                       anchor='w', padx=15)
@@ -255,8 +239,11 @@ class Histogram:
         # percent negative
         self.percent_negative_text = make_text(self.root, content="% Negative = " + str(self.percent_negative_value) +
                                                                   '%', bg=tkcolour_from_rgb(BACKGROUND), column=3,
-                                               row=2, width=25, columnspan=2, rowspan=2, padx=(10, 0), state=NORMAL,
+                                               row=2, width=25, columnspan=2, rowspan=1, padx=(10, 0), state=NORMAL,
                                                pady=0)
+        self.count_text = make_text(self.root, content="Count = " + str(self.count_value),
+                                    bg=tkcolour_from_rgb(BACKGROUND), column=3, row=3, width=17, columnspan=2,
+                                    rowspan=1, padx=0, state=NORMAL, pady=0)
 
     def _build_scale(self):
         # lower
@@ -327,9 +314,6 @@ class Histogram:
             bins = np.arange(start=np.ma.min(self.flattened_data),
                              stop=np.ma.max(self.flattened_data) + self.get_stats()[4], step=self.get_stats()[4])
             # plot histogram
-            if isinstance(self.flattened_data, np.ma.MaskedArray):
-                data = np.ma.filled(self.flattened_data, -1)
-                print(set(data))
             self.axes.hist(self.flattened_data, bins=bins)
             if self.parametric:
                 # plot error bar
@@ -420,6 +404,7 @@ class Histogram:
         percent = np.ma.sum(data < 0)/len(data) * 100
         self.percent_negative_value = round(percent, 3)
         progress(10, 11)
+        self.count_value = round(len(self.flattened_data), 3)
         self._build_stats()
 
     # -------------------------------------------------- CALLBACKS ---------------------------------------------------
@@ -438,33 +423,33 @@ class Histogram:
         elif choice == '9.':
             data = self.listener.get_current_original_data()
             self.step_size_value = 1
-            self.update_histogram(data)
             self.spec_number = 9
+            self.update_histogram(data)
         elif choice == '10':
             data = self.listener.get_current_norm_original_data()
             self.step_size_value = 0.01
-            self.update_histogram(data)
             self.spec_number = 10
+            self.update_histogram(data)
         elif choice == '11':
             data = self.listener.get_current_rec_data()
             self.step_size_value = 0.01
-            self.update_histogram(data)
             self.spec_number = 11
+            self.update_histogram(data)
         elif choice == '12':
             data = self.listener.get_current_norm_rec_data()
             self.step_size_value = 0.01
-            self.update_histogram(data)
             self.spec_number = 12
+            self.update_histogram(data)
         elif choice == '13':
             data = self.listener.get_current_new_data()
             self.step_size_value = 0.01
-            self.update_histogram(data)
             self.spec_number = 13
+            self.update_histogram(data)
         elif choice == '14':
             data = self.listener.get_current_norm_new_data()
             self.step_size_value = 0.01
-            self.update_histogram(data)
             self.spec_number = 14
+            self.update_histogram(data)
 
     def __pop_up_image(self, event):
         make_popup_image(self.interactive_histogram_graph)
