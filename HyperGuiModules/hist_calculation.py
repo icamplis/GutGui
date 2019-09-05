@@ -333,7 +333,7 @@ class HistCalculation:
             hist_data = np.stack((bins[:-1], bin_heights)).T
             output_path = self.output_path + "/histogram_calculation" + self.__get_naming_info() + '.csv'
             logging.debug("SAVING DATA TO " + output_path)
-            np.savetxt(output_path, hist_data, delimiter=",", fmt="%.2f")
+            np.savetxt(output_path, hist_data, delimiter=",", fmt="%.5f")
 
     def __save_as_image(self):
         if self.output_path is None:

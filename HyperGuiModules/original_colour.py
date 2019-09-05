@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw
 import numpy as np
 import logging
 import csv
+import os
 
 
 class OGColour:
@@ -39,6 +40,8 @@ class OGColour:
         self.gs_dropdown = None
         self.gs_var = StringVar()
         self.gs_choices = ['CS (Colour Scale)', 'GS (Grey Scale)']
+
+        self.mask_to_csv_button = None
 
         self.save_label = None
         self.save_checkbox = None
@@ -234,6 +237,7 @@ class OGColour:
 
     def _init_widget(self):
         self._build_gs_dropdown()
+        self._build_mask_to_csv_button()
         self._build_rgb()
         self._build_sto2()
         self._build_nir()
@@ -405,6 +409,10 @@ class OGColour:
         self.gs_dropdown.configure(highlightthickness=0, width=1, anchor='w', padx=15)
         self.gs_dropdown.grid(column=2, row=0, columnspan=1)
 
+    def _build_mask_to_csv_button(self):
+        self.mask_to_csv_button = make_button(self.root, text='Mask to CSV', width=8, command=self.__mask_to_csv,
+                                              row=0, column=3, columnspan=2, inner_pady=0, outer_padx=5)
+
     def _build_save(self):
         self.save_label = make_label(self.root, "Save", row=12, column=0, columnspan=1, outer_padx=(12, 0),
                                      outer_pady=(10, 15), inner_padx=10, inner_pady=5)
@@ -526,6 +534,17 @@ class OGColour:
         self.mask_raw = np.array(img)
         self.mask_raw = np.fliplr(self.mask_raw.T)
         self.listener.submit_mask(np.logical_not(self.mask_raw))
+
+    def __mask_to_csv(self):
+        polygon = [point for point in self.coords_list if point != (None, None)]
+        img = Image.new('L', (640, 480), 0)
+        ImageDraw.Draw(img).polygon(polygon, outline=1, fill=1)
+        mask_array = np.array(img)
+        mask_array = mask_array
+        path = os.path.dirname(self.listener.current_rendered_result_path)
+        print(path)
+        output_path = path + "/mask" + '.csv'
+        np.savetxt(output_path, mask_array, delimiter=",", fmt="%.5f")
 
     # --------------------------------------------- ADDING/REMOVING COORDS --------------------------------------------
 
