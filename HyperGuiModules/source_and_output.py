@@ -91,11 +91,10 @@ class SourceAndOutput:
         make_info(title=title, info=info)
 
     def __update_selected_data_cube(self, event):
-        pass
-        # dc_path = self.get_selected_data_cube_path()
-        # selected_paths = self.get_selected_data_paths()
-        # self.listener.set_data_cube(dc_path)
-        # self.listener.update_selected_paths(selected_paths)
+        dc_path = self.get_selected_data_cube_path()
+        selected_paths = self.get_selected_data_paths()
+        self.listener.set_data_cube(dc_path)
+        self.listener.update_selected_paths(selected_paths)
 
     def __add_data_cube_dirs(self):
         super_dir = self.__get_path_to_dir("Please select folder containing all the data folders.")
